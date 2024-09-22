@@ -10,13 +10,13 @@ if (altcha_plugin_active('contact-form-7')) {
     function ($elements) {
       $plugin = AltchaPlugin::$instance;
       $mode = $plugin->get_integration_contact_form_7();
-      if (!empty($mode)) {
-        $elements .= wp_nonce_field('altcha_verification', '_altchanonce', true, false);
-      }
       if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        $button = '<input class="wpcf7-form-control wpcf7-submit ';
+        $input = '<input class="wpcf7-form-control wpcf7-submit ';
+        $button = '<button class="wpcf7-form-control wpcf7-submit ';
         $widget = wp_kses($plugin->render_widget($mode, true), AltchaPlugin::$html_espace_allowed_tags);
-        if (str_contains($elements, $button)) {
+        if (str_contains($elements, $input)) {
+          $elements = str_replace($input, $widget . $input, $elements);
+        } else if (str_contains($elements, $button)) {
           $elements = str_replace($button, $widget . $button, $elements);
         } else {
           $elements .= $widget;
@@ -34,10 +34,9 @@ if (altcha_plugin_active('contact-form-7')) {
       if ($spam) {
         return $spam;
       }
-      $nonceok = true;
       $plugin = AltchaPlugin::$instance;
       $mode = $plugin->get_integration_contact_form_7();
-      if (!empty($mode) && (wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_altchanonce'])), 'altcha_verification') !== false || $nonceok)) {
+      if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {
           $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
           return $plugin->verify($altcha) === false;
