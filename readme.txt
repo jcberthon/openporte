@@ -2,8 +2,8 @@
 Tags: altcha, captcha, spam, anti-spam, anti-bot, antispam, recaptcha, hcaptcha, gdpr
 Author: Altcha.org
 Author URI: https://altcha.org
-Version: 1.20.0
-Stable tag: 1.20.0
+Version: 1.21.0
+Stable tag: 1.21.0
 Requires at least: 5.0
 Requires PHP: 7.3
 Tested up to: 6.6
@@ -17,12 +17,6 @@ ALTCHA offers a free, open-source Captcha alternative, ensuring robust spam prot
 [ALTCHA](https://altcha.org) provides a free, open-source Captcha alternative utilizing a proof-of-work mechanism to safeguard your website against spam and unwanted content. Our anti-spam solution ensures robust spam protection without compromising user privacy.
 
 Unlike other solutions, ALTCHA is free, open-source, and self-hosted. It operates independently without external services, avoids the use of cookies and fingerprinting, refrains from user tracking, and maintains full compliance with GDPR regulations.
-
-== Spam Filter ==
-
-ALTCHA’s [Spam Filter](https://altcha.org/anti-spam) introduces a distinctive spam-detection feature enabling efficient classification of text and other information, empowering you to distinguish spam from legitimate messages. This anti-spam Captcha feature provides enhanced spam protection for your site.
-
-As a GDPR-compliant alternative to Akismet, this feature seamlessly integrates with the plugin for effortless activation.
 
 == Privacy ==
 
@@ -46,15 +40,13 @@ Note: The Spam Filter requires ALTCHA’s SaaS. [Create an API Key](https://altc
 == Installation ==
 
 Download, install and activate `ALTCHA Spam Protection`.
-
-To use the Spam Filter, [create an API Key](https://altcha.org/docs/api/api_keys/) and configure it in the Settings.
  
 Alternatively, install the plugin manually:
 
 1. Download the `.zip` from the [Releases](https://github.com/altcha-org/wordpress-plugin/releases).
 2. Upload `altcha` folder to the `/wp-content/plugins/` directory  
 3. Activate the plugin through the 'Plugins' menu in WordPress  
-4. Review the settings and enable the your integrations
+4. Review the settings and enable your integrations
 
 == REST API ==
 
@@ -64,6 +56,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 
 * Contact Form 7
 * Elementor Pro Forms
+* Enfold Theme
 * Forminator
 * GravityForms
 * HTML Forms
@@ -96,6 +89,11 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 5. Floating UI Captcha
 
 == Changelog ==
+
+= 1.21.0 =
+* ALTCHA Widget 2.0.2
+* Widget scripts are now injected only on pages, which include the widget
+* Support for custom Challenge URL and ALTCHA Sentinel
 
 = 1.20.0 =
 * Enfold Theme (contact and newsletter forms) integration

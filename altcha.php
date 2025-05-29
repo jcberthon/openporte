@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Description: ALTCHA is a free, open-source CAPTCHA alternative that offers robust protection without using cookies, ensuring full GDPR compliance by design. It also provides invisible anti-spam and anti-bot protection through ALTCHA's API.
  * Author: Altcha.org
  * Author URI: https://altcha.org
- * Version: 1.20.0
- * Stable tag: 1.20.0
+ * Version: 1.21.0
+ * Stable tag: 1.21.0
  * Requires at least: 5.0
  * Requires PHP: 7.3
  * Tested up to: 6.6
@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html  
  */
 
-define('ALTCHA_VERSION', '1.20.0');
+define('ALTCHA_VERSION', '1.21.0');
 define('ALTCHA_WEBSITE', 'https://altcha.org/');
-define('ALTCHA_WIDGET_VERSION', '1.2.0');
+define('ALTCHA_WIDGET_VERSION', '2.0.2');
 
 // required for is_plugin_active
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -52,8 +52,6 @@ register_deactivation_hook(__FILE__, 'altcha_deactivate');
 
 add_action('init', 'altcha_init');
 
-add_action('wp_enqueue_scripts', 'altcha_enqueue_widget_scripts');
-
 add_shortcode(
   'altcha',
   function ($attrs) {
@@ -78,6 +76,7 @@ function altcha_init() {
 function altcha_activate()
 {
   update_option(AltchaPlugin::$option_api, 'selfhosted');
+  update_option(AltchaPlugin::$option_api_custom_url, '');
   update_option(AltchaPlugin::$option_api_key, '');
   update_option(AltchaPlugin::$option_expires, '3600');
   update_option(AltchaPlugin::$option_secret, AltchaPlugin::$instance->random_secret());
@@ -88,12 +87,4 @@ function altcha_activate()
 
 function altcha_deactivate()
 {
-}
-
-function altcha_enqueue_widget_scripts()
-{
-  if (AltchaPlugin::$instance->has_active_integrations()) {
-    altcha_enqueue_scripts();
-    altcha_enqueue_styles();
-  }
 }
