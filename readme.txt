@@ -2,11 +2,11 @@
 Tags: altcha, captcha, spam, anti-spam, anti-bot, antispam, recaptcha, hcaptcha, gdpr
 Author: Altcha.org
 Author URI: https://altcha.org
-Version: 1.22.1
-Stable tag: 1.22.1
+Version: 1.23.0
+Stable tag: 1.23.0
 Requires at least: 5.0
 Requires PHP: 7.3
-Tested up to: 6.6
+Tested up to: 6.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -54,6 +54,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 
 == Supported Integrations ==
 
+* CoBlocks
 * Contact Form 7
 * Elementor Pro Forms
 * Enfold Theme
@@ -89,6 +90,9 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 5. Floating UI Captcha
 
 == Changelog ==
+
+= 1.23.0 =
+* Support for CoBlocks
 
 = 1.22.1 =
 * Fix Gravity Forms validation with custom server 

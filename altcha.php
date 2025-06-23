@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Description: ALTCHA is a free, open-source CAPTCHA alternative that offers robust protection without using cookies, ensuring full GDPR compliance by design. It also provides invisible anti-spam and anti-bot protection through ALTCHA's API.
  * Author: Altcha.org
  * Author URI: https://altcha.org
- * Version: 1.22.1
- * Stable tag: 1.22.1
+ * Version: 1.23.0
+ * Stable tag: 1.23.0
  * Requires at least: 5.0
  * Requires PHP: 7.3
  * Tested up to: 6.6
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html  
  */
 
-define('ALTCHA_VERSION', '1.22.1');
+define('ALTCHA_VERSION', '1.23.0');
 define('ALTCHA_WEBSITE', 'https://altcha.org/');
 define('ALTCHA_WIDGET_VERSION', '2.0.2');
 
@@ -27,6 +27,7 @@ require plugin_dir_path(__FILE__) . 'includes/helpers.php';
 require plugin_dir_path(__FILE__) . 'includes/core.php';
 require plugin_dir_path( __FILE__ ) . './public/widget.php';
 
+require plugin_dir_path( __FILE__ ) . './integrations/coblocks.php';
 require plugin_dir_path( __FILE__ ) . './integrations/contact-form-7.php';
 require plugin_dir_path( __FILE__ ) . './integrations/custom.php';
 require plugin_dir_path( __FILE__ ) . './integrations/elementor.php';
