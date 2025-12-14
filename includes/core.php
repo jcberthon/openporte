@@ -464,6 +464,9 @@ class AltchaPlugin
         'expires' => time() + $expires
       ));
     }
+    if (!str_ends_with($salt, '&')) {
+      $salt .= '&';
+    }
     switch ($complexity) {
       case 'low':
         $min_secret = 100;
