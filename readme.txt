@@ -1,74 +1,50 @@
 === ALTCHA Spam Protection ===
-Tags: altcha, captcha, spam, anti-spam, anti-bot, antispam, recaptcha, hcaptcha, gdpr
+Tags: captcha, recaptcha, spam, bot protection, forms
 Author: Altcha.org
 Author URI: https://altcha.org
-Version: 1.26.3
-Stable tag: 1.26.3
 Requires at least: 5.0
-Requires PHP: 7.3
-Tested up to: 6.8
+Tested up to: 7.0
+Requires PHP: 8.1
+Stable tag: 3.0.0
 License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html  
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-ALTCHA offers a free, open-source Captcha alternative, ensuring robust spam protection while respecting user privacy and GDPR compliance.
+ALTCHA for WordPress offers invisible, GDPR-compliant spam protection with firewall and rate limiting for fast, secure sites.
 
 == Description ==
 
-**This is ALTCHA Plugin version 1.**
- 
-**ALTCHA Plugin version 2 is now available, offering improved protection and enhanced reliability. An upgrade is recommended for all users.**
- 
-[Learn more](https://altcha.org/docs/v2/wordpress) | [Installation guide](https://altcha.org/docs/v2/wordpress/install) | [Migration guide](https://altcha.org/docs/v2/wordpress/migrating-from-v1/)
+**ALTCHA for WordPress** is the professional solution for keeping your website safe from spam, bots, and abuse — without frustrating your visitors. Unlike traditional CAPTCHAs that interrupt the user experience, ALTCHA runs silently in the background, delivering **invisible, privacy-first protection** for all your forms.
 
-What's new in version 2:
+Whether you’re running a blog, an online store, or a high-traffic business site, ALTCHA makes sure your site stays fast, secure, and compliant.
 
-* **Effective**: blocks 99% of spam and abuse attempts
-* **Invisible for users**: frictionless protection, no puzzles or CAPTCHAs
-* **Works everywhere**: plugin-agnostic [Request Interceptor](https://altcha.org/docs/v2/wordpress/features/#request-interceptor--works-everywhere) integrates with any form plugin
-* **Handles heavy traffic**: stay online with [Under Attack Mode](https://altcha.org/docs/v2/wordpress/features/#under-attack-mode--stay-online-under-pressure)
-* **Stops abuse at scale**: firewall and rate limiting included
-* **Privacy-first**: 100% GDPR-compliant and fully accessible
-* **Unlimited**: no external services, unlimited verifications
+= Why ALTCHA? =
 
-Learn more about ALTCHA at [altcha.org](https://altcha.org).
+* **Unlimited**: no third-party dependencies, unlimited verifications
+* **Privacy-first**: fully GDPR-compliant and accessible by design
+* **Invisible Protection**: seamless security with no puzzles or CAPTCHAs
+* **Analytics**: detailed dashboard and activity logs
+* **Advanced Firewall**: block malicious traffic by country, IP, or user agent
+* **Under Attack Mode**: keep your site online during active threats with under attack mode
 
----
- 
-[ALTCHA](https://altcha.org) provides a free, open-source Captcha alternative utilizing a proof-of-work mechanism to safeguard your website against spam and unwanted content. Our anti-spam solution ensures robust spam protection without compromising user privacy.
+[Learn more](https://altcha.org/docs/v2/wordpress).
 
-Unlike other solutions, ALTCHA is free, open-source, and self-hosted. It operates independently without external services, avoids the use of cookies and fingerprinting, refrains from user tracking, and maintains full compliance with GDPR regulations.
+= Perfect for Professionals =
 
-== Free Mode ==
+ALTCHA is designed for serious WordPress site owners who need **reliable, production-grade security**. It’s a complete protection layer that scales with your website, backed by professional support when you need it.
 
-The free self-hosted mode is enabled by default after installation. No additional setup is required, except enabling the integrations you need in the plugin settings.
+= Get Started =
+
+To get started, see the [documentation](https://altcha.org/docs/v2/wordpress).
 
 == Privacy ==
 
-= No cookies, no tracking =
+= No tracking =
 
-ALTCHA prioritizes user privacy by avoiding the use of cookies and fingerprinting techniques.
+ALTCHA prioritizes user privacy by avoiding the use of tracking cookies and fingerprinting techniques.
 
 = No external service =
 
-Operating in Self-hosted mode (the default setting), this plugin remains fully contained within your WordPress installation, eliminating any reliance on external services. You can opt-in for our SaaS version to utilize the Spam Filter API. For more information visit https://altcha.org.
-
-== Modes of Operation ==
-
-This plugin operates in two modes, you can select which mode you want in the settings (see API Region):
-
-* Self-hosted - free, fully self-contained without external services.
-* Custom or SaaS API - requires a server such as [ALTCHA Sentinel](https://altcha.org/docs/v2/sentinel/).
- 
-== Installation ==
-
-Download, install and activate `ALTCHA Spam Protection`.
- 
-Alternatively, install the plugin manually:
-
-1. Download the `.zip` from the [Releases](https://github.com/altcha-org/wordpress-plugin/releases).
-2. Upload `altcha` folder to the `/wp-content/plugins/` directory  
-3. Activate the plugin through the 'Plugins' menu in WordPress  
-4. Review the settings and enable your integrations
+This plugin runs entirely within your WordPress installation, with no reliance on external services. For advanced protection, you can integrate with [ALTCHA Sentinel](https://altcha.org/docs/v2/sentinel/?utm_source=chatgpt.com).
 
 == REST API ==
 
@@ -78,209 +54,68 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 
 * CoBlocks
 * Contact Form 7
+* Divi Forms
 * Elementor Pro Forms
-* Enfold Theme
+* Eventprime
+* Everest Forms
+* Fluent Forms
 * Formidable Forms
 * Forminator
 * GravityForms
 * HTML Forms
-* WPDiscuz
-* WPForms
+* Kali Forms
+* Mailpoet
+* Newsletter
+* Ninja Forms
+* Noptin
+* Sure Forms
+* User Registration
+* WooCommerce
 * WP-Members
+* wpDiscuz
+* WPForms
 * WordPress Login, Register, Password reset
 * WordPress Comments
-* WooCommerce
-* Custom HTML (with a short code `[altcha]`)
+* Custom integrations (with a short code `[altcha]`)
+
+== Installation ==
+
+1. Upload the plugin to the `/wp-content/plugins/` directory, or install it via the WordPress plugin screen.
+2. Activate the plugin through the **Plugins** screen in WordPress.
+3. The ALTCHA plugin is downloaded and installed automatically. Configure it under **Settings > ALTCHA** (or the ALTCHA menu in the sidebar).
+
+== Frequently Asked Questions ==
+
+= Why does this plugin download another plugin on activation? =
+
+ALTCHA Spam Protection includes proprietary components that cannot be distributed directly via the WordPress Plugin Directory. This installer downloads the latest version from our official GitHub repository during activation. The downloaded plugin is fully functional and self-updating.
+
+= Is an internet connection required? =
+
+Yes, an active internet connection is required at the time of activation so the plugin can be downloaded from GitHub.
+
+= What happens if the download fails? =
+
+An error notice is shown in the WordPress admin. Check your server's outbound internet access and try reactivating the plugin.
+
+= How do I get updates? =
+
+The installed ALTCHA plugin updates itself automatically via the WordPress updates screen.
 
 == Source Code ==
 
-All source code for the plugin, and the ALTCHA widget is available on GitHub. In the repository, you'll also find versions of non-minified JavaScript and CSS assets:
+All source code for the plugin, and the ALTCHA widget is available on GitHub.
 
-* Plugin: https://github.com/altcha-org/wordpress-plugin
+* Plugin: https://github.com/altcha-org/altcha-wordpress-next
 * ALTCHA Widget: https://github.com/altcha-org/altcha
-
-== Terms of Service And Privacy Policy for SaaS ==
-
-* Privacy Policy: https://altcha.org/privacy-policy
-* Terms of Service: https://altcha.org/terms-of-service
+* Installer: https://github.com/altcha-org/altcha-wordpress-installer
 
 == Screenshots ==
 
-1. Friction-less Captcha without puzzles
-2. Configuration
-3. Protection on the login page
-4. Protection with WPForms
-5. Floating UI Captcha
+1. Dashboard and Analytics
+2. Easy Configuration
 
 == Changelog ==
 
-= 1.26.3 =
-* Fixed possible replay attacks via salt splicing.
-
-= 1.26.2 =
-* Updated readme for the new version 2.
-
-= 1.26.1 =
-* Fix Elementor Pro Forms widget rendering
-
-= 1.26.0 =
-* Added Formidable Forms integration
-* Fixed PHP warning in the verify function
-* ALTCHA Widget 2.2.2
-
-= 1.25.0 =
-* Added hooks for improved customization and integration flexibility. [#45]
-
-= 1.24.0 =
-* Fix issue with duplicate widget rendering in Elementor popups and WPDiscuz replies
-
-= 1.23.0 =
-* Support for CoBlocks
-
-= 1.22.1 =
-* Fix Gravity Forms validation with custom server 
-
-= 1.22.0 =
-* Fix Forminator multi-page forms
-* Fix Gravity Forms with Sentinel and fields classification
-
-= 1.21.0 =
-* ALTCHA Widget 2.0.2
-* Widget scripts are now injected only on pages, which include the widget
-* Support for custom Challenge URL and ALTCHA Sentinel
-
-= 1.20.0 =
-* Enfold Theme (contact and newsletter forms) integration
-
-= 1.19.0 =
-* Fix submit issues with Contact Form 7 + Conditional fields
-
-= 1.18.0 =
-* Fix language with Contact Form 7
-
-= 1.17.0 =
-* Update widget to 1.2.0
-* Widget removes support for Expires header fixing potential auto-revalidation issues
-* Widget script provided as a UMD module allowing for JS minification
-
-= 1.16.0 =
-* Fix reply to comments from the admin page [#36]
-
-= 1.15.0 =
-* Translations with gettext and automatic language detection [#33]
-
-= 1.14.1 =
-* Fix the "Settings" link [#32]
-
-= 1.14.0 =
-* Automatic language detection [#31]
-* Change placement of the "Settings" link in the plugin list [#32]
-
-= 1.13.1 =
-* Ignore WooCommerce form submissions in WordPress integration [#30]
-
-= 1.13.0 =
-* WooCommerce integration [#26]
-* Improved validation message [#27]
-* Password lost error message [#28]
-
-= 1.12.0 =
-* HTML Forms - skip verification if the shortcode is not in the form markup [#23]
-
-= 1.11.1 =
-* Fix Forminator compatibility issue
-
-= 1.11.0 =
-* Added support for WP-Members
-
-= 1.10.0 =
-* Added support for WPDiscuz
-
-= 1.9.3 =
-* Fix REST API Cache-Control header
-
-= 1.9.2 =
-* Enable Custom HTML (shortcode) integration by default when activated
-
-= 1.9.1 =
-* PHP 7 support (replace str_contains by strpos) [#19]
-
-= 1.9.0 =
-* Widget updated to version 1.0.0
-* CF7 - fix widget placement
-* Fix page caching
-
-= 1.8.0 =
-* Shortcode (custom integration) - fix mode (SpamFilter) 
-
-= 1.7.0 =
-* HTML Forms - add Shortcode option
-
-= 1.6.1 =
-* Fix WordPress login integration
-
-= 1.6.0 =
-* Fix Elementor Pro Forms widget rendering
-* Fix Contact Form 7 widget position and shortcode support
-
-= 1.5.0 =
-* Fix REST base URL (+ REST prefix removed from settings) [#13]
-
-= 1.4.0 =
-* Support for Elementor Pro Forms
-* Widget updated to 0.6.7
-
-= 1.3.1 =
-* Fix site_url parsing issue [#11]
-
-= 1.3.0 =
-* Added support for custom REST API prefixes
-
-= 1.2.0 =
-* Forminator - fix widget rendering with file input
-* Widget updated to 0.6.4
-
-= 1.1.0 =
-* Shortcode - support for `language` attribute
-
-= 1.0.0 =
-* Widget updated to 0.6.3
-
-= 0.3.0 =
-* Added nonce sanitization
-* Removed server-side spam filter (required for Plugin Directory)
-
-= 0.2.1 =
-* Fixes requested by Plugin Directory review
-* Fixed various Spam Filter issues
-
-= 0.2.0 =
-* Widget updated to 0.6.0
-* Added support for Floating UI
-
-= 0.1.7 =
-* Fix Forminator multi-step forms
-
-= 0.1.6 =
-* Widget updated to 0.5.1
-
-= 0.1.5 =
-* Fixes requested by Plugin Directory review
-
-= 0.1.4 =
-* GravityForms - added label and description options
-* Altcha widget updated to 0.4.3
-
-= 0.1.3 =
-* Fixed "lost password" verification bug
-* Altcha widget updated to 0.4.1
-
-= 0.1.2 =
-* Fixed widgets footer link and log warnings
-
-= 0.1.1 =
-* Widget v0.4.0
-* Challenge expiration
-
-= 0.1.0 =
-* First version
+= 3.0.0 =
+* Initial release of the installer for v3.

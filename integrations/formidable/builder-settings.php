@@ -1,1 +1,0 @@
-<p>Configure ALTCHA in the plugin settings.</p>

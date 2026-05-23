@@ -1,1 +1,0 @@
-<p>ALTCHA will be displayed here.</p>
