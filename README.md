@@ -3,20 +3,9 @@
 > [!TIP]
 > [ALTCHA Plugin version 2](https://altcha.org/docs/v2/wordpress/) is now available, offering improved protection and enhanced reliability. An upgrade is recommended for all users.
 
-**This repository contains the offical ALTCHA plugin for WordPress version 1.**
+**This repository is the reconstruction of the now retired offical ALTCHA plugin for WordPress version 1.**
 
-**For the new version 2, see [github.com/altcha-org/altcha-wordpress-next](https://github.com/altcha-org/altcha-wordpress-next) repository.**
-
-What's new in version 2:
-
-* **Effective**: blocks 99% of spam and abuse attempts
-* **Invisible for users**: frictionless protection, no puzzles or CAPTCHAs
-* **Works everywhere**: plugin-agnostic [Request Interceptor](https://altcha.org/docs/v2/wordpress/features/#request-interceptor--works-everywhere) integrates with any form plugin
-* **Handles heavy traffic**: stay online with [Under Attack Mode](https://altcha.org/docs/v2/wordpress/features/#under-attack-mode--stay-online-under-pressure)
-* **Stops abuse at scale**: firewall and rate limiting included
-* **Privacy-first**: 100% GDPR-compliant and fully accessible
-
-[Learn more](https://altcha.org/docs/v2/wordpress) | [Migration guide](https://altcha.org/docs/v2/wordpress/migrating-from-v1/)
+**For the new version 2/3, see [github.com/altcha-org/altcha-wordpress-next](https://github.com/altcha-org/altcha-wordpress-next) repository. However, it is no longer open source and some free features of the version 1 are now paid features.**
 
 ---
 
@@ -26,9 +15,9 @@ Read more about ALTCHA: https://github.com/altcha-org/altcha
 
 Website: https://altcha.org
 
-WordPress Plugin Directory: https://wordpress.org/plugins/altcha-spam-protection/
+WordPress Plugin Directory: none yet
 
-Having troubles? Please report in [Issues](https://github.com/altcha-org/wordpress-plugin/issues).
+Having troubles? Please report in [Issues](https://github.com/jcberthon/wordpress-spam-protection/issues).
 
 ## Supported Integrations
 
@@ -58,9 +47,9 @@ Currently the Floating UI does not work with:
 
 ## Installation
 
-In your WordPress installation, search for "altcha" in the plugin directory and click Install. Alternatively, install the plugin manually:
+You cannot install version 1 currently by searching the plugin directory (at work). Alternatively, install the plugin manually:
 
-1. Download the `.zip` from the [Releases](https://github.com/altcha-org/wordpress-plugin/releases).
+1. Download the `.zip` from the [Releases](https://github.com/jcberthon/wordpress-spam-protection/releases).
 2. Upload `altcha` folder to the `/wp-content/plugins/` directory  
 3. Activate the plugin through the 'Plugins' menu in WordPress  
 4. Review the settings and enable your integrations
