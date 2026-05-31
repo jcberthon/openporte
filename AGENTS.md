@@ -49,6 +49,27 @@ Each integration file registers hooks unconditionally at load; the callbacks the
 - **WP options keys:** all defined as `static` properties on `AltchaPlugin` (e.g., `AltchaPlugin::$option_api`). Never hardcode the raw option string `"altcha_*"` anywhere — always reference the property.
 - **i18n:** most user-facing strings use `__()` / `esc_html__()`. Exceptions exist (see fix-mes below) — follow the existing pattern when adding new strings.
 
+### i18n discipline (apply on every change)
+
+- All user-facing strings must be wrapped in a translation function
+  (`__()`, `esc_html__()`, `esc_attr__()`, …) with the text domain.
+- Any string containing a placeholder (`%s`, `%d`, `%1$s`, …) MUST be preceded
+  by a `/* translators: … */` comment describing each placeholder. See the
+  `get_translations()` footer string for the existing pattern. Plain strings
+  with no placeholder do NOT need such a comment.
+- Adding or changing a user-facing string invalidates its existing translation
+  and requires the `.pot` template to be regenerated. Note this in the commit
+  so translations are refreshed.
+
+### Comment what you touch
+
+When you modify a branch, fallback, or workaround whose intent is not
+self-evident, add a short inline comment explaining the *why*, not the *what*.
+Example: in `get_challengeurl()`, the final `else` is annotated as the
+self-hosted default and graceful fallback for legacy `eu`/`us` DB values.
+Prefer a one-line intent comment over leaving future readers (human or agent)
+to re-derive the logic.
+
 ## Version bump checklist
 
 Five locations must change atomically or the plugin breaks:
