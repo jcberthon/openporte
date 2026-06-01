@@ -1,2 +1,85 @@
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Local development files
 .TODO
+local/
+
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+!*.mode1v3
+*.mode2v3
+*.moved-aside
+*.xcuserstate
+*.xcworkspace/
+*.xcodeproj/
+xcuserdata/
+
+# VS Code
+.vscode/
+*.code-workspace
+*.code-workspace.json
+
+# VIM
+*.swp
+*.swo
+*~
+
+# PHP
+*.php.unit
+*.php.unit.xml
+.phpunit.cache/
+phpunit.xml
+.phpintel/
+.phpactor.json
+.idea/
+
+# JavaScript/Node.js
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Composer
+vendor/
+composer.lock
+composer.phar
+
+# WordPress
+*.sql
+*.sql.gz
+wp-config.php
+
+# Logs
+*.log
+logs/
+
+# OS generated files
+*.un~
+*~ .*~
+
+# Editor/IDE specific
+*.sublime-workspace
+*.sublime-project
+*.tmproj
+.project
+.settings/
+.netbeans/
+
+# Testing
+.coverage
+.phpunit.result.cache
