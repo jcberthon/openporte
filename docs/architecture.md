@@ -1,67 +1,121 @@
-# ALTCHA Spam Protection — Architecture
+# Architecture
 
-This document describes the architecture of the ALTCHA Spam Protection WordPress plugin (project intended name: OpenPorte). It is a reference for maintainers and contributors.
+> Maintainer / contributor reference. User-facing essentials (how to choose a
+> mode, the privacy stance) live in `readme.txt`; coding conventions live in
+> `AGENTS.md`. This document reflects the codebase after the paid-SaaS removal.
+>
+> Naming note: identifiers are still `altcha_*` / `AltchaPlugin` here; the
+> rename to **OpenPorte** is tracked as a separate issue and not yet applied.
+> References are by function name rather than line number on purpose — line
+> numbers in this codebase have already shifted several times and will shift
+> again with the rename.
 
 ## Overview and modes
 
-The plugin operates in two modes, both fully self-contained with no external service dependencies:
+The plugin operates in two modes, both fully self-contained with no external
+service dependency. A third mode — a paid SaaS classifier hosted on
+`altcha.org` — was removed.
 
-- **selfhosted** (default): Proof-of-work. Challenges are generated and served by a WordPress REST endpoint at `wp-json/altcha/v1/challenge`. No API key or external service is required.
-- **custom**: The challenge URL points to a backend that the site owner runs themselves. Responses from this backend are verified using the site's own HMAC secret.
+- **`selfhosted`** (default): proof-of-work. Challenges are served by a
+  WordPress REST endpoint at `wp-json/altcha/v1/challenge`. No API key, no
+  external service, no account.
+- **`custom`**: the challenge URL points to a backend the site operator runs
+  themselves. Responses are verified by server signature using the site's own
+  HMAC secret. This is the legitimate self-hostable backend path — it is *not*
+  a paid or remote service.
 
-The mode is selected via the `altcha_api` option. When set to `custom`, the plugin uses the URL stored in `altcha_api_custom_url`; for any other value (including legacy database values such as `eu` or `us`), it falls back to the local REST endpoint (`get_challengeurl()`: `includes/core.php:273-279`).
+The mode is selected via the `altcha_api` option. In `get_challengeurl()`,
+`custom` returns the operator-supplied URL stored in `altcha_api_custom_url`;
+any other value — including legacy `"eu"` / `"us"` values left in the database
+by old installs — falls back to the local REST endpoint.
 
 ## Verification dispatch
 
-Verification is dispatched based on the **shape of the decoded payload**, not the configured mode. In `verify()` (`includes/core.php:353-371`), the plugin checks the base64-decoded JSON payload: if it contains a `verificationData` field, it invokes `verify_server_signature()`; otherwise, it invokes `verify_solution()` for proof-of-work verification.
+Verification is dispatched on the **shape of the decoded payload**, not the
+configured mode. This distinction matters: changing the mode does not change how
+a challenge is verified. In `verify()`, the plugin decodes the base64 JSON
+payload; if it contains a `verificationData` field it calls
+`verify_server_signature()`, otherwise it calls `verify_solution()` for
+proof-of-work.
 
-`verify_server_signature()` (`includes/core.php:375-392`) verifies the HMAC signature against the site's secret (retrieved via `get_secret()`), then parses `verificationData` into `$spamfilter_result` and returns `true` if the `classification` field is not `BAD`.
+`verify_server_signature()` checks the HMAC signature against the site secret
+(`get_secret()`), then parses `verificationData` into `$spamfilter_result` and
+returns `true` when the `classification` field is not `BAD`.
 
-`verify_solution()` performs proof-of-work verification: it validates the challenge hash, signature, and expiration, returning `true` only if all checks pass.
+`verify_solution()` performs proof-of-work verification: it validates the
+challenge hash, its signature, and expiration, returning `true` only if all
+checks pass.
 
-## What was removed and why
+## What was removed, and why
 
-The paid altcha.org regional SaaS classifier was removed to keep the plugin free and self-hosted, with no dependency on external services. The following were removed:
+The paid `altcha.org` regional SaaS classifier was removed to keep the plugin
+free and self-hosted, with no dependency on external services. Removed:
 
-- Regional SaaS modes (`eu`/`us`) and their API key requirement
-- `$option_api_key` option and `get_api_key()` method
-- The regional branch of `get_challengeurl()` that constructed URLs to `https://{region}.altcha.org`
-- `spam_filter_check()` and `spam_filter_call()` methods that POSTed to `https://{region}.altcha.org/api/v1/classify`
-- `$option_send_ip` option, `$hostname` property, and `get_ip_address()` method
+- The regional SaaS modes (`eu` / `us`) and their API-key requirement
+- `$option_api_key` and `get_api_key()`
+- The regional branch of `get_challengeurl()` that built URLs to
+  `https://{region}.altcha.org`
+- `spam_filter_check()` and `spam_filter_call()`, which POSTed submissions to
+  `https://{region}.altcha.org/api/v1/classify`
+- `$option_send_ip`, the `$hostname` property, and `get_ip_address()`
 
-None of these symbols exist in the current codebase.
+None of these symbols exist in the current codebase. The verification path
+(`verify()`, `verify_server_signature()`, `verify_solution()`) was deliberately
+left untouched, because it is independent of the API mode.
 
 ## Spam filter — status and limits
 
-**The plugin provides no spam classifier.** The classifier engine was a hosted ALTCHA service (commercial Sentinel) and was never open-source.
+**The plugin provides no spam classifier.** The classification engine was a
+hosted ALTCHA service (commercial successor: Sentinel) and was never
+open-source.
 
-What remains is consumer-side plumbing that *can* act on classification data if a custom backend provides it:
+What remains is consumer-side plumbing that acts on classification data only if
+a `custom` backend supplies it:
 
-- `verify_server_signature()` reads a classification from the signed `verificationData` payload (`includes/core.php:387-389`)
-- `get_blockspam()` option and the widget attribute `blockspam='1'` (`includes/core.php:163-165` and `includes/core.php:503-504`) enable client-side spam filtering behavior
-- The Gravity Forms integration checks `$spamfilter_result['classification']` and uses the `score` and `reasons` fields if present (`integrations/gravityforms.php:28,34-36`)
+- `verify_server_signature()` reads a classification out of the signed
+  `verificationData` payload.
+- `get_blockspam()` and the widget attribute `blockspam='1'` enable the
+  blocking behavior.
+- The Gravity Forms integration acts on `$spamfilter_result`, using its
+  `classification`, `score`, and `reasons` fields.
 
-This plumbing only has an effect if a **custom** backend returns classification data in its signed response. It has **no effect** in self-hosted proof-of-work mode, and the plugin does not ship with any classifier functionality.
+This plumbing has **no effect** in `selfhosted` proof-of-work mode (no
+classification is produced there), and the plugin ships with no classifier of
+its own. It is not a feature offered out of the box.
 
 ## Privacy stance
 
-In both supported modes, the plugin:
-
-- Requires no API key
-- Makes no calls to external paid services
-- Collects no visitor IP addresses (`get_ip_address()` was removed)
-- Sets no cookies
-- Performs no tracking
+In both supported modes the plugin requires no API key, makes no calls to
+external paid services, collects no visitor IP address (`get_ip_address()` was
+removed), sets no cookies, and performs no tracking.
 
 ## The vendored widget
 
-`public/altcha.min.js` is the upstream ALTCHA widget, vendored as-is under the MIT license. Its behavior is documented separately from this plugin's PHP code.
+`public/altcha.min.js` is the upstream ALTCHA widget, vendored as-is under the
+MIT license. Its behavior is documented separately from this plugin's PHP.
 
-Per an external audit of the widget source: the widget enforces its own attribution (ignoring `hidefooter`/`hidelogo` settings) **only** when it detects "free SaaS" usage — specifically, when the challenge URL is on `*.altcha.org` and carries `apiKey=ckey_`. Because this plugin never uses such URLs or API keys, the `hidefooter` and `hidelogo` widget attributes always take effect in this plugin's context.
+The following is **upstream widget behavior**, established from an audit of the
+widget source rather than from this repository's PHP: the widget enforces its
+own attribution — ignoring `hidefooter` / `hidelogo` — only when it detects
+"free SaaS" usage, i.e. a challenge URL on `*.altcha.org` carrying
+`apiKey=ckey_`. Because this plugin never produces such a URL, `hidefooter` and
+`hidelogo` always take effect in this plugin's context.
 
-## Invariants for future maintainers and AI agents
+## Invariants for future maintainers (and AI agents)
 
-- **"custom" mode is not the paid SaaS.** It is the legitimate self-hostable backend path. Do not remove it; it is load-bearing for real users.
-- **Verification dispatch keys on payload shape, not on the API mode.** Changes to mode handling must not alter how a valid or invalid challenge is verified.
-- Do not reintroduce any external-service dependency (API keys, regional endpoints, etc.) or IP collection.
-- Do not edit or rename `public/altcha.min.js`. It is vendored code under MIT license; modifications would break the license terms and are unnecessary.
+These guard against mistakes that have actually been made while working on this
+code:
+
+- **`custom` mode is not the paid SaaS.** Do not remove it. It is the legitimate
+  self-hostable backend path and is load-bearing for real users (e.g. operators
+  running their own classifying backend).
+- **The verification dispatch keys on payload shape, not on the API mode.** Any
+  change to mode handling must not alter how a valid or invalid challenge is
+  verified — breaking this breaks every protected form.
+- **Do not reintroduce any external-service dependency** (API keys, regional
+  endpoints) **or visitor-IP collection.** "No external service" is a core
+  promise of the fork.
+- **Do not edit or rename `public/altcha.min.js`.** It is the vendored upstream
+  widget; treat it as a third-party dependency. The MIT license permits
+  modification, but edits would be lost when the widget is re-vendored on
+  upgrade, and changing it is out of scope.
