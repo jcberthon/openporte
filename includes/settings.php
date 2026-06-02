@@ -19,11 +19,6 @@ if (is_admin()) {
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_api_key
-    );
-
-    register_setting(
-      'altcha_options',
       AltchaPlugin::$option_secret
     );
 
@@ -50,11 +45,6 @@ if (is_admin()) {
     register_setting(
       'altcha_options',
       AltchaPlugin::$option_blockspam
-    );
-
-    register_setting(
-      'altcha_options',
-      AltchaPlugin::$option_send_ip
     );
 
     register_setting(
@@ -172,18 +162,16 @@ if (is_admin()) {
 
     add_settings_field(
       'altcha_settings_api_field',
-      __('API Region', 'altcha-spam-protection'),
+      __('API Mode', 'altcha-spam-protection'),
       'altcha_settings_select_callback',
       'altcha_admin',
       'altcha_general_settings_section',
       array(
         "name" => AltchaPlugin::$option_api,
-        "hint" => __('Select the API region.', 'altcha-spam-protection'),
+        "hint" => __('Select the API mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend.', 'altcha-spam-protection'),
         "options" => array(
           "selfhosted" => __('Self-hosted', 'altcha-spam-protection'),
           "custom" => __('Custom', 'altcha-spam-protection'),
-          "eu" => __('EU (eu.altcha.org)', 'altcha-spam-protection'),
-          "us" => __('USA (us.altcha.org)', 'altcha-spam-protection'),
         )
       )
     );
@@ -197,34 +185,20 @@ if (is_admin()) {
       array(
         "custom" => true,
         "name" => AltchaPlugin::$option_api_custom_url,
-        "hint" => __('Configure your custom Challenge URL. Include the API key in the URL, if required.', 'altcha-spam-protection'),
-        "type" => "text"
-      )
-    );
-
-    add_settings_field(
-      'altcha_settings_api_key_field',
-      __('API Key', 'altcha-spam-protection'),
-      'altcha_settings_field_callback',
-      'altcha_admin',
-      'altcha_general_settings_section',
-      array(
-        "spamfilter" => true,
-        "name" => AltchaPlugin::$option_api_key,
-        "hint" => __('Configure your API Key. Only for API modes. Leave this field empty in self-hosted.', 'altcha-spam-protection'),
+        "hint" => __('Configure your custom Challenge URL.', 'altcha-spam-protection'),
         "type" => "text"
       )
     );
 
     add_settings_field(
       'altcha_settings_secret_field',
-      __('Secret Key', 'altcha-spam-protection'),
+      __('Signing secret', 'altcha-spam-protection'),
       'altcha_settings_field_callback',
       'altcha_admin',
       'altcha_general_settings_section',
       array(
         "name" => AltchaPlugin::$option_secret,
-        "hint" => __('Configure your API Key secret or HMAC signing secret.', 'altcha-spam-protection'),
+        "hint" => __('Configure your HMAC signing secret.', 'altcha-spam-protection'),
         "type" => "text"
       )
     );
@@ -282,21 +256,6 @@ if (is_admin()) {
         "name" => AltchaPlugin::$option_blockspam,
         "description" => __('Yes', 'altcha-spam-protection'),
         "hint" => __('Don\'t allow form submissions if the Spam Filter detects potential spam.', 'altcha-spam-protection'),
-        "type" => "checkbox"
-      )
-    );
-
-    add_settings_field(
-      'altcha_settings_send_ip_field',
-      __('Classify IP address', 'altcha-spam-protection'),
-      'altcha_settings_field_callback',
-      'altcha_admin',
-      'altcha_spamfilter_settings_section',
-      array(
-        "spamfilter" => true,
-        "name" => AltchaPlugin::$option_send_ip,
-        "description" => __('Yes', 'altcha-spam-protection'),
-        "hint" => __('Whether to send the user\'s IP address for classification.', 'altcha-spam-protection'),
         "type" => "checkbox"
       )
     );
@@ -364,7 +323,6 @@ if (is_admin()) {
       array(
         "name" => AltchaPlugin::$option_hidelogo,
         "description" => __('Yes', 'altcha-spam-protection'),
-        "hint" => __('Not available with Free API Keys.', 'altcha-spam-protection'),
         "type" => "checkbox"
       )
     );
@@ -378,7 +336,7 @@ if (is_admin()) {
       array(
         "name" => AltchaPlugin::$option_hidefooter,
         "description" => __('Yes', 'altcha-spam-protection'),
-        "hint" => __('Hide Powered by ALTCHA. Not available with Free API Keys.', 'altcha-spam-protection'),
+        "hint" => __('Hide Powered by ALTCHA.', 'altcha-spam-protection'),
         "type" => "checkbox"
       )
     );

@@ -20,6 +20,12 @@ define('ALTCHA_VERSION', '1.26.3');
 define('ALTCHA_WEBSITE', 'https://altcha.org/');
 define('ALTCHA_WIDGET_VERSION', '2.2.2');
 
+
+// Define the base name of the plugin for use in hooks and filters
+if ( ! defined( 'WPDOCS_PLUGIN_BASE' ) ) {
+        define( 'WPDOCS_PLUGIN_BASE', plugin_basename( __FILE__ ) );
+}
+
 // required for is_plugin_active
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
@@ -80,11 +86,10 @@ function altcha_activate()
 {
   update_option(AltchaPlugin::$option_api, 'selfhosted');
   update_option(AltchaPlugin::$option_api_custom_url, '');
-  update_option(AltchaPlugin::$option_api_key, '');
+  delete_option('altcha_api_key'); // retired: paid SaaS regional classifier removed
   update_option(AltchaPlugin::$option_expires, '3600');
   update_option(AltchaPlugin::$option_secret, AltchaPlugin::$instance->random_secret());
   update_option(AltchaPlugin::$option_hidefooter, true);
-  update_option(AltchaPlugin::$option_send_ip, true);
   update_option(AltchaPlugin::$option_integration_custom, 'captcha');
 }
 
@@ -94,14 +99,5 @@ function altcha_deactivate()
 
 function altcha_plugin_custom_message()
 {
-  echo '<tr class="plugin-update-tr active">
-      <td colspan="4" style="background:#fffbe5; border-left:4px solid #ffb900;">
-          <p style="margin:6px 3px;">
-              <strong>ALTCHA Plugin version 2 is now available, offering improved protection and enhanced reliability. An upgrade is recommended for all users.</strong>
-              <a href="https://altcha.org/docs/v2/wordpress/" target="_blank">Learn more</a>
-              |
-              <a href="https://altcha.org/docs/v2/wordpress/migrating-from-v1/" target="_blank">Migration guide</a>
-          </p>
-      </td>
-  </tr>';
+
 }
