@@ -83,3 +83,5 @@ logs/
 # Testing
 .coverage
 .phpunit.result.cache
+.wp-env.conf
+.shellcheckrc
