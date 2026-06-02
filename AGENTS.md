@@ -107,6 +107,7 @@ CoBlocks has no extension API, so the integration fakes a reCAPTCHA token and in
 - `core.php:560` — `"This form requires JavaScript!"` is hardcoded English; not wrapped in `__()`.
 - `core.php:594` — `$resp['response']['code']` is accessed without an `is_wp_error($resp)` guard; on network failure this produces PHP notices.
 - `core.php:415,445` — HMAC signatures compared with `===` instead of `hash_equals()`. If you fix this, preserve the `true` (raw binary) flag on `hash('sha256', ..., true)` at line 413 — removing it would break all challenge verification.
+- Read the file `local/Security_Analysis.md` for security issues that need correction (not published online).
 
 ## Release
 

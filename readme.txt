@@ -1,85 +1,95 @@
-=== ALTCHA Spam Protection ===
-Tags: altcha, captcha, spam, anti-spam, anti-bot, antispam, recaptcha, hcaptcha, gdpr
-Author: Altcha.org
-Author URI: https://altcha.org
-Version: 1.26.3
-Stable tag: 1.26.3
+=== OpenPorte Spam Protection ===
+Tags: captcha, spam, anti-spam, anti-bot, gdpr
+Stable tag: 1.27.0
 Requires at least: 5.6
 Requires PHP: 8.0
-Tested up to: 6.8
+Tested up to: 7.0
 License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html  
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Contributors: TODO
 
-ALTCHA offers a free, open-source Captcha alternative, ensuring robust spam protection while respecting user privacy and GDPR compliance.
+OpenPorte offers a free, open-source Captcha alternative, ensuring robust spam protection while respecting user privacy and GDPR compliance.
 
 == Description ==
 
-**This is ALTCHA Plugin version 1.**
- 
-**ALTCHA Plugin version 2 is now available, offering improved protection and enhanced reliability. An upgrade is recommended for all users.**
- 
-[Learn more](https://altcha.org/docs/v2/wordpress) | [Installation guide](https://altcha.org/docs/v2/wordpress/install) | [Migration guide](https://altcha.org/docs/v2/wordpress/migrating-from-v1/)
+OpenPorte is a community-maintained fork of the ALTCHA Spam Protection
+plugin for WordPress (version 1), which provides a free, open source,
+self-hostable, privacy-friendly CAPTCHA alternative based on a proof-
+of-work mechanism — no cookies, no tracking, GDPR-friendly by design.
 
-What's new in version 2:
+= Background =
 
-* **Effective**: blocks 99% of spam and abuse attempts
-* **Invisible for users**: frictionless protection, no puzzles or CAPTCHAs
-* **Works everywhere**: plugin-agnostic [Request Interceptor](https://altcha.org/docs/v2/wordpress/features/#request-interceptor--works-everywhere) integrates with any form plugin
-* **Handles heavy traffic**: stay online with [Under Attack Mode](https://altcha.org/docs/v2/wordpress/features/#under-attack-mode--stay-online-under-pressure)
-* **Stops abuse at scale**: firewall and rate limiting included
-* **Privacy-first**: 100% GDPR-compliant and fully accessible
-* **Unlimited**: no external services, unlimited verifications
+The original ALTCHA WordPress plugin (v1) was open source (GPLv2). Its
+authors have since released a version 2/3 which is no longer open source,
+and some features that were free in v1 are now paid. They no longer
+maintain v1 and recommend that users migrate to v2/v3. See the official
+project at https://altcha.org for their offering.
 
-Learn more about ALTCHA at [altcha.org](https://altcha.org).
+OpenPorte continues the v1 line as free software (GPLv2 or later) for users
+who want to stay on a fully open-source, self-hosted solution. It is a
+faithful fork: existing v1 installations can switch to OpenPorte and keep
+their settings (see Upgrading).
 
----
- 
-[ALTCHA](https://altcha.org) provides a free, open-source Captcha alternative utilizing a proof-of-work mechanism to safeguard your website against spam and unwanted content. Our anti-spam solution ensures robust spam protection without compromising user privacy.
+= Compatibility =
 
-Unlike other solutions, ALTCHA is free, open-source, and self-hosted. It operates independently without external services, avoids the use of cookies and fingerprinting, refrains from user tracking, and maintains full compliance with GDPR regulations.
+OpenPorte is backward-compatible with ALTCHA v1:
 
-== Free Mode ==
+* Your existing settings are migrated automatically on activation.
+* The `[altcha]` shortcode keeps working (alongside the new `[openporte]`).
+* Existing filters and actions keep firing under their original names.
 
-The free self-hosted mode is enabled by default after installation. No additional setup is required, except enabling the integrations you need in the plugin settings.
+The following are deprecated and scheduled for removal in a future release:
+
+* Integrations targeting paid-only third-party plugins (e.g. Enfold).
+  Users relying on these should migrate to the official ALTCHA v2/v3 plugin.
+
+== Upgrade Notice ==
+
+TODO
+
+== Upgrading ==
+
+= From the original ALTCHA v1 plugin =
+
+Deactivate the old plugin, install and activate OpenPorte. Your existing
+configuration is detected and migrated automatically on first activation.
 
 == Privacy ==
 
 = No cookies, no tracking =
 
-ALTCHA prioritizes user privacy by avoiding the use of cookies and fingerprinting techniques.
+OpenPorte prioritizes user privacy by avoiding the use of cookies and fingerprinting techniques.
 
 = No external service =
 
-Operating in Self-hosted mode (the default setting), this plugin remains fully contained within your WordPress installation, eliminating any reliance on external services. You can opt-in for our SaaS version to utilize the Spam Filter API. For more information visit https://altcha.org.
+This plugin remains fully contained within your WordPress installation, eliminating any reliance on external services.
 
-== Modes of Operation ==
+== Mode of Operation  (to be updated) ==
 
-This plugin operates in two modes, you can select which mode you want in the settings (see API Region):
+_Note: TODO add custom mode, as only the paid altcha.org SaaS classifier is removed; keep self-hosted PoW and custom self-hostable backend. Description below requires an update._
 
-* Self-hosted - free, fully self-contained without external services.
-* Custom or SaaS API - requires a server such as [ALTCHA Sentinel](https://altcha.org/docs/v2/sentinel/).
+There is only a self-hosted mode, which is enabled after activation. No additional setup is required, except enabling the integrations you need in the plugin settings.
  
 == Installation ==
 
-Download, install and activate `ALTCHA Spam Protection`.
+Download, install and activate `OpenPorte Spam Protection`.
  
 Alternatively, install the plugin manually:
 
-1. Download the `.zip` from the [Releases](https://github.com/altcha-org/wordpress-plugin/releases).
-2. Upload `altcha` folder to the `/wp-content/plugins/` directory  
+1. Download the `.zip` from the [Releases](https://github.com/jcberthon/openporte/releases).
+2. Upload `openporte` folder to the `/wp-content/plugins/` directory  
 3. Activate the plugin through the 'Plugins' menu in WordPress  
 4. Review the settings and enable your integrations
 
 == REST API ==
 
-This plugin requires the WordPress REST API. If you are using any "Disable REST API" plugins, ensure that the endpoint `/altcha/v1/challenge` is allowed.
+This plugin requires the WordPress REST API. If you are using any "Disable REST API" plugins, ensure that the endpoint `/altcha/v1/challenge` (marked for deprecation) and `/openporte/v1/challenge` are allowed.
 
 == Supported Integrations ==
 
 * CoBlocks
 * Contact Form 7
-* Elementor Pro Forms
-* Enfold Theme
+* Elementor Pro Forms (to-be-removed TBC)
 * Formidable Forms
 * Forminator
 * GravityForms
@@ -90,19 +100,15 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML (with a short code `[altcha]`)
+* Custom HTML (with a short code `[altcha]` (deprecated) or `[openporte])
 
 == Source Code ==
 
 All source code for the plugin, and the ALTCHA widget is available on GitHub. In the repository, you'll also find versions of non-minified JavaScript and CSS assets:
 
-* Plugin: https://github.com/altcha-org/wordpress-plugin
+* Plugin: https://github.com/jcberthon/openporte
 * ALTCHA Widget: https://github.com/altcha-org/altcha
 
-== Terms of Service And Privacy Policy for SaaS ==
-
-* Privacy Policy: https://altcha.org/privacy-policy
-* Terms of Service: https://altcha.org/terms-of-service
 
 == Screenshots ==
 
@@ -116,6 +122,8 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 = 1.27.0 =
 * Corrected the documented minimum requirements to match the plugin's existing PHP 8.0 / WordPress 5.6 floor.
+
+TODO
 
 = 1.26.3 =
 * Fixed possible replay attacks via salt splicing.
