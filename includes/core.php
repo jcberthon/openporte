@@ -28,8 +28,6 @@ class AltchaPlugin
 
   public static $option_api_custom_url = "altcha_api_custom_url";
 
-  public static $option_api_key = "altcha_api_key";
-
   public static $option_secret = "altcha_secret";
 
   public static $option_complexity = "altcha_complexity";
@@ -37,8 +35,6 @@ class AltchaPlugin
   public static $option_expires = "altcha_expires";
 
   public static $option_blockspam = "altcha_blockspam";
-
-  public static $option_send_ip = "altcha_send_ip";
 
   public static $option_auto = "altcha_auto";
 
@@ -115,8 +111,6 @@ class AltchaPlugin
     'noscript' => array(),
   );
 
-  public static $hostname = null;
-
   public $spamfilter_result = null;
 
   public function init()
@@ -129,8 +123,6 @@ class AltchaPlugin
     if (defined('ALTCHA_WIDGET_VERSION')) {
       AltchaPlugin::$widget_version = ALTCHA_WIDGET_VERSION;
     }
-    $url = wp_parse_url(get_site_url());
-    AltchaPlugin::$hostname = $url['host'] . (isset($url['port']) ? ':' . $url['port'] : '');
   }
 
   public function get_api()
@@ -141,11 +133,6 @@ class AltchaPlugin
   public function get_api_custom_url()
   {
     return trim(get_option(AltchaPlugin::$option_api_custom_url));
-  }
-
-  public function get_api_key()
-  {
-    return trim(get_option(AltchaPlugin::$option_api_key));
   }
 
   public function get_complexity()
@@ -282,32 +269,14 @@ class AltchaPlugin
     return trim(get_option(AltchaPlugin::$option_integration_wpforms));
   }
 
-  function get_ip_address()
-  {
-    foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
-      if (array_key_exists($key, $_SERVER) === true) {
-        $value = trim(sanitize_text_field($_SERVER[$key]));
-        foreach (explode(',', $value) as $ip) {
-          $ip = trim($ip);
-
-          if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
-            return $ip;
-          }
-        }
-      }
-    }
-  }
 
   public function get_challengeurl()
   {
     $api = $this->get_api();
-    if ($api === "selfhosted") {
-      $challenge_url = get_rest_url(null, "/altcha/v1/challenge");
-    } else if ($api === "custom") {
+    if ($api === "custom") {
       $challenge_url = $this->get_api_custom_url();
-    } else {
-      $api_key = $this->get_api_key();
-      $challenge_url = "https://$api.altcha.org/api/v1/challenge?apiKey=$api_key";
+    } else { /* default to selfhosted */
+      $challenge_url = get_rest_url(null, "/altcha/v1/challenge");
     }
 
     return apply_filters('altcha_challenge_url', $challenge_url);
@@ -501,10 +470,9 @@ class AltchaPlugin
   {
     $challengeurl = $this->get_challengeurl();
     $api = $this->get_api();
-    $api_key = $this->get_api_key();
     $floating = $this->get_floating();
     $delay = $this->get_delay();
-    $can_hide_branding = $api === 'selfhosted' || $api === 'custom' || str_starts_with($api_key, 'key_');
+    $can_hide_branding = $api === 'selfhosted' || $api === 'custom';
     $hidelogo = $can_hide_branding && $this->get_hidelogo();
     $hidefooter = $can_hide_branding && $this->get_hidefooter();
     $blockspam = $this->get_blockspam();
@@ -564,42 +532,6 @@ class AltchaPlugin
     }
 
     return apply_filters('altcha_widget_html', $html, $mode, $language, $name);
-  }
-
-  public function spam_filter_check($data, $ip = null, $ignore_fields = array())
-  {
-    if ($ip === null) {
-      $ip = $this->get_ip_address();
-    }
-    return $this->spam_filter_call(array(
-      'ipAddress' => $ip,
-      'fields' => $this->remove_private_keys($data, $ignore_fields),
-    ));
-  }
-
-  public function spam_filter_call($body)
-  {
-    $api = $this->get_api();
-    $api_key = $this->get_api_key();
-    $resp = wp_remote_post("https://$api.altcha.org/api/v1/classify", array(
-      'body' => wp_json_encode($body),
-      'headers' => array(
-        'authorization' => "Bearer $api_key",
-        'accept' => 'application/json',
-        'content-type' => 'application/json',
-        'referer' => get_site_url(),
-      ),
-      'timeout' => 15
-    ));
-    $status = $resp['response']['code'];
-    if ($status === 200) {
-      $json = json_decode($resp['body'], true);
-      $this->spamfilter_result = $json;
-      return $json['classification'] !== 'BAD';
-    } else {
-      error_log(sprintf("Spam Filter responsed with %s - %s", $status, $resp['body']));
-    }
-    return false;
   }
 
   function remove_private_keys($array, $ignore_fields = array())

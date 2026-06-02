@@ -93,20 +93,6 @@ function altcha_options_page_html()
           <span><?php echo esc_html__('Star ALTCHA on GitHub!', 'altcha-spam-protection'); ?></span>
         </a>
       </p>
-      <p><?php
-        echo sprintf(
-          esc_html__(
-            /* translators: the placeholder is a clickable link to altcha.org */
-            'To access the ALTCHA\'s cloud API, you need an API Key. Visit %s for more information.',
-            'altcha-spam-protection',
-          ),
-          '<a href="https://altcha.org" target="_blank">altcha.org</a>',
-        );
-      ?></p>
-
-      <div>
-        <a href="https://altcha.org/docs/api/api_keys/" target="_blank"><?php echo esc_html__('Create an API Key →', 'altcha-spam-protection'); ?></a>
-      </div>
     </div>
   </div>
 <?php
@@ -119,22 +105,13 @@ function altcha_general_section_callback()
       echo sprintf(
         esc_html__(
           /* translators: the placeholders are opening and closing tags for bold */
-          'The %sSelf-hosted%s mode does not require an API Key and runs fully within your WordPress installation, without any external services.',
+          'Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend.',
           'altcha-spam-protection',
         ),
         '<b>',
         '</b>',
-      );
-    ?></p>
-
-    <p><?php
-      echo sprintf(
-        esc_html__(
-          /* translators: the placeholder will be replaced with the domain name */
-          'Your domain name for the API Key: %s',
-          'altcha-spam-protection',
-        ),
-        '<b>' . esc_html(AltchaPlugin::$hostname) . '</b>',
+        '<b>',
+        '</b>',
       );
     ?></p>
   <?php
@@ -143,21 +120,19 @@ function altcha_general_section_callback()
 function altcha_spam_filter_section_callback()
 {
   ?>
-
     <p><?php
       echo sprintf(
         esc_html__(
-          /* translators: the first two placeholders will be replaced with opening and closing tags for a link (<a> tag), the other two with opening and closing tags for bold (<b> tag). The two pairs may be swapped with each other, but the two tags within pairs may not. */
-          'The %1$sSpam Filter%2$s is %3$savailable only in the API mode%4$s with a valid API Key.',
+          /* translators: the placeholders are opening and closing tags for bold */
+          'The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only.',
           'altcha-spam-protection',
         ),
-        '<a href="https://altcha.org/docs/api/spam-filter-api" target="_blank">',
-        '</a>',
+        '<b>',
+        '</b>',
         '<b>',
         '</b>',
       );
     ?></p>
-
   <?php
 }
 
@@ -221,7 +196,7 @@ function altcha_settings_select_callback(array $args)
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
-  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" <?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>">
   <?php
     foreach ( $options as $opt_key => $opt_value ) {
       echo '<option value="' . esc_attr( $opt_key ) . '" '

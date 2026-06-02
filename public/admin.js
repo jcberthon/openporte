@@ -1,9 +1,6 @@
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     function onApiChange(api) {
-      [...document.querySelectorAll('[data-spamfilter]')].forEach((el) => {
-        el.disabled = api === 'selfhosted' || api === 'custom';
-      });
       [...document.querySelectorAll('[data-custom-api]')].forEach((el) => {
         el.disabled = api !== 'custom';
       });
