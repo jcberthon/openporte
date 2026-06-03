@@ -4,7 +4,7 @@
 
 ## How to use this file
 
-References like `@docs/foo.md` are **lazy-loaded**: read the linked file with
+References like `@docs/agents/*.md` are **lazy-loaded**: read the linked file with
 your Read tool only when the current task makes it relevant (e.g., load
 commit-conventions.md when committing, not on every turn).
 
@@ -48,6 +48,7 @@ Each integration file registers hooks unconditionally at load; the callbacks the
 - **Singleton access:** always `AltchaPlugin::$instance`. Never call `new AltchaPlugin()`.
 - **WP options keys:** all defined as `static` properties on `AltchaPlugin` (e.g., `AltchaPlugin::$option_api`). Never hardcode the raw option string `"altcha_*"` anywhere — always reference the property.
 - **i18n:** most user-facing strings use `__()` / `esc_html__()`. Exceptions exist (see fix-mes below) — follow the existing pattern when adding new strings.
+- **Static analysis**: only necessary for code changes, then read `@docs/agents/static-analysis.md`.
 
 ### i18n discipline (apply on every change)
 
@@ -89,7 +90,8 @@ Five locations must change atomically or the plugin breaks:
 Vendored from [`altcha-org/altcha`](https://github.com/altcha-org/altcha) (MIT
 at last upgrade). Version tracked by `ALTCHA_WIDGET_VERSION` in `altcha.php`.
 
-For upgrades and licensing-risk contingency: @docs/altcha-upstream.md
+For upgrades and licensing-risk contingency (only load on a need-basis):
+@docs/agents/altcha-upstream.md
 
 ## Known gotchas
 
@@ -119,4 +121,4 @@ Imperative verb prefix (`Add`, `Fix`, `Update`, `Remove`, `Refactor`, `Docs`,
 `Bump`, `Deprecate`, `Revert`), ≤72 chars, no trailing period. Issue refs in
 body footer: `Fixes #123` to auto-close, `Refs #123` otherwise.
 
-Full conventions and examples: @docs/commit-conventions.md
+Full conventions and examples (load on a as-needed-basis): @docs/agents/commit-conventions.md
