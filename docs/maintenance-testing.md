@@ -6,6 +6,8 @@
 
 The OpenPorte plugin can be tested remotely using the `wp-env.sh` helper script. See [Testing tools](#testing-tools) below for technical details about the script.
 
+**Note**: The script no longer requires OpenSSH >= 7.8. The previous implementation used `ssh -o SetEnv` which required specific sshd configuration on the remote host. The current implementation exports variables inline in the remote shell command, which works on any SSH version.
+
 #### CLI Reference
 
 The `wp-env.sh` script accepts the following options:
@@ -70,15 +72,9 @@ This file is **sourced** by the script, so it must contain valid shell syntax.
 
 **Local Machine**:
 - **Bash**: The script requires bash (uses `[[ ]]`, arrays, etc.)
-- **OpenSSH**: Must be version ≥ 7.8 (released August 2018) for the `-o SetEnv` feature
+- **OpenSSH**: Any version (the script uses inline export, not `-o SetEnv`)
 - **rsync**: For code synchronization
 - **Git**: For repository validation
-
-Check your OpenSSH version:
-```bash
-ssh -V
-# Should show: OpenSSH_7.8 or higher
-```
 
 #### Accessing the Remote Web Server
 
@@ -155,22 +151,14 @@ Example test commands:
 
 #### Troubleshooting
 
-**"SetEnv not supported"**
-
-**Error**: `ssh: invalid option -- 'o'` or similar
-
-**Cause**: OpenSSH version is too old (< 7.8)
-
-**Solution**: Upgrade OpenSSH on your local machine, or use the alternative `.wpenvrc` modification approach (see [Alternative Approach: Modifying ~/.wpenvrc](#alternative-approach-modifying-wpenvrc) below).
-
 **"Environment variables not applied"**
 
 **Error**: wp-env ignores the PHP/WP version overrides
 
 **Check**:
-1. Verify OpenSSH version: `ssh -V`
-2. Test SetEnv directly: `ssh -o SetEnv=TEST_VAR=testvalue user@host 'echo $TEST_VAR'`
-3. Ensure wp-env respects `WP_ENV_PHP_VERSION` and `WP_ENV_CORE`
+1. Verify the remote command includes the export statements by adding `-v` to SSH: `ssh -v ${REMOTE_USER}@${REMOTE_HOST} "export WP_ENV_PHP_VERSION=7.3 && echo test"`
+2. Ensure wp-env respects `WP_ENV_PHP_VERSION` and `WP_ENV_CORE` environment variables
+3. Test directly on the remote: `ssh ${REMOTE_USER}@${REMOTE_HOST} "export WP_ENV_PHP_VERSION=7.3 && echo \$WP_ENV_PHP_VERSION"`
 
 **"Permission denied"**
 
@@ -214,37 +202,40 @@ This script automates the rsync-and-ssh workflow while providing a clean CLI int
 Local Machine              Remote Host
      │                         │
      │  1. Parse CLI args      │
-     │  2. Build SetEnv opts    │
-     │  3. rsync code           │
+     │  2. rsync code          │
      │──────────────────────────▶│
      │                         │
-     │  4. SSH with SetEnv      │
+     │  3. SSH with inline      │
+     │    variable export      │
      │──────────────────────────▶│
      │                         │
-     │  5. (Optional) SSH tunnel │
+     │  4. (Optional) SSH tunnel │
      │◀──────────────────────────│  <- Local:8888 → Remote:8888
      │                         │
      └─────────────────────────┘
            ↓
-     Remote runs: source ~/.wpenvrc
+     Remote runs: export WP_ENV_*=
+                 source ~/.wpenvrc
                  cd ~/REMOTE_PATH
                  wp-env [args]
 ```
 
 ##### Environment Variable Injection
 
-The script uses OpenSSH's `-o SetEnv=KEY=VALUE` option to inject environment variables into the remote session. This approach was chosen over modifying `~/.wpenvrc` on the remote host because:
+The script exports environment variables inline in the remote shell command using the `${var:+value}` bash parameter expansion pattern. This approach was chosen because the previous `ssh -o SetEnv` method required specific `AcceptEnv` configuration in the remote sshd server, which cannot be assumed across different hosting environments.
 
-| Criteria | `ssh -o SetEnv` | Modify `~/.wpenvrc` |
-|---------|----------------|---------------------|
-| Remote filesystem changes | None | Requires backup/restore |
-| Cleanup required | Automatic (session-scoped) | Manual |
-| Code complexity | ~25 lines | ~50+ lines |
-| Readability | High (explicit in command) | Lower (indirect) |
-| Error potential | Low | High (partial cleanup) |
-| SSH version requirement | ≥ 7.8 (2018) | Any |
+**Example**: If `--php-version 7.3` is specified, the remote command becomes:
+```bash
+ssh user@host "export WP_ENV_PHP_VERSION=7.3 && source ~/.wpenvrc && cd ~/path && wp-env start"
+```
 
-**Decision**: `ssh -o SetEnv` is superior for this use case.
+If no overrides are specified, the export statement is omitted entirely.
+
+**Advantages**:
+- Works on any SSH version (no OpenSSH ≥ 7.8 requirement)
+- No dependency on remote sshd configuration
+- Automatic cleanup (variables are session-scoped)
+- Simple and direct implementation
 
 ##### Implementation Details
 
@@ -277,32 +268,37 @@ set -- "${REMAINING_ARGS[@]}"
 2. If an option appears multiple times, the **last occurrence wins** (standard POSIX behavior)
 3. Options are **consumed** and not passed to wp-env
 
-**SetEnv Option Construction**
+**Remote Command Construction**
+
+The environment variables are exported inline using the `${var:+value}` bash parameter expansion pattern, which expands to `value` only if `var` is non-empty:
 
 ```bash
-if [[ -n "$PHP_VERSION_OVERRIDE" ]]; then
-  SSH_SETENV_OPTS+=("-o" "SetEnv=WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE")
-fi
-if [[ -n "$WP_VERSION_OVERRIDE" ]]; then
-  SSH_SETENV_OPTS+=("-o" "SetEnv=WP_ENV_CORE=$WP_VERSION_OVERRIDE")
-fi
+export ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
+       ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} && \
+  source ~/.wpenvrc && cd ~/${REMOTE_PATH} && wp-env $*
 ```
 
-The options are stored as an array and expanded with `"${SSH_SETENV_OPTS[@]}"` to properly handle spaces in values.
+This approach:
+- Omits the entire export if no overrides are specified
+- Adds only the variables that have been set
+- Works on any SSH version without requiring sshd configuration
 
 **Remote Command Execution**
 
 ```bash
-ssh "${SSH_SETENV_OPTS[@]}" ${REMOTE_USER}@${REMOTE_HOST} \
-  "source ~/.wpenvrc && cd ~/${REMOTE_PATH} && wp-env $*"
+ssh ${REMOTE_USER}@${REMOTE_HOST} \
+  "export ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
+          ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} \
+   && source ~/.wpenvrc && cd ~/${REMOTE_PATH} && wp-env $*"
 ```
 
 Note: The remote command:
-1. Sources `~/.wpenvrc` (which may contain default environment variables)
-2. Changes to the project directory
-3. Runs wp-env with all remaining arguments
+1. Exports the override variables (if any)
+2. Sources `~/.wpenvrc` (which may contain default environment variables)
+3. Changes to the project directory
+4. Runs wp-env with all remaining arguments
 
-The `SetEnv` variables from SSH take precedence over variables defined in `~/.wpenvrc`.
+The inline export variables take precedence over variables defined in `~/.wpenvrc`.
 
 ##### Configuration (Remote Host)
 
@@ -323,21 +319,15 @@ Additionally, the remote host requires:
 - **SSH access**: The local machine must have password-less SSH access
 - **Bash**: Remote shell must be bash (for `~/.wpenvrc` sourcing)
 
-##### Alternative Approach: Modifying ~/.wpenvrc
+##### Implementation Notes
 
-If `ssh -o SetEnv` is not available (OpenSSH < 7.8), an alternative implementation would:
+The current implementation using inline `export` with `${var:+value}` parameter expansion was chosen because it:
+- Works on any SSH version (no OpenSSH ≥ 7.8 requirement)
+- Does not require any special sshd configuration on the remote host
+- Is simpler and more direct than the previous `ssh -o SetEnv` approach
+- Automatically handles the case where no overrides are specified
 
-1. Read current `~/.wpenvrc` from remote
-2. Add/override the specified variables
-3. Write modified version to remote
-4. Run wp-env
-5. Restore original `~/.wpenvrc` (using trap for cleanup)
-
-This approach was **not implemented** because it requires:
-- Additional SSH commands (slower)
-- Complex error handling with traps
-- Risk of leaving remote in modified state if script crashes
-- More code (~50+ lines vs ~25 lines)
+The `${var:+value}` syntax expands to `value` only if `var` is non-empty, allowing conditional inclusion of export statements without complex control flow.
 
 If you need to support older OpenSSH versions, this can be added as a fallback.
 
@@ -345,15 +335,14 @@ If you need to support older OpenSSH versions, this can be added as a fallback.
 
 Potential improvements for the script:
 
-1. **Fallback for old OpenSSH**: Detect OpenSSH version and use `.wpenvrc` modification if < 7.8
-2. **More options**: Add `--mysql-version`, `--port`, etc.
-3. **Dry-run mode**: Add `--dry-run` to show what would be executed without running
-4. **Verbose mode**: Add `-v` for detailed output
-5. **Configuration validation**: Validate PHP/WP version formats before execution
-6. **Parallel testing**: Support running multiple test environments simultaneously
+1. **More options**: Add `--mysql-version`, `--port`, etc.
+2. **Dry-run mode**: Add `--dry-run` to show what would be executed without running
+3. **Verbose mode**: Add `-v` for detailed output
+4. **Configuration validation**: Validate PHP/WP version formats before execution
+5. **Parallel testing**: Support running multiple test environments simultaneously
 
 ##### See Also
 
 - [wp-env Documentation](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
-- [OpenSSH SetEnv Option](https://man.openbsd.org/ssh_config.5#SetEnv)
+- [Bash Parameter Expansion Guide](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)
 - [OpenPorte Plugin](../readme.txt)
