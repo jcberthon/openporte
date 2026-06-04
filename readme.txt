@@ -114,9 +114,11 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 == Changelog ==
 
+= 1.27.0 =
+* Corrected the documented minimum requirements to match the plugin's existing PHP 8.0 / WordPress 5.6 floor.
+
 = 1.26.3 =
 * Fixed possible replay attacks via salt splicing.
-* Corrected the documented minimum requirements to match the plugin's existing PHP 8.0 / WordPress 5.6 floor.
 
 = 1.26.2 =
 * Updated readme for the new version 2.
