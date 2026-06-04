@@ -1,5 +1,35 @@
 # Maintenance and Testing Guide
 
+## Maintenance
+
+### Server Requirements
+
+OpenPorte (ALTCHA) maintains compatibility with WordPress 5.0 through 7.0 and PHP 7.3 through 8.5.
+
+#### Support Status
+
+**⚠️ Deprecated (Supported for v1.27.0 only)**
+- WordPress: 5.0+
+- PHP: 7.3
+- *Will be removed in versions after 1.27.**
+
+**✅ Recommended**
+- WordPress: 6.8+
+- PHP: 8.3-8.5
+
+**✅ Latest Tested**
+- WordPress: 7.0
+- PHP: 8.3
+
+#### Compatibility Notes
+
+- WordPress 5.0 is the oldest version compatible with PHP 7.3
+- WordPress 6.8 is the oldest version with full PHP 8.3 compatibility
+- WordPress 7.0+ no longer supports PHP 7.2 and 7.3
+- PHP 8.2 has only 6 months of security support from upstream and is not recommended
+- PHP 7.3 support is deprecated and will be removed in future releases
+
+
 ## Testing
 
 ### Verify OpenPorte
