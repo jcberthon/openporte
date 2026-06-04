@@ -4,8 +4,8 @@ Author: Altcha.org
 Author URI: https://altcha.org
 Version: 1.26.3
 Stable tag: 1.26.3
-Requires at least: 5.0
-Requires PHP: 7.3
+Requires at least: 5.6
+Requires PHP: 8.0
 Tested up to: 6.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
@@ -113,6 +113,9 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 5. Floating UI Captcha
 
 == Changelog ==
+
+= 1.27.0 =
+* Corrected the documented minimum requirements to match the plugin's existing PHP 8.0 / WordPress 5.6 floor.
 
 = 1.26.3 =
 * Fixed possible replay attacks via salt splicing.

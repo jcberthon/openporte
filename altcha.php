@@ -9,8 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Author URI: https://altcha.org
  * Version: 1.26.3
  * Stable tag: 1.26.3
- * Requires at least: 5.0
- * Requires PHP: 7.3
+ * Requires at least: 5.6
+ * Requires PHP: 8.0
  * Tested up to: 6.8
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html  
