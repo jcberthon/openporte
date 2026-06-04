@@ -85,3 +85,4 @@ logs/
 .phpunit.result.cache
 .wp-env.conf
 .shellcheckrc
+.wpenvrc
