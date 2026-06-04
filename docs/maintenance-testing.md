@@ -46,6 +46,7 @@ The `wp-env.sh` script accepts the following options:
 |--------|-------|-------------|---------------------|
 | `--php-version` | `-p` | Override PHP version | `WP_ENV_PHP_VERSION` |
 | `--wp-version` | `-w` | Override WordPress Core version | `WP_ENV_CORE` |
+| `--verbose` | `-v` | Display detailed environment information after start | N/A |
 
 ##### Supported Version Formats
 
@@ -54,6 +55,7 @@ The `wp-env.sh` script accepts the following options:
 - Any value accepted by wp-env's `phpVersion` config
 
 **WordPress Core Version**:
+- Simple version: `6.5`, `7.0` (auto-expanded to `WordPress/WordPress#6.5`)
 - Branch reference: `WordPress/WordPress#7.0`
 - Tag reference: `WordPress/WordPress#6.5.3`
 - Latest trunk: `WordPress/WordPress#trunk`
@@ -65,25 +67,52 @@ The `wp-env.sh` script accepts the following options:
 # Start environment with default versions
 ./wp-env.sh start
 
+# Start with verbose output (shows environment details)
+./wp-env.sh -v start
+./wp-env.sh --verbose start
+
 # Override PHP version only
 ./wp-env.sh --php-version 7.3 start
 ./wp-env.sh -p 7.3 start
 
-# Override WordPress version only
+# Override WordPress version only (both formats supported)
+./wp-env.sh -w 6.5 start
 ./wp-env.sh --wp-version WordPress/WordPress#6.5 start
-./wp-env.sh -w WordPress/WordPress#6.5 start
 
 # Override both versions
-./wp-env.sh -p 7.3 -w WordPress/WordPress#7.0 start
+./wp-env.sh -p 7.3 -w 7.0 start
 ./wp-env.sh --php-version 8.1 --wp-version WordPress/WordPress#trunk start
+
+# Verbose start with overrides
+./wp-env.sh -v -p 7.3 -w 7.0 start
 
 # Options can be mixed with wp-env arguments
 ./wp-env.sh start --php-version 7.4 --no-cache
-./wp-env.sh -p 8.0 -w WordPress/WordPress#6.5 start --no-cache
+./wp-env.sh -p 8.0 -w 6.5 start --no-cache
 
 # Stop the environment
 ./wp-env.sh stop
 ./wp-env.sh -p 7.3 stop
+```
+
+##### Verbose Output Example
+
+When using `-v` or `--verbose` with `start`, the script displays:
+
+```
+✅ WordPress environment started successfully!
+
+Environment Details:
+  Admin URL:        http://localhost:8888/wp-admin
+  WordPress:        6.9
+  PHP:              8.4.21
+  Database:         MariaDB 11.4.10-MariaDB
+  Runtime:          docker
+  Multisite:        no
+  Xdebug:           off
+  Install Path:     /home/user/.wp-env/wp-env-openporte-xxx
+
+Service Status:    ✅ Running
 ```
 
 #### Configuration
@@ -271,9 +300,11 @@ If no overrides are specified, the export statement is omitted entirely.
 
 **Option Parsing**
 
-The script processes all arguments to extract version overrides before passing the remainder to wp-env:
+The script processes all arguments to extract version overrides and flags before passing the remainder to wp-env:
 
 ```bash
+VERBOSE_MODE=false
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --php-version|-p)
@@ -281,8 +312,17 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --wp-version|-w)
-      WP_VERSION_OVERRIDE="$2"
+      # Auto-prepend WordPress/WordPress# if not already present
+      if [[ "$2" != *"#"* ]]; then
+        WP_VERSION_OVERRIDE="WordPress/WordPress#$2"
+      else
+        WP_VERSION_OVERRIDE="$2"
+      fi
       shift 2
+      ;;
+    --verbose|-v)
+      VERBOSE_MODE=true
+      shift
       ;;
     *)
       REMAINING_ARGS+=("$1")
@@ -297,21 +337,26 @@ set -- "${REMAINING_ARGS[@]}"
 1. Version options can appear **anywhere** in the command line (not just at the beginning)
 2. If an option appears multiple times, the **last occurrence wins** (standard POSIX behavior)
 3. Options are **consumed** and not passed to wp-env
+4. WordPress version accepts both short format (`6.5`) and full format (`WordPress/WordPress#6.5`)
+5. Verbose mode is a flag (no argument) that enables detailed output after start
 
 **Remote Command Construction**
 
-The environment variables are exported inline using the `${var:+value}` bash parameter expansion pattern, which expands to `value` only if `var` is non-empty:
+The environment variables are set inline in the remote shell command using the `${var:+value}` bash parameter expansion pattern, which expands to `value` only if `var` is non-empty:
 
 ```bash
-export ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
-       ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} && \
-  source ~/.wpenvrc && cd ~/${REMOTE_PATH} && wp-env $*
+cd ~/${REMOTE_PATH} && \
+ source ./.wpenvrc && \
+ ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
+ ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} \
+ wp-env $*
 ```
 
 This approach:
-- Omits the entire export if no overrides are specified
-- Adds only the variables that have been set
+- Omits the variable assignments if no overrides are specified
+- Sets only the variables that have been set
 - Works on any SSH version without requiring sshd configuration
+- Variables are set after sourcing `.wpenvrc` but before running `wp-env`, allowing overrides
 
 **Remote Command Execution**
 
