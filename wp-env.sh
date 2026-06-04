@@ -125,5 +125,9 @@ set -- "${REMAINING_ARGS[@]}"
 rsync -az --delete --exclude='.git' --exclude='.DS_Store' --exclude='local' \
     --exclude='protect,r .wordpress-org' --exclude='protect,r .distignore' \
     . ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/ && \
-ssh ${REMOTE_USER}@${REMOTE_HOST} "export ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} && source ~/.wpenvrc && cd ~/${REMOTE_PATH} && wp-env $*"
-
+ssh ${REMOTE_USER}@${REMOTE_HOST} \
+    "cd ~/${REMOTE_PATH} && \
+     source ./.wpenvrc && \
+     ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
+     ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} \
+     wp-env $*"
