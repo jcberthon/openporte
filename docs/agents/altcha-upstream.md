@@ -2,13 +2,13 @@
 
 Vendored from [`altcha-org/altcha`](https://github.com/altcha-org/altcha).
 MIT-licensed at time of last upgrade (verify on each upgrade).
-Current version tracked by `ALTCHA_WIDGET_VERSION` in `altcha.php`.
+Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
 
 ## Upgrade procedure
 
 1. Confirm upstream release is still under an OSI-approved OSS license.
 2. Replace the file from the upstream release.
-3. Update `ALTCHA_WIDGET_VERSION`.
+3. Update `OPENPORTE_WIDGET_VERSION`.
 4. Add a changelog entry in `readme.txt`.
 5. Update the "Last verified MIT upstream" line below.
 
