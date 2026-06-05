@@ -15,7 +15,7 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
 
   public function get_name()
   {
-    return esc_html__('ALTCHA', 'altcha-spam-protection');
+    return esc_html__('ALTCHA', 'openporte');
   }
 
   public function render($item, $item_index, $form)
@@ -69,7 +69,7 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
         if ($plugin->verify($altcha) === false) {
           $ajax_handler->add_error(
             $field['id'],
-            esc_html__('Verification failed.', 'altcha-spam-protection')
+            esc_html__('Verification failed.', 'openporte')
           );
         }
       }

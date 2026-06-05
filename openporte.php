@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Tested up to: 7.0
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: altcha-spam-protection
+ * Text Domain: openporte
  */
 
 define('OPENPORTE_VERSION', '1.27.0');
@@ -85,7 +85,7 @@ add_shortcode('altcha', $openporte_shortcode);
 
 function openporte_init() {
   load_plugin_textdomain(
-    'altcha-spam-protection',
+    'openporte',
     false,
     dirname( plugin_basename( __FILE__ ) ) . '/languages/'
   );

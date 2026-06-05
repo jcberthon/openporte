@@ -50,7 +50,7 @@ class ALTCHA_GFForms_Field extends GF_Field
 		if ($this->is_form_editor()) {
 			$widget_html = '<div style="display:flex;gap:1rem;border: 1px solid lightgray;max-width:260px;padding: 1em;border-radius:4px;font-size:80%">'
 				. '<div><span class="dashicons-before dashicons-superhero"></span></div>'
-				. '<div><span>' . __("ALTCHA placeholder", 'altcha-spam-protection') . '</span></div>'
+				. '<div><span>' . __("ALTCHA placeholder", 'openporte') . '</span></div>'
 				. '</div>';
 		} else {
 			$widget_html = wp_kses($plugin->render_widget($mode), OpenPortePlugin::$html_espace_allowed_tags);
@@ -80,7 +80,7 @@ class ALTCHA_GFForms_Field extends GF_Field
 
 					} else {
 						$this->failed_validation  = true;
-						$this->validation_message = __('Could not verify you are not a robot.', 'altcha-spam-protection');
+						$this->validation_message = __('Could not verify you are not a robot.', 'openporte');
 					}
 				}
 			}

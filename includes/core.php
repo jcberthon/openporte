@@ -295,17 +295,17 @@ class OpenPortePlugin
 
     $ALTCHA_WEBSITE = constant('ALTCHA_WEBSITE');
     $translations = array(
-      "error" => __('Verification failed. Try again later.', 'altcha-spam-protection'),
+      "error" => __('Verification failed. Try again later.', 'openporte'),
       "footer" => sprintf(
         /* translators: the placeholders contain opening and closing tags for a link (<a> tag) */
-        __('Protected by %sALTCHA%s', 'altcha-spam-protection'),
+        __('Protected by %sALTCHA%s', 'openporte'),
         '<a href="' . $ALTCHA_WEBSITE . '" target="_blank">',
         "</a>",
       ),
-      "label" => __('I\'m not a robot', 'altcha-spam-protection'),
-      "verified" => __('Verified', 'altcha-spam-protection'),
-      "verifying" => __('Verifying...', 'altcha-spam-protection'),
-      "waitAlert" => __('Verifying... please wait.', 'altcha-spam-protection'),
+      "label" => __('I\'m not a robot', 'openporte'),
+      "verified" => __('Verified', 'openporte'),
+      "verifying" => __('Verifying...', 'openporte'),
+      "waitAlert" => __('Verifying... please wait.', 'openporte'),
     );
 
     $translations = apply_filters('openporte_translations', $translations, $language);
@@ -538,7 +538,7 @@ class OpenPortePlugin
       . "></altcha-widget>"
       . "<noscript>"
       /* translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it. */
-      . "<div class=\"altcha-no-javascript\">" . esc_html__('This form requires JavaScript!', 'altcha-spam-protection') . "</div>"
+      . "<div class=\"altcha-no-javascript\">" . esc_html__('This form requires JavaScript!', 'openporte') . "</div>"
       . "</noscript>";
     if ($wrap) {
       $html = '<div class="altcha-widget-wrap">' . $html . '</div>';
