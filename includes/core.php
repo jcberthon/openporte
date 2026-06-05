@@ -117,11 +117,11 @@ class AltchaPlugin
   {
     AltchaPlugin::$instance = $this;
     AltchaPlugin::$language = get_locale();
-    if (defined('ALTCHA_VERSION')) {
-      AltchaPlugin::$version = ALTCHA_VERSION;
+    if (defined('OPENPORTE_VERSION')) {
+      AltchaPlugin::$version = OPENPORTE_VERSION;
     }
-    if (defined('ALTCHA_WIDGET_VERSION')) {
-      AltchaPlugin::$widget_version = ALTCHA_WIDGET_VERSION;
+    if (defined('OPENPORTE_WIDGET_VERSION')) {
+      AltchaPlugin::$widget_version = OPENPORTE_WIDGET_VERSION;
     }
   }
 

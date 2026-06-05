@@ -22,7 +22,7 @@ if (is_admin()) {
     }
 
     // Add link to settings in the plugin list
-    // uses WPDOCS_PLUGIN_BASE which is defined in altcha.php, which is required before this file
+    // uses WPDOCS_PLUGIN_BASE which is defined in openporte.php, which is required before this file
     add_filter('plugin_action_links_' . WPDOCS_PLUGIN_BASE, 'altcha_settings_link');
 
     function altcha_settings_link($links)

@@ -8,14 +8,14 @@ function altcha_options_page_html()
     'altcha-admin-js',
     AltchaPlugin::$admin_script_src,
     array(),
-    ALTCHA_VERSION,
+    OPENPORTE_VERSION,
     true
   );
   wp_enqueue_style(
     'altcha-admin-styles',
     AltchaPlugin::$admin_css_src,
     array(),
-    ALTCHA_VERSION,
+    OPENPORTE_VERSION,
     'all'
   );
 ?>

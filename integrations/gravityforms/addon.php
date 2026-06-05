@@ -7,7 +7,7 @@ GFForms::include_addon_framework();
 class ALTCHA_GFFormsAddOn extends GFAddOn
 {
 
-    protected $_version = ALTCHA_VERSION;
+    protected $_version = OPENPORTE_VERSION;
     protected $_min_gravityforms_version = '2.5';
     protected $_slug = 'altcha';
     protected $_full_path = __FILE__;

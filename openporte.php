@@ -3,22 +3,31 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
- * Plugin Name: ALTCHA Spam Protection
- * Description: ALTCHA is a free, open-source CAPTCHA alternative that offers robust protection without using cookies, ensuring full GDPR compliance by design. It also provides invisible anti-spam and anti-bot protection through ALTCHA's API.
- * Author: Altcha.org
- * Author URI: https://altcha.org
- * Version: 1.26.3
- * Stable tag: 1.26.3
+ * Plugin Name: OpenPorte Spam Protection
+ * Description: OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam and bot protection without using cookies, ensuring full GDPR compliance by design. A community-maintained fork of the ALTCHA Spam Protection plugin (v1).
+ * Author: OpenPorte
+ * Author URI: https://github.com/jcberthon/openporte
+ * Version: 1.27.0
+ * Stable tag: 1.27.0
  * Requires at least: 5.6
  * Requires PHP: 8.0
- * Tested up to: 6.8
+ * Tested up to: 7.0
  * License: GPLv2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html  
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: openporte
  */
 
-define('ALTCHA_VERSION', '1.26.3');
+define('OPENPORTE_VERSION', '1.27.0');
+define('OPENPORTE_WIDGET_VERSION', '2.2.2');
+
+// Upstream ALTCHA widget attribution: the visible "Protected by ALTCHA" footer
+// link. Intentionally points at altcha.org and is out of scope for the rebrand.
 define('ALTCHA_WEBSITE', 'https://altcha.org/');
-define('ALTCHA_WIDGET_VERSION', '2.2.2');
+
+// Deprecated ALTCHA_* aliases kept for backward compatibility with third-party
+// code; scheduled for removal in a future release.
+define('ALTCHA_VERSION', OPENPORTE_VERSION);
+define('ALTCHA_WIDGET_VERSION', OPENPORTE_WIDGET_VERSION);
 
 
 // Define the base name of the plugin for use in hooks and filters
