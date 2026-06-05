@@ -6,7 +6,7 @@ Requires PHP: 8.0
 Tested up to: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Contributors: TODO
+Contributors: jcberthon
 
 OpenPorte offers a free, open-source Captcha alternative, ensuring robust spam protection while respecting user privacy and GDPR compliance.
 
@@ -36,23 +36,42 @@ OpenPorte is backward-compatible with ALTCHA v1:
 
 * Your existing settings are migrated automatically on activation.
 * The `[altcha]` shortcode keeps working (alongside the new `[openporte]`).
-* Existing filters and actions keep firing under their original names.
+* The `altcha_*` filters and actions keep firing as deprecated aliases.
 
-The following are deprecated and scheduled for removal in a future release:
-
-* Integrations targeting paid-only third-party plugins (e.g. Enfold).
-  Users relying on these should migrate to the official ALTCHA v2/v3 plugin.
+See the Deprecations section for the full list of compatibility aliases and
+what they map to.
 
 == Upgrade Notice ==
 
-TODO
+= 1.27.0 =
+First release of the OpenPorte community fork of ALTCHA Spam Protection v1. The
+paid altcha.org SaaS classifier is removed; self-hosted and custom backends are
+unchanged. Existing ALTCHA v1 settings migrate automatically when you activate
+OpenPorte. Deactivate the old ALTCHA plugin first — do not run both at once.
 
 == Upgrading ==
 
 = From the original ALTCHA v1 plugin =
 
-Deactivate the old plugin, install and activate OpenPorte. Your existing
-configuration is detected and migrated automatically on first activation.
+Deactivate the old ALTCHA plugin, then install and activate OpenPorte. Your
+existing configuration is detected and copied into the OpenPorte settings on
+first activation; the original ALTCHA settings are left untouched, so you can
+roll back to ALTCHA v1 without losing anything. Do not run both plugins at the
+same time.
+
+== Deprecations ==
+
+The following ALTCHA-era identifiers are kept as aliases for backward
+compatibility and are scheduled for removal in a future release:
+
+* The `[altcha]` shortcode — use `[openporte]`.
+* The `altcha/v1` REST namespace — use `openporte/v1`.
+* The `altcha_*` filters and actions — now firing through WordPress' deprecated
+  hook mechanism; use the `openporte_*` equivalents.
+* The `AltchaPlugin` class and the `ALTCHA_VERSION` / `ALTCHA_WIDGET_VERSION`
+  constants — use `OpenPortePlugin` and the `OPENPORTE_*` constants.
+* Integrations targeting paid-only third-party plugins; affected users should
+  migrate to the official ALTCHA v2/v3 plugin.
 
 == Privacy ==
 
@@ -64,11 +83,21 @@ OpenPorte prioritizes user privacy by avoiding the use of cookies and fingerprin
 
 This plugin remains fully contained within your WordPress installation, eliminating any reliance on external services.
 
-== Mode of Operation  (to be updated) ==
+== Modes of Operation ==
 
-_Note: TODO add custom mode, as only the paid altcha.org SaaS classifier is removed; keep self-hosted PoW and custom self-hostable backend. Description below requires an update._
+OpenPorte verifies submissions in one of two modes, selected in the settings
+(API Mode):
 
-There is only a self-hosted mode, which is enabled after activation. No additional setup is required, except enabling the integrations you need in the plugin settings.
+* Self-hosted (default) — a proof-of-work challenge is issued and verified by
+  your own WordPress site through the REST API. Fully self-contained, with no
+  external service and no additional setup beyond enabling the integrations you
+  need.
+* Custom — point the Challenge URL at your own ALTCHA-compatible backend (for
+  example a self-hosted ALTCHA Sentinel). Submissions are verified with your
+  site's signing secret.
+
+The paid altcha.org regional SaaS classifier offered by earlier versions has
+been removed; both remaining modes are free and self-hostable.
  
 == Installation ==
 
@@ -89,7 +118,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 
 * CoBlocks
 * Contact Form 7
-* Elementor Pro Forms (to-be-removed TBC)
+* Elementor Pro Forms (deprecated — paid plugin, see Deprecations)
 * Formidable Forms
 * Forminator
 * GravityForms
@@ -100,7 +129,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML (with a short code `[altcha]` (deprecated) or `[openporte])
+* Custom HTML (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
 
 == Source Code ==
 
@@ -121,9 +150,13 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 == Changelog ==
 
 = 1.27.0 =
+* Forked ALTCHA Spam Protection v1 as OpenPorte, a community-maintained, fully open-source (GPLv2 or later) continuation.
+* Rebranded the plugin to OpenPorte: new `[openporte]` shortcode and `openporte/v1` REST namespace, with the `[altcha]` shortcode, `altcha/v1` endpoint, `altcha_*` hooks and the `ALTCHA_*` / `AltchaPlugin` symbols kept as deprecated aliases (see Deprecations).
+* Existing ALTCHA v1 settings are copied into the OpenPorte namespace on activation; the original `altcha_*` options are left in place so you can roll back.
+* Removed the paid altcha.org regional SaaS classifier; self-hosted proof-of-work and custom self-hostable backends are unchanged.
+* Security: HMAC signatures are now compared with `hash_equals()` (timing-safe).
+* Wrapped the "This form requires JavaScript!" message so it can be translated.
 * Corrected the documented minimum requirements to match the plugin's existing PHP 8.0 / WordPress 5.6 floor.
-
-TODO
 
 = 1.26.3 =
 * Fixed possible replay attacks via salt splicing.
