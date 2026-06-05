@@ -16,7 +16,7 @@ add_action(
         'altcha-widget-custom',
         AltchaPlugin::$custom_script_src,
         array('altcha-widget'),
-        ALTCHA_VERSION,
+        OPENPORTE_VERSION,
         true
       );
       $attrs = wp_json_encode($plugin->get_widget_attrs($mode));
@@ -24,7 +24,7 @@ add_action(
         'altcha-widget-custom-options',
         '',
         array(),
-        ALTCHA_VERSION,
+        OPENPORTE_VERSION,
         false,
       );
       wp_enqueue_script('altcha-widget-custom-options');
