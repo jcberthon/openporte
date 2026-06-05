@@ -5,10 +5,10 @@ if (! defined('ABSPATH')) exit;
 // https://github.com/hCaptcha/hcaptcha-wordpress-plugin/blob/master/src/php/CoBlocks/Form.php
 
 if (altcha_plugin_active('coblocks')) {
-  add_filter('render_block', array('AltchaPlugin_Coblocks', 'render_block'), 10, 3);
-  add_filter('render_block_data', array('AltchaPlugin_Coblocks', 'render_block_data'), 10, 3);
+  add_filter('render_block', array('OpenPortePlugin_Coblocks', 'render_block'), 10, 3);
+  add_filter('render_block_data', array('OpenPortePlugin_Coblocks', 'render_block_data'), 10, 3);
 
-  class AltchaPlugin_Coblocks
+  class OpenPortePlugin_Coblocks
   {
     private const RECAPTCHA_DUMMY_TOKEN = 'altcha_dummy_token';
 
@@ -19,10 +19,10 @@ if (altcha_plugin_active('coblocks')) {
         return $block_content;
       }
 
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_coblocks();
       if ($mode === "captcha") {
-        return str_replace('<button type="submit"', wp_kses($plugin->render_widget($mode, true), AltchaPlugin::$html_espace_allowed_tags) . '<button type="submit"', $block_content);
+        return str_replace('<button type="submit"', wp_kses($plugin->render_widget($mode, true), OpenPortePlugin::$html_espace_allowed_tags) . '<button type="submit"', $block_content);
       }
 
       return $block_content;
@@ -53,7 +53,7 @@ if (altcha_plugin_active('coblocks')) {
 
       // We cannot add filters right here.
       // In this case, the calculation of form hash in the coblocks_render_coblocks_form_block() will fail.
-      add_action('coblocks_before_form_submit', ['AltchaPlugin_Coblocks', 'before_form_submit'], 10, 2);
+      add_action('coblocks_before_form_submit', ['OpenPortePlugin_Coblocks', 'before_form_submit'], 10, 2);
 
       $filters_added = true;
 
@@ -67,7 +67,7 @@ if (altcha_plugin_active('coblocks')) {
 
       $_POST['g-recaptcha-token'] = self::RECAPTCHA_DUMMY_TOKEN;
 
-      add_filter('pre_http_request', ['AltchaPlugin_Coblocks', 'verify'], 10, 3);
+      add_filter('pre_http_request', ['OpenPortePlugin_Coblocks', 'verify'], 10, 3);
     }
 
     public static function verify($response, array $parsed_args, string $url)
@@ -79,9 +79,9 @@ if (altcha_plugin_active('coblocks')) {
         return $response;
       }
 
-      remove_filter('pre_http_request', ['AltchaPlugin_Coblocks', 'verify']);
+      remove_filter('pre_http_request', ['OpenPortePlugin_Coblocks', 'verify']);
 
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_coblocks();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter") {

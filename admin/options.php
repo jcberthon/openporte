@@ -6,14 +6,14 @@ function altcha_options_page_html()
 {
   wp_enqueue_script(
     'altcha-admin-js',
-    AltchaPlugin::$admin_script_src,
+    OpenPortePlugin::$admin_script_src,
     array(),
     OPENPORTE_VERSION,
     true
   );
   wp_enqueue_style(
     'altcha-admin-styles',
-    AltchaPlugin::$admin_css_src,
+    OpenPortePlugin::$admin_css_src,
     array(),
     OPENPORTE_VERSION,
     'all'
@@ -72,8 +72,8 @@ function altcha_options_page_html()
               'ALTCHA Spam Protection for WordPress, plugin version %1$s, widget version %2$s',
               'altcha-spam-protection',
           ),
-          AltchaPlugin::$version,
-          AltchaPlugin::$widget_version,
+          OpenPortePlugin::$version,
+          OpenPortePlugin::$widget_version,
         );
       ?></p>
       <p>

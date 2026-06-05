@@ -2,7 +2,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-class AltchaPlugin
+class OpenPortePlugin
 {
   public static $instance;
 
@@ -115,158 +115,158 @@ class AltchaPlugin
 
   public function init()
   {
-    AltchaPlugin::$instance = $this;
-    AltchaPlugin::$language = get_locale();
+    OpenPortePlugin::$instance = $this;
+    OpenPortePlugin::$language = get_locale();
     if (defined('OPENPORTE_VERSION')) {
-      AltchaPlugin::$version = OPENPORTE_VERSION;
+      OpenPortePlugin::$version = OPENPORTE_VERSION;
     }
     if (defined('OPENPORTE_WIDGET_VERSION')) {
-      AltchaPlugin::$widget_version = OPENPORTE_WIDGET_VERSION;
+      OpenPortePlugin::$widget_version = OPENPORTE_WIDGET_VERSION;
     }
   }
 
   public function get_api()
   {
-    return trim(get_option(AltchaPlugin::$option_api));
+    return trim(get_option(OpenPortePlugin::$option_api));
   }
 
   public function get_api_custom_url()
   {
-    return trim(get_option(AltchaPlugin::$option_api_custom_url));
+    return trim(get_option(OpenPortePlugin::$option_api_custom_url));
   }
 
   public function get_complexity()
   {
-    return trim(get_option(AltchaPlugin::$option_complexity));
+    return trim(get_option(OpenPortePlugin::$option_complexity));
   }
 
   public function get_expires()
   {
-    return get_option(AltchaPlugin::$option_expires);
+    return get_option(OpenPortePlugin::$option_expires);
   }
 
   public function get_secret()
   {
-    return trim(get_option(AltchaPlugin::$option_secret));
+    return trim(get_option(OpenPortePlugin::$option_secret));
   }
 
   public function get_hidelogo()
   {
-    return get_option(AltchaPlugin::$option_hidelogo);
+    return get_option(OpenPortePlugin::$option_hidelogo);
   }
 
   public function get_hidefooter()
   {
-    return get_option(AltchaPlugin::$option_hidefooter);
+    return get_option(OpenPortePlugin::$option_hidefooter);
   }
 
   public function get_blockspam()
   {
-    return get_option(AltchaPlugin::$option_blockspam);
+    return get_option(OpenPortePlugin::$option_blockspam);
   }
 
   public function get_auto()
   {
-    return trim(get_option(AltchaPlugin::$option_auto));
+    return trim(get_option(OpenPortePlugin::$option_auto));
   }
 
   public function get_floating()
   {
-    return trim(get_option(AltchaPlugin::$option_floating));
+    return trim(get_option(OpenPortePlugin::$option_floating));
   }
 
   public function get_delay()
   {
-    return trim(get_option(AltchaPlugin::$option_delay));
+    return trim(get_option(OpenPortePlugin::$option_delay));
   }
 
   public function get_integration_coblocks()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_coblocks));
+    return trim(get_option(OpenPortePlugin::$option_integration_coblocks));
   }
 
   public function get_integration_contact_form_7()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_contact_form_7));
+    return trim(get_option(OpenPortePlugin::$option_integration_contact_form_7));
   }
 
   public function get_integration_custom()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_custom));
+    return trim(get_option(OpenPortePlugin::$option_integration_custom));
   }
 
   public function get_integration_elementor()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_elementor));
+    return trim(get_option(OpenPortePlugin::$option_integration_elementor));
   }
 
   public function get_integration_enfold_theme() {
-    return trim(get_option(AltchaPlugin::$option_integration_enfold_theme));
+    return trim(get_option(OpenPortePlugin::$option_integration_enfold_theme));
   }
 
   public function get_integration_formidable()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_formidable));
+    return trim(get_option(OpenPortePlugin::$option_integration_formidable));
   }
 
   public function get_integration_forminator()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_forminator));
+    return trim(get_option(OpenPortePlugin::$option_integration_forminator));
   }
 
   public function get_integration_gravityforms()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_gravityforms));
+    return trim(get_option(OpenPortePlugin::$option_integration_gravityforms));
   }
 
   public function get_integration_woocommerce_register()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_woocommerce_register));
+    return trim(get_option(OpenPortePlugin::$option_integration_woocommerce_register));
   }
 
   public function get_integration_woocommerce_reset_password()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_woocommerce_reset_password));
+    return trim(get_option(OpenPortePlugin::$option_integration_woocommerce_reset_password));
   }
 
   public function get_integration_woocommerce_login()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_woocommerce_login));
+    return trim(get_option(OpenPortePlugin::$option_integration_woocommerce_login));
   }
 
   public function get_integration_html_forms()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_html_forms));
+    return trim(get_option(OpenPortePlugin::$option_integration_html_forms));
   }
 
   public function get_integration_wordpress_register()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_wordpress_register));
+    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_register));
   }
 
   public function get_integration_wordpress_reset_password()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_wordpress_reset_password));
+    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_reset_password));
   }
 
   public function get_integration_wordpress_login()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_wordpress_login));
+    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_login));
   }
 
   public function get_integration_wordpress_comments()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_wordpress_comments));
+    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_comments));
   }
 
   public function get_integration_wpdiscuz()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_wpdiscuz));
+    return trim(get_option(OpenPortePlugin::$option_integration_wpdiscuz));
   }
 
   public function get_integration_wpforms()
   {
-    return trim(get_option(AltchaPlugin::$option_integration_wpforms));
+    return trim(get_option(OpenPortePlugin::$option_integration_wpforms));
   }
 
 
@@ -579,9 +579,13 @@ class AltchaPlugin
   }
 }
 
-if (!isset(AltchaPlugin::$instance)) {
-  $altcha_plugin_instance = new AltchaPlugin();
-  $altcha_plugin_instance->init();
+// Deprecated back-compat alias for third-party code referencing the old class
+// name; scheduled for removal in a future release.
+class_alias('OpenPortePlugin', 'AltchaPlugin');
+
+if (!isset(OpenPortePlugin::$instance)) {
+  $openporte_plugin_instance = new OpenPortePlugin();
+  $openporte_plugin_instance->init();
 }
 
 require plugin_dir_path(__FILE__) . 'admin.php';
@@ -602,7 +606,7 @@ add_action(
 
 function altcha_generate_challenge_endpoint()
 {
-  $resp = new WP_REST_Response(AltchaPlugin::$instance->generate_challenge());
+  $resp = new WP_REST_Response(OpenPortePlugin::$instance->generate_challenge());
   $resp->set_headers(array('Cache-Control' => 'no-cache, no-store, max-age=0'));
   return $resp;
 }

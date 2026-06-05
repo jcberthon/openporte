@@ -8,12 +8,12 @@ if (altcha_plugin_active('contact-form-7')) {
   add_filter(
     'wpcf7_form_elements',
     function ($elements) {
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_contact_form_7();
       if ($mode === "captcha" || $mode === "captcha_spamfilter") {
         $input = '<input class="wpcf7-form-control wpcf7-submit ';
         $button = '<button class="wpcf7-form-control wpcf7-submit ';
-        $widget = wp_kses($plugin->render_widget($mode, true, AltchaPlugin::$language), AltchaPlugin::$html_espace_allowed_tags);
+        $widget = wp_kses($plugin->render_widget($mode, true, OpenPortePlugin::$language), OpenPortePlugin::$html_espace_allowed_tags);
         if (strpos($elements, $input) !== false) {
           $elements = str_replace($input, $widget . $input, $elements);
         } else if (strpos($elements, $button) !== false) {
@@ -34,7 +34,7 @@ if (altcha_plugin_active('contact-form-7')) {
       if ($spam) {
         return $spam;
       }
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_contact_form_7();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {

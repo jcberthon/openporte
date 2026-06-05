@@ -42,7 +42,7 @@ class ALTCHA_GFForms_Field extends GF_Field
 
 	public function get_field_input($form, $value = '', $entry = null)
 	{
-		$plugin = AltchaPlugin::$instance;
+		$plugin = OpenPortePlugin::$instance;
 		$mode = $plugin->get_integration_gravityforms();
 		if (empty($mode) || $mode === 'spamfilter') {
 			return '';
@@ -53,7 +53,7 @@ class ALTCHA_GFForms_Field extends GF_Field
 				. '<div><span>' . __("ALTCHA placeholder", 'altcha-spam-protection') . '</span></div>'
 				. '</div>';
 		} else {
-			$widget_html = wp_kses($plugin->render_widget($mode), AltchaPlugin::$html_espace_allowed_tags);
+			$widget_html = wp_kses($plugin->render_widget($mode), OpenPortePlugin::$html_espace_allowed_tags);
 		}
 		return sprintf("<div class='ginput_container ginput_container_%s gfield--type-html'>%s</div>", $this->type, $widget_html);
 	}
@@ -69,7 +69,7 @@ class ALTCHA_GFForms_Field extends GF_Field
 		if (GFFormDisplay::is_last_page($form) && !$this->is_on_last_page($form)) {
 			return;
 		}
-		$plugin = AltchaPlugin::$instance;
+		$plugin = OpenPortePlugin::$instance;
 		$mode = $plugin->get_integration_gravityforms();
     if (!empty($mode)) {
 			if ($mode === "captcha" || $mode === "captcha_spamfilter") {

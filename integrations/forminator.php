@@ -24,7 +24,7 @@ if (altcha_plugin_active('forminator')) {
   add_filter(
     'forminator_cform_form_is_submittable',
     function ($can_show, $id, $form_settings) {
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_forminator();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter") {
@@ -46,10 +46,10 @@ if (altcha_plugin_active('forminator')) {
 
 function altcha_forminator_render_widget($html)
 {
-  $plugin = AltchaPlugin::$instance;
+  $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_forminator();
   if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-    $elements = wp_kses($plugin->render_widget($mode, true), AltchaPlugin::$html_espace_allowed_tags);
+    $elements = wp_kses($plugin->render_widget($mode, true), OpenPortePlugin::$html_espace_allowed_tags);
     $target = '<div class="forminator-row forminator-row-last"';
     $pos = strpos($html, $target);
 

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action(
   'wp_enqueue_scripts',
   function () {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_custom();
     if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
       // Register the base widget script first
@@ -14,7 +14,7 @@ add_action(
       // Now enqueue the custom script with its dependency
       wp_enqueue_script(
         'altcha-widget-custom',
-        AltchaPlugin::$custom_script_src,
+        OpenPortePlugin::$custom_script_src,
         array('altcha-widget'),
         OPENPORTE_VERSION,
         true
@@ -30,7 +30,7 @@ add_action(
       wp_enqueue_script('altcha-widget-custom-options');
       wp_add_inline_script(
         'altcha-widget-custom-options',
-        "(() => { window.ALTCHA_WIDGET_ATTRS = $attrs; })();",
+        "(() => { window.OPENPORTE_WIDGET_ATTRS = $attrs; })();",
       );
     }
   },

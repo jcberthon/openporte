@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Tested up to: 7.0
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: openporte
+ * Text Domain: altcha-spam-protection
  */
 
 define('OPENPORTE_VERSION', '1.27.0');
@@ -57,33 +57,33 @@ require plugin_dir_path( __FILE__ ) . './integrations/wpmembers.php';
 require plugin_dir_path( __FILE__ ) . './integrations/woocommerce.php';
 require plugin_dir_path( __FILE__ ) . './integrations/wordpress.php';
 
-AltchaPlugin::$widget_script_src = plugin_dir_url(__FILE__) . "public/altcha.min.js";
-AltchaPlugin::$widget_style_src = plugin_dir_url(__FILE__) . "public/altcha.css";
-AltchaPlugin::$wp_script_src = plugin_dir_url(__FILE__) . "public/script.js";
-AltchaPlugin::$admin_script_src = plugin_dir_url(__FILE__) . "public/admin.js";
-AltchaPlugin::$admin_css_src = plugin_dir_url(__FILE__) . "public/admin.css";
-AltchaPlugin::$custom_script_src = plugin_dir_url(__FILE__) . "public/custom.js";
+OpenPortePlugin::$widget_script_src = plugin_dir_url(__FILE__) . "public/altcha.min.js";
+OpenPortePlugin::$widget_style_src = plugin_dir_url(__FILE__) . "public/altcha.css";
+OpenPortePlugin::$wp_script_src = plugin_dir_url(__FILE__) . "public/script.js";
+OpenPortePlugin::$admin_script_src = plugin_dir_url(__FILE__) . "public/admin.js";
+OpenPortePlugin::$admin_css_src = plugin_dir_url(__FILE__) . "public/admin.css";
+OpenPortePlugin::$custom_script_src = plugin_dir_url(__FILE__) . "public/custom.js";
 
-register_activation_hook(__FILE__, 'altcha_activate');
-register_deactivation_hook(__FILE__, 'altcha_deactivate');
+register_activation_hook(__FILE__, 'openporte_activate');
+register_deactivation_hook(__FILE__, 'openporte_deactivate');
 
-add_action('init', 'altcha_init');
-add_action('after_plugin_row_' . plugin_basename(__FILE__), 'altcha_plugin_custom_message');
+add_action('init', 'openporte_init');
+add_action('after_plugin_row_' . plugin_basename(__FILE__), 'openporte_plugin_custom_message');
 
 add_shortcode(
   'altcha',
   function ($attrs) {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $default = array(
       'language' => null,
       'mode' => $plugin->get_integration_custom(),
     );
     $a = shortcode_atts($default, $attrs);
-    return wp_kses($plugin->render_widget($a['mode'], true, $a['language']), AltchaPlugin::$html_espace_allowed_tags);
+    return wp_kses($plugin->render_widget($a['mode'], true, $a['language']), OpenPortePlugin::$html_espace_allowed_tags);
   }
 );
 
-function altcha_init() {
+function openporte_init() {
   load_plugin_textdomain(
     'altcha-spam-protection',
     false,
@@ -91,22 +91,22 @@ function altcha_init() {
   );
 }
 
-function altcha_activate()
+function openporte_activate()
 {
-  update_option(AltchaPlugin::$option_api, 'selfhosted');
-  update_option(AltchaPlugin::$option_api_custom_url, '');
+  update_option(OpenPortePlugin::$option_api, 'selfhosted');
+  update_option(OpenPortePlugin::$option_api_custom_url, '');
   delete_option('altcha_api_key'); // retired: paid SaaS regional classifier removed
-  update_option(AltchaPlugin::$option_expires, '3600');
-  update_option(AltchaPlugin::$option_secret, AltchaPlugin::$instance->random_secret());
-  update_option(AltchaPlugin::$option_hidefooter, true);
-  update_option(AltchaPlugin::$option_integration_custom, 'captcha');
+  update_option(OpenPortePlugin::$option_expires, '3600');
+  update_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
+  update_option(OpenPortePlugin::$option_hidefooter, true);
+  update_option(OpenPortePlugin::$option_integration_custom, 'captcha');
 }
 
-function altcha_deactivate()
+function openporte_deactivate()
 {
 }
 
-function altcha_plugin_custom_message()
+function openporte_plugin_custom_message()
 {
 
 }

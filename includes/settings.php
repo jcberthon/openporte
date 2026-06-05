@@ -9,147 +9,147 @@ if (is_admin()) {
   {
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_api
+      OpenPortePlugin::$option_api
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_api_custom_url
+      OpenPortePlugin::$option_api_custom_url
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_secret
+      OpenPortePlugin::$option_secret
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_complexity
+      OpenPortePlugin::$option_complexity
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_expires
+      OpenPortePlugin::$option_expires
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_hidefooter
+      OpenPortePlugin::$option_hidefooter
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_hidelogo
+      OpenPortePlugin::$option_hidelogo
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_blockspam
+      OpenPortePlugin::$option_blockspam
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_auto
+      OpenPortePlugin::$option_auto
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_floating
+      OpenPortePlugin::$option_floating
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_delay
+      OpenPortePlugin::$option_delay
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_coblocks
+      OpenPortePlugin::$option_integration_coblocks
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_contact_form_7
+      OpenPortePlugin::$option_integration_contact_form_7
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_custom
+      OpenPortePlugin::$option_integration_custom
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_elementor
+      OpenPortePlugin::$option_integration_elementor
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_enfold_theme
+      OpenPortePlugin::$option_integration_enfold_theme
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_formidable
+      OpenPortePlugin::$option_integration_formidable
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_forminator
+      OpenPortePlugin::$option_integration_forminator
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_gravityforms
+      OpenPortePlugin::$option_integration_gravityforms
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_woocommerce_login
+      OpenPortePlugin::$option_integration_woocommerce_login
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_woocommerce_register
+      OpenPortePlugin::$option_integration_woocommerce_register
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_woocommerce_reset_password
+      OpenPortePlugin::$option_integration_woocommerce_reset_password
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_html_forms
+      OpenPortePlugin::$option_integration_html_forms
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_wordpress_comments
+      OpenPortePlugin::$option_integration_wordpress_comments
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_wordpress_login
+      OpenPortePlugin::$option_integration_wordpress_login
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_wordpress_register
+      OpenPortePlugin::$option_integration_wordpress_register
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_wordpress_reset_password
+      OpenPortePlugin::$option_integration_wordpress_reset_password
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_wpdiscuz
+      OpenPortePlugin::$option_integration_wpdiscuz
     );
 
     register_setting(
       'altcha_options',
-      AltchaPlugin::$option_integration_wpforms
+      OpenPortePlugin::$option_integration_wpforms
     );
 
     // Section
@@ -167,7 +167,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_general_settings_section',
       array(
-        "name" => AltchaPlugin::$option_api,
+        "name" => OpenPortePlugin::$option_api,
         "hint" => __('Select the API mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend.', 'altcha-spam-protection'),
         "options" => array(
           "selfhosted" => __('Self-hosted', 'altcha-spam-protection'),
@@ -184,7 +184,7 @@ if (is_admin()) {
       'altcha_general_settings_section',
       array(
         "custom" => true,
-        "name" => AltchaPlugin::$option_api_custom_url,
+        "name" => OpenPortePlugin::$option_api_custom_url,
         "hint" => __('Configure your custom Challenge URL.', 'altcha-spam-protection'),
         "type" => "text"
       )
@@ -197,7 +197,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_general_settings_section',
       array(
-        "name" => AltchaPlugin::$option_secret,
+        "name" => OpenPortePlugin::$option_secret,
         "hint" => __('Configure your HMAC signing secret.', 'altcha-spam-protection'),
         "type" => "text"
       )
@@ -210,7 +210,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_general_settings_section',
       array(
-        "name" => AltchaPlugin::$option_complexity,
+        "name" => OpenPortePlugin::$option_complexity,
         "hint" => __('Select the PoW complexity for the widget.', 'altcha-spam-protection'),
         "options" => array(
           "low" => __('Low', 'altcha-spam-protection'),
@@ -227,7 +227,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_general_settings_section',
       array(
-        "name" => AltchaPlugin::$option_expires,
+        "name" => OpenPortePlugin::$option_expires,
         "hint" => __('Select the life-span of the challenge.', 'altcha-spam-protection'),
         "options" => array(
           "3600" => __('1 hour', 'altcha-spam-protection'),
@@ -253,7 +253,7 @@ if (is_admin()) {
       'altcha_spamfilter_settings_section',
       array(
         "spamfilter" => true,
-        "name" => AltchaPlugin::$option_blockspam,
+        "name" => OpenPortePlugin::$option_blockspam,
         "description" => __('Yes', 'altcha-spam-protection'),
         "hint" => __('Don\'t allow form submissions if the Spam Filter detects potential spam.', 'altcha-spam-protection'),
         "type" => "checkbox"
@@ -275,7 +275,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_widget_settings_section',
       array(
-        "name" => AltchaPlugin::$option_auto,
+        "name" => OpenPortePlugin::$option_auto,
         "hint" => __('Select auto-verification behaviour.', 'altcha-spam-protection'),
         "options" => array(
           "" => __('Disabled', 'altcha-spam-protection'),
@@ -293,7 +293,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_widget_settings_section',
       array(
-        "name" => AltchaPlugin::$option_floating,
+        "name" => OpenPortePlugin::$option_floating,
         "description" => __('Yes', 'altcha-spam-protection'),
         "hint" => __('Enable Floating UI.', 'altcha-spam-protection'),
         "type" => "checkbox"
@@ -307,7 +307,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_widget_settings_section',
       array(
-        "name" => AltchaPlugin::$option_delay,
+        "name" => OpenPortePlugin::$option_delay,
         "description" => __('Yes', 'altcha-spam-protection'),
         "hint" => __('Add a delay of 1.5 seconds to verification.', 'altcha-spam-protection'),
         "type" => "checkbox"
@@ -321,7 +321,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_widget_settings_section',
       array(
-        "name" => AltchaPlugin::$option_hidelogo,
+        "name" => OpenPortePlugin::$option_hidelogo,
         "description" => __('Yes', 'altcha-spam-protection'),
         "type" => "checkbox"
       )
@@ -334,7 +334,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_widget_settings_section',
       array(
-        "name" => AltchaPlugin::$option_hidefooter,
+        "name" => OpenPortePlugin::$option_hidefooter,
         "description" => __('Yes', 'altcha-spam-protection'),
         "hint" => __('Hide Powered by ALTCHA.', 'altcha-spam-protection'),
         "type" => "checkbox"
@@ -356,7 +356,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_coblocks,
+            "name" => OpenPortePlugin::$option_integration_coblocks,
             "disabled" => !altcha_plugin_active('coblocks'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -377,7 +377,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_contact_form_7,
+            "name" => OpenPortePlugin::$option_integration_contact_form_7,
             "disabled" => !altcha_plugin_active('contact-form-7'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -399,7 +399,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_elementor,
+            "name" => OpenPortePlugin::$option_integration_elementor,
             "disabled" => !altcha_plugin_active('elementor'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -420,7 +420,7 @@ if (is_admin()) {
       'altcha_admin',
       'altcha_integrations_settings_section',
       array(
-        "name" => AltchaPlugin::$option_integration_enfold_theme,
+        "name" => OpenPortePlugin::$option_integration_enfold_theme,
         "disabled" => empty(array_filter(wp_get_themes(), function($theme) { 
           return stripos($theme, 'enfold') !== false;
           })),
@@ -443,7 +443,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_formidable,
+            "name" => OpenPortePlugin::$option_integration_formidable,
             "disabled" => !altcha_plugin_active('formidable'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -464,7 +464,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_forminator,
+            "name" => OpenPortePlugin::$option_integration_forminator,
             "disabled" => !altcha_plugin_active('forminator'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -485,7 +485,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_gravityforms,
+            "name" => OpenPortePlugin::$option_integration_gravityforms,
             "disabled" => !altcha_plugin_active('gravityforms'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -506,7 +506,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_html_forms,
+            "name" => OpenPortePlugin::$option_integration_html_forms,
             "disabled" => !altcha_plugin_active('html-forms'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -528,7 +528,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_wpdiscuz,
+            "name" => OpenPortePlugin::$option_integration_wpdiscuz,
             "disabled" => !altcha_plugin_active('wpdiscuz'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -549,7 +549,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_wpforms,
+            "name" => OpenPortePlugin::$option_integration_wpforms,
             "disabled" => !altcha_plugin_active('wpforms'),
             "spamfilter_options" => array(
               "spamfilter",
@@ -570,7 +570,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_woocommerce_register,
+            "name" => OpenPortePlugin::$option_integration_woocommerce_register,
             "disabled" => !altcha_plugin_active('woocommerce'),
             "spamfilter_options" => array(
               "captcha_spamfilter",
@@ -590,7 +590,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_woocommerce_reset_password,
+            "name" => OpenPortePlugin::$option_integration_woocommerce_reset_password,
             "disabled" => !altcha_plugin_active('woocommerce'),
             "spamfilter_options" => array(
               "captcha_spamfilter",
@@ -610,7 +610,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_woocommerce_login,
+            "name" => OpenPortePlugin::$option_integration_woocommerce_login,
             "disabled" => !altcha_plugin_active('woocommerce'),
             "spamfilter_options" => array(
               "captcha_spamfilter",
@@ -630,7 +630,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_integrations_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_custom,
+            "name" => OpenPortePlugin::$option_integration_custom,
             "hint" => sprintf(
               /* translators: the placeholder will be replaced with the shortcode */
               __('Use %s shortcode anywhere in your HTML.', 'altcha-spam-protection'), '[altcha]',
@@ -664,7 +664,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_wordpress_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_wordpress_register,
+            "name" => OpenPortePlugin::$option_integration_wordpress_register,
             "spamfilter_options" => array(
               "captcha_spamfilter",
             ),
@@ -683,7 +683,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_wordpress_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_wordpress_reset_password,
+            "name" => OpenPortePlugin::$option_integration_wordpress_reset_password,
             "spamfilter_options" => array(
               "captcha_spamfilter",
             ),
@@ -702,7 +702,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_wordpress_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_wordpress_login,
+            "name" => OpenPortePlugin::$option_integration_wordpress_login,
             "spamfilter_options" => array(
               "captcha_spamfilter",
             ),
@@ -721,7 +721,7 @@ if (is_admin()) {
         'altcha_admin',
         'altcha_wordpress_settings_section',
         array(
-            "name" => AltchaPlugin::$option_integration_wordpress_comments,
+            "name" => OpenPortePlugin::$option_integration_wordpress_comments,
             "spamfilter_options" => array(
               "captcha_spamfilter",
             ),
