@@ -5,3 +5,14 @@
 .distignore
 .gitignore
 README.md
+vendors
+wp-env.sh
+.wp-env.json
+.wp-env.conf
+.wpenvrc
+AGENTS.md
+local
+.shellcheckrc
+composer.lock
+composer.json
+docs
