@@ -13,7 +13,7 @@ add_action(
       $altcha = isset($_POST['altcha_register']) ? trim(sanitize_text_field($_POST['altcha_register'])) : '';
       if ($plugin->verify($altcha) === false) {
         global $wpmem_themsg;
-        $wpmem_themsg = esc_html__('Registration failed. Please try again later.', 'altcha-spam-protection');
+        $wpmem_themsg = esc_html__('Registration failed. Please try again later.', 'openporte');
       }
     }
   },

@@ -6,12 +6,12 @@ msgstr ""
 "POT-Creation-Date: 2024-12-21T10:31:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
-"Language-Team: Turkish\n"
-"Language: tr\n"
+"Language-Team: Catalan\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: altcha-spam-protection\n"
+"X-Domain: openporte\n"
 
 #. Plugin Name of the plugin
 #: altcha.php includes/admin.php:15
@@ -114,28 +114,28 @@ msgstr ""
 
 #: includes/core.php:291
 msgid "Verification failed. Try again later."
-msgstr "Doğrulama başarısız oldu. Daha sonra tekrar deneyin."
+msgstr "La verificació ha fallat. Torneu-ho a provar més tard."
 
 #. translators: the placeholders contain opening and closing tags for a link (<a> tag)
 #: includes/core.php:294
 msgid "Protected by %sALTCHA%s"
-msgstr "%sALTCHA%s"
+msgstr "Protegit per %sALTCHA%s"
 
 #: includes/core.php:298
 msgid "I'm not a robot"
-msgstr "Ben bir robot değilim"
+msgstr "No sóc un robot"
 
 #: includes/core.php:299
 msgid "Verified"
-msgstr "Doğrulandı"
+msgstr "Verificat"
 
 #: includes/core.php:300
 msgid "Verifying..."
-msgstr "Doğrulanıyor..."
+msgstr "Verificant..."
 
 #: includes/core.php:301
 msgid "Verifying... please wait."
-msgstr "Doğrulanıyor... lütfen bekleyin."
+msgstr "Verificant... si us plau, espereu."
 
 #: includes/settings.php:148
 msgid "General"

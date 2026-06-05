@@ -12,8 +12,8 @@ if (is_admin()) {
     function altcha_options_page()
     {
         add_options_page(
-            __('ALTCHA Spam Protection', 'altcha-spam-protection'),
-            __('ALTCHA Anti-spam', 'altcha-spam-protection'),
+            __('ALTCHA Spam Protection', 'openporte'),
+            __('ALTCHA Anti-spam', 'openporte'),
             'manage_options',
             'altcha_admin',
             'altcha_options_page_html',
@@ -32,7 +32,7 @@ if (is_admin()) {
             'altcha_admin',
             get_admin_url() . 'options-general.php'
         ));
-        $settings_link = "<a href='$url'>" . __('Settings', 'altcha-spam-protection') . '</a>';
+        $settings_link = "<a href='$url'>" . __('Settings', 'openporte') . '</a>';
 
         array_unshift(
             $links,

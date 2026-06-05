@@ -30,14 +30,14 @@ function altcha_options_page_html()
     </div>
 
     <div style="flex-grow: 1;">
-      <div class="altcha-title"><?php echo esc_html__('ALTCHA', 'altcha-spam-protection'); ?></div>
-      <div class="altcha-subtitle"><?php echo esc_html__('A Privacy-Friendly Captcha Alternative.', 'altcha-spam-protection'); ?></div>
+      <div class="altcha-title"><?php echo esc_html__('ALTCHA', 'openporte'); ?></div>
+      <div class="altcha-subtitle"><?php echo esc_html__('A Privacy-Friendly Captcha Alternative.', 'openporte'); ?></div>
     </div>
 
     <div>
-      <div style="margin-bottom: 0.3rem;"><b><?php echo esc_html__('Do you like ALTCHA?', 'altcha-spam-protection'); ?></b></div>
+      <div style="margin-bottom: 0.3rem;"><b><?php echo esc_html__('Do you like ALTCHA?', 'openporte'); ?></b></div>
       <div style="display:flex;gap: 0.5rem;">
-        <a href="https://wordpress.org/support/plugin/altcha-spam-protection/reviews/?filter=5#new-post" target="_blank" style="display: inline-flex; gap: 0.5rem;">
+        <a href="https://wordpress.org/support/plugin/openporte/reviews/?filter=5#new-post" target="_blank" style="display: inline-flex; gap: 0.5rem;">
           <span style="display: inline-flex; gap: 0.1rem;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFCC00" width="18" height="18"><path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z"></path></svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFCC00" width="18" height="18"><path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z"></path></svg>
@@ -45,7 +45,7 @@ function altcha_options_page_html()
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFCC00" width="18" height="18"><path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z"></path></svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFCC00" width="18" height="18"><path d="M12.0006 18.26L4.94715 22.2082L6.52248 14.2799L0.587891 8.7918L8.61493 7.84006L12.0006 0.5L15.3862 7.84006L23.4132 8.7918L17.4787 14.2799L19.054 22.2082L12.0006 18.26Z"></path></svg>
           </span>
-          <span><?php echo esc_html__('Review it!', 'altcha-spam-protection'); ?></span>
+          <span><?php echo esc_html__('Review it!', 'openporte'); ?></span>
         </a>
       </div>
     </div>
@@ -70,7 +70,7 @@ function altcha_options_page_html()
           esc_html__(
               /* translators: %1$s is the plugin version, and %2$s is the widget version */
               'ALTCHA Spam Protection for WordPress, plugin version %1$s, widget version %2$s',
-              'altcha-spam-protection',
+              'openporte',
           ),
           OpenPortePlugin::$version,
           OpenPortePlugin::$widget_version,
@@ -82,15 +82,15 @@ function altcha_options_page_html()
           esc_html__(
             /* translators: the placeholders are opening and closing tags for a link (<a> tag) */
             'Please give ALTCHA a %s★★★★★ rating%s on WordPress.org to help us get the word out.',
-            'altcha-spam-protection',
+            'openporte',
           ),
-          '<a href="https://wordpress.org/support/plugin/altcha-spam-protection/reviews/?filter=5#new-post" target="_blank">',
+          '<a href="https://wordpress.org/support/plugin/openporte/reviews/?filter=5#new-post" target="_blank">',
           '</a>',
         ); ?>
       </p>
       <p>
         <a href="https://github.com/altcha-org/altcha" target="_blank" style="display: inline-flex; gap: 0.3rem;">
-          <span><?php echo esc_html__('Star ALTCHA on GitHub!', 'altcha-spam-protection'); ?></span>
+          <span><?php echo esc_html__('Star ALTCHA on GitHub!', 'openporte'); ?></span>
         </a>
       </p>
     </div>
@@ -106,7 +106,7 @@ function altcha_general_section_callback()
         esc_html__(
           /* translators: the placeholders are opening and closing tags for bold */
           'Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend.',
-          'altcha-spam-protection',
+          'openporte',
         ),
         '<b>',
         '</b>',
@@ -125,7 +125,7 @@ function altcha_spam_filter_section_callback()
         esc_html__(
           /* translators: the placeholders are opening and closing tags for bold */
           'The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only.',
-          'altcha-spam-protection',
+          'openporte',
         ),
         '<b>',
         '</b>',
@@ -140,7 +140,7 @@ function altcha_widget_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Customize the widget to fit your needs.', 'altcha-spam-protection'); ?></p>
+    <p><?php echo esc_html__('Customize the widget to fit your needs.', 'openporte'); ?></p>
 
   <?php
 }
@@ -149,7 +149,7 @@ function altcha_integrations_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Activate ALTCHA for these integrations:', 'altcha-spam-protection'); ?></p>
+    <p><?php echo esc_html__('Activate ALTCHA for these integrations:', 'openporte'); ?></p>
 
   <?php
 }
@@ -158,7 +158,7 @@ function altcha_wordpress_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Activate ALTCHA for the core Wordpress functionality:', 'altcha-spam-protection'); ?></p>
+    <p><?php echo esc_html__('Activate ALTCHA for the core Wordpress functionality:', 'openporte'); ?></p>
 
   <?php
 }

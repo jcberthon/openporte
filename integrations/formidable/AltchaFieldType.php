@@ -52,7 +52,7 @@ class AltchaFieldType extends FrmFieldType
       if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
         $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
         if ($plugin->verify($altcha) === false) {
-					$errors['field' . $args['id']] = esc_html__('Verification failed.', 'altcha-spam-protection');
+					$errors['field' . $args['id']] = esc_html__('Verification failed.', 'openporte');
         }
       }
     }

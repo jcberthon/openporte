@@ -53,7 +53,7 @@ add_filter( 'avf_form_send', function ($proceed, $new_post, $form_params, $that)
   if (!empty($mode)) {
     $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(urldecode($_POST['altcha']))) : '';
     if ($plugin->verify($altcha) === false) {
-      $that->submit_error = __('Verification failed. Try again later.', 'altcha-spam-protection');
+      $that->submit_error = __('Verification failed. Try again later.', 'openporte');
       error_log("altcha: verification failed");
       return null;
     }

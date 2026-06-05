@@ -6,12 +6,12 @@ msgstr ""
 "POT-Creation-Date: 2024-12-21T10:31:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
-"Language-Team: Chinese (simplified)\n"
-"Language: zh_CN\n"
+"Language-Team: Slovak\n"
+"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: altcha-spam-protection\n"
+"X-Domain: openporte\n"
 
 #. Plugin Name of the plugin
 #: altcha.php includes/admin.php:15
@@ -114,28 +114,28 @@ msgstr ""
 
 #: includes/core.php:291
 msgid "Verification failed. Try again later."
-msgstr "验证失败。请稍后重试。"
+msgstr "Overenie zlyhalo. Skúste to znova neskôr."
 
 #. translators: the placeholders contain opening and closing tags for a link (<a> tag)
 #: includes/core.php:294
 msgid "Protected by %sALTCHA%s"
-msgstr "由 %sALTCHA%s 保护"
+msgstr "Chránené %sALTCHA%s"
 
 #: includes/core.php:298
 msgid "I'm not a robot"
-msgstr "我不是机器人"
+msgstr "Nie som robot"
 
 #: includes/core.php:299
 msgid "Verified"
-msgstr "已验证"
+msgstr "Overené"
 
 #: includes/core.php:300
 msgid "Verifying..."
-msgstr "验证中..."
+msgstr "Prebieha overovanie..."
 
 #: includes/core.php:301
 msgid "Verifying... please wait."
-msgstr "验证中... 请稍候。"
+msgstr "Prebieha overovanie... prosím, počkajte."
 
 #: includes/settings.php:148
 msgid "General"

@@ -6,12 +6,12 @@ msgstr ""
 "POT-Creation-Date: 2024-12-21T10:31:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
-"Language-Team: Serbian\n"
-"Language: sr\n"
+"Language-Team: Norwegian Bokmal\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: altcha-spam-protection\n"
+"X-Domain: openporte\n"
 
 #. Plugin Name of the plugin
 #: altcha.php includes/admin.php:15
@@ -114,28 +114,28 @@ msgstr ""
 
 #: includes/core.php:291
 msgid "Verification failed. Try again later."
-msgstr "Provera nije uspela. Pokušajte ponovo kasnije."
+msgstr "Verifiseringen mislyktes. Prøv igjen senere."
 
 #. translators: the placeholders contain opening and closing tags for a link (<a> tag)
 #: includes/core.php:294
 msgid "Protected by %sALTCHA%s"
-msgstr "Zaštićeno od strane %sALTCHA%s"
+msgstr "Beskyttet av %sALTCHA%s"
 
 #: includes/core.php:298
 msgid "I'm not a robot"
-msgstr "Nisam robot"
+msgstr "Jeg er ikke en robot"
 
 #: includes/core.php:299
 msgid "Verified"
-msgstr "Provereno"
+msgstr "Verifisert"
 
 #: includes/core.php:300
 msgid "Verifying..."
-msgstr "Proverava se..."
+msgstr "Verifiserer..."
 
 #: includes/core.php:301
 msgid "Verifying... please wait."
-msgstr "Proverava se... molimo sačekajte."
+msgstr "Verifiserer... vennligst vent."
 
 #: includes/settings.php:148
 msgid "General"

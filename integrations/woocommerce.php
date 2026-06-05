@@ -25,7 +25,7 @@ add_action(
       if ($plugin->verify($altcha) === false) {
         return $errors->add(
           'altcha_error_message',
-          esc_html__('Could not verify you are not a robot.', 'altcha-spam-protection')
+          esc_html__('Could not verify you are not a robot.', 'openporte')
         );
       }
     }
@@ -71,7 +71,7 @@ add_filter(
       if ($plugin->verify($altcha) === false) {
         return new WP_Error(
           'altcha-error',
-          esc_html__('Could not verify you are not a robot.', 'altcha-spam-protection')
+          esc_html__('Could not verify you are not a robot.', 'openporte')
         );
       }
     }
@@ -111,7 +111,7 @@ add_filter(
       if ($plugin->verify($altcha) === false) {
         $errors->add(
           'altcha_error_message',
-          esc_html__('Could not verify you are not a robot.', 'altcha-spam-protection')
+          esc_html__('Could not verify you are not a robot.', 'openporte')
         );
       }
     }
