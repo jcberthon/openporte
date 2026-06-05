@@ -24,63 +24,63 @@ class OpenPortePlugin
 
   public static $widget_version = "0.0.0";
 
-  public static $option_api = "altcha_api";
+  public static $option_api = "openporte_api";
 
-  public static $option_api_custom_url = "altcha_api_custom_url";
+  public static $option_api_custom_url = "openporte_api_custom_url";
 
-  public static $option_secret = "altcha_secret";
+  public static $option_secret = "openporte_secret";
 
-  public static $option_complexity = "altcha_complexity";
+  public static $option_complexity = "openporte_complexity";
 
-  public static $option_expires = "altcha_expires";
+  public static $option_expires = "openporte_expires";
 
-  public static $option_blockspam = "altcha_blockspam";
+  public static $option_blockspam = "openporte_blockspam";
 
-  public static $option_auto = "altcha_auto";
+  public static $option_auto = "openporte_auto";
 
-  public static $option_floating = "altcha_floating";
+  public static $option_floating = "openporte_floating";
 
-  public static $option_delay = "altcha_delay";
+  public static $option_delay = "openporte_delay";
 
-  public static $option_hidefooter = "altcha_hidefooter";
+  public static $option_hidefooter = "openporte_hidefooter";
 
-  public static $option_hidelogo = "altcha_hidelogo";
+  public static $option_hidelogo = "openporte_hidelogo";
 
-  public static $option_integration_coblocks = "altcha_integration_coblocks";
+  public static $option_integration_coblocks = "openporte_integration_coblocks";
 
-  public static $option_integration_contact_form_7 = "altcha_integration_contact_form_7";
+  public static $option_integration_contact_form_7 = "openporte_integration_contact_form_7";
 
-  public static $option_integration_custom = "altcha_integration_custom";
+  public static $option_integration_custom = "openporte_integration_custom";
 
-  public static $option_integration_elementor = "altcha_integration_elementor";
+  public static $option_integration_elementor = "openporte_integration_elementor";
 
-  public static $option_integration_formidable = "altcha_integration_formidable";
+  public static $option_integration_formidable = "openporte_integration_formidable";
 
-  public static $option_integration_forminator = "altcha_integration_forminator";
+  public static $option_integration_forminator = "openporte_integration_forminator";
 
-  public static $option_integration_gravityforms = "altcha_integration_gravityforms";
+  public static $option_integration_gravityforms = "openporte_integration_gravityforms";
 
-  public static $option_integration_woocommerce_login = "altcha_integration_woocommerce_login";
+  public static $option_integration_woocommerce_login = "openporte_integration_woocommerce_login";
 
-  public static $option_integration_woocommerce_register = "altcha_integration_woocommerce_register";
+  public static $option_integration_woocommerce_register = "openporte_integration_woocommerce_register";
 
-  public static $option_integration_woocommerce_reset_password = "altcha_integration_woocommerce_reset_password";
+  public static $option_integration_woocommerce_reset_password = "openporte_integration_woocommerce_reset_password";
 
-  public static $option_integration_html_forms = "altcha_integration_html_forms";
+  public static $option_integration_html_forms = "openporte_integration_html_forms";
 
-  public static $option_integration_wordpress_login = "altcha_integration_wordpress_login";
+  public static $option_integration_wordpress_login = "openporte_integration_wordpress_login";
 
-  public static $option_integration_wordpress_register = "altcha_integration_wordpress_register";
+  public static $option_integration_wordpress_register = "openporte_integration_wordpress_register";
 
-  public static $option_integration_wordpress_reset_password = "altcha_integration_wordpress_reset_password";
+  public static $option_integration_wordpress_reset_password = "openporte_integration_wordpress_reset_password";
 
-  public static $option_integration_wordpress_comments = "altcha_integration_wordpress_comments";
+  public static $option_integration_wordpress_comments = "openporte_integration_wordpress_comments";
 
-  public static $option_integration_wpdiscuz = "altcha_integration_wpdiscuz";
+  public static $option_integration_wpdiscuz = "openporte_integration_wpdiscuz";
 
-  public static $option_integration_wpforms = "altcha_integration_wpforms";
+  public static $option_integration_wpforms = "openporte_integration_wpforms";
 
-  public static $option_integration_enfold_theme = "altcha_integration_enfold_theme";
+  public static $option_integration_enfold_theme = "openporte_integration_enfold_theme";
 
   public static $html_espace_allowed_tags = array(
     'altcha-widget' => array(

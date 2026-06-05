@@ -93,13 +93,69 @@ function openporte_init() {
 
 function openporte_activate()
 {
-  update_option(OpenPortePlugin::$option_api, 'selfhosted');
-  update_option(OpenPortePlugin::$option_api_custom_url, '');
-  delete_option('altcha_api_key'); // retired: paid SaaS regional classifier removed
-  update_option(OpenPortePlugin::$option_expires, '3600');
-  update_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
-  update_option(OpenPortePlugin::$option_hidefooter, true);
-  update_option(OpenPortePlugin::$option_integration_custom, 'captcha');
+  openporte_migrate_legacy_options();
+
+  // Seed defaults only when the option is absent (add_option is a no-op when it
+  // already exists), so a freshly migrated or a pre-existing configuration is
+  // preserved across (re)activation. In particular the signing secret must not
+  // be regenerated, or previously issued challenges would stop verifying.
+  add_option(OpenPortePlugin::$option_api, 'selfhosted');
+  add_option(OpenPortePlugin::$option_api_custom_url, '');
+  add_option(OpenPortePlugin::$option_expires, '3600');
+  add_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
+  add_option(OpenPortePlugin::$option_hidefooter, true);
+  add_option(OpenPortePlugin::$option_integration_custom, 'captcha');
+}
+
+/**
+ * Copy any legacy ALTCHA (altcha_*) option values into the OpenPorte
+ * (openporte_*) namespace on activation.
+ *
+ * Copy-only and guarded: an existing openporte_* value is never overwritten,
+ * and the original altcha_* options are left in place so a user can roll back
+ * to the original ALTCHA v1 plugin without losing their configuration.
+ */
+function openporte_migrate_legacy_options()
+{
+  $option_keys = array(
+    OpenPortePlugin::$option_api,
+    OpenPortePlugin::$option_api_custom_url,
+    OpenPortePlugin::$option_secret,
+    OpenPortePlugin::$option_complexity,
+    OpenPortePlugin::$option_expires,
+    OpenPortePlugin::$option_blockspam,
+    OpenPortePlugin::$option_auto,
+    OpenPortePlugin::$option_floating,
+    OpenPortePlugin::$option_delay,
+    OpenPortePlugin::$option_hidefooter,
+    OpenPortePlugin::$option_hidelogo,
+    OpenPortePlugin::$option_integration_coblocks,
+    OpenPortePlugin::$option_integration_contact_form_7,
+    OpenPortePlugin::$option_integration_custom,
+    OpenPortePlugin::$option_integration_elementor,
+    OpenPortePlugin::$option_integration_formidable,
+    OpenPortePlugin::$option_integration_forminator,
+    OpenPortePlugin::$option_integration_gravityforms,
+    OpenPortePlugin::$option_integration_woocommerce_login,
+    OpenPortePlugin::$option_integration_woocommerce_register,
+    OpenPortePlugin::$option_integration_woocommerce_reset_password,
+    OpenPortePlugin::$option_integration_html_forms,
+    OpenPortePlugin::$option_integration_wordpress_login,
+    OpenPortePlugin::$option_integration_wordpress_register,
+    OpenPortePlugin::$option_integration_wordpress_reset_password,
+    OpenPortePlugin::$option_integration_wordpress_comments,
+    OpenPortePlugin::$option_integration_wpdiscuz,
+    OpenPortePlugin::$option_integration_wpforms,
+    OpenPortePlugin::$option_integration_enfold_theme,
+  );
+
+  foreach ($option_keys as $new_key) {
+    $legacy_key = 'altcha_' . substr($new_key, strlen('openporte_'));
+    $legacy_value = get_option($legacy_key, null);
+    if ($legacy_value !== null && get_option($new_key, null) === null) {
+      update_option($new_key, $legacy_value);
+    }
+  }
 }
 
 function openporte_deactivate()
