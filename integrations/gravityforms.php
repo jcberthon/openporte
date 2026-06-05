@@ -6,7 +6,7 @@ if (altcha_plugin_active('gravityforms')) {
   add_action(
     'gform_loaded',
     function () {
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_gravityforms();
       if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
         require_once('gravityforms/addon.php');
@@ -22,7 +22,7 @@ if (altcha_plugin_active('gravityforms')) {
       if ($is_spam) {
         return $is_spam;
       }
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_gravityforms();
       if (!empty($mode)) {
         if ($plugin->spamfilter_result && $plugin->spamfilter_result['classification'] === 'BAD') {

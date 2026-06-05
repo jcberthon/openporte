@@ -24,7 +24,7 @@ if ( ! function_exists("insertBeforeKey") ) {
 if ( ! function_exists('altcha_enfold_theme_add_captcha_field') ) {
   function altcha_enfold_theme_add_captcha_field($elements)
   {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_enfold_theme();
     if ($mode !== 'captcha' && $mode !== 'captcha_spamfilter') {
       return $elements;
@@ -33,7 +33,7 @@ if ( ! function_exists('altcha_enfold_theme_add_captcha_field') ) {
     $captcha = [
       "id"        => "captcha",
       "type"      => "html",
-      "content"   =>  wp_kses($plugin->render_widget($mode, true), AltchaPlugin::$html_espace_allowed_tags)
+      "content"   =>  wp_kses($plugin->render_widget($mode, true), OpenPortePlugin::$html_espace_allowed_tags)
     ];
 
     $new = insertBeforeKey($elements, 'av-button', 'captcha', $captcha);
@@ -48,7 +48,7 @@ add_filter( 'avia_contact_form_elements', 'altcha_enfold_theme_add_captcha_field
 add_filter( 'avf_form_send', function ($proceed, $new_post, $form_params, $that)
 {
   /** @var avia_form $that */
-  $plugin = AltchaPlugin::$instance;
+  $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_enfold_theme();
   if (!empty($mode)) {
     $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(urldecode($_POST['altcha']))) : '';
@@ -64,7 +64,7 @@ add_filter( 'avf_form_send', function ($proceed, $new_post, $form_params, $that)
 add_filter( 'avf_mailchimp_subscriber_data', function ($data, $that)
 {
   /** @var avia_sc_mailchimp $that */
-  $plugin = AltchaPlugin::$instance;
+  $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_enfold_theme();
   if ( ! empty($mode) ) {
     $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(urldecode($_POST['altcha']))) : '';

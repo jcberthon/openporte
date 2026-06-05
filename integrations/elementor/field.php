@@ -20,14 +20,14 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
 
   public function render($item, $item_index, $form)
   {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_elementor();
     if (empty($mode) || $mode === 'spamfilter') {
       return '';
     }
-    echo wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($mode, false) . "</div>", AltchaPlugin::$html_espace_allowed_tags);
+    echo wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($mode, false) . "</div>", OpenPortePlugin::$html_espace_allowed_tags);
     // shadow element for error reporting
-		echo wp_kses('<input type="hidden" ' . $form->get_render_attribute_string('input' . $item_index) . '>', AltchaPlugin::$html_espace_allowed_tags);
+		echo wp_kses('<input type="hidden" ' . $form->get_render_attribute_string('input' . $item_index) . '>', OpenPortePlugin::$html_espace_allowed_tags);
   }
 
   public function update_controls($widget)
@@ -61,7 +61,7 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
 
   public function validation($field, $record, $ajax_handler)
   {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_elementor();
     if (!empty($mode)) {
       if ($mode === "captcha" || $mode === "captcha_spamfilter") {
@@ -77,7 +77,7 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
   }
 }
 
-if (AltchaPlugin::$instance->get_integration_elementor()) {
+if (OpenPortePlugin::$instance->get_integration_elementor()) {
   // Since Elementor Pro 3.31.2, script enqueuing does not seem to work properly when the widget is rendered.
   // Always enqueue scripts when the integration is active.
   altcha_enqueue_scripts();

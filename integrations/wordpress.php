@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action(
   'register_form',
   function () {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_register();
     if (!empty($mode)) {
       altcha_wordpress_comments_render_widget($mode, 'altcha_register');
@@ -18,7 +18,7 @@ add_action(
 add_action(
   'register_post',
   function ($user_login, $user_email, $errors) {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_register();
     if (!empty($mode)) {
       $altcha = isset($_POST['altcha_register']) ? trim(sanitize_text_field($_POST['altcha_register'])) : '';
@@ -38,7 +38,7 @@ add_action(
 add_action(
   'login_form',
   function () {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_login();
     if (!empty($mode)) {
       altcha_wordpress_comments_render_widget($mode);
@@ -63,7 +63,7 @@ add_filter(
     if(altcha_plugin_active('woocommerce') && isset($_POST['woocommerce-login-nonce'])) {
       return $user; // WooCommerce form submissions are handled separately
     }
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_login();
     if (!empty($mode)) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
@@ -80,7 +80,7 @@ add_filter(
 add_action(
   'lostpassword_form',
   function () {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_reset_password();
     if (!empty($mode)) {
       altcha_wordpress_comments_render_widget($mode);
@@ -99,7 +99,7 @@ add_filter(
     if(altcha_plugin_active('woocommerce') && isset($_POST['woocommerce-lost-password-nonce'])) {
       return $errors; // WooCommerce form submissions are handled separately
     }
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_reset_password();
     if (!empty($mode)) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
@@ -119,7 +119,7 @@ add_filter(
 add_action(
   'comment_form_after_fields',
   function () {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_comments();
     if (!empty($mode)) {
       altcha_wordpress_comments_render_widget($mode);
@@ -132,7 +132,7 @@ add_action(
 add_action(
   'comment_form_logged_in_after',
   function () {
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_wordpress_comments();
     if (!empty($mode)) {
       altcha_wordpress_comments_render_widget($mode);
@@ -153,7 +153,7 @@ add_filter(
     if (is_user_logged_in() && current_user_can('manage_options')) {
       return $comment;
     }
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = (altcha_plugin_active('wpdiscuz') && $plugin->get_integration_wpdiscuz()) || $plugin->get_integration_wordpress_comments();
     if (!empty($mode)) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
@@ -169,6 +169,6 @@ add_filter(
 
 function altcha_wordpress_comments_render_widget($mode, $name = null)
 {
-  $plugin = AltchaPlugin::$instance;
-  echo wp_kses($plugin->render_widget($mode, true, null, $name), AltchaPlugin::$html_espace_allowed_tags);
+  $plugin = OpenPortePlugin::$instance;
+  echo wp_kses($plugin->render_widget($mode, true, null, $name), OpenPortePlugin::$html_espace_allowed_tags);
 }

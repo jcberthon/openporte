@@ -34,7 +34,7 @@ function altcha_plugin_active($name) {
 function altcha_enqueue_styles() {
   wp_enqueue_style(
     'altcha-widget-styles',
-    AltchaPlugin::$widget_style_src,
+    OpenPortePlugin::$widget_style_src,
     array(),
     OPENPORTE_VERSION,
     'all'
@@ -44,14 +44,14 @@ function altcha_enqueue_styles() {
 function altcha_enqueue_scripts() {
   wp_enqueue_script(
     'altcha-widget',
-    AltchaPlugin::$widget_script_src,
+    OpenPortePlugin::$widget_script_src,
     array(),
     OPENPORTE_VERSION,
     true
   );
   wp_enqueue_script(
     'altcha-widget-wp',
-    AltchaPlugin::$wp_script_src,
+    OpenPortePlugin::$wp_script_src,
     array('altcha-widget'),
     OPENPORTE_VERSION,
     true

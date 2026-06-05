@@ -11,10 +11,10 @@ if (altcha_plugin_active('html-forms')) {
   add_filter(
     'hf_form_html',
     function ($html) {
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_html_forms();
       if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        return str_replace('</form>', wp_kses($plugin->render_widget($mode), AltchaPlugin::$html_espace_allowed_tags) . '</form>', $html);
+        return str_replace('</form>', wp_kses($plugin->render_widget($mode), OpenPortePlugin::$html_espace_allowed_tags) . '</form>', $html);
       }
       return $html;
     }
@@ -23,7 +23,7 @@ if (altcha_plugin_active('html-forms')) {
   add_filter(
     'hf_validate_form',
     function ($error_code, $form, $data) {
-      $plugin = AltchaPlugin::$instance;
+      $plugin = OpenPortePlugin::$instance;
       $mode = $plugin->get_integration_html_forms();
       if (!empty($mode)) {
         if ($mode === "shortcode" && strpos($form, "<altcha-widget ") === false) {

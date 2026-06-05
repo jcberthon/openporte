@@ -8,7 +8,7 @@ if (altcha_plugin_active('elementor')){
 
     $form_fields_registrar->register(new \Elementor_Form_Altcha_Field());
   }
-  $plugin = AltchaPlugin::$instance;
+  $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_elementor();
   if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
     add_action('elementor_pro/forms/fields/register', 'altcha_register_form_field');

@@ -45,7 +45,7 @@ class AltchaFieldType extends FrmFieldType
 
 	public function validate($args)
 	{
-    $plugin = AltchaPlugin::$instance;
+    $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_formidable();
 		$errors = array();
     if (!empty($mode)) {
@@ -62,10 +62,10 @@ class AltchaFieldType extends FrmFieldType
 
 	public function front_field_input($args, $shortcode_atts)
 	{
-		$plugin = AltchaPlugin::$instance;
+		$plugin = OpenPortePlugin::$instance;
 		$mode = $plugin->get_integration_formidable();
 		if (!empty($mode) && $mode === 'captcha') {
-			return wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($mode, false) . "</div>", AltchaPlugin::$html_espace_allowed_tags);
+			return wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($mode, false) . "</div>", OpenPortePlugin::$html_espace_allowed_tags);
 		}
 		return '';
 	}
