@@ -1,6 +1,6 @@
 # Entry Point
 
-altcha.php is the sole entry point. It contains the WordPress plugin header (Plugin Name, Version, etc.), defines three constants (ALTCHA_VERSION, ALTCHA_WIDGET_VERSION, ALTCHA_WEBSITE), then sequentially requires all other files and registers the top-level hooks.
+openporte.php is the sole entry point. It contains the WordPress plugin header (Plugin Name, Version, etc.), defines three constants (OPENPORTE_VERSION, OPENPORTE_WIDGET_VERSION, ALTCHA_WEBSITE), then sequentially requires all other files and registers the top-level hooks.
 
 # How It Hooks Into WordPress
 
@@ -10,20 +10,20 @@ The plugin uses no custom framework — everything is pure WordPress hook API:
 Registration;	Hook;	Purpose
 register_activation_hook;	—;	Seeds 8 default wp_options entries
 add_action('init');	—;	Loads i18n textdomain
-add_action('rest_api_init');	—;	Registers GET /wp-json/altcha/v1/challenge
+add_action('rest_api_init');	—;	Registers GET /wp-json/openporte/v1/challenge
 add_action('admin_menu');	—;	Adds Settings > ALTCHA menu page
 add_action('admin_init');	—;	Registers all 30 settings fields via the Settings API
 add_filter('script_loader_tag');	public/widget.php;	Adds type="module" to the widget <script> tag
 add_shortcode('altcha');	—;	[altcha] shortcode for manual widget placement
 ~40 hooks across 13 integration files;	various;	Render widget + validate on each supported form plugin
 
-The AltchaPlugin class in includes/core.php is a singleton (accessed via AltchaPlugin::$instance everywhere). It owns all shared logic: challenge generation, HMAC verification, spam-filter API calls, widget HTML rendering, and all wp_options key names.
+The OpenPortePlugin class in includes/core.php is a singleton (accessed via OpenPortePlugin::$instance everywhere). It owns all shared logic: challenge generation, HMAC verification, spam-filter API calls, widget HTML rendering, and all wp_options key names.
 
 # Directory Layout
 
-altcha.php                  ← Entry point + plugin header
+openporte.php                  ← Entry point + plugin header
 includes/
-  core.php                  ← AltchaPlugin singleton (all business logic)
+  core.php                  ← OpenPortePlugin singleton (all business logic)
   helpers.php               ← Script enqueue helpers, plugin-detection
   admin.php                 ← Admin menu registration
   settings.php              ← Settings API (30 options, 5 sections)
@@ -66,7 +66,7 @@ languages/                  ← 27 pre-compiled .po/.mo translation files
 File; 	Origin
 public/altcha.min.js;	Upstream — ALTCHA Svelte web component v2.2.2 from altcha-org/altcha. Do not edit.
 public/altcha.js;	Upstream — comment-only header explaining the source repo
-Everything else in public/, includes/, integrations/, admin/, altcha.php;	Original plugin code
+Everything else in public/, includes/, integrations/, admin/, openporte.php;	Original plugin code
 README.md;	Fork-modified — rewritten to say "community reconstruction of the retired official plugin"; issue tracker changed to this fork
 readme.txt;	Verbatim from upstream release ZIP, but the Installation section still references https://github.com/altcha-org/wordpress-plugin/releases (the retired upstream)
 
@@ -76,7 +76,7 @@ The plugin is a reconstruction of the retired official altcha-org/wordpress-plug
 
 1. Version numbers live in 5 separate places — all must be updated together.
 
-altcha.php (plugin header Version:, Stable tag:, and ALTCHA_VERSION constant), plus readme.txt (header + new changelog entry). Miss any one and WordPress.org auto-update or the browser cache-buster (ALTCHA_VERSION is used as the cache-busting query string for all enqueued assets) will be inconsistent.
+openporte.php (plugin header Version:, Stable tag:, and OPENPORTE_VERSION constant), plus readme.txt (header + new changelog entry). Miss any one and WordPress.org auto-update or the browser cache-buster (OPENPORTE_VERSION is used as the cache-busting query string for all enqueued assets) will be inconsistent.
 
 2. coblocks.php works by spoofing reCAPTCHA — any CoBlocks update can silently break it.
 

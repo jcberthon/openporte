@@ -2,13 +2,16 @@
 
 > Maintainer / contributor reference. User-facing essentials (how to choose a
 > mode, the privacy stance) live in `readme.txt`; coding conventions live in
-> `AGENTS.md`. This document reflects the codebase after the paid-SaaS removal.
+> `AGENTS.md`. This document reflects the codebase after the paid-SaaS removal
+> and the OpenPorte rebrand (1.27.0).
 >
-> Naming note: identifiers are still `altcha_*` / `AltchaPlugin` here; the
-> rename to **OpenPorte** is tracked as a separate issue and not yet applied.
+> Naming note: the plugin class (`OpenPortePlugin`), the DB option keys, the
+> public hooks, the REST namespace and the text domain were moved to the
+> `openporte` namespace in 1.27.0, with the old `altcha_*` / `AltchaPlugin`
+> names kept as deprecated aliases. Some internal function and settings-field
+> identifiers still carry the `altcha_` prefix pending a follow-up cleanup.
 > References are by function name rather than line number on purpose — line
-> numbers in this codebase have already shifted several times and will shift
-> again with the rename.
+> numbers in this codebase have already shifted several times.
 
 ## Overview and modes
 
@@ -17,7 +20,7 @@ service dependency. A third mode — a paid SaaS classifier hosted on
 `altcha.org` — was removed.
 
 - **`selfhosted`** (default): proof-of-work. Challenges are served by a
-  WordPress REST endpoint at `wp-json/altcha/v1/challenge`. No API key, no
+  WordPress REST endpoint at `wp-json/openporte/v1/challenge`. No API key, no
   external service, no account.
 - **`custom`**: the challenge URL points to a backend the site operator runs
   themselves. Responses are verified by server signature using the site's own

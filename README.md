@@ -4,7 +4,7 @@
 Protection plugin for WordPress (v1)** — a free, open source, self-hostable,
 privacy-friendly CAPTCHA alternative.
 
-Website: https://altcha.org
+Website: https://github.com/jcberthon/openporte
 
 WordPress Plugin Directory: none yet
 
@@ -26,16 +26,19 @@ OpenPorte uses the upstream [ALTCHA widget](https://github.com/altcha-org/altcha
 
 ## Compatibility
 
-Backward-compatible with ALTCHA v1: settings migrate automatically, the
-`[altcha]` shortcode and all existing hooks keep working. Integrations for
-paid-only plugins (e.g. Enfold) are **deprecated** and will be removed.
+Backward-compatible with ALTCHA v1: settings migrate automatically (the
+original `altcha_*` options are left in place, so you can roll back), and the
+`[altcha]` shortcode, the `altcha/v1` REST namespace and the `altcha_*` hooks
+keep working as **deprecated aliases** of their `openporte` equivalents.
+Integrations for paid-only plugins (e.g. Enfold) are also **deprecated** and
+will be removed.
 
 ## Supported Integrations
 
 * CoBlocks
 * Contact Form 7
-* Elementor Pro Forms
-* Enfold Theme
+* Elementor Pro Forms (deprecated — paid plugin)
+* Enfold Theme (deprecated — paid plugin)
 * Formidable Forms
 * Forminator
 * GravityForms
@@ -46,7 +49,7 @@ paid-only plugins (e.g. Enfold) are **deprecated** and will be removed.
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML (with a short code `[altcha]` (deprecated) or `[openporte])
+* Custom HTML (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
 
 ## Floating UI
 
@@ -61,15 +64,24 @@ Currently the Floating UI does not work with:
 You cannot install version 1 currently by searching the plugin directory (at work). Alternatively, install the plugin manually:
 
 1. Download the `.zip` from the [Releases](https://github.com/jcberthon/openporte/releases).
-2. Upload `altcha` folder to the `/wp-content/plugins/` directory  
+2. Upload `openporte` folder to the `/wp-content/plugins/` directory  
 3. Activate the plugin through the 'Plugins' menu in WordPress  
 4. Review the settings and enable your integrations
 
-### Mode of Operation (to be updated)
+### Modes of Operation
 
-_Note: TODO add custom mode, as only the paid altcha.org SaaS classifier is removed; keep self-hosted PoW and custom self-hostable backend. Description below requires an update._
+OpenPorte verifies submissions in one of two modes, selected in the settings
+(API Mode):
 
-There is only a self-hosted mode, which is enabled after activation. No additional setup is required, except enabling the integrations you need in the plugin settings.
+- **Self-hosted** (default) — a proof-of-work challenge is issued and verified by
+  your own WordPress site via the REST API. Fully self-contained, no external
+  service, no account.
+- **Custom** — point the Challenge URL at your own ALTCHA-compatible backend
+  (e.g. a self-hosted ALTCHA Sentinel); submissions are verified with your site's
+  signing secret.
+
+The paid altcha.org regional SaaS classifier offered by earlier versions has been
+removed; both remaining modes are free and self-hostable.
 
 ### REST API
 
@@ -78,43 +90,45 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 ### Hooks
 
 The plugin provides several hooks to customize or extend its functionality.
+Each hook below is also fired under its old `altcha_*` name as a **deprecated
+alias** (via WordPress' deprecated-hook mechanism); use the `openporte_*` names.
 
 #### Filters
 
-* `apply_filters('altcha_challenge_url', $challenge_url)`  
+* `apply_filters('openporte_challenge_url', $challenge_url)`  
   Override the challenge URL.  
   **Returns:** `string`
 
-* `apply_filters('altcha_integrations', $integrations)`  
+* `apply_filters('openporte_integrations', $integrations)`  
   Modify the list of available integrations. Supported values: `captcha`, `captcha_spamfilter`, `shortcode`.  
   **Returns:** `array<string>`
 
-* `apply_filters('altcha_plugin_active', false, $name)`  
+* `apply_filters('openporte_plugin_active', false, $name)`  
   Check if an integration by `$name` is active.  
   **Returns:** `bool`
 
-* `apply_filters('altcha_widget_attrs', $attrs, $mode, $language, $name)`  
+* `apply_filters('openporte_widget_attrs', $attrs, $mode, $language, $name)`  
   Override widget attributes.  
   **Returns:** `array<string, mixed>`
 
-* `apply_filters('altcha_widget_html', $html, $mode, $language, $name)`  
+* `apply_filters('openporte_widget_html', $html, $mode, $language, $name)`  
   Override the entire widget HTML.  
   **Returns:** `string`
 
-* `apply_filters('altcha_translations', $translations, $language)`  
+* `apply_filters('openporte_translations', $translations, $language)`  
   Override translation strings.  
   **Returns:** `array<string, string>`
 
 #### Actions
 
-* `do_action('altcha_verify_result', $result)`  
+* `do_action('openporte_verify_result', $result)`  
   Triggered after payload verification.
 
   * `$result`: `bool` verification result.  
   * Full server verification payload is available via:
 
     ```php
-    AltchaPlugin::$instance->spamfilter_result
+    OpenPortePlugin::$instance->spamfilter_result
 
 ## License
 

@@ -34,19 +34,19 @@ There are zero automated tests. Before and after changes:
 
 ## Entry point and load order
 
-`altcha.php` is the sole entry point. It `require`s files in this order, which matters:
+`openporte.php` is the sole entry point. It `require`s files in this order, which matters:
 
 1. `includes/helpers.php`
-2. `includes/core.php` — instantiates `AltchaPlugin` singleton immediately on load
+2. `includes/core.php` — instantiates `OpenPortePlugin` singleton immediately on load
 3. `public/widget.php`
 4. All 13 files under `integrations/` — each self-registers its hooks at `require` time
 
-Each integration file registers hooks unconditionally at load; the callbacks themselves check `AltchaPlugin::$instance->get_integration_*()` to decide whether to act.
+Each integration file registers hooks unconditionally at load; the callbacks themselves check `OpenPortePlugin::$instance->get_integration_*()` to decide whether to act.
 
 ## Coding conventions
 
-- **Singleton access:** always `AltchaPlugin::$instance`. Never call `new AltchaPlugin()`.
-- **WP options keys:** all defined as `static` properties on `AltchaPlugin` (e.g., `AltchaPlugin::$option_api`). Never hardcode the raw option string `"altcha_*"` anywhere — always reference the property.
+- **Singleton access:** always `OpenPortePlugin::$instance`. Never call `new OpenPortePlugin()`.
+- **WP options keys:** all defined as `static` properties on `OpenPortePlugin` (e.g., `OpenPortePlugin::$option_api`). Never hardcode the raw option string `"openporte_*"` anywhere — always reference the property. (The legacy `altcha_*` keys live only in the activation-time migration map.)
 - **i18n:** most user-facing strings use `__()` / `esc_html__()`. Exceptions exist (see fix-mes below) — follow the existing pattern when adding new strings.
 - **Static analysis**: only necessary for code changes, then read `@docs/agents/static-analysis.md`.
 
@@ -77,18 +77,18 @@ Five locations must change atomically or the plugin breaks:
 
 | File | Field |
 |---|---|
-| `altcha.php` | `* Version:` in header |
-| `altcha.php` | `* Stable tag:` in header |
-| `altcha.php` | `define('ALTCHA_VERSION', ...)` |
+| `openporte.php` | `* Version:` in header |
+| `openporte.php` | `* Stable tag:` in header |
+| `openporte.php` | `define('OPENPORTE_VERSION', ...)` |
 | `readme.txt` | `Version:` in header |
 | `readme.txt` | `Stable tag:` + new `= X.Y.Z =` changelog entry |
 
-`ALTCHA_VERSION` is also used as the cache-busting query string for all enqueued assets.
+`OPENPORTE_VERSION` is also used as the cache-busting query string for all enqueued assets.
 
 ## `public/altcha.min.js` — vendored, do not edit
 
 Vendored from [`altcha-org/altcha`](https://github.com/altcha-org/altcha) (MIT
-at last upgrade). Version tracked by `ALTCHA_WIDGET_VERSION` in `altcha.php`.
+at last upgrade). Version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
 
 For upgrades and licensing-risk contingency (only load on a need-basis):
 @docs/agents/altcha-upstream.md
@@ -106,10 +106,13 @@ CoBlocks has no extension API, so the integration fakes a reCAPTCHA token and in
 
 **Fix on sight when touching adjacent code (call out in commit message):**
 
-- `core.php:560` — `"This form requires JavaScript!"` is hardcoded English; not wrapped in `__()`.
-- `core.php:594` — `$resp['response']['code']` is accessed without an `is_wp_error($resp)` guard; on network failure this produces PHP notices.
-- `core.php:415,445` — HMAC signatures compared with `===` instead of `hash_equals()`. If you fix this, preserve the `true` (raw binary) flag on `hash('sha256', ..., true)` at line 413 — removing it would break all challenge verification.
-- Read the file `local/Security_Analysis.md` for security issues that need correction (not published online).
+- The core.php defects previously listed here — the untranslated "requires
+  JavaScript" string, the missing `is_wp_error()` guard, and the `===` HMAC
+  comparison — were fixed in 1.27.0. When touching the HMAC path, preserve the
+  `true` (raw binary) flag on `hash('sha256', …, true)`; removing it breaks all
+  challenge verification.
+- Read the file `local/Security_Analysis.md` for security issues that need
+  correction (not published online).
 
 ## Release
 
