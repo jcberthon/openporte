@@ -49,18 +49,29 @@ echo "wp-init: creating fixture pages…"
 existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field=post_name 2>/dev/null || true)"
 
 if ! grep -qxF "contact-us" <<<"$existing_slugs"; then
-  # Contact Form 7 creates a default form on activation; discover its id instead
-  # of hard-coding it (the id is assigned at install time and is not stable).
-  # grep the first numeric token so wp-env's run decoration can't leak in.
-  cf7_id="$(wpcli post list --post_type=wpcf7_contact_form --format=ids 2>/dev/null | grep -oE '[0-9]+' | head -n1 || true)"
-  if [ -z "$cf7_id" ]; then
+  # Contact Form 7 5.x identifies forms by a hash (stored in the _hash postmeta);
+  # the numeric post id is deprecated. Discover the default form's post id, read
+  # its hash, and emit the shortcode with the hash UNQUOTED — the hash is
+  # alphanumeric, so it needs no quotes and survives the host -> ssh -> docker
+  # shell layers intact (embedded double quotes get mangled across them).
+  cf7_post_id="$(wpcli post list --post_type=wpcf7_contact_form --format=ids 2>/dev/null | grep -oE '[0-9]+' | head -n1 || true)"
+  cf7_hash=""
+  if [ -n "$cf7_post_id" ]; then
+    cf7_hash="$(wpcli post meta get "$cf7_post_id" _hash 2>/dev/null | grep -oE '[a-f0-9]{7,}' | head -n1 || true)"
+  fi
+
+  if [ -n "$cf7_hash" ]; then
+    echo "wp-init: using Contact Form 7 hash ${cf7_hash}."
+    wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
+      --post_content="[contact-form-7 id=${cf7_hash}]"
+  elif [ -n "$cf7_post_id" ]; then
+    echo "wp-init: hash not found; falling back to Contact Form 7 post id ${cf7_post_id}." >&2
+    wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
+      --post_content="[contact-form-7 id=${cf7_post_id}]"
+  else
     echo "wp-init: WARNING — no Contact Form 7 form found; the 'Contact Us' page will have no form." >&2
     wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
       --post_content='No Contact Form 7 form was found when this page was provisioned.'
-  else
-    echo "wp-init: using Contact Form 7 form id ${cf7_id}."
-    wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
-      --post_content="[contact-form-7 id=\"${cf7_id}\"]"
   fi
 fi
 
