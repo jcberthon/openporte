@@ -279,7 +279,9 @@ class OpenPortePlugin
       $challenge_url = get_rest_url(null, "/altcha/v1/challenge");
     }
 
-    return apply_filters('altcha_challenge_url', $challenge_url);
+    $challenge_url = apply_filters('openporte_challenge_url', $challenge_url);
+    // Deprecated alias kept for back-compat; remove in a future release.
+    return apply_filters_deprecated('altcha_challenge_url', array($challenge_url), '1.27.0', 'openporte_challenge_url');
   }
 
   public function get_translations($language = null)
@@ -306,7 +308,9 @@ class OpenPortePlugin
       "waitAlert" => __('Verifying... please wait.', 'altcha-spam-protection'),
     );
 
-    $translations = apply_filters('altcha_translations', $translations, $language);
+    $translations = apply_filters('openporte_translations', $translations, $language);
+    // Deprecated alias kept for back-compat; remove in a future release.
+    $translations = apply_filters_deprecated('altcha_translations', array($translations, $language), '1.27.0', 'openporte_translations');
 
     if ($originalLanguage !== null) {
       switch_to_locale($originalLanguage);
@@ -335,7 +339,9 @@ class OpenPortePlugin
       $this->get_integration_wpforms(),
     );
 
-    return apply_filters('altcha_integrations', $integrations);
+    $integrations = apply_filters('openporte_integrations', $integrations);
+    // Deprecated alias kept for back-compat; remove in a future release.
+    return apply_filters_deprecated('altcha_integrations', array($integrations), '1.27.0', 'openporte_integrations');
   }
 
   public function has_active_integrations()
@@ -356,7 +362,8 @@ class OpenPortePlugin
       $hmac_key = $this->get_secret();
     }
     if (empty($payload) || empty($hmac_key)) {
-      do_action('altcha_verify_result', false);
+      do_action('openporte_verify_result', false);
+      do_action_deprecated('altcha_verify_result', array(false), '1.27.0', 'openporte_verify_result');
 
       return false;
     }
@@ -367,7 +374,8 @@ class OpenPortePlugin
       $result = $this->verify_solution($payload, $hmac_key);
     }
 
-    do_action('altcha_verify_result', $result);
+    do_action('openporte_verify_result', $result);
+    do_action_deprecated('altcha_verify_result', array($result), '1.27.0', 'openporte_verify_result');
 
     return $result;
   }
@@ -508,7 +516,9 @@ class OpenPortePlugin
     if ($mode === "captcha_spamfilter") {
       $attrs['spamfilter'] = '1';
     }
-    return apply_filters('altcha_widget_attrs', $attrs, $mode, $language, $name);
+    $attrs = apply_filters('openporte_widget_attrs', $attrs, $mode, $language, $name);
+    // Deprecated alias kept for back-compat; remove in a future release.
+    return apply_filters_deprecated('altcha_widget_attrs', array($attrs, $mode, $language, $name), '1.27.0', 'openporte_widget_attrs');
   }
 
   public function render_widget($mode, $wrap = false, $language = null, $name = null)
@@ -534,7 +544,9 @@ class OpenPortePlugin
       $html = '<div class="altcha-widget-wrap">' . $html . '</div>';
     }
 
-    return apply_filters('altcha_widget_html', $html, $mode, $language, $name);
+    $html = apply_filters('openporte_widget_html', $html, $mode, $language, $name);
+    // Deprecated alias kept for back-compat; remove in a future release.
+    return apply_filters_deprecated('altcha_widget_html', array($html, $mode, $language, $name), '1.27.0', 'openporte_widget_html');
   }
 
   function remove_private_keys($array, $ignore_fields = array())

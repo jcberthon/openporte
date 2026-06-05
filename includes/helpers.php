@@ -27,7 +27,9 @@ function altcha_plugin_active($name) {
     case 'wpforms':
       return is_plugin_active('wpforms/wpforms.php') || is_plugin_active('wpforms-lite/wpforms.php');
     default:
-      return apply_filters('altcha_plugin_active', false, $name);
+      $active = apply_filters('openporte_plugin_active', false, $name);
+      // Deprecated alias kept for back-compat; remove in a future release.
+      return apply_filters_deprecated('altcha_plugin_active', array($active, $name), '1.27.0', 'openporte_plugin_active');
   }
 }
 

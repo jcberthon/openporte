@@ -647,7 +647,8 @@ if (is_admin()) {
         )
     );
 
-    do_action('altcha_settings_integrations');
+    do_action('openporte_settings_integrations');
+    do_action_deprecated('altcha_settings_integrations', array(), '1.27.0', 'openporte_settings_integrations');
 
     // Section
     add_settings_section(
