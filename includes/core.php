@@ -525,7 +525,8 @@ class AltchaPlugin
       . $attributes
       . "></altcha-widget>"
       . "<noscript>"
-      . "<div class=\"altcha-no-javascript\">This form requires JavaScript!</div>"
+      /* translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it. */
+      . "<div class=\"altcha-no-javascript\">" . esc_html__('This form requires JavaScript!', 'altcha-spam-protection') . "</div>"
       . "</noscript>";
     if ($wrap) {
       $html = '<div class="altcha-widget-wrap">' . $html . '</div>';
