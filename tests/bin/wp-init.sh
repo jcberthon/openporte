@@ -18,20 +18,24 @@
 
 set -euo pipefail
 
-# Run a wp-cli command inside the wp-env "cli" container. --silent keeps npm's
-# banner out of the output so command substitution below stays clean.
-wpcli() { npm run --silent env run cli -- wp "$@"; }
+# Run a wp-cli command inside the wp-env "cli" container. wp-env is the binary
+# used by wp-env.sh (there is no npm "env" script in this repo).
+wpcli() { wp-env run cli wp "$@"; }
 
 ALTCHA_SLUG="altcha-spam-protection"
-ALTCHA_ZIP="local/${ALTCHA_SLUG}.1.26.3.zip"
+# The plugin dir is mapped to wp-content/plugins/openporte, so the zip in local/
+# is reachable from the container at this path (relative to the WordPress root).
+ALTCHA_ZIP_HOST="local/${ALTCHA_SLUG}.1.26.3.zip"
+ALTCHA_ZIP_CONTAINER="wp-content/plugins/openporte/local/${ALTCHA_SLUG}.1.26.3.zip"
 ALTCHA_URL="https://downloads.wordpress.org/plugin/${ALTCHA_SLUG}.1.26.3.zip"
 
 echo "wp-init: installing legacy ALTCHA v1.26.3 (source plugin for the migration test)…"
-if [ -f "$ALTCHA_ZIP" ]; then
-  wpcli plugin install "$ALTCHA_ZIP" --force
+if [ -f "$ALTCHA_ZIP_HOST" ] && wpcli plugin install "$ALTCHA_ZIP_CONTAINER" --force; then
+  echo "wp-init: installed ALTCHA from the local zip."
 else
   # The zip is intentionally not committed to git; wordpress.org still serves the
   # byte-identical 1.26.3 build, so fall back to downloading it.
+  echo "wp-init: local zip unavailable, downloading ALTCHA from wordpress.org…"
   wpcli plugin install "$ALTCHA_URL" --force
 fi
 
@@ -42,12 +46,13 @@ wpcli plugin deactivate openporte || true
 wpcli plugin activate contact-form-7
 
 echo "wp-init: creating fixture pages…"
-existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field=post_name)"
+existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field=post_name 2>/dev/null || true)"
 
 if ! grep -qxF "contact-us" <<<"$existing_slugs"; then
   # Contact Form 7 creates a default form on activation; discover its id instead
   # of hard-coding it (the id is assigned at install time and is not stable).
-  cf7_id="$(wpcli post list --post_type=wpcf7_contact_form --format=ids | awk '{print $1}')"
+  # grep the first numeric token so wp-env's run decoration can't leak in.
+  cf7_id="$(wpcli post list --post_type=wpcf7_contact_form --format=ids 2>/dev/null | grep -oE '[0-9]+' | head -n1 || true)"
   if [ -z "$cf7_id" ]; then
     echo "wp-init: WARNING — no Contact Form 7 form found; the 'Contact Us' page will have no form." >&2
     wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
