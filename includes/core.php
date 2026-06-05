@@ -276,7 +276,7 @@ class OpenPortePlugin
     if ($api === "custom") {
       $challenge_url = $this->get_api_custom_url();
     } else { /* default to selfhosted */
-      $challenge_url = get_rest_url(null, "/altcha/v1/challenge");
+      $challenge_url = get_rest_url(null, "/openporte/v1/challenge");
     }
 
     $challenge_url = apply_filters('openporte_challenge_url', $challenge_url);
@@ -606,17 +606,19 @@ require plugin_dir_path(__FILE__) . 'settings.php';
 add_action(
   'rest_api_init',
   function () {
-    $namespace = 'altcha/v1';
-    $route     = 'challenge';
-    register_rest_route($namespace, $route, array(
+    $route = 'challenge';
+    $args  = array(
       'methods'   => WP_REST_Server::READABLE,
-      'callback'  => 'altcha_generate_challenge_endpoint',
+      'callback'  => 'openporte_generate_challenge_endpoint',
       'permission_callback' => '__return_true'
-    ));
+    );
+    register_rest_route('openporte/v1', $route, $args);
+    // Deprecated alias namespace kept for back-compat; remove in a future release.
+    register_rest_route('altcha/v1', $route, $args);
   }
 );
 
-function altcha_generate_challenge_endpoint()
+function openporte_generate_challenge_endpoint()
 {
   $resp = new WP_REST_Response(OpenPortePlugin::$instance->generate_challenge());
   $resp->set_headers(array('Cache-Control' => 'no-cache, no-store, max-age=0'));

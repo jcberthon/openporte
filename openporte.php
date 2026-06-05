@@ -70,18 +70,18 @@ register_deactivation_hook(__FILE__, 'openporte_deactivate');
 add_action('init', 'openporte_init');
 add_action('after_plugin_row_' . plugin_basename(__FILE__), 'openporte_plugin_custom_message');
 
-add_shortcode(
-  'altcha',
-  function ($attrs) {
-    $plugin = OpenPortePlugin::$instance;
-    $default = array(
-      'language' => null,
-      'mode' => $plugin->get_integration_custom(),
-    );
-    $a = shortcode_atts($default, $attrs);
-    return wp_kses($plugin->render_widget($a['mode'], true, $a['language']), OpenPortePlugin::$html_espace_allowed_tags);
-  }
-);
+$openporte_shortcode = function ($attrs) {
+  $plugin = OpenPortePlugin::$instance;
+  $default = array(
+    'language' => null,
+    'mode' => $plugin->get_integration_custom(),
+  );
+  $a = shortcode_atts($default, $attrs);
+  return wp_kses($plugin->render_widget($a['mode'], true, $a['language']), OpenPortePlugin::$html_espace_allowed_tags);
+};
+add_shortcode('openporte', $openporte_shortcode);
+// Deprecated [altcha] alias kept for back-compat; remove in a future release.
+add_shortcode('altcha', $openporte_shortcode);
 
 function openporte_init() {
   load_plugin_textdomain(
