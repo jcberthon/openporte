@@ -86,3 +86,4 @@ logs/
 .wp-env.conf
 .shellcheckrc
 .wpenvrc
+composer.json

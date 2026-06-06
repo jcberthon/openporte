@@ -16,3 +16,4 @@ local
 composer.lock
 composer.json
 docs
+tests
