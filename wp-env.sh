@@ -147,6 +147,7 @@ print_environment_info() {
 
   # Get all info in a single SSH call for efficiency
   local all_info
+  # shellcheck disable=SC2029
   all_info=$(ssh ${REMOTE_USER}@${REMOTE_HOST} "
     cd ~/${REMOTE_PATH} && \
     source ./.wpenvrc && \
@@ -163,13 +164,11 @@ print_environment_info() {
   }
 
   # Parse status info
-  local url runtime multisite xdebug http_port mysql_port install_path
+  local url runtime multisite xdebug install_path
   url=$(echo "$all_info" | awk -F': ' '/^    - url:/ {print $2}')
   runtime=$(echo "$all_info" | awk -F': ' '/^    - runtime:/ {print $2}')
   multisite=$(echo "$all_info" | awk -F': ' '/^    - multisite:/ {print $2}')
   xdebug=$(echo "$all_info" | awk -F': ' '/^    - xdebug:/ {print $2}')
-  http_port=$(echo "$all_info" | awk -F': ' '/^    - http port:/ {print $2}')
-  mysql_port=$(echo "$all_info" | awk -F': ' '/^    - mysql port:/ {print $2}')
   install_path=$(echo "$all_info" | awk -F': ' '/^    - install path:/ {print $2}')
 
   # Parse versions from dedicated sections
@@ -196,18 +195,33 @@ print_environment_info() {
   echo ""
 }
 
-# Execute rsync and SSH command
+# Sync the working tree to the remote only for the `start` command. For other
+# commands (logs, stop, destroy, run, status, …) an `rsync --delete` can race
+# with in-progress local edits and interfere with the command, so skip it.
+IS_START=false
+for arg in "${REMAINING_ARGS[@]}"; do
+  if [[ "$arg" == "start" ]]; then
+    IS_START=true
+    break
+  fi
+done
+
+if [[ "$IS_START" == "true" ]]; then
+  # shellcheck disable=SC2029
+  rsync -az --delete --exclude='.git' --exclude='.DS_Store' --exclude='local' \
+      --exclude='protect,r .wordpress-org' --exclude='protect,r .distignore' \
+      . ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/
+fi
+
 # shellcheck disable=SC2029
-rsync -az --delete --exclude='.git' --exclude='.DS_Store' --exclude='local' \
-    --exclude='protect,r .wordpress-org' --exclude='protect,r .distignore' \
-    . ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/ && \
 ssh ${REMOTE_USER}@${REMOTE_HOST} \
     "cd ~/${REMOTE_PATH} && \
      source ./.wpenvrc && \
      ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
      ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} \
-     wp-env $*" && \
-# Display environment info if verbose mode and start command
-if [[ "${VERBOSE_MODE}" == "true" ]] && [[ " ${REMAINING_ARGS[*]// / } " == *"start"* ]]; then
+     wp-env $*"
+
+# Display environment info in verbose mode after a start.
+if [[ "${VERBOSE_MODE}" == "true" ]] && [[ "$IS_START" == "true" ]]; then
   print_environment_info
 fi
