@@ -1,1 +1,1 @@
-<p>ALTCHA will be displayed here.</p>
+<p>OpenPorte will be displayed here.</p>

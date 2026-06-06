@@ -15,7 +15,7 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
 
   public function get_name()
   {
-    return esc_html__('ALTCHA', 'openporte');
+    return esc_html__('OpenPorte', 'openporte');
   }
 
   public function render($item, $item_index, $form)

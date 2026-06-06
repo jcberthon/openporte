@@ -35,7 +35,7 @@ if (altcha_plugin_active('gravityforms')) {
           $score =  $plugin->spamfilter_result['score'];
           $reason = "score: $score, " . implode(', ', (array) $plugin->spamfilter_result['reasons']);
         }
-        GFCommon::set_spam_filter(rgar($form, 'id'), 'ALTCHA Spam Filter', $reason);
+        GFCommon::set_spam_filter(rgar($form, 'id'), 'OpenPorte Spam Filter', $reason);
       }
       return $is_spam;
     },

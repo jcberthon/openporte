@@ -28,7 +28,7 @@ add_filter( 'frm_get_field_type_class', 'altcha_get_field_type_class', 10, 2 );
 
 function altcha_add_new_field( $fields ) {
 	$fields['altcha'] = array(
-		'name' => 'ALTCHA',
+		'name' => 'OpenPorte',
 		'icon' => 'frm_icon_font frm_shield_check_icon',
 	);
 	return $fields;

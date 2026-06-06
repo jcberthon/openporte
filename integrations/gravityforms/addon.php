@@ -11,7 +11,7 @@ class ALTCHA_GFFormsAddOn extends GFAddOn
     protected $_min_gravityforms_version = '2.5';
     protected $_slug = 'altcha';
     protected $_full_path = __FILE__;
-    protected $_short_title = 'ALTCHA';
+    protected $_short_title = 'OpenPorte';
 
     private static $_instance = null;
 
