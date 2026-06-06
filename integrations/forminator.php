@@ -2,11 +2,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if (altcha_plugin_active('forminator')) {
+if (openporte_plugin_active('forminator')) {
   add_action(
     'forminator_render_button_markup',
     function ($html) {
-      return altcha_forminator_render_widget($html);
+      return openporte_forminator_render_widget($html);
     },
     10,
     2
@@ -15,7 +15,7 @@ if (altcha_plugin_active('forminator')) {
   add_action(
     'forminator_render_fields_markup',
     function ($html) {
-      return altcha_forminator_render_widget($html);
+      return openporte_forminator_render_widget($html);
     },
     10,
     2
@@ -44,7 +44,7 @@ if (altcha_plugin_active('forminator')) {
   );
 }
 
-function altcha_forminator_render_widget($html)
+function openporte_forminator_render_widget($html)
 {
   $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_forminator();

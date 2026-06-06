@@ -4,13 +4,13 @@ if (! defined('ABSPATH')) exit;
 
 // https://github.com/hCaptcha/hcaptcha-wordpress-plugin/blob/master/src/php/CoBlocks/Form.php
 
-if (altcha_plugin_active('coblocks')) {
+if (openporte_plugin_active('coblocks')) {
   add_filter('render_block', array('OpenPortePlugin_Coblocks', 'render_block'), 10, 3);
   add_filter('render_block_data', array('OpenPortePlugin_Coblocks', 'render_block_data'), 10, 3);
 
   class OpenPortePlugin_Coblocks
   {
-    private const RECAPTCHA_DUMMY_TOKEN = 'altcha_dummy_token';
+    private const RECAPTCHA_DUMMY_TOKEN = 'openporte_dummy_token';
 
     public static function render_block($block_content, array $block, WP_Block $instance): string
     {

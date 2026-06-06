@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class ALTCHA_GFForms_Field extends GF_Field
+class OPENPORTE_GFForms_Field extends GF_Field
 {
 
 	public $type = 'altcha';
@@ -88,4 +88,4 @@ class ALTCHA_GFForms_Field extends GF_Field
 	}
 }
 
-GF_Fields::register(new ALTCHA_GFForms_Field());
+GF_Fields::register(new OPENPORTE_GFForms_Field());

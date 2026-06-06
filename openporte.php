@@ -18,14 +18,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 
 /*
- * OpenPorte is a fork of ALTCHA Spam Protection and shares its altcha_* function
- * and constant names. If the original ALTCHA plugin is active, loading OpenPorte
- * as well would fatal on redeclared symbols. ALTCHA loads first (alphabetically),
- * so detect it here and bail out with a clear message instead of a raw PHP fatal.
+ * OpenPorte is a fork of ALTCHA Spam Protection. For backward compatibility it
+ * still defines the ALTCHA_* constant aliases and the AltchaPlugin class alias,
+ * and registers the [altcha] shortcode and altcha/v1 REST route. If the original
+ * ALTCHA plugin is also active these collide (PHP "already defined" warnings, a
+ * duplicate widget, …). ALTCHA loads first (alphabetically), so detect it here
+ * and bail out with a clear message instead of running both at once.
  */
 if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ) {
 
-	function openporte_altcha_conflict_message() {
+	function openporte_conflict_message() {
 		return sprintf(
 			/* translators: %s: link to the OpenPorte plugin page. */
 			__( 'OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate "ALTCHA Spam Protection" first, then activate OpenPorte. See the %s for details.', 'openporte' ),
@@ -36,7 +38,7 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ) 
 	// Block activation with a readable message instead of a fatal error.
 	register_activation_hook( __FILE__, function () {
 		wp_die(
-			wp_kses_post( openporte_altcha_conflict_message() ),
+			wp_kses_post( openporte_conflict_message() ),
 			esc_html__( 'OpenPorte cannot be activated', 'openporte' ),
 			array( 'back_link' => true )
 		);
@@ -44,7 +46,7 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ) 
 
 	// Belt and braces: if OpenPorte ends up active alongside ALTCHA, show a notice.
 	add_action( 'admin_notices', function () {
-		echo '<div class="notice notice-error"><p>' . wp_kses_post( openporte_altcha_conflict_message() ) . '</p></div>';
+		echo '<div class="notice notice-error"><p>' . wp_kses_post( openporte_conflict_message() ) . '</p></div>';
 	} );
 
 	return;

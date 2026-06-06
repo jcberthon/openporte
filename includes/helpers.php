@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function altcha_plugin_active($name) {
+function openporte_plugin_active($name) {
   switch ($name) {
     case 'coblocks':
       return is_plugin_active('coblocks/class-coblocks.php');
@@ -33,7 +33,7 @@ function altcha_plugin_active($name) {
   }
 }
 
-function altcha_enqueue_styles() {
+function openporte_enqueue_styles() {
   wp_enqueue_style(
     'altcha-widget-styles',
     OpenPortePlugin::$widget_style_src,
@@ -43,7 +43,7 @@ function altcha_enqueue_styles() {
   );
 }
 
-function altcha_enqueue_scripts() {
+function openporte_enqueue_scripts() {
   wp_enqueue_script(
     'altcha-widget',
     OpenPortePlugin::$widget_script_src,

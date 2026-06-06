@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if (altcha_plugin_active('html-forms')) {
+if (openporte_plugin_active('html-forms')) {
   add_filter(
     'hf_form_html',
     'do_shortcode'
@@ -33,7 +33,7 @@ if (altcha_plugin_active('html-forms')) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {
           $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
           if ($plugin->verify($altcha ) === false) {
-            return "altcha_invalid";
+            return "openporte_invalid";
           }
         }
       }
@@ -44,14 +44,14 @@ if (altcha_plugin_active('html-forms')) {
   );
 
   add_filter(
-    'hf_form_message_altcha_invalid',
+    'hf_form_message_openporte_invalid',
     function ($message) {
       return __('Could not verify you are not a robot.', 'openporte');
     }
   );
 
   add_filter(
-    'hf_form_message_altcha_spam',
+    'hf_form_message_openporte_spam',
     function ($message) {
       return __('Could not verify you are not a robot.', 'openporte');
     }

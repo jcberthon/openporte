@@ -21,8 +21,8 @@ if ( ! function_exists("insertBeforeKey") ) {
   }
 }
 
-if ( ! function_exists('altcha_enfold_theme_add_captcha_field') ) {
-  function altcha_enfold_theme_add_captcha_field($elements)
+if ( ! function_exists('openporte_enfold_theme_add_captcha_field') ) {
+  function openporte_enfold_theme_add_captcha_field($elements)
   {
     $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_enfold_theme();
@@ -41,9 +41,9 @@ if ( ! function_exists('altcha_enfold_theme_add_captcha_field') ) {
   }
 }
 
-add_filter( 'ava_mailchimp_contact_form_elements', 'altcha_enfold_theme_add_captcha_field' );
+add_filter( 'ava_mailchimp_contact_form_elements', 'openporte_enfold_theme_add_captcha_field' );
 
-add_filter( 'avia_contact_form_elements', 'altcha_enfold_theme_add_captcha_field' );
+add_filter( 'avia_contact_form_elements', 'openporte_enfold_theme_add_captcha_field' );
 
 add_filter( 'avf_form_send', function ($proceed, $new_post, $form_params, $that)
 {

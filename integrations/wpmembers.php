@@ -10,7 +10,7 @@ add_action(
     // If this hook is being called and wordpress register is enabled, validate altcha
     $mode = $plugin->get_integration_wordpress_register();
     if (!empty($mode)) {
-      $altcha = isset($_POST['altcha_register']) ? trim(sanitize_text_field($_POST['altcha_register'])) : '';
+      $altcha = isset($_POST['openporte_register']) ? trim(sanitize_text_field($_POST['openporte_register'])) : '';
       if ($plugin->verify($altcha) === false) {
         global $wpmem_themsg;
         $wpmem_themsg = esc_html__('Registration failed. Please try again later.', 'openporte');

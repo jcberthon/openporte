@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if (altcha_plugin_active('contact-form-7')) {
+if (openporte_plugin_active('contact-form-7')) {
   add_filter('wpcf7_form_elements', 'do_shortcode');
 
   add_filter(

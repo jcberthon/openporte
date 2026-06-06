@@ -6,7 +6,7 @@ if (!class_exists('\ElementorPro\Modules\Forms\Fields\Field_Base')) {
   die();
 }
 
-class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Field_Base
+class Elementor_Form_OpenPorte_Field extends \ElementorPro\Modules\Forms\Fields\Field_Base
 {
   public function get_type()
   {
@@ -80,6 +80,6 @@ class Elementor_Form_Altcha_Field extends \ElementorPro\Modules\Forms\Fields\Fie
 if (OpenPortePlugin::$instance->get_integration_elementor()) {
   // Since Elementor Pro 3.31.2, script enqueuing does not seem to work properly when the widget is rendered.
   // Always enqueue scripts when the integration is active.
-  altcha_enqueue_scripts();
-  altcha_enqueue_styles();
+  openporte_enqueue_scripts();
+  openporte_enqueue_styles();
 }
