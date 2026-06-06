@@ -50,10 +50,8 @@ existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field
 
 if ! grep -qxF "contact-us" <<<"$existing_slugs"; then
   # Contact Form 7 5.x identifies forms by a hash (stored in the _hash postmeta);
-  # the numeric post id is deprecated. Discover the default form's post id, read
-  # its hash, and emit the shortcode with the hash UNQUOTED — the hash is
-  # alphanumeric, so it needs no quotes and survives the host -> ssh -> docker
-  # shell layers intact (embedded double quotes get mangled across them).
+  # the numeric post id is deprecated. Discover the default form's post id, then
+  # read its hash (see the quoted shortcode emitted via a file below).
   cf7_post_id="$(wpcli post list --post_type=wpcf7_contact_form --format=ids 2>/dev/null | grep -oE '[0-9]+' | head -n1 || true)"
   cf7_hash=""
   if [ -n "$cf7_post_id" ]; then
