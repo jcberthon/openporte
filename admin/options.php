@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function altcha_options_page_html()
+function openporte_options_page_html()
 {
   wp_enqueue_script(
     'altcha-admin-js',
@@ -58,8 +58,8 @@ function altcha_options_page_html()
     <form action="options.php" method="post">
       <?php
       settings_errors();
-      settings_fields('altcha_options');
-      do_settings_sections('altcha_admin');
+      settings_fields('openporte_options');
+      do_settings_sections('openporte_admin');
       submit_button();
       ?>
     </form>
@@ -107,7 +107,7 @@ function altcha_options_page_html()
 <?php
 }
 
-function altcha_general_section_callback()
+function openporte_general_section_callback()
 {
   ?>
     <p><?php
@@ -126,7 +126,7 @@ function altcha_general_section_callback()
   <?php
 }
 
-function altcha_spam_filter_section_callback()
+function openporte_spam_filter_section_callback()
 {
   ?>
     <p><?php
@@ -145,7 +145,7 @@ function altcha_spam_filter_section_callback()
   <?php
 }
 
-function altcha_widget_section_callback()
+function openporte_widget_section_callback()
 {
   ?>
 
@@ -154,7 +154,7 @@ function altcha_widget_section_callback()
   <?php
 }
 
-function altcha_integrations_section_callback()
+function openporte_integrations_section_callback()
 {
   ?>
 
@@ -163,7 +163,7 @@ function altcha_integrations_section_callback()
   <?php
 }
 
-function altcha_wordpress_section_callback()
+function openporte_wordpress_section_callback()
 {
   ?>
 
@@ -172,7 +172,7 @@ function altcha_wordpress_section_callback()
   <?php
 }
 
-function altcha_settings_field_callback(array $args)
+function openporte_settings_field_callback(array $args)
 {
   $type = $args['type'];
   $name = $args['name'];
@@ -194,7 +194,7 @@ function altcha_settings_field_callback(array $args)
 <?php
 }
 
-function altcha_settings_select_callback(array $args)
+function openporte_settings_select_callback(array $args)
 {
   $name = $args['name'];
   $hint = isset($args['hint']) ? $args['hint'] : null;

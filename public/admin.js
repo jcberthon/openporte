@@ -5,7 +5,7 @@
         el.disabled = api !== 'custom';
       });
     }
-    const apiEl = document.querySelector('#altcha_api');
+    const apiEl = document.querySelector('#openporte_api');
     if (apiEl) {
       apiEl.addEventListener('change', (ev) => onApiChange(ev.target.value));
       onApiChange(apiEl.value);

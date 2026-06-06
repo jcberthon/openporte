@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if (altcha_plugin_active('gravityforms')) {
+if (openporte_plugin_active('gravityforms')) {
   add_action(
     'gform_loaded',
     function () {
@@ -10,7 +10,7 @@ if (altcha_plugin_active('gravityforms')) {
       $mode = $plugin->get_integration_gravityforms();
       if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
         require_once('gravityforms/addon.php');
-        GFAddOn::register('ALTCHA_GFFormsAddOn');
+        GFAddOn::register('OPENPORTE_GFFormsAddOn');
       }
     },
     5

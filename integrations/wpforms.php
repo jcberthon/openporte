@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if (altcha_plugin_active('wpforms')) {
+if (openporte_plugin_active('wpforms')) {
   add_filter(
     'wpforms_display_submit_before',
     function () {

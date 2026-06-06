@@ -2,7 +2,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-class AltchaFieldType extends FrmFieldType
+class OpenPorteFieldType extends FrmFieldType
 {
 	protected $type = 'altcha';
 

@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 GFForms::include_addon_framework();
 
-class ALTCHA_GFFormsAddOn extends GFAddOn
+class OPENPORTE_GFFormsAddOn extends GFAddOn
 {
 
     protected $_version = OPENPORTE_VERSION;
@@ -18,7 +18,7 @@ class ALTCHA_GFFormsAddOn extends GFAddOn
     public static function get_instance()
     {
         if (self::$_instance == null) {
-            self::$_instance = new ALTCHA_GFFormsAddOn();
+            self::$_instance = new OPENPORTE_GFFormsAddOn();
         }
 
         return self::$_instance;
