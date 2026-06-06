@@ -30,12 +30,12 @@ function altcha_options_page_html()
     </div>
 
     <div style="flex-grow: 1;">
-      <div class="altcha-title"><?php echo esc_html__('ALTCHA', 'openporte'); ?></div>
+      <div class="altcha-title"><?php echo esc_html__('OpenPorte', 'openporte'); ?></div>
       <div class="altcha-subtitle"><?php echo esc_html__('A Privacy-Friendly Captcha Alternative.', 'openporte'); ?></div>
     </div>
 
     <div>
-      <div style="margin-bottom: 0.3rem;"><b><?php echo esc_html__('Do you like ALTCHA?', 'openporte'); ?></b></div>
+      <div style="margin-bottom: 0.3rem;"><b><?php echo esc_html__('Do you like OpenPorte?', 'openporte'); ?></b></div>
       <div style="display:flex;gap: 0.5rem;">
         <a href="https://wordpress.org/support/plugin/openporte/reviews/?filter=5#new-post" target="_blank" style="display: inline-flex; gap: 0.5rem;">
           <span style="display: inline-flex; gap: 0.1rem;">
@@ -68,8 +68,8 @@ function altcha_options_page_html()
       <p><?php
         echo sprintf(
           esc_html__(
-              /* translators: %1$s is the plugin version, and %2$s is the widget version */
-              'ALTCHA Spam Protection for WordPress, plugin version %1$s, widget version %2$s',
+              /* translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version */
+              'OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget version %2$s',
               'openporte',
           ),
           OpenPortePlugin::$version,
@@ -81,7 +81,7 @@ function altcha_options_page_html()
         echo sprintf(
           esc_html__(
             /* translators: the placeholders are opening and closing tags for a link (<a> tag) */
-            'Please give ALTCHA a %s★★★★★ rating%s on WordPress.org to help us get the word out.',
+            'Please give OpenPorte a %s★★★★★ rating%s on WordPress.org to help us get the word out.',
             'openporte',
           ),
           '<a href="https://wordpress.org/support/plugin/openporte/reviews/?filter=5#new-post" target="_blank">',
@@ -89,8 +89,17 @@ function altcha_options_page_html()
         ); ?>
       </p>
       <p>
-        <a href="https://github.com/altcha-org/altcha" target="_blank" style="display: inline-flex; gap: 0.3rem;">
-          <span><?php echo esc_html__('Star ALTCHA on GitHub!', 'openporte'); ?></span>
+        <?php
+        echo sprintf(
+          /* translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project. */
+          esc_html__('Powered by the %1$sALTCHA%2$s proof-of-work open-source project.', 'openporte'),
+          '<a href="https://github.com/altcha-org/altcha" target="_blank">',
+          '</a>',
+        ); ?>
+      </p>
+      <p>
+        <a href="https://github.com/jcberthon/openporte" target="_blank" style="display: inline-flex; gap: 0.3rem;">
+          <span><?php echo esc_html__('Star OpenPorte on GitHub!', 'openporte'); ?></span>
         </a>
       </p>
     </div>
@@ -149,7 +158,7 @@ function altcha_integrations_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Activate ALTCHA for these integrations:', 'openporte'); ?></p>
+    <p><?php echo esc_html__('Activate OpenPorte for these integrations:', 'openporte'); ?></p>
 
   <?php
 }
@@ -158,7 +167,7 @@ function altcha_wordpress_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Activate ALTCHA for the core Wordpress functionality:', 'openporte'); ?></p>
+    <p><?php echo esc_html__('Activate OpenPorte for the core Wordpress functionality:', 'openporte'); ?></p>
 
   <?php
 }

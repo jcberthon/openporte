@@ -1,1 +1,1 @@
-<p>Configure ALTCHA in the plugin settings.</p>
+<p>Configure OpenPorte in the plugin settings.</p>

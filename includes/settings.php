@@ -633,7 +633,7 @@ if (is_admin()) {
             "name" => OpenPortePlugin::$option_integration_custom,
             "hint" => sprintf(
               /* translators: the placeholder will be replaced with the shortcode */
-              __('Use %s shortcode anywhere in your HTML.', 'openporte'), '[altcha]',
+              __('Use %s shortcode anywhere in your HTML.', 'openporte'), '[openporte]',
             ),
             "spamfilter_options" => array(
               "spamfilter",
