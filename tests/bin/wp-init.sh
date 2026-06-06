@@ -64,7 +64,9 @@ if ! grep -qxF "contact-us" <<<"$existing_slugs"; then
     # rather than a CLI argument — embedded double quotes get mangled crossing
     # the wp-env -> docker shell boundary, whereas file content is preserved.
     cf7_short="${cf7_hash:0:7}"
-    cf7_content_host="local/.cf7-contact-us.html"
+    # Write into tests/ (tracked, hence synced to the remote and mapped into the
+    # container) — local/ is git-ignored and absent on the remote.
+    cf7_content_host="tests/.cf7-contact-us.html"
     cf7_content_container="wp-content/plugins/openporte/${cf7_content_host}"
     echo "wp-init: using Contact Form 7 short hash ${cf7_short}."
     printf '%s' "[contact-form-7 id=\"${cf7_short}\" title=\"Contact form 1\"]" > "$cf7_content_host"
