@@ -61,9 +61,17 @@ if ! grep -qxF "contact-us" <<<"$existing_slugs"; then
   fi
 
   if [ -n "$cf7_hash" ]; then
-    echo "wp-init: using Contact Form 7 hash ${cf7_hash}."
-    wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
-      --post_content="[contact-form-7 id=${cf7_hash}]"
+    # Contact Form 7's editor uses the 7-char short hash. Emit the canonical
+    # quoted shortcode, but pass it through a file (read by `wp post create`)
+    # rather than a CLI argument — embedded double quotes get mangled crossing
+    # the wp-env -> docker shell boundary, whereas file content is preserved.
+    cf7_short="${cf7_hash:0:7}"
+    cf7_content_host="local/.cf7-contact-us.html"
+    cf7_content_container="wp-content/plugins/openporte/${cf7_content_host}"
+    echo "wp-init: using Contact Form 7 short hash ${cf7_short}."
+    printf '%s' "[contact-form-7 id=\"${cf7_short}\" title=\"Contact form 1\"]" > "$cf7_content_host"
+    wpcli post create "$cf7_content_container" --post_type=page --post_title='Contact Us' --post_status=publish
+    rm -f "$cf7_content_host"
   elif [ -n "$cf7_post_id" ]; then
     echo "wp-init: hash not found; falling back to Contact Form 7 post id ${cf7_post_id}." >&2
     wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
