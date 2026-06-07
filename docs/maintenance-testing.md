@@ -208,6 +208,25 @@ Example test commands:
 ./wp-env.sh -p 8.2 -w WordPress/WordPress#trunk start
 ```
 
+#### Older WordPress versions
+
+When provisioning the minimum-supported stack (e.g. **PHP 8.0 / WP 5.6**), two
+steps in [`tests/bin/wp-init.sh`](../tests/bin/wp-init.sh) have minimum-WordPress
+requirements and will abort the `afterStart` hook unless adjusted:
+
+- **Plugin Check** requires **WordPress 6.3+**. Comment out its install line
+  (`wp plugin install plugin-check`) on older benches. Static analysis is not
+  available on these versions anyway — run Plugin Check on a recent-WordPress
+  bench (e.g. WP 7.0) and use the older bench for runtime verification only.
+- **Contact Form 7** installs the latest release by default, which fails the
+  WordPress-version requirement on older cores. Pin a compatible version with
+  `--version=`, e.g. `--version=5.3.2` for WP 5.6. (`wp-cli`'s
+  `--ignore-requirements` flag is too recent to rely on in the bundled wp-env
+  CLI, so an explicit `--version` is the dependable approach.)
+
+On a minimum-version bench, run the **fresh-install verification only** — skip
+the ALTCHA → OpenPorte upgrade scenario.
+
 #### Troubleshooting
 
 **"Environment variables not applied"**
