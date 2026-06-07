@@ -2,6 +2,29 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Null-safe sanitizer for the custom Challenge URL option.
+ *
+ * When API mode is "Self-hosted" the Challenge URL input is disabled client-side
+ * (see public/admin.js), so the browser does not submit it. WordPress then passes
+ * null to the sanitize callback. Calling esc_url_raw(null) would hand null to
+ * ltrim() and raise a PHP 8.1+ "Passing null to parameter #1" deprecation, whose
+ * output breaks the post-save redirect ("headers already sent" / blank page).
+ *
+ * For a missing field (null) we keep the previously stored URL, so it survives a
+ * save made while in Self-hosted mode and is still there when the user switches
+ * back to Custom. A submitted empty string is honoured and clears the value.
+ *
+ * @param string|null $value Raw submitted value, or null when the field was disabled.
+ * @return string Sanitized URL.
+ */
+function openporte_sanitize_challenge_url( $value ) {
+  if ( null === $value ) {
+    return (string) get_option( OpenPortePlugin::$option_api_custom_url, '' );
+  }
+  return esc_url_raw( (string) $value );
+}
+
 if (is_admin()) {
   add_action('admin_init', 'openporte_settings_init');
 
@@ -16,7 +39,7 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_api_custom_url,
-      array( 'sanitize_callback' => 'esc_url_raw' )
+      array( 'sanitize_callback' => 'openporte_sanitize_challenge_url' )
     );
 
     register_setting(
