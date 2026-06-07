@@ -22,8 +22,8 @@ if (is_admin()) {
     }
 
     // Add link to settings in the plugin list
-    // uses WPDOCS_PLUGIN_BASE which is defined in openporte.php, which is required before this file
-    add_filter('plugin_action_links_' . WPDOCS_PLUGIN_BASE, 'openporte_settings_link');
+    // uses OPENPORTE_PLUGIN_BASE which is defined in openporte.php, which is required before this file
+    add_filter('plugin_action_links_' . OPENPORTE_PLUGIN_BASE, 'openporte_settings_link');
 
     function openporte_settings_link($links)
     {

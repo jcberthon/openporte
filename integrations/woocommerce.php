@@ -21,7 +21,7 @@ add_action(
     $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_woocommerce_register();
     if (!empty($mode)) {
-      $altcha = isset($_POST['openporte_register']) ? trim(sanitize_text_field($_POST['openporte_register'])) : '';
+      $altcha = isset($_POST['openporte_register']) ? trim(sanitize_text_field(wp_unslash($_POST['openporte_register']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         return $errors->add(
           'openporte_error_message',
@@ -60,6 +60,7 @@ add_filter(
     if(defined( 'REST_REQUEST' ) && REST_REQUEST) {
       return $user; // Skip REST API
     }
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Presence check only, to route WooCommerce submissions; the nonce itself is verified by WooCommerce.
     if(!isset($_POST['woocommerce-login-nonce'])) {
       return $user; // Only handle WooCommerce form submissions
     }
@@ -67,7 +68,7 @@ add_filter(
     $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_woocommerce_login();
     if (!empty($mode)) {
-      $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+      $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         return new WP_Error(
           'altcha-error',
@@ -101,13 +102,14 @@ add_filter(
       return $errors;
     }
     // Only handle WooCommerce form submissions
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Presence check only, to route WooCommerce submissions; the nonce itself is verified by WooCommerce.
     if(!isset($_POST['woocommerce-lost-password-nonce'])) {
       return $errors;
     }
     $plugin = OpenPortePlugin::$instance;
     $mode = $plugin->get_integration_woocommerce_reset_password();
     if (!empty($mode)) {
-      $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+      $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         $errors->add(
           'openporte_error_message',

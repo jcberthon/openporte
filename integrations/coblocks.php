@@ -85,7 +85,7 @@ if (openporte_plugin_active('coblocks')) {
       $mode = $plugin->get_integration_coblocks();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
           if ($plugin->verify($altcha) === false) {
             return [
               'body'     => '{"success":false}',

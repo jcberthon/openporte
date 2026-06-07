@@ -6,6 +6,7 @@ if (!class_exists('\ElementorPro\Modules\Forms\Fields\Field_Base')) {
   die();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Follows Elementor Pro's Elementor_Form_<Name>_Field class-naming convention for custom form fields.
 class Elementor_Form_OpenPorte_Field extends \ElementorPro\Modules\Forms\Fields\Field_Base
 {
   public function get_type()
@@ -65,7 +66,7 @@ class Elementor_Form_OpenPorte_Field extends \ElementorPro\Modules\Forms\Fields\
     $mode = $plugin->get_integration_elementor();
     if (!empty($mode)) {
       if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if ($plugin->verify($altcha) === false) {
           $ajax_handler->add_error(
             $field['id'],

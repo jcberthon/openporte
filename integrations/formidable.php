@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 function openporte_load_formidable_field() {
 	spl_autoload_register( 'openporte_forms_autoloader' );
 }

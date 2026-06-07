@@ -19,9 +19,10 @@ global $wpdb;
 // new openporte_* options are cleaned up automatically). Note: this targets the
 // current site's options table only; network-wide cleanup on multisite is not
 // handled here.
-$like = $wpdb->esc_like( 'openporte_' ) . '%';
+$openporte_like = $wpdb->esc_like( 'openporte_' ) . '%';
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-off bulk delete of the plugin's own options on uninstall; there is no core API for prefix deletion and caching is irrelevant during uninstall.
 $wpdb->query(
-	$wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like )
+	$wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $openporte_like )
 );
 
 wp_cache_flush();

@@ -57,17 +57,20 @@ define('OPENPORTE_WIDGET_VERSION', '2.2.2');
 
 // Upstream ALTCHA widget attribution: the visible "Protected by ALTCHA" footer
 // link. Intentionally points at altcha.org and is out of scope for the rebrand.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Upstream-compat constant, intentionally kept.
 define('ALTCHA_WEBSITE', 'https://altcha.org/');
 
 // Deprecated ALTCHA_* aliases kept for backward compatibility with third-party
 // code; scheduled for removal in a future release.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Documented deprecated back-compat alias.
 define('ALTCHA_VERSION', OPENPORTE_VERSION);
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Documented deprecated back-compat alias.
 define('ALTCHA_WIDGET_VERSION', OPENPORTE_WIDGET_VERSION);
 
 
 // Define the base name of the plugin for use in hooks and filters
-if ( ! defined( 'WPDOCS_PLUGIN_BASE' ) ) {
-        define( 'WPDOCS_PLUGIN_BASE', plugin_basename( __FILE__ ) );
+if ( ! defined( 'OPENPORTE_PLUGIN_BASE' ) ) {
+        define( 'OPENPORTE_PLUGIN_BASE', plugin_basename( __FILE__ ) );
 }
 
 // required for is_plugin_active
@@ -92,12 +95,14 @@ require plugin_dir_path( __FILE__ ) . './integrations/wpmembers.php';
 require plugin_dir_path( __FILE__ ) . './integrations/woocommerce.php';
 require plugin_dir_path( __FILE__ ) . './integrations/wordpress.php';
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- These are static properties of the prefixed OpenPortePlugin class, not global variables.
 OpenPortePlugin::$widget_script_src = plugin_dir_url(__FILE__) . "public/altcha.min.js";
 OpenPortePlugin::$widget_style_src = plugin_dir_url(__FILE__) . "public/altcha.css";
 OpenPortePlugin::$wp_script_src = plugin_dir_url(__FILE__) . "public/script.js";
 OpenPortePlugin::$admin_script_src = plugin_dir_url(__FILE__) . "public/admin.js";
 OpenPortePlugin::$admin_css_src = plugin_dir_url(__FILE__) . "public/admin.css";
 OpenPortePlugin::$custom_script_src = plugin_dir_url(__FILE__) . "public/custom.js";
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 register_activation_hook(__FILE__, 'openporte_activate');
 register_deactivation_hook(__FILE__, 'openporte_deactivate');

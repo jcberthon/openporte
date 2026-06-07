@@ -73,7 +73,7 @@ class OPENPORTE_GFForms_Field extends GF_Field
 		$mode = $plugin->get_integration_gravityforms();
     if (!empty($mode)) {
 			if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				if ($plugin->verify($altcha) === false) {
 					if ($plugin->get_api() === "custom" && $plugin->spamfilter_result && $plugin->spamfilter_result['classification'] === 'BAD') {
 						// uses gform_entry_is_spam handler

@@ -31,7 +31,7 @@ if (openporte_plugin_active('html-forms')) {
           return $error_code;
         }
         if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
           if ($plugin->verify($altcha ) === false) {
             return "openporte_invalid";
           }

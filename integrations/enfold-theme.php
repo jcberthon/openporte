@@ -2,9 +2,9 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! function_exists("insertBeforeKey") ) {
+if ( ! function_exists("openporte_insert_before_key") ) {
 
-  function insertBeforeKey( $array, $key, $newKey, $newValue )
+  function openporte_insert_before_key( $array, $key, $newKey, $newValue )
   {
     $newArray = [];
 
@@ -36,7 +36,7 @@ if ( ! function_exists('openporte_enfold_theme_add_captcha_field') ) {
       "content"   =>  wp_kses($plugin->render_widget($mode, true), OpenPortePlugin::$html_espace_allowed_tags)
     ];
 
-    $new = insertBeforeKey($elements, 'av-button', 'captcha', $captcha);
+    $new = openporte_insert_before_key($elements, 'av-button', 'captcha', $captcha);
     return $new;
   }
 }
@@ -51,10 +51,9 @@ add_filter( 'avf_form_send', function ($proceed, $new_post, $form_params, $that)
   $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_enfold_theme();
   if (!empty($mode)) {
-    $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(urldecode($_POST['altcha']))) : '';
+    $altcha = isset($_POST['altcha']) ? trim(urldecode(sanitize_text_field(wp_unslash($_POST['altcha'])))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
     if ($plugin->verify($altcha) === false) {
       $that->submit_error = __('Verification failed. Try again later.', 'openporte');
-      error_log("altcha: verification failed");
       return null;
     }
   }
@@ -67,7 +66,7 @@ add_filter( 'avf_mailchimp_subscriber_data', function ($data, $that)
   $plugin = OpenPortePlugin::$instance;
   $mode = $plugin->get_integration_enfold_theme();
   if ( ! empty($mode) ) {
-    $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(urldecode($_POST['altcha']))) : '';
+    $altcha = isset($_POST['altcha']) ? trim(urldecode(sanitize_text_field(wp_unslash($_POST['altcha'])))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
     if ($plugin->verify($altcha) === false) {
       /* Only changing the email_address promts the user to enter a valid email address, which would confuse them. */
       $data['email_address'] = 'captcha failed';

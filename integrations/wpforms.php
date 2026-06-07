@@ -23,7 +23,7 @@ if (openporte_plugin_active('wpforms')) {
       $mode = $plugin->get_integration_wpforms();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
           if ($plugin->verify($altcha) === false) {
             wpforms()->process->errors[$form_data['id']]['header'] = esc_html__('Could not verify you are not a robot.', 'openporte');
           }
