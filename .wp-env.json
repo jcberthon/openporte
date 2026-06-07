@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
-	"plugins": [ "https://downloads.wordpress.org/plugin/contact-form-7.zip" ],
+	"plugins": [  ],
 	"mappings": {
         "wp-content/plugins/openporte": "."
     },

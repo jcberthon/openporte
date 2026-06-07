@@ -154,9 +154,9 @@ print_environment_info() {
     echo '===STATUS===' && \
     wp-env status 2>/dev/null && \
     echo '===WP_VERSION===' && \
-    wp-env run cli wp core version 2>/dev/null && \
+    wp-env run cli -- wp core version 2>/dev/null && \
     echo '===PHP_INFO===' && \
-    wp-env run cli wp --info 2>/dev/null
+    wp-env run cli -- wp --info 2>/dev/null
   " 2>/dev/null) || {
     echo "  ⚠️  Warning: Could not retrieve all environment details."
     echo "      Please run './wp-env.sh status' to check manually."
