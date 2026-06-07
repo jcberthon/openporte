@@ -1,11 +1,11 @@
-/.wordpress-org
-/.git
-/.github
-/node_modules
+.wordpress-org
+.git
+.github
+node_modules
 .distignore
 .gitignore
 README.md
-vendors
+vendor
 wp-env.sh
 .wp-env.json
 .wp-env.conf
@@ -18,3 +18,4 @@ composer.json
 docs
 tests
 .claude
+.DS_Store

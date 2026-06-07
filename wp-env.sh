@@ -208,8 +208,9 @@ done
 
 if [[ "$IS_START" == "true" ]]; then
   # shellcheck disable=SC2029
-  rsync -az --delete --exclude='.git' --exclude='.DS_Store' --exclude='local' \
-      --exclude='protect,r .wordpress-org' --exclude='protect,r .distignore' \
+  rsync -az --delete --include="wp-env.sh" --include=".wp*" \
+      --include="tests/" --include="tests/bin/" --include="tests/bin/wp-init.sh" \
+      --exclude-from=./.distignore \
       . ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/
 fi
 
