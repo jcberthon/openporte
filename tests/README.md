@@ -35,6 +35,11 @@ The repo is exercised on a remote Docker host via [`wp-env.sh`](../wp-env.sh)
 
 To target other versions: `./wp-env.sh -p 8.0 -w 6.5 start`.
 
+> **Older WordPress versions:** provisioning may need small tweaks — Plugin Check
+> and Contact Form 7 have minimum-WordPress requirements that can abort the
+> `afterStart` hook. See [Older WordPress versions](../docs/maintenance-testing.md#older-wordpress-versions)
+> in the maintenance & testing guide before running a minimum-version bench.
+
 ## The ALTCHA → OpenPorte migration test
 
 > **Activate ALTCHA and OpenPorte one at a time, never together** — both
