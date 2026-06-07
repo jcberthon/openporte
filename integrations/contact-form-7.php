@@ -38,7 +38,7 @@ if (openporte_plugin_active('contact-form-7')) {
       $mode = $plugin->get_integration_contact_form_7();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
           return $plugin->verify($altcha) === false;
         }
       }

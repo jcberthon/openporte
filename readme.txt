@@ -48,8 +48,8 @@ what they map to.
 = 1.27.0 =
 First release of the OpenPorte community fork of ALTCHA Spam Protection v1. The
 paid altcha.org SaaS classifier is removed; self-hosted and custom backends are
-unchanged. Existing ALTCHA v1 settings migrate automatically when you activate
-OpenPorte. Deactivate the old ALTCHA plugin first — do not run both at once.
+unchanged. ALTCHA v1 settings migrate automatically on activation. Deactivate
+the old ALTCHA plugin first; don't run both at once.
 
 == Upgrading ==
 

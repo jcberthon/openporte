@@ -39,7 +39,7 @@ function openporte_options_page_html()
     <div>
       <div style="margin-bottom: 0.3rem;"><b><?php echo esc_html__('Do you like OpenPorte?', 'openporte'); ?></b></div>
       <div style="display:flex;gap: 0.5rem;">
-        <a href="https://wordpress.org/support/plugin/openporte/reviews/?filter=5#new-post" target="_blank" style="display: inline-flex; gap: 0.5rem;">
+        <a href="https://wordpress.org/support/plugin/openporte/reviews/" target="_blank" style="display: inline-flex; gap: 0.5rem;">
           <span><?php echo esc_html__('Review it!', 'openporte'); ?></span>
         </a>
       </div>
@@ -61,14 +61,14 @@ function openporte_options_page_html()
 
     <div style="opacity: 0.8;">
       <p><?php
+        /* translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version */
         echo sprintf(
           esc_html__(
-              /* translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version */
               'OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget version %2$s',
               'openporte',
           ),
-          OpenPortePlugin::$version,
-          OpenPortePlugin::$widget_version,
+          esc_html( OpenPortePlugin::$version ),
+          esc_html( OpenPortePlugin::$widget_version ),
         );
       ?></p>
       <p>
@@ -79,7 +79,7 @@ function openporte_options_page_html()
             'Please rate OpenPorte on WordPress.org to help us get the word out.',
             'openporte',
           ),
-          '<a href="https://wordpress.org/support/plugin/openporte/reviews/?filter=5#new-post" target="_blank">',
+          '<a href="https://wordpress.org/support/plugin/openporte/reviews/" target="_blank">',
           '</a>',
         ); ?>
       </p>
@@ -106,9 +106,9 @@ function openporte_general_section_callback()
 {
   ?>
     <p><?php
+      /* translators: the placeholders are opening and closing tags for bold */
       echo sprintf(
         esc_html__(
-          /* translators: the placeholders are opening and closing tags for bold */
           'Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend.',
           'openporte',
         ),
@@ -125,9 +125,9 @@ function openporte_spam_filter_section_callback()
 {
   ?>
     <p><?php
+      /* translators: the placeholders are opening and closing tags for bold */
       echo sprintf(
         esc_html__(
-          /* translators: the placeholders are opening and closing tags for bold */
           'The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only.',
           'openporte',
         ),

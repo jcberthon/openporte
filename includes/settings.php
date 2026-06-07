@@ -9,147 +9,176 @@ if (is_admin()) {
   {
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_api
+      OpenPortePlugin::$option_api,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_api_custom_url
+      OpenPortePlugin::$option_api_custom_url,
+      array( 'sanitize_callback' => 'esc_url_raw' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_secret
+      OpenPortePlugin::$option_secret,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_complexity
+      OpenPortePlugin::$option_complexity,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_expires
+      OpenPortePlugin::$option_expires,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_hidefooter
+      OpenPortePlugin::$option_hidefooter,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_hidelogo
+      OpenPortePlugin::$option_hidelogo,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_blockspam
+      OpenPortePlugin::$option_blockspam,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_auto
+      OpenPortePlugin::$option_auto,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_floating
+      OpenPortePlugin::$option_floating,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_delay
+      OpenPortePlugin::$option_delay,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_coblocks
+      OpenPortePlugin::$option_integration_coblocks,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_contact_form_7
+      OpenPortePlugin::$option_integration_contact_form_7,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_custom
+      OpenPortePlugin::$option_integration_custom,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_elementor
+      OpenPortePlugin::$option_integration_elementor,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_enfold_theme
+      OpenPortePlugin::$option_integration_enfold_theme,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_formidable
+      OpenPortePlugin::$option_integration_formidable,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_forminator
+      OpenPortePlugin::$option_integration_forminator,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_gravityforms
+      OpenPortePlugin::$option_integration_gravityforms,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_woocommerce_login
+      OpenPortePlugin::$option_integration_woocommerce_login,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_woocommerce_register
+      OpenPortePlugin::$option_integration_woocommerce_register,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_woocommerce_reset_password
+      OpenPortePlugin::$option_integration_woocommerce_reset_password,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_html_forms
+      OpenPortePlugin::$option_integration_html_forms,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_comments
+      OpenPortePlugin::$option_integration_wordpress_comments,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_login
+      OpenPortePlugin::$option_integration_wordpress_login,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_register
+      OpenPortePlugin::$option_integration_wordpress_register,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_reset_password
+      OpenPortePlugin::$option_integration_wordpress_reset_password,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_wpdiscuz
+      OpenPortePlugin::$option_integration_wpdiscuz,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_integration_wpforms
+      OpenPortePlugin::$option_integration_wpforms,
+      array( 'sanitize_callback' => 'sanitize_text_field' )
     );
 
     // Section

@@ -28,7 +28,7 @@ if (openporte_plugin_active('forminator')) {
       $mode = $plugin->get_integration_forminator();
       if (!empty($mode)) {
         if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field($_POST['altcha'])) : '';
+          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
           if ($plugin->verify($altcha) === false) {
             return [
               'can_submit' => false,

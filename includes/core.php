@@ -297,8 +297,8 @@ class OpenPortePlugin
     $translations = array(
       "error" => __('Verification failed. Try again later.', 'openporte'),
       "footer" => sprintf(
-        /* translators: the placeholders contain opening and closing tags for a link (<a> tag) */
-        __('Protected by %sALTCHA%s', 'openporte'),
+        /* translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag) */
+        __('Protected by %1$sALTCHA%2$s', 'openporte'),
         '<a href="' . $ALTCHA_WEBSITE . '" target="_blank">',
         "</a>",
       ),
@@ -443,7 +443,9 @@ class OpenPortePlugin
         'expires' => time() + $expires
       ));
     }
-    if (!str_ends_with($salt, '&')) {
+    // Avoid str_ends_with() (PHP 8.0 / WP 5.9 polyfill) to keep compatibility
+    // with the declared "Requires at least: 5.6"; a plain substr check is enough.
+    if (substr($salt, -1) !== '&') {
       $salt .= '&';
     }
     switch ($complexity) {
