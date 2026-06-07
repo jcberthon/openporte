@@ -21,7 +21,7 @@ function openporte_options_page_html()
 ?>
   <div class="altcha-head">
     <div class="altcha-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" fill="none" viewBox="38.25 42.50 179.50 179.50">
+      <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="none" viewBox="38.25 42.50 179.50 179.50">
         <path stroke="#777" stroke-linejoin="round" stroke-width="4" d="m118 62 10-10 10 10-3 12h-14z" style="fill:none;fill-opacity:1;stroke:#2b3d4f;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"/>
         <g style="fill:none;fill-opacity:1;stroke:#808d8e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1">
           <path d="m93.5 71.15 9.85-4.92 4.91 12.08-8.05 4.02zm11.64-5.61 10.46-3.4 3.07 12.67-8.56 2.78zm-45.59 43.2 5.23-9.68 10.96 7.06-4.27 7.92zm6.22-11.27 6.65-8.76 9.75 8.66-5.44 7.17zm7.86-10.2 7.87-7.68 8.37 10-6.44 6.29zm9.22-8.87 8.96-6.37 6.72 11.17-7.33 5.22zM52.2 133.34l2.12-10.8 12.57 3.49-1.74 8.83zm2.73-12.61 3.73-10.35 11.89 5.34-3.05 8.47zm10.09 15.97v11h-13v-12.5zm0 25.96v11h-13v-11zm0-12.98v11h-13v-11zm0 25.96v11h-13v-11zm0 12.98v11h-13v-11zm0 12.98v11h-13v-11z"/>
