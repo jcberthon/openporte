@@ -12,8 +12,8 @@ add_action(
     if (!empty($mode)) {
       $altcha = isset($_POST['openporte_register']) ? trim(sanitize_text_field(wp_unslash($_POST['openporte_register']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- $wpmem_themsg is WP-Members' own global, used to surface the error message.
         global $wpmem_themsg;
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- $wpmem_themsg is WP-Members' own global, used to surface the error message.
         $wpmem_themsg = esc_html__('Registration failed. Please try again later.', 'openporte');
       }
     }
