@@ -124,6 +124,18 @@ add_shortcode('openporte', $openporte_shortcode);
 add_shortcode('altcha', $openporte_shortcode);
 
 function openporte_init() {
+  // Plugin Check flags load_plugin_textdomain() as "discouraged" because, since
+  // WordPress 4.6, plugins on wordpress.org get their translations from
+  // translate.wordpress.org automatically. We KEEP the call on purpose: OpenPorte
+  // is a fork that ships 29 inherited translations in ./languages/, and its
+  // translate.wordpress.org project starts empty until the community re-translates
+  // it. This call (correctly hooked on `init`) loads our bundled translations as a
+  // base; once a locale is translated on translate.wordpress.org, that version
+  // takes priority automatically (WP 4.6+), so there is no conflict. Do NOT add a
+  // `load_textdomain_mofile` filter — that would force our stale bundled copies to
+  // override the community's reviewed .org translations, which is the opposite of
+  // what we want. Revisit (and likely drop the bundled files + this call) once
+  // OpenPorte is established on translate.wordpress.org.
   load_plugin_textdomain(
     'openporte',
     false,
