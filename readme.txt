@@ -6,7 +6,7 @@ Requires PHP: 8.0
 Tested up to: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Contributors: jcberthon
+Contributors: huygens-25
 
 OpenPorte offers a free, open-source Captcha alternative, ensuring robust spam protection while respecting user privacy and GDPR compliance.
 
@@ -16,6 +16,8 @@ OpenPorte is a community-maintained fork of the ALTCHA Spam Protection
 plugin for WordPress (version 1), which provides a free, open source,
 self-hostable, privacy-friendly CAPTCHA alternative based on a proof-
 of-work mechanism — no cookies, no tracking, GDPR-friendly by design.
+
+For the list of contributors, refer to our GitHub project: [Contributors](https://github.com/jcberthon/openporte/graphs/contributors?from=1.6.2024).
 
 = Background =
 
@@ -157,6 +159,8 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Security: HMAC signatures are now compared with `hash_equals()` (timing-safe).
 * Wrapped the "This form requires JavaScript!" message so it can be translated.
 * Corrected the documented minimum requirements to match the plugin's existing PHP 8.0 / WordPress 5.6 floor.
+Contributors (GitHub) for this release: jcberthon, ded-furby.
+Co-contributors: Mistral (AI), Claude (AI), GPT-OSS (AI).
 
 = 1.26.3 =
 * Fixed possible replay attacks via salt splicing.
