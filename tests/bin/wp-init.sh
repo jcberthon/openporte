@@ -20,7 +20,7 @@ set -euo pipefail
 
 # Run a wp-cli command inside the wp-env "cli" container. wp-env is the binary
 # used by wp-env.sh (there is no npm "env" script in this repo).
-wpcli() { wp-env run cli wp "$@"; }
+wpcli() { wp-env run cli -- wp "$@"; }
 
 ALTCHA_SLUG="altcha-spam-protection"
 # The plugin dir is mapped to wp-content/plugins/openporte, so the zip in local/
@@ -39,14 +39,14 @@ else
   wpcli plugin install "$ALTCHA_URL" --force
 fi
 
-echo "wp-init: ALTCHA + OpenPorte left deactivated; activating Contact Form 7…"
+echo "wp-init: ALTCHA + OpenPorte left deactivated; installing & activating Contact Form 7…"
 # Deactivation is a no-op (and harmless) when the plugin is already inactive.
 wpcli plugin deactivate "$ALTCHA_SLUG" || true
 wpcli plugin deactivate openporte || true
-wpcli plugin activate contact-form-7
+wpcli plugin install contact-form-7 --activate
 
 echo "wp-init: installing Plugin Check (a WordPress plugin test suite)…"
-wpcli plugin install plugin-check --activate
+wpcli plugin install plugin-check --force
 
 echo "wp-init: creating fixture pages…"
 existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field=post_name 2>/dev/null || true)"
