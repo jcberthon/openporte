@@ -16,3 +16,14 @@ block on these results — report only, let the maintainer decide.
 
 - PHP: `phpstan analyse <file>` (requires `phpstan.neon` at repo root)
 - Shell: `shellcheck <file>`
+
+**WordPress Plugin Check (MANUAL — tester only):** The WordPress
+[Plugin Check](https://wordpress.org/plugins/plugin-check/) tool is run by a
+human tester against the built plugin zip (not the source tree) on a
+WordPress 6.3+ instance. It is **not** an automated step and is **not** run by
+agents. The tester exports results as a JSON file and reports findings to the
+maintainer; the maintainer then decides which items to fix and which are
+justified false positives (documented with `phpcs:ignore` and an explanatory
+comment). Plugin Check requires WordPress 6.3+ — see
+[Older WordPress versions](../maintenance-testing.md#older-wordpress-versions)
+for caveats when testing on older cores.
