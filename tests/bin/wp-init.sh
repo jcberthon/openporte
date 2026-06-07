@@ -45,6 +45,9 @@ wpcli plugin deactivate "$ALTCHA_SLUG" || true
 wpcli plugin deactivate openporte || true
 wpcli plugin activate contact-form-7
 
+echo "wp-init: installing Plugin Check (a WordPress plugin test suite)…"
+wpcli plugin install plugin-check --activate
+
 echo "wp-init: creating fixture pages…"
 existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field=post_name 2>/dev/null || true)"
 
