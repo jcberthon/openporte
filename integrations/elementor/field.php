@@ -6,8 +6,7 @@ if (!class_exists('\ElementorPro\Modules\Forms\Fields\Field_Base')) {
   die();
 }
 
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Follows Elementor Pro's Elementor_Form_<Name>_Field class-naming convention for custom form fields.
-class Elementor_Form_OpenPorte_Field extends \ElementorPro\Modules\Forms\Fields\Field_Base
+class OpenPorte_Elementor_Form_Field extends \ElementorPro\Modules\Forms\Fields\Field_Base
 {
   public function get_type()
   {

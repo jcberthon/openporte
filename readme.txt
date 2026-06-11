@@ -1,6 +1,6 @@
 === OpenPorte Spam Protection ===
 Tags: captcha, spam, anti-spam, anti-bot, gdpr
-Stable tag: 1.27.0
+Stable tag: 1.27.1
 Requires at least: 5.6
 Requires PHP: 8.0
 Tested up to: 7.0
@@ -44,6 +44,12 @@ See the Deprecations section for the full list of compatibility aliases and
 what they map to.
 
 == Upgrade Notice ==
+
+= 1.27.1 =
+Changes requested by the wordpress.org plugin review: renamed an internal
+Elementor integration class, removed the directory asset files from the plugin
+package, and dropped the no-longer-needed load_plugin_textdomain() call. No
+functional change.
 
 = 1.27.0 =
 First release of the OpenPorte community fork of ALTCHA Spam Protection v1. The
@@ -150,6 +156,11 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 5. Floating UI Captcha
 
 == Changelog ==
+
+= 1.27.1 =
+* Renamed the Elementor form-field integration class to use the `OpenPorte_` prefix, as requested by the wordpress.org plugin review (avoids the reserved `Elementor` prefix). No behaviour change.
+* Removed the wordpress.org directory icon files from the plugin package; they are deployed separately as directory assets.
+* Removed the `load_plugin_textdomain()` call: since WordPress 4.6 (we require 5.6+) translations are loaded automatically by core. No behaviour change.
 
 = 1.27.0 =
 * Forked ALTCHA Spam Protection v1 as OpenPorte, a community-maintained, fully open-source (GPLv2 or later) continuation.

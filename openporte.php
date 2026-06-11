@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Description: OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam and bot protection without using cookies, ensuring full GDPR compliance by design. A community-maintained fork of the ALTCHA Spam Protection plugin (v1).
  * Author: OpenPorte
  * Author URI: https://github.com/jcberthon/openporte
- * Version: 1.27.0
- * Stable tag: 1.27.0
+ * Version: 1.27.1
+ * Stable tag: 1.27.1
  * Requires at least: 5.6
  * Requires PHP: 8.0
  * Tested up to: 7.0
@@ -52,7 +52,7 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ) 
 	return;
 }
 
-define('OPENPORTE_VERSION', '1.27.0');
+define('OPENPORTE_VERSION', '1.27.1');
 define('OPENPORTE_WIDGET_VERSION', '2.2.2');
 
 // Upstream ALTCHA widget attribution: the visible "Protected by ALTCHA" footer
@@ -107,7 +107,6 @@ OpenPortePlugin::$custom_script_src = plugin_dir_url(__FILE__) . "public/custom.
 register_activation_hook(__FILE__, 'openporte_activate');
 register_deactivation_hook(__FILE__, 'openporte_deactivate');
 
-add_action('init', 'openporte_init');
 add_action('after_plugin_row_' . plugin_basename(__FILE__), 'openporte_plugin_custom_message');
 
 $openporte_shortcode = function ($attrs) {
@@ -123,25 +122,11 @@ add_shortcode('openporte', $openporte_shortcode);
 // Deprecated [altcha] alias kept for back-compat; remove in a future release.
 add_shortcode('altcha', $openporte_shortcode);
 
-function openporte_init() {
-  // Plugin Check flags load_plugin_textdomain() as "discouraged" because, since
-  // WordPress 4.6, plugins on wordpress.org get their translations from
-  // translate.wordpress.org automatically. We KEEP the call on purpose: OpenPorte
-  // is a fork that ships 29 inherited translations in ./languages/, and its
-  // translate.wordpress.org project starts empty until the community re-translates
-  // it. This call (correctly hooked on `init`) loads our bundled translations as a
-  // base; once a locale is translated on translate.wordpress.org, that version
-  // takes priority automatically (WP 4.6+), so there is no conflict. Do NOT add a
-  // `load_textdomain_mofile` filter — that would force our stale bundled copies to
-  // override the community's reviewed .org translations, which is the opposite of
-  // what we want. Revisit (and likely drop the bundled files + this call) once
-  // OpenPorte is established on translate.wordpress.org.
-  load_plugin_textdomain(
-    'openporte',
-    false,
-    dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-  );
-}
+// Note: we intentionally do NOT call load_plugin_textdomain(). Since WordPress
+// 4.6 (and we require 5.6+), translations are loaded automatically via core's
+// just-in-time mechanism — both translate.wordpress.org language packs and the
+// .mo files bundled in ./languages/ (the latter auto-discovered on modern WP).
+// See https://make.wordpress.org/core/2024/10/21/i18n-improvements-6-7/.
 
 function openporte_activate()
 {
