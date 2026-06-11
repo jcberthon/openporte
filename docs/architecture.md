@@ -36,18 +36,30 @@ by old installs — falls back to the local REST endpoint.
 
 Verification is dispatched on the **shape of the decoded payload**, not the
 configured mode. This distinction matters: changing the mode does not change how
-a challenge is verified. In `verify()`, the plugin decodes the base64 JSON
-payload; if it contains a `verificationData` field it calls
-`verify_server_signature()`, otherwise it calls `verify_solution()` for
-proof-of-work.
+a challenge is verified. In `verify()`, the plugin decodes the submitted token
+via `decode_payload()` — a strict `base64_decode` + `json_decode` that returns
+`null` for anything malformed, so junk submissions fail closed without emitting
+PHP warnings. A valid object carrying a `verificationData` field is routed to
+`verify_server_signature()`; otherwise to `verify_solution()` for proof-of-work.
+Each method re-checks that the fields it needs are present before using them.
 
 `verify_server_signature()` checks the HMAC signature against the site secret
-(`get_secret()`), then parses `verificationData` into `$spamfilter_result` and
-returns `true` when the `classification` field is not `BAD`.
+(`get_secret()`), then parses `verificationData` into `$spamfilter_result`. It
+returns `true` only when the signature is valid, the payload is unexpired
+(`expire`, when present) and explicitly verified (`verified`, when present), and
+the `classification` is not `BAD`. The `expire`/`verified` checks mirror the
+ALTCHA reference implementation and are applied defensively — only when the
+backend actually supplies the field — so minimal custom backends keep working.
 
 `verify_solution()` performs proof-of-work verification: it validates the
 challenge hash, its signature, and expiration, returning `true` only if all
 checks pass.
+
+The site secret is generated once at activation by `random_secret()` as a
+256-bit key (`bin2hex(random_bytes(32))`), stored in `openporte_secret`, and
+never regenerated for an existing install (so previously issued challenges keep
+verifying). The full security review of this path — including the accepted
+stateless-replay limitation — is in [`docs/security-audit.md`](security-audit.md).
 
 ## What was removed, and why
 
@@ -61,10 +73,15 @@ free and self-hosted, with no dependency on external services. Removed:
 - `spam_filter_check()` and `spam_filter_call()`, which POSTed submissions to
   `https://{region}.altcha.org/api/v1/classify`
 - `$option_send_ip`, the `$hostname` property, and `get_ip_address()`
+- `flatten_post()`, `sanitize_data()` and `remove_private_keys()` — helpers that
+  flattened and sanitised form data for the classifier POST. They had no callers
+  after the SaaS removal and were deleted in the security-hardening pass (see
+  [`docs/security-audit.md`](security-audit.md), finding #11).
 
-None of these symbols exist in the current codebase. The verification path
-(`verify()`, `verify_server_signature()`, `verify_solution()`) was deliberately
-left untouched, because it is independent of the API mode.
+None of these symbols exist in the current codebase. The verification dispatch
+(payload-shape, not API mode) was deliberately preserved; the security-hardening
+pass only *added* checks (`expire`/`verified`, strict payload decoding) without
+changing how a valid or invalid challenge is routed.
 
 ## Spam filter — status and limits
 
