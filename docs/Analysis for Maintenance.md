@@ -1,3 +1,7 @@
+# Analysis of ALTCHA Spam Protection v1.26.2 for Wordpress
+
+This is an analysis of the ALTCHA Spam Protection v1.26.2 for Wordpress with the goal to fork it as OpenPorte and continue the maintenance of this version.
+
 # Entry Point
 
 openporte.php is the sole entry point. It contains the WordPress plugin header (Plugin Name, Version, etc.), defines three constants (OPENPORTE_VERSION, OPENPORTE_WIDGET_VERSION, ALTCHA_WEBSITE), then sequentially requires all other files and registers the top-level hooks.
