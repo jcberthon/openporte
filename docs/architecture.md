@@ -32,6 +32,67 @@ The mode is selected via the `altcha_api` option. In `get_challengeurl()`,
 any other value — including legacy `"eu"` / `"us"` values left in the database
 by old installs — falls back to the local REST endpoint.
 
+## Code map
+
+Files are listed in roughly the order `openporte.php` requires them. Each
+integration file self-registers its hooks at require time and no-ops unless its
+`get_integration_*()` option is set.
+
+```text
+openporte.php              Entry point + plugin header. Defines constants, requires
+                           every file in load order, registers the [openporte]/[altcha]
+                           shortcodes, the activation + legacy-option migration hooks,
+                           and the REST route.
+uninstall.php              Deletes all openporte_* options on plugin deletion.
+includes/
+  core.php                 OpenPortePlugin singleton — shared logic: option accessors,
+                           challenge generation, HMAC verification, widget HTML
+                           rendering, the wp_kses attribute whitelist.
+  helpers.php              Enqueue helpers + openporte_plugin_active() detection.
+  admin.php                Admin menu (Settings → OpenPorte Anti-spam).
+  settings.php             Settings API: option registration + sanitize callbacks,
+                           sections and fields.
+  index.php                Silence-is-golden guard.
+admin/
+  options.php              Settings-page HTML + the field/select render callbacks.
+  index.php                Silence-is-golden guard.
+integrations/              14 integration files (each self-registers its hooks):
+  wordpress.php            WP login / register / comments / reset-password.
+  woocommerce.php          WooCommerce login / register / reset-password.
+  contact-form-7.php       Contact Form 7 (wpcf7_spam).
+  gravityforms.php + gravityforms/{addon.php, field.php}    GF add-on + custom field.
+  elementor.php  + elementor/field.php                      Elementor Pro custom field.
+  formidable.php + formidable/{OpenPorteFieldType.php, builder-field.php, builder-settings.php}
+                           Formidable custom field (autoloaded class).
+  forminator.php           Forminator.
+  wpforms.php              WPForms.
+  coblocks.php             CoBlocks (intentional reCAPTCHA spoof — see Invariants).
+  html-forms.php           HTML Forms.
+  enfold-theme.php         Enfold theme contact / Mailchimp forms.
+  wpdiscuz.php             wpDiscuz (renders into the WP comment flow).
+  wpmembers.php            WP-Members (reuses the WP-registration option).
+  custom.php               Shortcode / manual mode: enqueues the widget + its options.
+  index.php                Silence-is-golden guard.
+public/
+  altcha.min.js            Vendored upstream ALTCHA web component (DO NOT EDIT; version =
+                           OPENPORTE_WIDGET_VERSION). See "The vendored widget".
+  altcha.js                Comment-only companion (no executable code).
+  altcha.css               Widget wrapper styles.
+  script.js                Front-end: fixes the checkbox name attr; removes duplicate
+                           widgets via a MutationObserver.
+  custom.js                Configures the widget from window.OPENPORTE_WIDGET_ATTRS.
+  admin.js                 Settings-page toggle (enables Challenge URL in custom mode).
+  admin.css                Settings-page styles.
+  widget.php               Adds `async defer type="module"` to the widget <script> tag.
+  index.php                Silence-is-golden guard.
+languages/                 29 locales (.po/.mo) + openporte.pot.
+docs/                      Maintainer docs: architecture.md, security-audit.md,
+                           maintenance-testing.md, release-preparation.md, agents/.
+tests/                     Manual wp-env bench (README + bin/wp-init.sh); no automated suite.
+.github/workflows/         publish.yml (tag → WordPress.org SVN) + phpmd.yml (PHPMD → code scanning).
+.wordpress-org/            WordPress.org banner / icon / screenshot assets.
+```
+
 ## Verification dispatch
 
 Verification is dispatched on the **shape of the decoded payload**, not the
