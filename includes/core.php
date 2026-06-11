@@ -356,6 +356,29 @@ class OpenPortePlugin
     return bin2hex(random_bytes(12));
   }
 
+  /**
+   * Strictly decode a submitted token into an object, or null if malformed.
+   *
+   * Tokens are base64(JSON). Decoding defensively here lets the verify methods
+   * bail out before reading properties, instead of emitting PHP warnings
+   * ("Attempt to read property … on null/false") on every junk submission.
+   */
+  private function decode_payload($payload)
+  {
+    if (!is_string($payload) || $payload === '') {
+      return null;
+    }
+    $decoded = base64_decode($payload, true); // strict: reject non-base64 input
+    if ($decoded === false) {
+      return null;
+    }
+    $data = json_decode($decoded);
+    if (json_last_error() !== JSON_ERROR_NONE || !is_object($data)) {
+      return null;
+    }
+    return $data;
+  }
+
   public function verify($payload, $hmac_key = null)
   {
     if ($hmac_key === null) {
@@ -367,7 +390,15 @@ class OpenPortePlugin
 
       return false;
     }
-    $data = json_decode(base64_decode($payload));
+    $data = $this->decode_payload($payload);
+    if ($data === null) {
+      // Malformed token: fail closed (and fire the result hooks) without
+      // reaching the property reads in the verify_* methods below.
+      do_action('openporte_verify_result', false);
+      do_action_deprecated('altcha_verify_result', array(false), '1.27.0', 'openporte_verify_result');
+
+      return false;
+    }
     if (isset($data->verificationData)) {
       $result = $this->verify_server_signature($payload, $hmac_key);
     } else {
@@ -385,7 +416,11 @@ class OpenPortePlugin
     if ($hmac_key === null) {
       $hmac_key = $this->get_secret();
     }
-    $data = json_decode(base64_decode($payload));
+    $data = $this->decode_payload($payload);
+    if ($data === null
+      || !isset($data->algorithm, $data->verificationData, $data->signature)) {
+      return false;
+    }
     $alg_ok = ($data->algorithm === 'SHA-256');
     $calculated_hash = hash('sha256', $data->verificationData, true);
     $calculated_signature = hash_hmac('sha256', $calculated_hash, $hmac_key);
@@ -405,7 +440,11 @@ class OpenPortePlugin
     if ($hmac_key === null) {
       $hmac_key = $this->get_secret();
     }
-    $data = json_decode(base64_decode($payload));
+    $data = $this->decode_payload($payload);
+    if ($data === null
+      || !isset($data->algorithm, $data->salt, $data->number, $data->challenge, $data->signature)) {
+      return false;
+    }
     $salt_url = wp_parse_url($data->salt);
     if (isset($salt_url['query']) && !empty($salt_url['query'])) {
       parse_str($salt_url['query'], $salt_params);
