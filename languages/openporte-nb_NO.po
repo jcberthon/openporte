@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.0\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.1"
 "Report-Msgid-Bugs-To: https://github.com/jcberthon/openporte/issues\n"
 "Last-Translator: \n"
 "Language-Team: Norwegian Bokmal\n"
@@ -32,7 +32,7 @@ msgid "Review it!"
 msgstr ""
 
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
-#: admin/options.php:65
+#: admin/options.php:66
 #, php-format
 msgid "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget version %2$s"
 msgstr ""
@@ -53,13 +53,13 @@ msgid "Star OpenPorte on GitHub!"
 msgstr ""
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:110
+#: admin/options.php:111
 #, php-format
 msgid "Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend."
 msgstr ""
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:129
+#: admin/options.php:130
 #, php-format
 msgid "The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only."
 msgstr ""
@@ -95,12 +95,6 @@ msgstr ""
 msgid "Verification failed. Try again later."
 msgstr "Verifiseringen mislyktes. Prøv igjen senere."
 
-#. translators: the placeholders contain opening and closing tags for a link (<a> tag)
-#: includes/core.php:301
-#, php-format
-msgid "Protected by %sALTCHA%s"
-msgstr "Beskyttet av %sALTCHA%s"
-
 #: includes/core.php:305
 msgid "I'm not a robot"
 msgstr "Jeg er ikke en robot"
@@ -118,314 +112,314 @@ msgid "Verifying... please wait."
 msgstr "Verifiserer... vennligst vent."
 
 #. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
-#: includes/core.php:541
+#: includes/core.php:543
 msgid "This form requires JavaScript!"
 msgstr ""
 
-#: includes/settings.php:158
+#: includes/settings.php:210
 msgid "General"
 msgstr ""
 
-#: includes/settings.php:165
+#: includes/settings.php:217
 msgid "API Mode"
 msgstr ""
 
-#: includes/settings.php:171
+#: includes/settings.php:223
 msgid "Select the API mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend."
 msgstr ""
 
-#: includes/settings.php:173
+#: includes/settings.php:225
 msgid "Self-hosted"
 msgstr ""
 
-#: includes/settings.php:174
+#: includes/settings.php:226
 msgid "Custom"
 msgstr ""
 
-#: includes/settings.php:181
+#: includes/settings.php:233
 msgid "Challenge URL"
 msgstr ""
 
-#: includes/settings.php:188
+#: includes/settings.php:240
 msgid "Configure your custom Challenge URL."
 msgstr ""
 
-#: includes/settings.php:195
+#: includes/settings.php:247
 msgid "Signing secret"
 msgstr ""
 
-#: includes/settings.php:201
+#: includes/settings.php:253
 msgid "Configure your HMAC signing secret."
 msgstr ""
 
-#: includes/settings.php:208
+#: includes/settings.php:260
 msgid "Complexity"
 msgstr ""
 
-#: includes/settings.php:214
+#: includes/settings.php:266
 msgid "Select the PoW complexity for the widget."
 msgstr ""
 
-#: includes/settings.php:216
+#: includes/settings.php:268
 msgid "Low"
 msgstr ""
 
-#: includes/settings.php:217
+#: includes/settings.php:269
 msgid "Medium"
 msgstr ""
 
-#: includes/settings.php:218
+#: includes/settings.php:270
 msgid "High"
 msgstr ""
 
-#: includes/settings.php:225
+#: includes/settings.php:277
 msgid "Expiration"
 msgstr ""
 
-#: includes/settings.php:231
+#: includes/settings.php:283
 msgid "Select the life-span of the challenge."
 msgstr ""
 
-#: includes/settings.php:233
+#: includes/settings.php:285
 msgid "1 hour"
 msgstr ""
 
-#: includes/settings.php:234
+#: includes/settings.php:286
 msgid "4 hours"
 msgstr ""
 
-#: includes/settings.php:235
+#: includes/settings.php:287
 msgid "None"
 msgstr ""
 
-#: includes/settings.php:243
+#: includes/settings.php:295
 msgid "Spam Filter"
 msgstr ""
 
-#: includes/settings.php:250
+#: includes/settings.php:302
 msgid "Block Spam Submissions"
 msgstr ""
 
-#: includes/settings.php:257
-#: includes/settings.php:297
-#: includes/settings.php:311
-#: includes/settings.php:325
-#: includes/settings.php:338
+#: includes/settings.php:309
+#: includes/settings.php:349
+#: includes/settings.php:363
+#: includes/settings.php:377
+#: includes/settings.php:390
 msgid "Yes"
 msgstr ""
 
-#: includes/settings.php:258
+#: includes/settings.php:310
 msgid "Don't allow form submissions if the Spam Filter detects potential spam."
 msgstr ""
 
-#: includes/settings.php:266
+#: includes/settings.php:318
 msgid "Widget Customization"
 msgstr ""
 
-#: includes/settings.php:273
+#: includes/settings.php:325
 msgid "Auto verification"
 msgstr ""
 
-#: includes/settings.php:279
+#: includes/settings.php:331
 msgid "Select auto-verification behaviour."
 msgstr ""
 
-#: includes/settings.php:281
+#: includes/settings.php:333
 msgid "Disabled"
 msgstr ""
 
-#: includes/settings.php:282
+#: includes/settings.php:334
 msgid "On page load"
 msgstr ""
 
-#: includes/settings.php:283
+#: includes/settings.php:335
 msgid "On form focus"
 msgstr ""
 
-#: includes/settings.php:284
+#: includes/settings.php:336
 msgid "On form submit"
 msgstr ""
 
-#: includes/settings.php:291
+#: includes/settings.php:343
 msgid "Floating UI"
 msgstr ""
 
-#: includes/settings.php:298
+#: includes/settings.php:350
 msgid "Enable Floating UI."
 msgstr ""
 
-#: includes/settings.php:305
+#: includes/settings.php:357
 msgid "Delay"
 msgstr ""
 
-#: includes/settings.php:312
+#: includes/settings.php:364
 msgid "Add a delay of 1.5 seconds to verification."
 msgstr ""
 
-#: includes/settings.php:319
+#: includes/settings.php:371
 msgid "Hide logo"
 msgstr ""
 
-#: includes/settings.php:332
+#: includes/settings.php:384
 msgid "Hide footer"
 msgstr ""
 
-#: includes/settings.php:339
+#: includes/settings.php:391
 #, fuzzy
 msgid "Hide Powered by ALTCHA."
 msgstr "Beskyttet av %sALTCHA%s"
 
-#: includes/settings.php:347
+#: includes/settings.php:399
 msgid "Integrations"
 msgstr ""
 
-#: includes/settings.php:354
+#: includes/settings.php:406
 msgid "CoBlocks"
 msgstr ""
 
-#: includes/settings.php:366
-#: includes/settings.php:387
-#: includes/settings.php:409
-#: includes/settings.php:432
-#: includes/settings.php:453
-#: includes/settings.php:474
-#: includes/settings.php:495
-#: includes/settings.php:516
-#: includes/settings.php:538
-#: includes/settings.php:559
-#: includes/settings.php:579
-#: includes/settings.php:599
-#: includes/settings.php:619
-#: includes/settings.php:643
-#: includes/settings.php:673
-#: includes/settings.php:692
-#: includes/settings.php:711
-#: includes/settings.php:730
+#: includes/settings.php:418
+#: includes/settings.php:439
+#: includes/settings.php:461
+#: includes/settings.php:484
+#: includes/settings.php:505
+#: includes/settings.php:526
+#: includes/settings.php:547
+#: includes/settings.php:568
+#: includes/settings.php:590
+#: includes/settings.php:611
+#: includes/settings.php:631
+#: includes/settings.php:651
+#: includes/settings.php:671
+#: includes/settings.php:695
+#: includes/settings.php:725
+#: includes/settings.php:744
+#: includes/settings.php:763
+#: includes/settings.php:782
 msgid "Disable"
 msgstr ""
 
-#: includes/settings.php:367
-#: includes/settings.php:388
-#: includes/settings.php:410
-#: includes/settings.php:433
-#: includes/settings.php:454
-#: includes/settings.php:475
-#: includes/settings.php:496
-#: includes/settings.php:517
-#: includes/settings.php:539
-#: includes/settings.php:560
-#: includes/settings.php:580
-#: includes/settings.php:600
-#: includes/settings.php:620
-#: includes/settings.php:644
-#: includes/settings.php:674
-#: includes/settings.php:693
-#: includes/settings.php:712
-#: includes/settings.php:731
+#: includes/settings.php:419
+#: includes/settings.php:440
+#: includes/settings.php:462
+#: includes/settings.php:485
+#: includes/settings.php:506
+#: includes/settings.php:527
+#: includes/settings.php:548
+#: includes/settings.php:569
+#: includes/settings.php:591
+#: includes/settings.php:612
+#: includes/settings.php:632
+#: includes/settings.php:652
+#: includes/settings.php:672
+#: includes/settings.php:696
+#: includes/settings.php:726
+#: includes/settings.php:745
+#: includes/settings.php:764
+#: includes/settings.php:783
 msgid "Captcha"
 msgstr ""
 
-#: includes/settings.php:368
-#: includes/settings.php:389
-#: includes/settings.php:411
-#: includes/settings.php:434
-#: includes/settings.php:455
-#: includes/settings.php:476
-#: includes/settings.php:497
-#: includes/settings.php:518
-#: includes/settings.php:540
-#: includes/settings.php:561
-#: includes/settings.php:581
-#: includes/settings.php:601
-#: includes/settings.php:621
-#: includes/settings.php:645
-#: includes/settings.php:675
-#: includes/settings.php:694
-#: includes/settings.php:713
-#: includes/settings.php:732
+#: includes/settings.php:420
+#: includes/settings.php:441
+#: includes/settings.php:463
+#: includes/settings.php:486
+#: includes/settings.php:507
+#: includes/settings.php:528
+#: includes/settings.php:549
+#: includes/settings.php:570
+#: includes/settings.php:592
+#: includes/settings.php:613
+#: includes/settings.php:633
+#: includes/settings.php:653
+#: includes/settings.php:673
+#: includes/settings.php:697
+#: includes/settings.php:727
+#: includes/settings.php:746
+#: includes/settings.php:765
+#: includes/settings.php:784
 msgid "Captcha + Spam Filter"
 msgstr ""
 
-#: includes/settings.php:375
+#: includes/settings.php:427
 msgid "Contact Form 7"
 msgstr ""
 
-#: includes/settings.php:390
-#: includes/settings.php:519
+#: includes/settings.php:442
+#: includes/settings.php:571
 msgid "Shortcode"
 msgstr ""
 
-#: includes/settings.php:397
+#: includes/settings.php:449
 msgid "Elementor Pro Forms"
 msgstr ""
 
-#: includes/settings.php:418
+#: includes/settings.php:470
 msgid "Enfold Theme"
 msgstr ""
 
-#: includes/settings.php:441
+#: includes/settings.php:493
 msgid "Formidable Forms"
 msgstr ""
 
-#: includes/settings.php:462
+#: includes/settings.php:514
 msgid "Forminator"
 msgstr ""
 
-#: includes/settings.php:483
+#: includes/settings.php:535
 msgid "Gravity Forms"
 msgstr ""
 
-#: includes/settings.php:504
+#: includes/settings.php:556
 msgid "HTML Forms"
 msgstr ""
 
-#: includes/settings.php:526
+#: includes/settings.php:578
 msgid "WPDiscuz"
 msgstr ""
 
-#: includes/settings.php:547
+#: includes/settings.php:599
 msgid "WP Forms"
 msgstr ""
 
-#: includes/settings.php:568
+#: includes/settings.php:620
 msgid "WooCommerce register page"
 msgstr ""
 
-#: includes/settings.php:588
+#: includes/settings.php:640
 msgid "WooCommerce reset password page"
 msgstr ""
 
-#: includes/settings.php:608
+#: includes/settings.php:660
 msgid "WooCommerce login page"
 msgstr ""
 
-#: includes/settings.php:628
+#: includes/settings.php:680
 msgid "Custom HTML"
 msgstr ""
 
 #. translators: the placeholder will be replaced with the shortcode
-#: includes/settings.php:636
+#: includes/settings.php:688
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML."
 msgstr ""
 
-#: includes/settings.php:656
+#: includes/settings.php:708
 msgid "Wordpress"
 msgstr ""
 
-#: includes/settings.php:663
+#: includes/settings.php:715
 msgid "Register page"
 msgstr ""
 
-#: includes/settings.php:682
+#: includes/settings.php:734
 msgid "Reset password page"
 msgstr ""
 
-#: includes/settings.php:701
+#: includes/settings.php:753
 msgid "Login page"
 msgstr ""
 
-#: includes/settings.php:720
+#: includes/settings.php:772
 msgid "Comments"
 msgstr ""
 
@@ -439,12 +433,12 @@ msgstr ""
 #: integrations/html-forms.php:49
 #: integrations/html-forms.php:56
 #: integrations/woocommerce.php:28
-#: integrations/woocommerce.php:74
-#: integrations/woocommerce.php:114
+#: integrations/woocommerce.php:75
+#: integrations/woocommerce.php:116
 #: integrations/wordpress.php:28
-#: integrations/wordpress.php:71
-#: integrations/wordpress.php:109
-#: integrations/wordpress.php:161
+#: integrations/wordpress.php:72
+#: integrations/wordpress.php:111
+#: integrations/wordpress.php:163
 #: integrations/wpforms.php:28
 msgid "Could not verify you are not a robot."
 msgstr ""
@@ -454,13 +448,13 @@ msgid "OpenPorte placeholder"
 msgstr ""
 
 #: integrations/wordpress.php:28
-#: integrations/wordpress.php:71
-#: integrations/wordpress.php:109
-#: integrations/wordpress.php:161
+#: integrations/wordpress.php:72
+#: integrations/wordpress.php:111
+#: integrations/wordpress.php:163
 msgid "Error"
 msgstr ""
 
-#: integrations/wpmembers.php:16
+#: integrations/wpmembers.php:17
 msgid "Registration failed. Please try again later."
 msgstr ""
 
@@ -482,4 +476,10 @@ msgstr ""
 #. Author URI of the plugin
 #: openporte.php
 msgid "https://github.com/jcberthon/openporte"
+msgstr ""
+
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
+#: includes/core.php:301
+#, php-format
+msgid "Protected by %1$sALTCHA%2$s"
 msgstr ""
