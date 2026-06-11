@@ -353,7 +353,10 @@ class OpenPortePlugin
 
   public function random_secret()
   {
-    return bin2hex(random_bytes(12));
+    // 32 bytes → a 256-bit HMAC key. Only seeds NEW installs: add_option() is a
+    // no-op once the option exists, so existing secrets — and the challenges
+    // already signed with them — are left untouched.
+    return bin2hex(random_bytes(32));
   }
 
   /**
