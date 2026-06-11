@@ -3,6 +3,10 @@ on:
   push:
     tags:
     - "*"
+# Least privilege: deployment authenticates to WordPress.org SVN via the SVN_*
+# secrets, so the GITHUB_TOKEN only needs read access to check out the code.
+permissions:
+  contents: read
 jobs:
   deploy:
     name: Publish
