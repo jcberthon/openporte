@@ -4,30 +4,35 @@
 
 ### Server Requirements
 
-OpenPorte (ALTCHA) maintains compatibility with WordPress 5.0 through 7.0 and PHP 7.3 through 8.5.
+The supported floor is **PHP 8.0 / WordPress 5.6**, matching `Requires PHP` and
+`Requires at least` in `readme.txt`. This is the authoritative source — keep this
+section in sync with it.
 
 #### Support Status
 
-**⚠️ Deprecated (Supported for v1.27.0 only)**
-- WordPress: 5.0+
-- PHP: 7.3
-- *Will be removed in versions after 1.27.**
+**✅ Minimum supported (floor)**
+- WordPress: 5.6
+- PHP: 8.0
 
 **✅ Recommended**
 - WordPress: 6.8+
-- PHP: 8.3-8.5
+- PHP: 8.3–8.5
 
-**✅ Latest Tested**
+**✅ Latest tested**
 - WordPress: 7.0
-- PHP: 8.3
+- PHP: 8.5
 
 #### Compatibility Notes
 
-- WordPress 5.0 is the oldest version compatible with PHP 7.3
-- WordPress 6.8 is the oldest version with full PHP 8.3 compatibility
-- WordPress 7.0+ no longer supports PHP 7.2 and 7.3
-- PHP 8.2 has only 6 months of security support from upstream and is not recommended
-- PHP 7.3 support is deprecated and will be removed in future releases
+- The floor is **PHP 8.0**: `core.php`'s `generate_challenge()` originally used
+  `str_ends_with()` (a PHP 8.0 / WP 5.9-polyfilled function). Acceptance test
+  **(e.1)** caught this failing on PHP 7.3, which is why PHP 7.3 / WP 5.0 are
+  **not** supported. The call was later rewritten to a plain `substr()` check so
+  the code also runs on WP 5.6–5.8 (which predate the polyfill), but the
+  declared PHP floor remains 8.0.
+- WordPress 5.6 is the oldest core that ships with PHP 8.0 support.
+- WordPress 7.0 no longer supports PHP 7.2 / 7.3.
+- PHP 8.2 has limited remaining upstream security support; prefer 8.3–8.5.
 
 
 ## Testing
@@ -193,20 +198,26 @@ For comprehensive plugin testing, consider this matrix:
 
 | PHP Version | WordPress Version | Notes |
 |-------------|-------------------|-------|
-| 7.3 | 6.5 | Minimum supported |
-| 7.4 | 7.0 | Current default |
-| 8.0 | 7.0 | PHP 8.0 compatibility |
-| 8.1 | trunk | Latest PHP + bleeding edge |
-| 8.2 | 7.0 | Latest stable PHP |
+| 8.0 | 5.6 | Minimum supported floor |
+| 8.3 | 6.8 | Recommended baseline |
+| 8.5 | 7.0 | Latest tested (PHP + WP ceiling) |
+| 8.4 | trunk | Bleeding-edge WordPress |
 
 Example test commands:
 ```bash
-# Test PHP 7.3 with WP 6.5
-./wp-env.sh -p 7.3 -w WordPress/WordPress#6.5 start
+# Test the supported floor: PHP 8.0 with WP 5.6
+./wp-env.sh -p 8.0 -w WordPress/WordPress#5.6 start
 
-# Test PHP 8.2 with WP trunk
-./wp-env.sh -p 8.2 -w WordPress/WordPress#trunk start
+# Test the ceiling: PHP 8.5 with WP 7.0
+./wp-env.sh -p 8.5 -w WordPress/WordPress#7.0 start
+
+# Test against bleeding-edge WordPress
+./wp-env.sh -p 8.4 -w WordPress/WordPress#trunk start
 ```
+
+> Running the **PHP 8.0 / WP 5.6** floor exercises the no-`str_ends_with`
+> compatibility path in `generate_challenge()` — a regression there would only
+> surface on this oldest bench, so keep it in the rotation.
 
 #### Older WordPress versions
 
@@ -255,6 +266,73 @@ ssh-copy-id ${REMOTE_USER}@${REMOTE_HOST}
 ```bash
 ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ~/path/to/remote/directory"
 ```
+
+---
+
+### Regression focus after verification changes
+
+The security-hardening pass changed the token-verification path in
+`includes/core.php` (see `docs/security-audit.md`). Because there is no
+automated test for it, the following must be checked by hand whenever
+`verify()`, `verify_solution()`, `verify_server_signature()` or
+`decode_payload()` are touched:
+
+- **Happy path unchanged:** a normally solved widget submission still verifies
+  in self-hosted (proof-of-work) mode — acceptance test **(a)**.
+- **Malformed input fails *quietly*:** submit a form with the `altcha` field
+  missing or set to a non-base64 / non-JSON value. It must be rejected **and**
+  produce **no** PHP warnings in `wp-env logs` (the point of the `decode_payload`
+  hardening — previously these emitted "Attempt to read property on null").
+- **Custom / spam-filter mode** (`custom` API mode with a signed
+  `verificationData` backend): an **expired** (`expire` in the past) or
+  not-**verified** payload is rejected; a normal unexpired/verified one is
+  accepted; a **minimal** backend payload that omits `expire`/`verified`
+  altogether still verifies (the checks are defensive, only-when-present).
+- **Secret continuity:** a fresh install gets a 256-bit signing secret; an
+  upgraded install keeps its existing secret unchanged (covered by the
+  ALTCHA → OpenPorte migration test in `tests/README.md` — a changed secret
+  would break previously issued challenges).
+
+### The `altcha.min.js` widget dependency
+
+`public/altcha.min.js` is the upstream ALTCHA web component, **vendored as-is**
+and never edited (its version is tracked by `OPENPORTE_WIDGET_VERSION` in
+`openporte.php`). We deliberately do **not** maintain or test the widget itself —
+its proof-of-work algorithm, Svelte internals and own test suite are upstream's
+responsibility. Our responsibility is strictly the **integration**: that the
+widget loads, renders, solves a challenge from our endpoint, writes the solution
+into the form's `altcha` field, and that our PHP `verify()` accepts it.
+
+**Maintenance.** The upgrade procedure and the licensing-risk contingency live
+in [`docs/agents/altcha-upstream.md`](agents/altcha-upstream.md): confirm the new
+upstream release is still under an OSI-approved licence, replace the file, bump
+`OPENPORTE_WIDGET_VERSION`, add a `readme.txt` changelog entry, and record the
+"Last verified MIT upstream" SHA. Do **not** patch the vendored file; if a
+security issue is found in the widget, the policy is to upgrade to a fixed
+upstream release.
+
+**Integration testing after a re-vendor.** Run these (browser + `wp-env logs`),
+at least on the floor (PHP 8.0 / WP 5.6) and ceiling (PHP 8.5 / WP 7.0) benches:
+
+1. The widget renders on a protected form (the `[openporte]` shortcode on
+   **Test Page**, plus at least one form integration such as Contact Form 7).
+2. In **self-hosted** mode it fetches the challenge from
+   `/wp-json/openporte/v1/challenge` — confirm in the Network tab, and that there
+   are **no** requests to `*.altcha.org`.
+3. Solving succeeds, the form submits, the hidden `altcha` field is populated,
+   and our PHP verification accepts it (entry created, no error).
+4. **Negative:** omitting or tampering with the solution is rejected.
+5. The companion `public/script.js` behaviour still holds — no duplicate widgets
+   (the `MutationObserver`), and the checkbox `name` fix still applies — since it
+   manipulates the widget DOM and is sensitive to upstream markup changes.
+6. **Attribute-API compatibility (the main upgrade risk):** the attributes we
+   emit in `get_widget_attrs()` (`challengeurl`, `strings`, `auto`, `floating`,
+   `delay`, `hidelogo`, `hidefooter`, `blockspam`, `spamfilter`, `name`) are
+   still honoured by the new widget. If upstream renames or drops one, update
+   **both** `get_widget_attrs()` and the `wp_kses` whitelist
+   `OpenPortePlugin::$html_espace_allowed_tags`, or the attribute will be
+   silently stripped on render.
+7. The browser console is clean and `wp-env logs` shows no PHP notices.
 
 ---
 
