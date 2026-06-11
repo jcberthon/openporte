@@ -181,7 +181,7 @@ function openporte_settings_field_callback(array $args)
     $value = 1;
   }
 ?>
-  <input autcomplete="none" class="regular-text"  <?php echo $custom === true ? ' data-custom-api' : ''; ?> <?php echo $spamfilter === true ? ' data-spamfilter' : ''; ?> type="<?php echo esc_attr($type); ?>" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value) ?>" <?php $type == "checkbox" ? checked(1, $setting, true) : "" ?>>
+  <input autocomplete="off" class="regular-text" <?php echo $custom === true ? ' data-custom-api' : ''; ?> <?php echo $spamfilter === true ? ' data-spamfilter' : ''; ?> type="<?php echo esc_attr($type); ?>" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value) ?>" <?php $type == "checkbox" ? checked(1, $setting, true) : "" ?>>
   <label class="description" for="<?php echo esc_attr($name); ?>"><?php echo esc_html($description); ?></label>
   <?php if ($hint) { ?>
   <div style="opacity:0.7;font-size:85%;margin-top:3px"><?php echo esc_html($hint); ?></div>
