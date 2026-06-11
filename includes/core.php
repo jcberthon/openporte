@@ -610,47 +610,6 @@ class OpenPortePlugin
     // Deprecated alias kept for back-compat; remove in a future release.
     return apply_filters_deprecated('altcha_widget_html', array($html, $mode, $language, $name), '1.27.0', 'openporte_widget_html');
   }
-
-  function remove_private_keys($array, $ignore_fields = array())
-  {
-    $filtered = array();
-    foreach ($array as $key => $value) {
-      if (strpos($key, '_') !== 0 && !isset($ignore_fields[$key])) {
-        $filtered[$key] = $value;
-      }
-    }
-    return $filtered;
-  }
-
-  function sanitize_data($post)
-  {
-    $data = $this->flatten_post($post);
-    foreach ($data as $key => $value) {
-      $data[$key] = sanitize_text_field($value);
-    }
-    return $data;
-  }
-
-  function flatten_post($post_data, $prefix = '')
-  {
-    $result = array();
-    foreach ($post_data as $key => $value) {
-      if (is_array($value)) {
-        if ($prefix == '') {
-          $result = $result + $this->flatten_post($value, $prefix . $key);
-        } else {
-          $result = $result + $this->flatten_post($value, $prefix . '[' . $key . ']');
-        }
-      } else {
-        if ($prefix == '') {
-          $result[$prefix . $key . ''] = $value;
-        } else {
-          $result[$prefix . '[' . $key . ']' . ''] = $value;
-        }
-      }
-    }
-    return $result;
-  }
 }
 
 // Deprecated back-compat alias for third-party code referencing the old class
