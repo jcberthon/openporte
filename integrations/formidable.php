@@ -8,7 +8,9 @@ function openporte_load_formidable_field() {
 add_action( 'plugins_loaded', 'openporte_load_formidable_field' );
 
 function openporte_forms_autoloader( $class_name ) {
-	if ( ! preg_match( '/^OpenPorte.+$/', $class_name ) ) {
+	// Restrict to a plain class-name charset (no path separators or dots) before
+	// concatenating into the include path below — defence in depth.
+	if ( ! preg_match( '/^OpenPorte[A-Za-z0-9_]+$/', $class_name ) ) {
 		return;
 	}
 
