@@ -426,13 +426,31 @@ class OpenPortePlugin
     $calculated_signature = hash_hmac('sha256', $calculated_hash, $hmac_key);
     // hash_equals: constant-time comparison so the HMAC can't be recovered via timing.
     $signature_ok = hash_equals($calculated_signature, $data->signature);
-    $verified = ($alg_ok && $signature_ok);
-    if ($verified) {
-      $this->spamfilter_result = array();
-      parse_str($data->verificationData, $this->spamfilter_result);
-      return $this->spamfilter_result['classification'] !== 'BAD';
+    if (!($alg_ok && $signature_ok)) {
+      return false;
     }
-    return $verified;
+    $this->spamfilter_result = array();
+    parse_str($data->verificationData, $this->spamfilter_result);
+    // Mirror verify_solution() and the ALTCHA reference (verified === true &&
+    // expire > now): a signed server payload is only valid while unexpired and
+    // explicitly verified. Each check is applied only when the backend supplies
+    // the field, so a minimal custom backend that omits them keeps working.
+    if (isset($this->spamfilter_result['expire'])) {
+      $expire = intval($this->spamfilter_result['expire'], 10);
+      if ($expire > 0 && $expire < time()) {
+        return false;
+      }
+    }
+    if (isset($this->spamfilter_result['verified'])) {
+      $verified_flag = strtolower((string) $this->spamfilter_result['verified']);
+      if (in_array($verified_flag, array('', '0', 'false', 'no'), true)) {
+        return false;
+      }
+    }
+    // Absent classification is treated as "not spam" (isset-guarded to avoid a
+    // warning); only an explicit BAD classification blocks the submission.
+    return !isset($this->spamfilter_result['classification'])
+      || $this->spamfilter_result['classification'] !== 'BAD';
   }
 
   public function verify_solution($payload, $hmac_key = null)
