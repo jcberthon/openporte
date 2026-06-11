@@ -59,13 +59,12 @@ logic**; the rest are low-severity hardening items.
 | 6 | No HTTPS enforcement on the custom challenge URL | MITM (operator-controlled) | `get_challengeurl()` / settings | Info | Accepted (documented) |
 | 7 | Signing secret stored in plaintext in `wp_options` | Hardening | options | Info | Accepted (documented) |
 | 8 | Form handlers add no nonce of their own | By design | `integrations/*` | Info | Accepted (documented) |
-| 9 | HMAC signing key is 96-bit entropy | Crypto strength (defence in depth) | `random_secret()` | Low | Open (recommendation) |
-| 10 | Formidable autoloader regex does not block path separators | Path traversal (theoretical) | `integrations/formidable.php` | Low | Open (recommendation) |
-| 11 | Unused dead code from the removed paid-SaaS path | Attack surface / maintainability | `core.php` | Info | Open (recommendation) |
+| 9 | HMAC signing key is 96-bit entropy | Crypto strength (defence in depth) | `random_secret()` | Low | **Fixed** |
+| 10 | Formidable autoloader regex does not block path separators | Path traversal (theoretical) | `integrations/formidable.php` | Low | **Fixed** |
+| 11 | Unused dead code from the removed paid-SaaS path | Attack surface / maintainability | `core.php` | Info | **Fixed** |
 
-> Findings 9–11 came from the framework review (Appendix A/B). None is
-> exploitable; each carries a recommended, non-breaking hardening, but no fix has
-> been applied pending maintainer sign-off.
+> Findings 9–11 came from the framework review (Appendix A/B). None was
+> exploitable; each was a non-breaking hardening and has now been applied.
 
 ---
 
@@ -329,7 +328,7 @@ checks only and are fully sanitised.
 
 ---
 
-### 9. HMAC signing key is 96-bit entropy — Low — Open
+### 9. HMAC signing key is 96-bit entropy — Low — Fixed
 
 **Type:** Cryptographic strength / defence in depth (OWASP A02).
 **Location:** `includes/core.php`, `random_secret()` (used to seed
@@ -341,15 +340,14 @@ checks only and are fully sanitised.
 (256 ideal). 96 bits is not practically brute-forceable, so this is hardening,
 not an exploitable weakness.
 
-**Recommended fix (non-breaking):** seed new installs with
-`bin2hex(random_bytes(32))` (256-bit). Because the secret is generated only when
-absent (`add_option` is a no-op when set), existing installs keep their current
-key and previously issued challenges keep verifying — only fresh installs get
-the stronger key. Not yet applied.
+**Fix applied.** `random_secret()` now returns `bin2hex(random_bytes(32))`
+(256-bit). Because the secret is generated only when absent (`add_option` is a
+no-op when set), existing installs keep their current key and previously issued
+challenges keep verifying — only fresh installs get the stronger key.
 
 ---
 
-### 10. Formidable autoloader regex does not block path separators — Low — Open
+### 10. Formidable autoloader regex does not block path separators — Low — Fixed
 
 **Type:** Path traversal / file inclusion (theoretical) (OWASP A03).
 **Location:** `integrations/formidable.php`, `openporte_forms_autoloader()`.
@@ -366,13 +364,12 @@ This is **not practically exploitable** — the value is a PHP class name suppli
 by the autoload mechanism, not by request input, and PHP class names cannot
 contain `/` — but it is looser than necessary.
 
-**Recommended fix:** tighten the guard to a class-name charset and/or
-`basename()` the segment, e.g. require `^OpenPorte[A-Za-z0-9_]+$`. Not yet
-applied.
+**Fix applied.** The guard is now `^OpenPorte[A-Za-z0-9_]+$`, which rejects path
+separators and dots before the class name is concatenated into the include path.
 
 ---
 
-### 11. Unused dead code from the removed paid-SaaS path — Info — Open
+### 11. Unused dead code from the removed paid-SaaS path — Info — Fixed
 
 **Type:** Attack surface / maintainability (OWASP A04 Insecure Design).
 **Location:** `includes/core.php` — `flatten_post()`, `sanitize_data()`,
@@ -384,9 +381,9 @@ which flattened and POSTed form data to the external API. Dead code is not a
 vulnerability, but removing unreachable code shrinks the attack surface and the
 maintenance burden.
 
-**Recommended fix:** delete the three methods. Minor caveat: they are `public`,
-so third-party code could in theory call them — unlikely, but worth a changelog
-note if removed. Not yet applied.
+**Fix applied.** The three methods were deleted. Minor caveat: they were
+`public`, so third-party code could in theory have called them — unlikely, but
+worth a changelog note when this ships in a release.
 
 ---
 
