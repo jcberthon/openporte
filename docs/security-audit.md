@@ -17,6 +17,14 @@
 > (`get_ip_address()` and the paid-SaaS challenge URL it flagged were removed in
 > the 1.27.0 paid-SaaS removal, and the widget-attribute escaping it flagged is
 > now handled by `esc_attr()` in `render_widget()`).
+>
+> A second pass maps the code against two external frameworks — the
+> [WordPress Plugin Security Guidelines](https://developer.wordpress.org/plugins/security/)
+> and the [OWASP Top 10 (2021)](https://owasp.org/Top10/) plus the
+> [OWASP PHP Configuration / Input-Validation cheat sheets](https://cheatsheetseries.owasp.org/).
+> The per-guideline coverage tables are Appendix A and Appendix B; the framework
+> pass surfaced no new Medium/High issues but added the Info/Low observations
+> #9–#11 below.
 
 ## Summary
 
@@ -51,6 +59,13 @@ logic**; the rest are low-severity hardening items.
 | 6 | No HTTPS enforcement on the custom challenge URL | MITM (operator-controlled) | `get_challengeurl()` / settings | Info | Accepted (documented) |
 | 7 | Signing secret stored in plaintext in `wp_options` | Hardening | options | Info | Accepted (documented) |
 | 8 | Form handlers add no nonce of their own | By design | `integrations/*` | Info | Accepted (documented) |
+| 9 | HMAC signing key is 96-bit entropy | Crypto strength (defence in depth) | `random_secret()` | Low | Open (recommendation) |
+| 10 | Formidable autoloader regex does not block path separators | Path traversal (theoretical) | `integrations/formidable.php` | Low | Open (recommendation) |
+| 11 | Unused dead code from the removed paid-SaaS path | Attack surface / maintainability | `core.php` | Info | Open (recommendation) |
+
+> Findings 9–11 came from the framework review (Appendix A/B). None is
+> exploitable; each carries a recommended, non-breaking hardening, but no fix has
+> been applied pending maintainer sign-off.
 
 ---
 
@@ -311,6 +326,114 @@ unforgeable, HMAC-signed anti-automation token — adding a separate nonce would
 be redundant and, for the public login/register/comment flows, is not how
 WordPress core gates those endpoints. The dispatch reads are presence/value
 checks only and are fully sanitised.
+
+---
+
+### 9. HMAC signing key is 96-bit entropy — Low — Open
+
+**Type:** Cryptographic strength / defence in depth (OWASP A02).
+**Location:** `includes/core.php`, `random_secret()` (used to seed
+`OpenPortePlugin::$option_secret` at activation).
+
+`random_secret()` returns `bin2hex(random_bytes(12))` — 12 random bytes, i.e.
+**96 bits of entropy**, rendered as a 24-character hex HMAC key. The CSPRNG
+(`random_bytes`) is correct, but for HMAC-SHA256 the modern minimum is 128 bits
+(256 ideal). 96 bits is not practically brute-forceable, so this is hardening,
+not an exploitable weakness.
+
+**Recommended fix (non-breaking):** seed new installs with
+`bin2hex(random_bytes(32))` (256-bit). Because the secret is generated only when
+absent (`add_option` is a no-op when set), existing installs keep their current
+key and previously issued challenges keep verifying — only fresh installs get
+the stronger key. Not yet applied.
+
+---
+
+### 10. Formidable autoloader regex does not block path separators — Low — Open
+
+**Type:** Path traversal / file inclusion (theoretical) (OWASP A03).
+**Location:** `integrations/formidable.php`, `openporte_forms_autoloader()`.
+
+```php
+if ( ! preg_match( '/^OpenPorte.+$/', $class_name ) ) { return; }
+$filepath = dirname( __FILE__ ) . '/formidable/' . $class_name . '.php';
+if ( file_exists( $filepath ) ) { require( $filepath ); }
+```
+
+The `.+` in the guard matches any character, including `/`, `\` and `.`, so the
+class name is concatenated into the include path without a path-separator check.
+This is **not practically exploitable** — the value is a PHP class name supplied
+by the autoload mechanism, not by request input, and PHP class names cannot
+contain `/` — but it is looser than necessary.
+
+**Recommended fix:** tighten the guard to a class-name charset and/or
+`basename()` the segment, e.g. require `^OpenPorte[A-Za-z0-9_]+$`. Not yet
+applied.
+
+---
+
+### 11. Unused dead code from the removed paid-SaaS path — Info — Open
+
+**Type:** Attack surface / maintainability (OWASP A04 Insecure Design).
+**Location:** `includes/core.php` — `flatten_post()`, `sanitize_data()`,
+`remove_private_keys()`.
+
+These public methods are defined but never called anywhere in the plugin
+(confirmed by grep). They are leftovers from the removed paid-SaaS classifier,
+which flattened and POSTed form data to the external API. Dead code is not a
+vulnerability, but removing unreachable code shrinks the attack surface and the
+maintenance burden.
+
+**Recommended fix:** delete the three methods. Minor caveat: they are `public`,
+so third-party code could in theory call them — unlikely, but worth a changelog
+note if removed. Not yet applied.
+
+---
+
+## Appendix A — WordPress Plugin Security Guidelines coverage
+
+Mapped against <https://developer.wordpress.org/plugins/security/>.
+
+| Guideline | Status | Evidence |
+|---|---|---|
+| Sanitize inputs | Pass | `sanitize_text_field( wp_unslash( … ) )` on every `$_POST` read; no `$_GET`/`$_REQUEST`/`$_COOKIE`/`$_SERVER` reads (grep-confirmed) |
+| Validate data | Pass (hardened) | Token validation added in finding #3; every `register_setting` has a `sanitize_callback` |
+| Escape output | Pass | `esc_html()`/`esc_attr()` on admin pages; `wp_kses()` with the `$html_espace_allowed_tags` whitelist for all widget HTML |
+| Nonces / CSRF | Pass / by design | Save path uses the Settings API nonce; public form handlers delegate to the host flow (finding #8) |
+| Capability checks | Pass | `add_options_page( …, 'manage_options', … )`; Settings API enforces the cap on save; comment handler skips for `manage_options` |
+| Avoid direct file access | Pass | `ABSPATH` (or `WP_UNINSTALL_PLUGIN`) guard at the top of every PHP file |
+| Prepared SQL | Pass | Only direct query is `uninstall.php`, using `$wpdb->prepare()` + `$wpdb->esc_like()` |
+| Secure REST endpoints | Pass (permissive by design) | `permission_callback` present; intentionally public for challenge generation (finding #5) |
+| No dynamic file inclusion from input | Pass | All `require`/`include` are static literals; the one variable include is the guarded Formidable autoloader (finding #10) |
+| No `eval`/`system`/`unserialize`/`extract` | Pass | grep-confirmed absent |
+| Don't trust proxy/`$_SERVER` headers | Pass | No `$_SERVER` reads; `get_ip_address()` removed in 1.27.0 |
+
+## Appendix B — OWASP coverage
+
+OWASP Top 10 (2021):
+
+| Category | Status | Notes |
+|---|---|---|
+| A01 Broken Access Control | Pass | Admin gated by `manage_options`; the only public surface (challenge REST) is intentional and exposes no secret |
+| A02 Cryptographic Failures | Pass (note) | `random_bytes`/`random_int` CSPRNG, HMAC-SHA256, constant-time `hash_equals`; key length is finding #9 |
+| A03 Injection | Pass | SQL prepared; no command/code injection sinks; output escaped; autoloader note in finding #10 |
+| A04 Insecure Design | Pass (note) | Stateless-PoW replay accepted (finding #1); dead code in finding #11 |
+| A05 Security Misconfiguration | Pass (note) | Secure defaults; no debug output; PoW complexity has no seeded default → falls to the 100–10000 range (consider defaulting to medium/high) |
+| A06 Vulnerable & Outdated Components | Monitor | Vendored `public/altcha.min.js` (widget 2.2.2) — track upstream advisories on re-vendor |
+| A07 Identification & Auth Failures | Pass | Delegates to WP/WooCommerce auth; adds an anti-automation layer, does not weaken auth |
+| A08 Software & Data Integrity Failures | Pass | Uses `json_decode` (not `unserialize`); submitted tokens are HMAC-signed and verified |
+| A09 Security Logging & Monitoring | Note | No built-in logging; operators can hook the `openporte_verify_result` action |
+| A10 SSRF | Pass | No server-side `wp_remote_*`/`file_get_contents`/cURL of operator- or visitor-supplied URLs (grep-confirmed) |
+
+OWASP PHP cheat-sheet spot checks:
+
+- **Type juggling:** security-critical comparisons use strict `===` (algorithm,
+  challenge) and `hash_equals` (signatures); the `verified` check uses
+  `in_array( …, true )`. No loose `==` in a security decision.
+- **Error handling / info leak:** finding #3 removes the PHP warnings that junk
+  tokens used to emit, reducing noise/leak in logs.
+- **File uploads / sessions:** none — the plugin handles no uploads and sets no
+  cookies/sessions.
 
 ---
 
