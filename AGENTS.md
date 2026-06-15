@@ -118,6 +118,8 @@ CoBlocks has no extension API, so the integration fakes a reCAPTCHA token and in
 
 Push a git tag. The `.github/workflows/publish.yml` workflow deploys straight to WordPress.org SVN. No manual steps.
 
+Branching model, versioning policy, and the patch/minor release lifecycle live in @CONTRIBUTING.md. The step-by-step cut-a-release runbook is `docs/release-preparation.md`.
+
 ## Commit conventions
 
 Imperative verb prefix (`Add`, `Fix`, `Update`, `Remove`, `Refactor`, `Docs`,
