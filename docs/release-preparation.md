@@ -3,7 +3,9 @@
 A step-by-step runbook for cutting an OpenPorte release. Work through the phases
 in order; each one gates the next.
 
-> Conventions referenced here: the version-bump locations and the
+> Conventions referenced here: the branching model, versioning policy, and
+> patch/minor lifecycle live in `../CONTRIBUTING.md` (this runbook covers the
+> *mechanics*, not the policy); the version-bump locations and the
 > static-analysis / verification protocol live in `AGENTS.md`; the manual
 > acceptance steps live in `docs/acceptance/`; the i18n discipline is in
 > `AGENTS.md` → "i18n discipline". This document ties them into one release flow.
