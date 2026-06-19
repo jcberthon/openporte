@@ -1,0 +1,32 @@
+#!/bin/sh
+# Reject pushing release tags that don't follow the vMAJOR.MINOR.PATCH convention.
+#
+# Enable once per clone:
+#     git config core.hooksPath .githooks
+#
+# Why: the publish workflow derives the WordPress.org version from the git tag by
+# stripping a leading "v" (vX.Y.Z -> X.Y.Z) and checks it against the readme
+# "Stable tag". A tag that doesn't match the convention would fail (or silently
+# not trigger) the deploy, so we block it before it reaches the remote.
+#
+# Bypass (not recommended): git push --no-verify
+
+status=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  # Only police tags.
+  case "$local_ref" in
+    refs/tags/*) ;;
+    *) continue ;;
+  esac
+  # Skip tag deletions (all-zero local sha; length-agnostic for SHA-1/SHA-256).
+  case "$local_sha" in
+    *[!0]*) ;;
+    *) continue ;;
+  esac
+  if ! printf '%s' "$local_ref" | grep -Eq '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$'; then
+    echo "pre-push: refusing tag '${local_ref#refs/tags/}' — release tags must be vMAJOR.MINOR.PATCH (e.g. v1.27.2)." >&2
+    status=1
+  fi
+done
+
+exit $status

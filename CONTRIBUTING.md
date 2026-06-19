@@ -67,6 +67,24 @@ version — bump it only when `public/altcha.min.js` is re-vendored (see
 The five version-string locations must change atomically — see the version-bump
 checklist in [`AGENTS.md`](AGENTS.md) and Phase 1 of the release runbook.
 
+### Tag naming and the pre-push hook
+
+Release tags are `vMAJOR.MINOR.PATCH` (e.g. `v1.27.2`). The publish workflow
+derives the WordPress.org version by stripping the leading `v`, and checks it
+against the readme `Stable tag`, so a tag that doesn't follow the convention
+would break (or silently skip) the deploy.
+
+The repository ships a `pre-push` hook ([`.githooks/pre-push`](.githooks/pre-push))
+that rejects non-conforming tag pushes locally. Git hooks are **not** installed
+automatically — enable them once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This is a client-side guard and can be bypassed with `git push --no-verify`;
+the publish workflow re-validates the tag shape server-side regardless.
+
 ## Tracking the plan
 
 Open work is slotted onto **GitHub milestones** — one per planned release
