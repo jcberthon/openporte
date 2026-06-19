@@ -146,6 +146,12 @@ git tag -a "${VERSION}" -m "Release ${VERSION}"
 git push origin "${VERSION}"
 ```
 
+The tag name must be `vX.Y.Z`. If you enabled the `pre-push` hook
+(`git config core.hooksPath .githooks`, see
+[`CONTRIBUTING.md`](../CONTRIBUTING.md)), a malformed tag is rejected locally
+before it leaves your machine. The workflow validates it again server-side and
+checks it against the readme `Stable tag` before deploying.
+
 Pushing the tag triggers `.github/workflows/publish.yml`, which builds the
 package (honouring `.distignore`) and deploys it straight to the WordPress.org
 SVN repository using the `SVN_*` secrets. No manual SVN steps are needed.
