@@ -705,7 +705,7 @@ if (is_admin()) {
     // Section
     add_settings_section(
       'openporte_wordpress_settings_section',
-      __('Wordpress', 'openporte'),
+      __('WordPress', 'openporte'),
       'openporte_wordpress_section_callback',
       'openporte_admin'
     );

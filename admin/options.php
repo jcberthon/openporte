@@ -162,7 +162,7 @@ function openporte_wordpress_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Activate OpenPorte for the core Wordpress functionality:', 'openporte'); ?></p>
+    <p><?php echo esc_html__('Activate OpenPorte for the core WordPress functionality:', 'openporte'); ?></p>
 
   <?php
 }
@@ -204,7 +204,7 @@ function openporte_settings_select_callback(array $args)
   <?php
     foreach ( $options as $opt_key => $opt_value ) {
       echo '<option value="' . esc_attr( $opt_key ) . '" '
-        . (in_array($opt_key, $spamfilter_options) ? ' data-spamfilter ' : '')
+        . (in_array($opt_key, $spamfilter_options, true) ? ' data-spamfilter ' : '')
         . selected($value, $opt_key, false )
         . '>' . esc_html($opt_value) . '</option>';
     }
