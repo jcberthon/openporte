@@ -85,7 +85,7 @@ public/
   admin.css                Settings-page styles.
   widget.php               Adds `async defer type="module"` to the widget <script> tag.
   index.php                Silence-is-golden guard.
-languages/                 29 locales (.po/.mo) + openporte.pot.
+languages/                 29 locales (.po/.mo) + openporte.pot. Workflow: docs/agents/i18n.md.
 docs/                      Maintainer docs: architecture.md, security-audit.md,
                            maintenance-testing.md, release-preparation.md, agents/.
 tests/                     Manual wp-env bench (README + bin/wp-init.sh); no automated suite.

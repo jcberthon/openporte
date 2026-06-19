@@ -51,7 +51,9 @@ If the WordPress "Tested up to" ceiling changed since the last release, update
 
 Skip this phase if the release touched no translatable strings. Otherwise the
 `.pot` template and the per-locale `.po`/`.mo` files must be regenerated
-(29 locales are currently shipped under `languages/`).
+(29 locales are currently shipped under `languages/`). For the do-not-translate
+glossary, the per-locale fill-in procedure, and the LLM-assisted translation
+prompt, see `docs/agents/i18n.md`.
 
 ```bash
 # 1. Regenerate the POT template
@@ -63,14 +65,16 @@ wp i18n make-pot . languages/openporte.pot \
 # 2. Update the per-locale PO files from the new POT, then stamp the version
 wp i18n update-po languages/openporte.pot languages/
 sed -i '' \
-  's/Project-Id-Version: OpenPorte Spam Protection.*/Project-Id-Version: OpenPorte Spam Protection X.Y.Z"/' \
+  's/Project-Id-Version: OpenPorte Spam Protection.*/Project-Id-Version: OpenPorte Spam Protection X.Y.Z\n"/' \
   languages/openporte-*.po
 
 # 3. Compile the MO binaries
 wp i18n make-mo languages/
 ```
 
-> Replace `X.Y.Z` with the release version. On Linux, drop the `''` argument to
+> Replace `X.Y.Z` with the release version. Keep the trailing `\n"` in the
+> replacement — the header line must retain its newline or gettext folds
+> `Project-Id-Version` into the next field. On Linux, drop the `''` argument to
 > `sed -i` (that empty backup suffix is a BSD/macOS requirement).
 
 ## Phase 3 — Changelog and upgrade notice
