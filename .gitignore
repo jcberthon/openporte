@@ -56,7 +56,6 @@ yarn-error.log*
 
 # Composer
 vendor/
-composer.lock
 composer.phar
 
 # WordPress
@@ -86,4 +85,3 @@ logs/
 .wp-env.conf
 .shellcheckrc
 .wpenvrc
-composer.json

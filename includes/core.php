@@ -348,7 +348,7 @@ class OpenPortePlugin
   {
     $integrations = $this->get_integrations();
 
-    return in_array("captcha", $integrations) || in_array("captcha_spamfilter", $integrations) || in_array("shortcode", $integrations);
+    return in_array("captcha", $integrations, true) || in_array("captcha_spamfilter", $integrations, true) || in_array("shortcode", $integrations, true);
   }
 
   public function random_secret()

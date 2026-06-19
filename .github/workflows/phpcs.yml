@@ -1,0 +1,37 @@
+# Runs the WordPress Coding Standards (WPCS) security/correctness sniffs plus
+# PHP cross-version compatibility checks, as configured in phpcs.xml.dist.
+# The ruleset is deliberately scoped to security and correctness (not whole-file
+# formatting); see phpcs.xml.dist for the rationale.
+
+name: PHPCS
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  phpcs:
+    name: WordPress Coding Standards
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@aa1fe473f9c687b6fb896056d771232c0bc41161
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHP_CodeSniffer
+        run: vendor/bin/phpcs -q --report=full

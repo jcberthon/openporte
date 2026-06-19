@@ -415,6 +415,34 @@ $attrs = wp_json_encode(
 
 ---
 
+## Appendix C — Coding-standards tooling (WPCS)
+
+A `phpcs.xml.dist` ruleset and a `PHPCS` GitHub workflow run the WordPress
+Coding Standards, scoped to **security and correctness** (the `WordPress.Security`,
+`WordPress.DB`, `WordPress.WP`, `WordPress.PHP`, `WordPress.NamingConventions.PrefixAllGlobals`
+and `WordPress.WP.I18n` rule groups) plus `PHPCompatibilityWP` (`testVersion 8.0-`).
+Whole-file formatting sniffs (Yoda conditions, indentation) are intentionally
+excluded — the code base inherits ALTCHA's two-space style and reformatting is out
+of scope. The `base64` "obfuscation" warnings are excluded because ALTCHA payloads
+are legitimately `base64(JSON)`.
+
+The first clean run surfaced and fixed three low-risk correctness items (none a
+vulnerability):
+
+- **Loose `in_array()`** in `has_active_integrations()` and the settings select
+  callback → now strict (`in_array( …, true )`).
+- **File-scope globals `$plugin` / `$mode`** in `integrations/elementor.php` (and
+  the equivalent hook-closure locals in `integrations/wpmembers.php`) shadowed
+  WordPress's admin globals of the same name → renamed to `$openporte_plugin` /
+  `$openporte_mode`.
+- **"Wordpress" misspelling** corrected to "WordPress" in two comments and two
+  user-facing strings.
+
+Run locally with `composer install && vendor/bin/phpcs`; `vendor/bin/phpcbf`
+applies the auto-fixable subset.
+
+---
+
 ## Appendix A — WordPress Plugin Security Guidelines coverage
 
 Mapped against <https://developer.wordpress.org/plugins/security/>.
