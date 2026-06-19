@@ -62,9 +62,11 @@ logic**; the rest are low-severity hardening items.
 | 9 | HMAC signing key is 96-bit entropy | Crypto strength (defence in depth) | `random_secret()` | Low | **Fixed** |
 | 10 | Formidable autoloader regex does not block path separators | Path traversal (theoretical) | `integrations/formidable.php` | Low | **Fixed** |
 | 11 | Unused dead code from the removed paid-SaaS path | Attack surface / maintainability | `core.php` | Info | **Fixed** |
+| 12 | Inline-script JSON not hardened against `</script>` breakout | XSS (defence in depth) | `integrations/custom.php` | Info | **Fixed** |
 
 > Findings 9–11 came from the framework review (Appendix A/B). None was
 > exploitable; each was a non-breaking hardening and has now been applied.
+> Finding 12 came from a follow-up hardening pass.
 
 ---
 
@@ -384,6 +386,32 @@ maintenance burden.
 **Fix applied.** The three methods were deleted. Minor caveat: they were
 `public`, so third-party code could in theory have called them — unlikely, but
 worth a changelog note when this ships in a release.
+
+### 12. Inline-script JSON not hardened against `</script>` breakout — Info — Fixed
+
+**Type:** Cross-site scripting (defence in depth).
+**Location:** `integrations/custom.php`, the `wp_add_inline_script()` that exposes
+`window.OPENPORTE_WIDGET_ATTRS`.
+
+The widget attributes were encoded with `wp_json_encode()` (no flags) and printed
+verbatim inside a `<script>` block. `wp_json_encode()` does not escape `<`, `>` or
+`&`, so a value containing the literal `</script>` would close the script element
+early and allow HTML injection.
+
+**Not exploitable in practice:** every attribute is admin- or developer-supplied
+(`challengeurl` passes through `esc_url_raw()`, which strips `<`/`>`; `strings`
+comes from translations; `name` is a code literal), with no visitor-controlled
+path. Recorded as defence in depth.
+
+**Fix applied.** Encode with the script-context flags so the output cannot break
+out of the `<script>` element:
+
+```php
+$attrs = wp_json_encode(
+  $plugin->get_widget_attrs($mode),
+  JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+);
+```
 
 ---
 
