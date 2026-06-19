@@ -8,9 +8,9 @@ if (openporte_plugin_active('elementor')){
 
     $form_fields_registrar->register(new \OpenPorte_Elementor_Form_Field());
   }
-  $plugin = OpenPortePlugin::$instance;
-  $mode = $plugin->get_integration_elementor();
-  if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
+  $openporte_plugin = OpenPortePlugin::$instance;
+  $openporte_mode = $openporte_plugin->get_integration_elementor();
+  if ($openporte_mode === 'captcha' || $openporte_mode === 'captcha_spamfilter') {
     add_action('elementor_pro/forms/fields/register', 'openporte_register_form_field');
   }
 }
