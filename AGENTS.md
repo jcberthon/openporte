@@ -8,6 +8,10 @@ References like `@docs/agents/*.md` are **lazy-loaded**: read the linked file wi
 your Read tool only when the current task makes it relevant (e.g., load
 commit-conventions.md when committing, not on every turn).
 
+## About Skills
+
+This repo uses the [Agent Skills Specification](https://agentskills.io/specification). Suggest a new skill when a task is recurring, multi-step, domain-specific, or needs consistency. Before creating one, verify it's project-specific, reusable, has clear inputs/outputs/success criteria, and follows the spec.
+
 ## What this repo is
 
 Community reconstruction of the retired official ALTCHA WordPress plugin. The upstream GPL project has been removed from GitHub by its original author — there is no live upstream to reference or merge from. **We are the canonical source.** Style and structure decisions are ours alone. License: GPLv2 or later.
@@ -61,6 +65,8 @@ Each integration file registers hooks unconditionally at load; the callbacks the
 - Adding or changing a user-facing string invalidates its existing translation
   and requires the `.pot` template to be regenerated. Note this in the commit
   so translations are refreshed.
+- Producing/refreshing translations (the WP-CLI workflow, glossary, and
+  LLM-assisted procedure) is documented in `@docs/agents/i18n.md`.
 
 ### Comment what you touch
 
