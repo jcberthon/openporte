@@ -1,99 +1,115 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.1"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.1\n"
 "Report-Msgid-Bugs-To: https://github.com/jcberthon/openporte/issues\n"
-"Last-Translator: \n"
-"Language-Team: Spanish\n"
+"Last-Translator: Mistral Vibe <vibe@mistral.ai>\n"
+"Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-07 02:40+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2026-06-19T13:54:12+00:00\n"
+"PO-Revision-Date: 2026-06-08 00:00+0000\n"
 "Language: es\n"
 "X-Domain: openporte\n"
+
+#. Plugin Name of the plugin
+#: openporte.php
+#: includes/admin.php:15
+msgid "OpenPorte Spam Protection"
+msgstr "OpenPorte Spam Protection"
+
+#. Description of the plugin
+#: openporte.php
+msgid "OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam and bot protection without using cookies, ensuring full GDPR compliance by design. A community-maintained fork of the ALTCHA Spam Protection plugin (v1)."
+msgstr "OpenPorte es una alternativa gratuita y de código abierto a CAPTCHA que ofrece robusta protección contra spam y bots sin usar cookies, garantizando el cumplimiento total del GDPR por diseño. Un fork mantenido por la comunidad del plugin ALTCHA Spam Protection (v1)."
 
 #. Author of the plugin
 #: openporte.php
 #: admin/options.php:35
 #: integrations/elementor/field.php:18
 msgid "OpenPorte"
-msgstr ""
+msgstr "OpenPorte"
+
+#. Author URI of the plugin
+#: openporte.php
+msgid "https://github.com/jcberthon/openporte"
+msgstr "https://github.com/jcberthon/openporte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
-msgstr ""
+msgstr "Una alternativa CAPTCHA respetuosa con la privacidad."
 
 #: admin/options.php:40
 msgid "Do you like OpenPorte?"
-msgstr ""
+msgstr "¿Te gusta OpenPorte?"
 
 #: admin/options.php:43
 msgid "Review it!"
-msgstr ""
+msgstr "¡Valóralo!"
 
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
 msgid "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget version %2$s"
-msgstr ""
+msgstr "Protección anti-spam OpenPorte para WordPress, versión del plugin %1$s, versión del widget ALTCHA %2$s"
 
 #. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
-msgstr ""
+msgstr "Por favor, valora OpenPorte en WordPress.org para ayudarnos a darnos a conocer."
 
 #. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
-msgstr ""
+msgstr "Desarrollado por el proyecto de código abierto %1$sALTCHA%2$s basado en prueba de trabajo."
 
 #: admin/options.php:97
 msgid "Star OpenPorte on GitHub!"
-msgstr ""
+msgstr "¡Estrella OpenPorte en GitHub!"
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:111
 #, php-format
 msgid "Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend."
-msgstr ""
+msgstr "Ambos modos funcionan sin ningún servicio externo de pago. %1$sAutoalojado%2$s genera desafíos a través de la API REST de WordPress. %3$sPersonalizado%4$s te permite apuntar a tu propio backend compatible con ALTCHA."
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:130
 #, php-format
 msgid "The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only."
-msgstr ""
+msgstr "El filtro anti-spam actúa sobre la clasificación devuelta por un backend %1$sPersonalizado%2$s. No tiene efecto en modo %3$sAutoalojado%4$s, que usa solo prueba de trabajo."
 
 #: admin/options.php:147
 msgid "Customize the widget to fit your needs."
-msgstr ""
+msgstr "Personaliza el widget según tus necesidades."
 
 #: admin/options.php:156
 msgid "Activate OpenPorte for these integrations:"
-msgstr ""
+msgstr "Activar OpenPorte para estas integraciones:"
 
 #: admin/options.php:165
 msgid "Activate OpenPorte for the core Wordpress functionality:"
-msgstr ""
-
-#. Plugin Name of the plugin
-#: openporte.php
-#: includes/admin.php:15
-msgid "OpenPorte Spam Protection"
-msgstr ""
+msgstr "Activar OpenPorte para la funcionalidad principal de WordPress:"
 
 #: includes/admin.php:16
 msgid "OpenPorte Anti-spam"
-msgstr ""
+msgstr "Anti-spam OpenPorte"
 
 #: includes/admin.php:35
 msgid "Settings"
-msgstr ""
+msgstr "Ajustes"
 
 #: includes/core.php:298
 #: integrations/enfold-theme.php:56
 msgid "Verification failed. Try again later."
-msgstr "La verificación ha fallado. Inténtelo de nuevo más tarde."
+msgstr "La verificación falló. Inténtalo más tarde."
+
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
+#: includes/core.php:301
+#, php-format
+msgid "Protected by %1$sALTCHA%2$s"
+msgstr "Protected by %1$sALTCHA%2$s"
 
 #: includes/core.php:305
 msgid "I'm not a robot"
@@ -109,96 +125,96 @@ msgstr "Verificando..."
 
 #: includes/core.php:308
 msgid "Verifying... please wait."
-msgstr "Verificando... por favor, espere."
+msgstr "Verificando... por favor espera."
 
 #. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:543
 msgid "This form requires JavaScript!"
-msgstr ""
+msgstr "¡Este formulario requiere JavaScript!"
 
 #: includes/settings.php:210
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: includes/settings.php:217
 msgid "API Mode"
-msgstr ""
+msgstr "Modo API"
 
 #: includes/settings.php:223
 msgid "Select the API mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend."
-msgstr ""
+msgstr "Selecciona el modo API. Usa Autoalojado para la API REST integrada de WordPress, o Personalizado para apuntar a tu propio backend compatible con ALTCHA."
 
 #: includes/settings.php:225
 msgid "Self-hosted"
-msgstr ""
+msgstr "Autoalojado"
 
 #: includes/settings.php:226
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: includes/settings.php:233
 msgid "Challenge URL"
-msgstr ""
+msgstr "URL del desafío"
 
 #: includes/settings.php:240
 msgid "Configure your custom Challenge URL."
-msgstr ""
+msgstr "Configura tu URL de desafío personalizada."
 
 #: includes/settings.php:247
 msgid "Signing secret"
-msgstr ""
+msgstr "Secreto de firma"
 
 #: includes/settings.php:253
 msgid "Configure your HMAC signing secret."
-msgstr ""
+msgstr "Configura tu secreto de firma HMAC."
 
 #: includes/settings.php:260
 msgid "Complexity"
-msgstr ""
+msgstr "Complejidad"
 
 #: includes/settings.php:266
 msgid "Select the PoW complexity for the widget."
-msgstr ""
+msgstr "Selecciona la complejidad PoW para el widget."
 
 #: includes/settings.php:268
 msgid "Low"
-msgstr ""
+msgstr "Baja"
 
 #: includes/settings.php:269
 msgid "Medium"
-msgstr ""
+msgstr "Media"
 
 #: includes/settings.php:270
 msgid "High"
-msgstr ""
+msgstr "Alta"
 
 #: includes/settings.php:277
 msgid "Expiration"
-msgstr ""
+msgstr "Expiración"
 
 #: includes/settings.php:283
 msgid "Select the life-span of the challenge."
-msgstr ""
+msgstr "Selecciona la duración del desafío."
 
 #: includes/settings.php:285
 msgid "1 hour"
-msgstr ""
+msgstr "1 hora"
 
 #: includes/settings.php:286
 msgid "4 hours"
-msgstr ""
+msgstr "4 horas"
 
 #: includes/settings.php:287
 msgid "None"
-msgstr ""
+msgstr "Ninguna"
 
 #: includes/settings.php:295
 msgid "Spam Filter"
-msgstr ""
+msgstr "Filtro anti-spam"
 
 #: includes/settings.php:302
 msgid "Block Spam Submissions"
-msgstr ""
+msgstr "Bloquear envíos de spam"
 
 #: includes/settings.php:309
 #: includes/settings.php:349
@@ -206,76 +222,75 @@ msgstr ""
 #: includes/settings.php:377
 #: includes/settings.php:390
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 #: includes/settings.php:310
 msgid "Don't allow form submissions if the Spam Filter detects potential spam."
-msgstr ""
+msgstr "No permitir envíos de formularios si el filtro anti-spam detecta spam potencial."
 
 #: includes/settings.php:318
 msgid "Widget Customization"
-msgstr ""
+msgstr "Personalización del widget"
 
 #: includes/settings.php:325
 msgid "Auto verification"
-msgstr ""
+msgstr "Verificación automática"
 
 #: includes/settings.php:331
 msgid "Select auto-verification behaviour."
-msgstr ""
+msgstr "Selecciona el comportamiento de verificación automática."
 
 #: includes/settings.php:333
 msgid "Disabled"
-msgstr ""
+msgstr "Desactivado"
 
 #: includes/settings.php:334
 msgid "On page load"
-msgstr ""
+msgstr "Al cargar la página"
 
 #: includes/settings.php:335
 msgid "On form focus"
-msgstr ""
+msgstr "Al enfocar el formulario"
 
 #: includes/settings.php:336
 msgid "On form submit"
-msgstr ""
+msgstr "Al enviar el formulario"
 
 #: includes/settings.php:343
 msgid "Floating UI"
-msgstr ""
+msgstr "Interfaz flotante"
 
 #: includes/settings.php:350
 msgid "Enable Floating UI."
-msgstr ""
+msgstr "Activar la interfaz flotante."
 
 #: includes/settings.php:357
 msgid "Delay"
-msgstr ""
+msgstr "Retraso"
 
 #: includes/settings.php:364
 msgid "Add a delay of 1.5 seconds to verification."
-msgstr ""
+msgstr "Añadir un retraso de 1,5 segundos a la verificación."
 
 #: includes/settings.php:371
 msgid "Hide logo"
-msgstr ""
+msgstr "Ocultar logotipo"
 
 #: includes/settings.php:384
 msgid "Hide footer"
-msgstr ""
+msgstr "Ocultar pie de página"
 
 #: includes/settings.php:391
-#, fuzzy
 msgid "Hide Powered by ALTCHA."
-msgstr "Protegido por %sALTCHA%s"
+msgstr "Ocultar \"Desarrollado por ALTCHA\"."
 
 #: includes/settings.php:399
 msgid "Integrations"
-msgstr ""
+msgstr "Integraciones"
 
 #: includes/settings.php:406
 msgid "CoBlocks"
-msgstr ""
+msgstr "CoBlocks"
 
 #: includes/settings.php:418
 #: includes/settings.php:439
@@ -296,7 +311,7 @@ msgstr ""
 #: includes/settings.php:763
 #: includes/settings.php:782
 msgid "Disable"
-msgstr ""
+msgstr "Desactivar"
 
 #: includes/settings.php:419
 #: includes/settings.php:440
@@ -317,7 +332,7 @@ msgstr ""
 #: includes/settings.php:764
 #: includes/settings.php:783
 msgid "Captcha"
-msgstr ""
+msgstr "CAPTCHA"
 
 #: includes/settings.php:420
 #: includes/settings.php:441
@@ -338,95 +353,95 @@ msgstr ""
 #: includes/settings.php:765
 #: includes/settings.php:784
 msgid "Captcha + Spam Filter"
-msgstr ""
+msgstr "CAPTCHA + Filtro anti-spam"
 
 #: includes/settings.php:427
 msgid "Contact Form 7"
-msgstr ""
+msgstr "Contact Form 7"
 
 #: includes/settings.php:442
 #: includes/settings.php:571
 msgid "Shortcode"
-msgstr ""
+msgstr "Shortcode"
 
 #: includes/settings.php:449
 msgid "Elementor Pro Forms"
-msgstr ""
+msgstr "Elementor Pro Forms"
 
 #: includes/settings.php:470
 msgid "Enfold Theme"
-msgstr ""
+msgstr "Enfold Theme"
 
 #: includes/settings.php:493
 msgid "Formidable Forms"
-msgstr ""
+msgstr "Formidable Forms"
 
 #: includes/settings.php:514
 msgid "Forminator"
-msgstr ""
+msgstr "Forminator"
 
 #: includes/settings.php:535
 msgid "Gravity Forms"
-msgstr ""
+msgstr "Gravity Forms"
 
 #: includes/settings.php:556
 msgid "HTML Forms"
-msgstr ""
+msgstr "HTML Forms"
 
 #: includes/settings.php:578
 msgid "WPDiscuz"
-msgstr ""
+msgstr "WPDiscuz"
 
 #: includes/settings.php:599
 msgid "WP Forms"
-msgstr ""
+msgstr "WP Forms"
 
 #: includes/settings.php:620
 msgid "WooCommerce register page"
-msgstr ""
+msgstr "WooCommerce register page"
 
 #: includes/settings.php:640
 msgid "WooCommerce reset password page"
-msgstr ""
+msgstr "WooCommerce reset password page"
 
 #: includes/settings.php:660
 msgid "WooCommerce login page"
-msgstr ""
+msgstr "WooCommerce login page"
 
 #: includes/settings.php:680
 msgid "Custom HTML"
-msgstr ""
+msgstr "Custom HTML"
 
 #. translators: the placeholder will be replaced with the shortcode
 #: includes/settings.php:688
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML."
-msgstr ""
+msgstr "Usa el shortcode %s en cualquier lugar de tu HTML."
 
 #: includes/settings.php:708
 msgid "Wordpress"
-msgstr ""
+msgstr "Wordpress"
 
 #: includes/settings.php:715
 msgid "Register page"
-msgstr ""
+msgstr "Página de registro"
 
 #: includes/settings.php:734
 msgid "Reset password page"
-msgstr ""
+msgstr "Página de restablecer contraseña"
 
 #: includes/settings.php:753
 msgid "Login page"
-msgstr ""
+msgstr "Página de inicio de sesión"
 
 #: includes/settings.php:772
 msgid "Comments"
-msgstr ""
+msgstr "Comentarios"
 
 #: integrations/elementor/field.php:72
 #: integrations/formidable/OpenPorteFieldType.php:55
 msgid "Verification failed."
-msgstr ""
+msgstr "La verificación falló."
 
 #: integrations/forminator.php:35
 #: integrations/gravityforms/field.php:83
@@ -441,45 +456,29 @@ msgstr ""
 #: integrations/wordpress.php:163
 #: integrations/wpforms.php:28
 msgid "Could not verify you are not a robot."
-msgstr ""
+msgstr "No se pudo verificar que no eres un robot."
 
 #: integrations/gravityforms/field.php:53
 msgid "OpenPorte placeholder"
-msgstr ""
+msgstr "Marcador de posición OpenPorte"
 
 #: integrations/wordpress.php:28
 #: integrations/wordpress.php:72
 #: integrations/wordpress.php:111
 #: integrations/wordpress.php:163
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #: integrations/wpmembers.php:17
 msgid "Registration failed. Please try again later."
-msgstr ""
+msgstr "El registro falló. Por favor, inténtalo más tarde."
 
 #. translators: %s: link to the OpenPorte plugin page.
 #: openporte.php:33
 #, php-format
 msgid "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the %s for details."
-msgstr ""
+msgstr "OpenPorte es un fork de ALTCHA Spam Protection y no puede ejecutarse mientras el plugin original ALTCHA esté activo, ya que ambos comparten código interno. Por favor, desactiva primero \"ALTCHA Spam Protection\" y luego activa OpenPorte. Consulta %s para más detalles."
 
 #: openporte.php:42
 msgid "OpenPorte cannot be activated"
-msgstr ""
-
-#. Description of the plugin
-#: openporte.php
-msgid "OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam and bot protection without using cookies, ensuring full GDPR compliance by design. A community-maintained fork of the ALTCHA Spam Protection plugin (v1)."
-msgstr ""
-
-#. Author URI of the plugin
-#: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr ""
-
-#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
-#: includes/core.php:301
-#, php-format
-msgid "Protected by %1$sALTCHA%2$s"
-msgstr ""
+msgstr "OpenPorte no puede activarse"
