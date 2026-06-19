@@ -19,7 +19,13 @@ add_action(
         OPENPORTE_VERSION,
         true
       );
-      $attrs = wp_json_encode($plugin->get_widget_attrs($mode));
+      // JSON_HEX_* so the encoded value is safe to embed in the inline <script>
+      // below: it escapes <, >, &, ' and " and so cannot break out of the script
+      // context (e.g. a literal "</script>" in any attribute value).
+      $attrs = wp_json_encode(
+        $plugin->get_widget_attrs($mode),
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+      );
       wp_register_script(
         'altcha-widget-custom-options',
         '',
