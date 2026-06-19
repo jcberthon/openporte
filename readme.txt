@@ -157,6 +157,16 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 == Changelog ==
 
+= 1.27.2 =
+This is a security-hardening release. None of these are exploitable vulnerabilities; they are defence-in-depth improvements with no change to normal behaviour.
+* Hardening: submitted verification tokens are now strictly validated before use, so malformed or junk submissions fail closed without emitting PHP warnings.
+* Hardening: signed server (spam-filter) responses are now only accepted while unexpired and explicitly verified, mirroring the proof-of-work path. Minimal custom backends that omit those fields keep working.
+* Hardening: new installs now generate a 256-bit HMAC signing key. Existing keys — and the challenges already signed with them — are left untouched.
+* Hardening: the inline widget-configuration script now hex-escapes its JSON so attribute values cannot break out of the `<script>` context.
+* Hardening: tightened the Formidable Forms autoloader class-name guard.
+* Fixed a typo in the settings field markup (`autcomplete="none"` became `autocomplete="off"`).
+* Removed dead code left over from the paid-SaaS removal.
+
 = 1.27.1 =
 * Renamed the Elementor form-field integration class to use the `OpenPorte_` prefix, as requested by the wordpress.org plugin review (avoids the reserved `Elementor` prefix). No behaviour change.
 * Removed the wordpress.org directory icon files from the plugin package; they are deployed separately as directory assets.
