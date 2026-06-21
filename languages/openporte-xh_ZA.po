@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-06-20T20:45:26+00:00\n"
-"PO-Revision-Date: 2026-06-20 20:53+00:00\n"
+"PO-Revision-Date: 2026-06-21 14:00+00:00\n"
 "Language: xh_ZA\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: openporte\n"
@@ -179,15 +179,15 @@ msgstr "Khetha ubunzima be-PoW ye-widget."
 
 #: includes/settings.php:268
 msgid "Low"
-msgstr "Phantsi"
+msgstr "Eliphantsi"
 
 #: includes/settings.php:269
 msgid "Medium"
-msgstr "Phakathi"
+msgstr "Eliphakathi"
 
 #: includes/settings.php:270
 msgid "High"
-msgstr "Phakathi"
+msgstr "Eliphezulu"
 
 #: includes/settings.php:277
 msgid "Expiration"
