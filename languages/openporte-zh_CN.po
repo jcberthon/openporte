@@ -404,7 +404,7 @@ msgstr "在您的 HTML 中任何地方使用 %s shortcode。"
 
 #: includes/settings.php:708
 msgid "WordPress"
-msgstr "Wordpress"
+msgstr "WordPress"
 
 #: includes/settings.php:715
 msgid "Register page"
