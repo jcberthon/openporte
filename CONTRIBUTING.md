@@ -105,3 +105,13 @@ Before opening a PR, run the verification protocol in [`AGENTS.md`](AGENTS.md):
 there is **no automated test suite**, so changes are validated by hand on the
 `wp-env` bench (`php -l` on changed PHP, a clean `wp-env logs`, and the relevant
 acceptance steps under [`docs/acceptance/`](docs/acceptance/)).
+
+The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) asks for two things every
+PR must settle **at review time**, not deferred to release prep: a "Docs
+updated" checklist (so `docs/architecture.md`, `AGENTS.md`, etc. don't drift
+out of sync with the change), and a "Changelog entry" — the exact bullet(s)
+this change earns, in user-facing language. Reviewers should treat a missing
+or wrong changelog entry as a blocking comment, the same as a missing test
+plan. At release time, `docs/release-preparation.md` Phase 3 collects these
+entries straight from the merged PRs' descriptions into `readme.txt` and the
+GitHub release notes, instead of reconstructing them from `git log`.

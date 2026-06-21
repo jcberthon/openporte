@@ -91,9 +91,12 @@ done
 
 In `readme.txt`:
 
-1. Add a `= X.Y.Z =` entry under `== Changelog ==` summarising the
-   user-relevant changes (one bullet each; credit contributors as the existing
-   entries do).
+1. Add a `= X.Y.Z =` entry under `== Changelog ==`. Don't reconstruct it from
+   `git log` — pull the "Changelog entry" bullet straight out of the
+   description of each PR merged since the last release tag (every PR's
+   description has one; see the PR template and `CONTRIBUTING.md` →
+   "Commits and pull requests"). Credit contributors as the existing entries
+   do. The same bullets are the GitHub release notes for this version.
 2. If users need to *do* or *know* something on upgrade (a behaviour change, a
    required reconfiguration, a deactivate-the-old-plugin step), add a matching
    `= X.Y.Z =` block under `== Upgrade Notice ==`.
