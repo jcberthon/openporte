@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-11T08:23:03+00:00\n"
+"POT-Creation-Date: 2026-06-20T20:45:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: openporte\n"
@@ -91,7 +91,7 @@ msgid "Activate OpenPorte for these integrations:"
 msgstr ""
 
 #: admin/options.php:165
-msgid "Activate OpenPorte for the core Wordpress functionality:"
+msgid "Activate OpenPorte for the core WordPress functionality:"
 msgstr ""
 
 #: includes/admin.php:16
@@ -130,7 +130,7 @@ msgid "Verifying... please wait."
 msgstr ""
 
 #. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
-#: includes/core.php:543
+#: includes/core.php:603
 msgid "This form requires JavaScript!"
 msgstr ""
 
@@ -421,7 +421,7 @@ msgid "Use %s shortcode anywhere in your HTML."
 msgstr ""
 
 #: includes/settings.php:708
-msgid "Wordpress"
+msgid "WordPress"
 msgstr ""
 
 #: includes/settings.php:715
@@ -476,11 +476,11 @@ msgid "Registration failed. Please try again later."
 msgstr ""
 
 #. translators: %s: link to the OpenPorte plugin page.
-#: openporte.php:33
+#: openporte.php:34
 #, php-format
 msgid "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the %s for details."
 msgstr ""
 
-#: openporte.php:42
+#: openporte.php:43
 msgid "OpenPorte cannot be activated"
 msgstr ""
