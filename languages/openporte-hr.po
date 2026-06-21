@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.1"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.1\n"
 "Report-Msgid-Bugs-To: https://github.com/jcberthon/openporte/issues\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
@@ -73,7 +73,7 @@ msgid "Activate OpenPorte for these integrations:"
 msgstr ""
 
 #: admin/options.php:165
-msgid "Activate OpenPorte for the core Wordpress functionality:"
+msgid "Activate OpenPorte for the core WordPress functionality:"
 msgstr ""
 
 #. Plugin Name of the plugin
@@ -404,7 +404,7 @@ msgid "Use %s shortcode anywhere in your HTML."
 msgstr ""
 
 #: includes/settings.php:708
-msgid "Wordpress"
+msgid "WordPress"
 msgstr ""
 
 #: includes/settings.php:715

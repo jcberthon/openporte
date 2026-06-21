@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.27.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
+"Report-Msgid-Bugs-To: https://github.com/jcberthon/openporte/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
