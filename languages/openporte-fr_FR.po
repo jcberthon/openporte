@@ -89,7 +89,7 @@ msgid "Activate OpenPorte for these integrations:"
 msgstr "Activer OpenPorte pour ces intégrations :"
 
 #: admin/options.php:165
-msgid "Activate OpenPorte for the core Wordpress functionality:"
+msgid "Activate OpenPorte for the core WordPress functionality:"
 msgstr "Activer OpenPorte pour les fonctionnalités principales de WordPress :"
 
 #: includes/admin.php:16
@@ -419,7 +419,7 @@ msgid "Use %s shortcode anywhere in your HTML."
 msgstr "Utilisez le shortcode %s n'importe où dans votre HTML."
 
 #: includes/settings.php:708
-msgid "Wordpress"
+msgid "WordPress"
 msgstr "Wordpress"
 
 #: includes/settings.php:715

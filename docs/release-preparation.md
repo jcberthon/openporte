@@ -55,26 +55,27 @@ Skip this phase if the release touched no translatable strings. Otherwise the
 glossary, the per-locale fill-in procedure, and the LLM-assisted translation
 prompt, see `docs/agents/i18n.md`.
 
+Please note that we exclude public/altcha.min.js (vendored, not your strings) and
+other directories on purpose. 
+
 ```bash
 # 1. Regenerate the POT template
 wp i18n make-pot . languages/openporte.pot \
   --domain=openporte \
-  --exclude=vendor,local,tests \
+  --exclude=vendor,local,tests,public/altcha.min.js \
   --slug=openporte
 
 # 2. Update the per-locale PO files from the new POT, then stamp the version
 wp i18n update-po languages/openporte.pot languages/
 sed -i '' \
-  's/Project-Id-Version: OpenPorte Spam Protection.*/Project-Id-Version: OpenPorte Spam Protection X.Y.Z\n"/' \
+  's/Project-Id-Version: OpenPorte Spam Protection [0-9.]*/Project-Id-Version: OpenPorte Spam Protection X.Y.Z/' \
   languages/openporte-*.po
 
 # 3. Compile the MO binaries
 wp i18n make-mo languages/
 ```
 
-> Replace `X.Y.Z` with the release version. Keep the trailing `\n"` in the
-> replacement — the header line must retain its newline or gettext folds
-> `Project-Id-Version` into the next field. On Linux, drop the `''` argument to
+> Replace `X.Y.Z` with the release version. On Linux, drop the `''` argument to
 > `sed -i` (that empty backup suffix is a BSD/macOS requirement).
 
 ## Phase 3 — Changelog and upgrade notice
