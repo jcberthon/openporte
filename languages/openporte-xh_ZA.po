@@ -1,5 +1,3 @@
-# Copyright (C) 2026 OpenPorte
-# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.27.1\n"

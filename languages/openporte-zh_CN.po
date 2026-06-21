@@ -112,7 +112,7 @@ msgid "Verifying... please wait."
 msgstr "验证中... 请稍候。"
 
 #. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
-#: includes/core.php:543
+#: includes/core.php:603
 msgid "This form requires JavaScript!"
 msgstr "此表单需要 JavaScript！"
 
@@ -458,12 +458,12 @@ msgid "Registration failed. Please try again later."
 msgstr "注册失败。请稍后重试。"
 
 #. translators: %s: link to the OpenPorte plugin page.
-#: openporte.php:33
+#: openporte.php:34
 #, php-format
 msgid "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the %s for details."
 msgstr "OpenPorte 是 ALTCHA Spam Protection 的一个分支，在原始 ALTCHA 插件处于激活状态时无法运行——两者共享内部代码。请先停用“ALTCHA Spam Protection”，然后激活 OpenPorte。详情请参阅 %s。"
 
-#: openporte.php:42
+#: openporte.php:43
 msgid "OpenPorte cannot be activated"
 msgstr "无法激活 OpenPorte"
 
