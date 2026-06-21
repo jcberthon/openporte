@@ -112,7 +112,7 @@ msgid "Verifying... please wait."
 msgstr "Перевірка... будь ласка, зачекайте."
 
 #. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
-#: includes/core.php:543
+#: includes/core.php:603
 msgid "This form requires JavaScript!"
 msgstr "Цій формі потрібен JavaScript!"
 
@@ -422,48 +422,48 @@ msgstr "Сторінка входу"
 msgid "Comments"
 msgstr "Коментарі"
 
-#: includes/elementor/field.php:72
-#: includes/formidable/OpenPorteFieldType.php:55
+#: integrations/elementor/field.php:72
+#: integrations/formidable/OpenPorteFieldType.php:55
 msgid "Verification failed."
 msgstr "Перевірка не вдалася."
 
-#: includes/forminator.php:35
-#: includes/gravityforms/field.php:83
-#: includes/html-forms.php:49
-#: includes/html-forms.php:56
-#: includes/woocommerce.php:28
-#: includes/woocommerce.php:75
-#: includes/woocommerce.php:116
-#: includes/wordpress.php:28
-#: includes/wordpress.php:72
-#: includes/wordpress.php:111
-#: includes/wordpress.php:163
-#: includes/wpforms.php:28
+#: integrations/forminator.php:35
+#: integrations/gravityforms/field.php:83
+#: integrations/html-forms.php:49
+#: integrations/html-forms.php:56
+#: integrations/woocommerce.php:28
+#: integrations/woocommerce.php:75
+#: integrations/woocommerce.php:116
+#: integrations/wordpress.php:28
+#: integrations/wordpress.php:72
+#: integrations/wordpress.php:111
+#: integrations/wordpress.php:163
+#: integrations/wpforms.php:28
 msgid "Could not verify you are not a robot."
 msgstr "Не вдалося підтвердити, що ви не робот."
 
-#: includes/gravityforms/field.php:53
+#: integrations/gravityforms/field.php:53
 msgid "OpenPorte placeholder"
 msgstr "OpenPorte placeholder"
 
-#: includes/wordpress.php:28
-#: includes/wordpress.php:72
-#: includes/wordpress.php:111
-#: includes/wordpress.php:163
+#: integrations/wordpress.php:28
+#: integrations/wordpress.php:72
+#: integrations/wordpress.php:111
+#: integrations/wordpress.php:163
 msgid "Error"
 msgstr "Помилка"
 
-#: includes/wpmembers.php:17
+#: integrations/wpmembers.php:17
 msgid "Registration failed. Please try again later."
 msgstr "Реєстрація не вдалася. Спробуйте ще раз пізніше."
 
 #. translators: %s: link to the OpenPorte plugin page.
-#: openporte.php:33
+#: openporte.php:34
 #, php-format
 msgid "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the %s for details."
 msgstr "OpenPorte — це форк ALTCHA Spam Protection і не може працювати, поки активний оригінальний плагін ALTCHA — вони мають спільний внутрішній код. Будь ласка, спочатку деактивуйте \"ALTCHA Spam Protection\", а потім активуйте OpenPorte. Деталі за посиланням %s."
 
-#: openporte.php:42
+#: openporte.php:43
 msgid "OpenPorte cannot be activated"
 msgstr "OpenPorte не вдається активувати"
 
