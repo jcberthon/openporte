@@ -420,7 +420,7 @@ msgstr "Verwenden Sie den %s-Shortcode überall in Ihrem HTML."
 
 #: includes/settings.php:708
 msgid "WordPress"
-msgstr "Wordpress"
+msgstr "WordPress"
 
 #: includes/settings.php:715
 msgid "Register page"
