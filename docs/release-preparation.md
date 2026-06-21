@@ -65,18 +65,27 @@ wp i18n make-pot . languages/openporte.pot \
   --exclude=vendor,local,tests,public/altcha.min.js \
   --slug=openporte
 
-# 2. Update the per-locale PO files from the new POT, then stamp the version
-wp i18n update-po languages/openporte.pot languages/
+# 2. Merge the new POT into each locale (fuzzy-matching), then stamp the version.
+#    A reworded/typo-fixed msgid keeps its old translation, now flagged "#, fuzzy".
+for po in languages/openporte-*.po; do
+  msgmerge --update --backup=none --previous "$po" languages/openporte.pot
+done
 sed -i '' \
   's/Project-Id-Version: OpenPorte Spam Protection [0-9.]*/Project-Id-Version: OpenPorte Spam Protection X.Y.Z/' \
   languages/openporte-*.po
 
-# 3. Compile the MO binaries
-wp i18n make-mo languages/
+# 3. Compile the MO binaries (msgfmt excludes "#, fuzzy" entries → English fallback
+#    until a translator reviews them; --check also gates syntax + placeholder errors).
+for po in languages/openporte-*.po; do
+  msgfmt --check "$po" -o "${po%.po}.mo"
+done
 ```
 
 > Replace `X.Y.Z` with the release version. On Linux, drop the `''` argument to
-> `sed -i` (that empty backup suffix is a BSD/macOS requirement).
+> `sed -i` (that empty backup suffix is a BSD/macOS requirement). The merge/compile
+> steps use GNU gettext (`msgmerge`/`msgfmt`) rather than `wp i18n update-po`/`make-mo`:
+> only `msgmerge` preserves a translation when its `msgid` changes (marking it `#, fuzzy`),
+> and only `msgfmt` keeps fuzzy entries out of the `.mo`. See `docs/agents/i18n.md` for why.
 
 ## Phase 3 — Changelog and upgrade notice
 
