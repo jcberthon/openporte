@@ -35,7 +35,9 @@ extra="$(comm -23 \
 
 if [ -n "$extra" ]; then
   echo "Files in the dist archive that git doesn't track:" >&2
-  echo "$extra" | sed 's/^/  /' >&2
+  while IFS= read -r path; do
+    printf '  %s\n' "$path" >&2
+  done <<<"$extra"
   exit 1
 fi
 
