@@ -28,9 +28,11 @@ in order; each one gates the next.
    `git status` should show only the changes you intend to ship. Note: the
    release archive is built from the working tree filtered by `.distignore`,
    **not** from git — anything on disk that `.distignore` does not exclude will
-   end up in the published zip. This includes directories only excluded by a
-   *global* gitignore (so `git status`/`git diff` won't show them) — e.g. a
-   locally-installed tool's state directory. Run
+   end up in the published zip. Crucially, `wp dist-archive` does **not** read
+   `.gitignore` at all — only `.distignore` — so any file git ignores (via the
+   repo `.gitignore` *or* a global one) still ships, and ignored files never
+   appear in `git status`/`git diff` to warn you. (The v1.27.2 archival zip
+   shipped a stray `.crush/` tool-state directory exactly this way.) Run
    [`tests/bin/check-dist.sh`](../tests/bin/check-dist.sh) to verify; see
    Phase 7 for when this matters most.
 
@@ -186,9 +188,9 @@ wp dist-archive .
 
 Unlike the CI deploy above (which builds from a clean checkout), this command
 reads your local working tree, so anything sitting on disk that `.distignore`
-doesn't exclude — including directories only hidden by a *global* gitignore —
-ships in the zip without ever appearing in `git status`. **Before uploading a
-locally-built zip anywhere, verify it:**
+doesn't exclude — including files git ignores, which never appear in
+`git status` — ships in the zip. **Before uploading a locally-built zip
+anywhere, verify it:**
 
 ```bash
 ./tests/bin/check-dist.sh
@@ -206,3 +208,51 @@ nothing but an `OK` line; if it lists files, clean them up (or extend
 - Verify a clean install/upgrade from the published package on a fresh bench.
 - If a widget upgrade shipped, re-check the "Last verified MIT upstream" note is
   recorded.
+
+## Recovering from a bad GitHub Release asset
+
+GitHub Releases in this repo are published as **immutable**: once published you
+**cannot edit the tag or replace the attached assets**. So if a release zip
+ships with a defect — e.g. a stray local directory that slipped past
+`.distignore` (the exact failure `tests/bin/check-dist.sh` now guards against in
+Phase 0/7) — you cannot fix the existing release in place.
+
+Two facts make recovery low-risk:
+
+- **The WordPress.org package is built by CI from a clean checkout**, not from
+  the asset attached to the GitHub Release. A bad GitHub asset therefore does
+  **not** imply a bad WordPress.org package — verify it, but they are
+  independent.
+- **The deploy only fires on 3-part tags.** `.github/workflows/publish.yml`
+  triggers on `v[0-9]+.[0-9]+.[0-9]+` only, so a **4-part `vMAJOR.MINOR.PATCH.N`
+  tag does not trigger a WordPress.org deploy** (and the job re-validates the
+  shape and would exit anyway). This is the convention we use for a GitHub-only
+  re-release.
+
+To ship a corrected asset on GitHub only (without redeploying to WordPress.org):
+
+1. **Fix the root cause** on a normal branch/PR and merge it, so the *next* real
+   release is clean. (This does not retroactively fix the published release.)
+2. **Rebuild and verify** the corrected zip from a clean tree:
+   ```bash
+   wp dist-archive .
+   ./tests/bin/check-dist.sh   # must print only the OK line
+   ```
+3. **Tag a GitHub-only patch.** `N` starts at 1 (e.g. `v1.27.2.1` corrects
+   `v1.27.2`). The `pre-push` hook blocks 4-part tags by design, so this
+   deliberate action needs `--no-verify`:
+   ```bash
+   git tag -a v1.27.2.1 -m "GitHub-only re-release of v1.27.2 (corrected asset)"
+   git push --no-verify origin v1.27.2.1
+   ```
+4. **Create the GitHub Release** for that tag, attach the corrected zip, and
+   state in the notes that it is a **GitHub-only patch** caused by a
+   release-preparation issue, and that the **WordPress.org package is
+   unaffected**.
+5. **Leave the original (immutable) release as-is.** Its tag and assets can't
+   change; if its release *notes* are still editable (notes are not an "asset"),
+   add a short pointer to the GitHub-only patch for discoverability.
+
+Do **not** bump the plugin version or `Stable tag` for a GitHub-only patch — the
+plugin code is unchanged, only the packaging was wrong. The `vX.Y.Z.N` tag lives
+entirely on GitHub and never reaches WordPress.org.

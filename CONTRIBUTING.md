@@ -85,6 +85,13 @@ git config core.hooksPath .githooks
 This is a client-side guard and can be bypassed with `git push --no-verify`;
 the publish workflow re-validates the tag shape server-side regardless.
 
+The hook also recognises a 4-part `vMAJOR.MINOR.PATCH.N` tag — the GitHub-only
+re-release convention for shipping a corrected release asset *without*
+redeploying to WordPress.org. It blocks these by default (so they can't be
+pushed by accident) and tells you to use `--no-verify` when you mean it. See
+[`docs/release-preparation.md`](docs/release-preparation.md) →
+"Recovering from a bad GitHub Release asset".
+
 ## Tracking the plan
 
 Open work is slotted onto **GitHub milestones** — one per planned release
