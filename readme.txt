@@ -1,6 +1,6 @@
 === OpenPorte Spam Protection ===
 Tags: captcha, spam, anti-spam, anti-bot, gdpr
-Stable tag: 1.27.1
+Stable tag: 1.27.2
 Requires at least: 5.6
 Requires PHP: 8.0
 Tested up to: 7.0
@@ -44,6 +44,12 @@ See the Deprecations section for the full list of compatibility aliases and
 what they map to.
 
 == Upgrade Notice ==
+
+= 1.27.2 =
+Security-hardening release: defence-in-depth improvements to token and
+server-signature validation, a stronger HMAC signing key for new installs,
+and a few minor fixes. No exploitable vulnerabilities, no required action,
+no behavior change for existing installs.
 
 = 1.27.1 =
 Changes requested by the wordpress.org plugin review: renamed an internal
