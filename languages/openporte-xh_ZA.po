@@ -1,33 +1,39 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.1\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
+"POT-Creation-Date: 2026-06-22T10:57:56+00:00\n"
+"PO-Revision-Date: 2026-06-21 14:00+00:00\n"
 "Last-Translator: Goose w/ Gemma 4\n"
 "Language-Team: Xhosa\n"
+"Language: xh_ZA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-20T20:45:26+00:00\n"
-"PO-Revision-Date: 2026-06-21 14:00+00:00\n"
-"Language: xh_ZA\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: openporte\n"
 
 #. Plugin Name of the plugin
-#: openporte.php
-#: includes/admin.php:15
+#: openporte.php includes/admin.php:15
 msgid "OpenPorte Spam Protection"
 msgstr "OpenPorte Spam Protection"
 
 #. Description of the plugin
 #: openporte.php
-msgid "OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam and bot protection without using cookies, ensuring full GDPR compliance by design. A community-maintained fork of the ALTCHA Spam Protection plugin (v1)."
-msgstr "OpenPorte yincundlela entsi free, evulelekileyo ekunqandeni i-CAPTCHA ethulula ukhuseleko oluphakeme lwe-spam kunye ne-bot ngaphandle kokusebenzisa i-cookies, iqinisekisa ukugcina i-GDPR ngokwemigaqo yayo. Le yincundlela ekhululwe ngenjongo yomphakathi (fork) ye-ALTCHA Spam Protection plugin (v1)."
+msgid ""
+"OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam "
+"and bot protection without using cookies, ensuring full GDPR compliance by "
+"design. A community-maintained fork of the ALTCHA Spam Protection plugin "
+"(v1)."
+msgstr ""
+"OpenPorte yincundlela entsi free, evulelekileyo ekunqandeni i-CAPTCHA "
+"ethulula ukhuseleko oluphakeme lwe-spam kunye ne-bot ngaphandle "
+"kokusebenzisa i-cookies, iqinisekisa ukugcina i-GDPR ngokwemigaqo yayo. Le "
+"yincundlela ekhululwe ngenjongo yomphakathi (fork) ye-ALTCHA Spam Protection "
+"plugin (v1)."
 
 #. Author of the plugin
-#: openporte.php
-#: admin/options.php:35
-#: integrations/elementor/field.php:18
+#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
 msgid "OpenPorte"
 msgstr "OpenPorte"
 
@@ -51,19 +57,25 @@ msgstr "Yiphandle!"
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
-msgid "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget version %2$s"
-msgstr "OpenPorte Spam Protection ye-WordPress, ivershoni ye-plugin %1$s, ivershoni ye-widget ye-ALTCHA %2$s"
+msgid ""
+"OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget "
+"version %2$s"
+msgstr ""
+"OpenPorte Spam Protection ye-WordPress, ivershoni ye-plugin %1$s, ivershoni "
+"ye-widget ye-ALTCHA %2$s"
 
 #. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
-msgstr "Nceda uyihleitize i-OpenPorte ku-WordPress.org ukuze usincede ekukhenisheni."
+msgstr ""
+"Nceda uyihleitize i-OpenPorte ku-WordPress.org ukuze usincede ekukhenisheni."
 
 #. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
-msgstr "Isebenziswe kwiprojekthi evulelekileyo ye-%1$sALTCHA%2$s proof-of-work."
+msgstr ""
+"Isebenziswe kwiprojekthi evulelekileyo ye-%1$sALTCHA%2$s proof-of-work."
 
 #: admin/options.php:97
 msgid "Star OpenPorte on GitHub!"
@@ -72,14 +84,27 @@ msgstr "Star i-OpenPorte ku-GitHub!"
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:111
 #, php-format
-msgid "Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend."
-msgstr "Zombini iinkhangelelo zisebenza ngaphandle kweenkonzo ezihlawulwayo ezingaphandle. %1$sSelf-hosted%2$s ikhuphela imibuzo nge-WordPress REST API. %3$sCustom%4$s ikunika amandla okuxhosa kwi-backend yakho ecompatibilayo ne-ALTCHA."
+msgid ""
+"Both modes run without any external paid service. %1$sSelf-hosted%2$s "
+"generates challenges via the WordPress REST API. %3$sCustom%4$s lets you "
+"point to your own ALTCHA-compatible backend."
+msgstr ""
+"Zombini iinkhangelelo zisebenza ngaphandle kweenkonzo ezihlawulwayo "
+"ezingaphandle. %1$sSelf-hosted%2$s ikhuphela imibuzo nge-WordPress REST API. "
+"%3$sCustom%4$s ikunika amandla okuxhosa kwi-backend yakho ecompatibilayo ne-"
+"ALTCHA."
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:130
 #, php-format
-msgid "The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only."
-msgstr "I-Spam Filter isebenzisa isigqibo esibuyiselwe yi-backend ye-%1$sCustom%2$s. Ayinani nto kwi-mode ye-%3$sSelf-hosted%4$s, esisebenzisa i-proof-of-work kuphela."
+msgid ""
+"The Spam Filter acts on the classification returned by a %1$sCustom%2$s "
+"backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-"
+"work only."
+msgstr ""
+"I-Spam Filter isebenzisa isigqibo esibuyiselwe yi-backend ye-%1$sCustom%2$s. "
+"Ayinani nto kwi-mode ye-%3$sSelf-hosted%4$s, esisebenzisa i-proof-of-work "
+"kuphela."
 
 #: admin/options.php:147
 msgid "Customize the widget to fit your needs."
@@ -101,8 +126,7 @@ msgstr "OpenPorte Anti-spam"
 msgid "Settings"
 msgstr "Iisetingi"
 
-#: includes/core.php:298
-#: integrations/enfold-theme.php:56
+#: includes/core.php:298 integrations/enfold-theme.php:56
 msgid "Verification failed. Try again later."
 msgstr "Ukuqinisekisa kuguqobhekile. Zama futhi kamva."
 
@@ -142,8 +166,13 @@ msgid "API Mode"
 msgstr "I-mode ye-API"
 
 #: includes/settings.php:223
-msgid "Select the API mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend."
-msgstr "Khetha i-mode ye-API. Sebenzisa i-Self-hosted ukuze usebenzise i-WordPress REST API ekhoyo, okanye i-Custom ukuze ukhokelele kwi-backend yakho ecompatibilayo ne-ALTCHA."
+msgid ""
+"Select the API mode. Use Self-hosted for the built-in WordPress REST API, or "
+"Custom to point to your own ALTCHA-compatible backend."
+msgstr ""
+"Khetha i-mode ye-API. Sebenzisa i-Self-hosted ukuze usebenzise i-WordPress "
+"REST API ekhoyo, okanye i-Custom ukuze ukhokelele kwi-backend yakho "
+"ecompatibilayo ne-ALTCHA."
 
 #: includes/settings.php:225
 msgid "Self-hosted"
@@ -217,17 +246,16 @@ msgstr "I-Spam Filter"
 msgid "Block Spam Submissions"
 msgstr "Vala izicelo ze-Spam"
 
-#: includes/settings.php:309
-#: includes/settings.php:349
-#: includes/settings.php:363
-#: includes/settings.php:377
+#: includes/settings.php:309 includes/settings.php:349
+#: includes/settings.php:363 includes/settings.php:377
 #: includes/settings.php:390
 msgid "Yes"
 msgstr "Ewe"
 
 #: includes/settings.php:310
 msgid "Don't allow form submissions if the Spam Filter detects potential spam."
-msgstr "Ungavumeli izicelo zeefomu ukuba i-Spam Filter iqaphela i-spam enokuba khona."
+msgstr ""
+"Ungavumeli izicelo zeefomu ukuba i-Spam Filter iqaphela i-spam enokuba khona."
 
 #: includes/settings.php:318
 msgid "Widget Customization"
@@ -293,66 +321,39 @@ msgstr "Minxebiso"
 msgid "CoBlocks"
 msgstr "CoBlocks"
 
-#: includes/settings.php:418
-#: includes/settings.php:439
-#: includes/settings.php:461
-#: includes/settings.php:484
-#: includes/settings.php:505
-#: includes/settings.php:526
-#: includes/settings.php:547
-#: includes/settings.php:568
-#: includes/settings.php:590
-#: includes/settings.php:611
-#: includes/settings.php:631
-#: includes/settings.php:651
-#: includes/settings.php:671
-#: includes/settings.php:695
-#: includes/settings.php:725
-#: includes/settings.php:744
-#: includes/settings.php:763
-#: includes/settings.php:782
+#: includes/settings.php:418 includes/settings.php:439
+#: includes/settings.php:461 includes/settings.php:484
+#: includes/settings.php:505 includes/settings.php:526
+#: includes/settings.php:547 includes/settings.php:568
+#: includes/settings.php:590 includes/settings.php:611
+#: includes/settings.php:631 includes/settings.php:651
+#: includes/settings.php:671 includes/settings.php:695
+#: includes/settings.php:725 includes/settings.php:744
+#: includes/settings.php:763 includes/settings.php:782
 msgid "Disable"
 msgstr "Cinyiwa"
 
-#: includes/settings.php:419
-#: includes/settings.php:440
-#: includes/settings.php:462
-#: includes/settings.php:485
-#: includes/settings.php:506
-#: includes/settings.php:527
-#: includes/settings.php:548
-#: includes/settings.php:569
-#: includes/settings.php:591
-#: includes/settings.php:612
-#: includes/settings.php:632
-#: includes/settings.php:652
-#: includes/settings.php:672
-#: includes/settings.php:696
-#: includes/settings.php:726
-#: includes/settings.php:745
-#: includes/settings.php:764
-#: includes/settings.php:783
+#: includes/settings.php:419 includes/settings.php:440
+#: includes/settings.php:462 includes/settings.php:485
+#: includes/settings.php:506 includes/settings.php:527
+#: includes/settings.php:548 includes/settings.php:569
+#: includes/settings.php:591 includes/settings.php:612
+#: includes/settings.php:632 includes/settings.php:652
+#: includes/settings.php:672 includes/settings.php:696
+#: includes/settings.php:726 includes/settings.php:745
+#: includes/settings.php:764 includes/settings.php:783
 msgid "Captcha"
 msgstr "Captcha"
 
-#: includes/settings.php:420
-#: includes/settings.php:441
-#: includes/settings.php:463
-#: includes/settings.php:486
-#: includes/settings.php:507
-#: includes/settings.php:528
-#: includes/settings.php:549
-#: includes/settings.php:570
-#: includes/settings.php:592
-#: includes/settings.php:613
-#: includes/settings.php:633
-#: includes/settings.php:653
-#: includes/settings.php:673
-#: includes/settings.php:697
-#: includes/settings.php:727
-#: includes/settings.php:746
-#: includes/settings.php:765
-#: includes/settings.php:784
+#: includes/settings.php:420 includes/settings.php:441
+#: includes/settings.php:463 includes/settings.php:486
+#: includes/settings.php:507 includes/settings.php:528
+#: includes/settings.php:549 includes/settings.php:570
+#: includes/settings.php:592 includes/settings.php:613
+#: includes/settings.php:633 includes/settings.php:653
+#: includes/settings.php:673 includes/settings.php:697
+#: includes/settings.php:727 includes/settings.php:746
+#: includes/settings.php:765 includes/settings.php:784
 msgid "Captcha + Spam Filter"
 msgstr "Captcha + Spam Filter"
 
@@ -360,8 +361,7 @@ msgstr "Captcha + Spam Filter"
 msgid "Contact Form 7"
 msgstr "Contact Form 7"
 
-#: includes/settings.php:442
-#: includes/settings.php:571
+#: includes/settings.php:442 includes/settings.php:571
 msgid "Shortcode"
 msgstr "Shortcode"
 
@@ -444,18 +444,12 @@ msgstr "Izimvo"
 msgid "Verification failed."
 msgstr "Ukuqinisekiswa kuguqobhekile."
 
-#: integrations/forminator.php:35
-#: integrations/gravityforms/field.php:83
-#: integrations/html-forms.php:49
-#: integrations/html-forms.php:56
-#: integrations/woocommerce.php:28
-#: integrations/woocommerce.php:75
-#: integrations/woocommerce.php:116
-#: integrations/wordpress.php:28
-#: integrations/wordpress.php:72
-#: integrations/wordpress.php:111
-#: integrations/wordpress.php:163
-#: integrations/wpforms.php:28
+#: integrations/forminator.php:35 integrations/gravityforms/field.php:83
+#: integrations/html-forms.php:49 integrations/html-forms.php:56
+#: integrations/woocommerce.php:28 integrations/woocommerce.php:75
+#: integrations/woocommerce.php:116 integrations/wordpress.php:28
+#: integrations/wordpress.php:72 integrations/wordpress.php:111
+#: integrations/wordpress.php:163 integrations/wpforms.php:28
 msgid "Could not verify you are not a robot."
 msgstr "Akukwenzekanga ukuqinisekisa ukuba awulingani i-robot."
 
@@ -463,10 +457,8 @@ msgstr "Akukwenzekanga ukuqinisekisa ukuba awulingani i-robot."
 msgid "OpenPorte placeholder"
 msgstr "I-OpenPorte placeholder"
 
-#: integrations/wordpress.php:28
-#: integrations/wordpress.php:72
-#: integrations/wordpress.php:111
-#: integrations/wordpress.php:163
+#: integrations/wordpress.php:28 integrations/wordpress.php:72
+#: integrations/wordpress.php:111 integrations/wordpress.php:163
 msgid "Error"
 msgstr "Iphutha"
 
@@ -477,8 +469,17 @@ msgstr "Ukubhalisa kuguqobhekile. Nceda uzame futhi kamva."
 #. translators: %s: link to the OpenPorte plugin page.
 #: openporte.php:34
 #, php-format
-msgid "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the %s for details."
-msgstr "I-OpenPorte yincundlela ekhiwe kw i-ALTCHA Spam Protection kwaye ayinakukubalisa isikhathi isebenzisa i-plugin yoqala ye-ALTCHA — zombini zizabelana ngekhowudi yangaphakathi. Nceda ukhumule i-\"ALTCHA Spam Protection\" kuqala, ube usivula i-OpenPorte. Jonga i-%s uze ufumane iinkcukacha."
+msgid ""
+"OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the "
+"original ALTCHA plugin is active — the two share internal code. Please "
+"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
+"the %s for details."
+msgstr ""
+"I-OpenPorte yincundlela ekhiwe kw i-ALTCHA Spam Protection kwaye "
+"ayinakukubalisa isikhathi isebenzisa i-plugin yoqala ye-ALTCHA — zombini "
+"zizabelana ngekhowudi yangaphakathi. Nceda ukhumule i-\"ALTCHA Spam "
+"Protection\" kuqala, ube usivula i-OpenPorte. Jonga i-%s uze ufumane "
+"iinkcukacha."
 
 #: openporte.php:43
 msgid "OpenPorte cannot be activated"
