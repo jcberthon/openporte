@@ -28,7 +28,11 @@ in order; each one gates the next.
    `git status` should show only the changes you intend to ship. Note: the
    release archive is built from the working tree filtered by `.distignore`,
    **not** from git — anything on disk that `.distignore` does not exclude will
-   end up in the published zip.
+   end up in the published zip. This includes directories only excluded by a
+   *global* gitignore (so `git status`/`git diff` won't show them) — e.g. a
+   locally-installed tool's state directory. Run
+   [`tests/bin/check-dist.sh`](../tests/bin/check-dist.sh) to verify; see
+   Phase 7 for when this matters most.
 
 ## Phase 1 — Version bump
 
@@ -179,6 +183,20 @@ release), using the same `.distignore` filtering the deploy uses:
 ```bash
 wp dist-archive .
 ```
+
+Unlike the CI deploy above (which builds from a clean checkout), this command
+reads your local working tree, so anything sitting on disk that `.distignore`
+doesn't exclude — including directories only hidden by a *global* gitignore —
+ships in the zip without ever appearing in `git status`. **Before uploading a
+locally-built zip anywhere, verify it:**
+
+```bash
+./tests/bin/check-dist.sh
+```
+
+This flags any file in the archive that git doesn't track. It should print
+nothing but an `OK` line; if it lists files, clean them up (or extend
+`.distignore`) before uploading.
 
 ## Post-release
 
