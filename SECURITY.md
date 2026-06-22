@@ -46,6 +46,10 @@ coordinate with the WordPress.org security team before public disclosure.
 This is a **one-person maintained open source project** on which I work
 during my personal free time, excluding annual or sick leave.
 
+This project is **AI-assisted**: AI tools help draft code, tests, and
+documentation, but all security decisions, the review of any AI-suggested
+change, and final responsibility for what ships remain mine.
+
 - Security fixes are handled on a **"best I can, when I can"** basis
 - Complex processes or lengthy coordination are not feasible
 - Clear, concise reports with reproduction steps are greatly appreciated

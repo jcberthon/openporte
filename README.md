@@ -10,6 +10,11 @@ WordPress Plugin Directory: none yet
 
 Having troubles? Please report in [Issues](https://github.com/jcberthon/openporte/issues).
 
+> **AI-assisted project.** Architecture, security decisions, and final review
+> are mine; AI tools (Claude, Mistral, and others) help with drafting code,
+> tests, translations, and documentation — without them, one person couldn't
+> keep this fork alive.
+
 ## Why this fork?
 
 The original ALTCHA WordPress plugin v1 was open source (GPLv2). Its authors
