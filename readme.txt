@@ -19,6 +19,13 @@ of-work mechanism — no cookies, no tracking, GDPR-friendly by design.
 
 For the list of contributors, refer to our GitHub project: [Contributors](https://github.com/jcberthon/openporte/graphs/contributors?from=1.6.2024).
 
+= AI-assisted development =
+
+AI-assisted project. Architecture, security decisions, and final review are
+mine; AI tools (Claude, Mistral, and others) help with drafting code, tests,
+translations, and documentation — without them, one person couldn't keep
+this fork alive.
+
 = Background =
 
 The original ALTCHA WordPress plugin (v1) was open source (GPLv2). Its
