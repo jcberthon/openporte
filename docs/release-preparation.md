@@ -249,9 +249,11 @@ To ship a corrected asset on GitHub only (without redeploying to WordPress.org):
    state in the notes that it is a **GitHub-only patch** caused by a
    release-preparation issue, and that the **WordPress.org package is
    unaffected**.
-5. **Leave the original (immutable) release as-is.** Its tag and assets can't
-   change; if its release *notes* are still editable (notes are not an "asset"),
-   add a short pointer to the GitHub-only patch for discoverability.
+5. **Update the original release's notes to point at the patch.** On an
+   immutable release the tag and the attached assets are frozen, but the
+   **release notes remain editable**. Add a short note for GitHub users
+   pointing to the `vX.Y.Z.N` re-release (and clarifying the WordPress.org
+   package was never affected).
 
 Do **not** bump the plugin version or `Stable tag` for a GitHub-only patch — the
 plugin code is unchanged, only the packaging was wrong. The `vX.Y.Z.N` tag lives
