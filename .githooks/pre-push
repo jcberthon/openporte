@@ -1,18 +1,31 @@
 #!/bin/sh
-# Reject pushing release tags that don't follow the vMAJOR.MINOR.PATCH convention.
+# Police the shape of release tags before they leave the machine.
 #
 # Enable once per clone:
 #     git config core.hooksPath .githooks
 #
-# Why: the publish workflow derives the WordPress.org version from the git tag by
-# stripping a leading "v" (vX.Y.Z -> X.Y.Z) and checks it against the readme
-# "Stable tag". A tag that doesn't match the convention would fail (or silently
-# not trigger) the deploy, so we block it before it reaches the remote.
+# Tag policy:
+#   vMAJOR.MINOR.PATCH     -> allowed. Pushing this triggers the WordPress.org
+#                             deploy (.github/workflows/publish.yml).
+#   vMAJOR.MINOR.PATCH.N   -> blocked by default. This is the GitHub-only
+#                             re-release convention used to ship a corrected
+#                             GitHub asset WITHOUT redeploying to WordPress.org
+#                             (publish.yml only matches 3-part tags, so a 4-part
+#                             tag never triggers a deploy). Pushing one is a
+#                             deliberate, rare recovery action: bypass with
+#                             `git push --no-verify`. See docs/release-preparation.md
+#                             -> "Recovering from a bad GitHub Release asset".
+#   anything else          -> blocked (malformed).
 #
-# Bypass (not recommended): git push --no-verify
+# Why police this at all: the publish workflow derives the WordPress.org version
+# from the git tag by stripping a leading "v" (vX.Y.Z -> X.Y.Z) and checks it
+# against the readme "Stable tag". A malformed tag would fail (or silently not
+# trigger) the deploy, so we catch it before it reaches the remote.
 
 status=0
-while read -r local_ref local_sha remote_ref remote_sha; do
+# stdin format per git: "<local ref> <local sha> <remote ref> <remote sha>".
+# We only need the first two; the trailing fields collapse into the unused "_".
+while read -r local_ref local_sha _; do
   # Only police tags.
   case "$local_ref" in
     refs/tags/*) ;;
@@ -23,10 +36,30 @@ while read -r local_ref local_sha remote_ref remote_sha; do
     *[!0]*) ;;
     *) continue ;;
   esac
-  if ! printf '%s' "$local_ref" | grep -Eq '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$'; then
-    echo "pre-push: refusing tag '${local_ref#refs/tags/}' — release tags must be vMAJOR.MINOR.PATCH (e.g. v1.27.2)." >&2
-    status=1
+
+  tag="${local_ref#refs/tags/}"
+
+  # vMAJOR.MINOR.PATCH — the normal release tag. Allow.
+  if printf '%s' "$tag" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+    continue
   fi
+
+  # vMAJOR.MINOR.PATCH.N — a GitHub-only re-release tag. Blocked by default so
+  # it cannot be pushed by accident; it does NOT trigger a WordPress.org deploy.
+  if printf '%s' "$tag" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+    echo "pre-push: refusing tag '$tag' — this is a GitHub-only re-release tag (vX.Y.Z.N)." >&2
+    echo "  It is blocked by default so it cannot be pushed by accident, and it" >&2
+    echo "  intentionally does NOT trigger the WordPress.org deploy." >&2
+    echo "  Use it only to recover from a bad GitHub Release asset; see" >&2
+    echo "  docs/release-preparation.md -> \"Recovering from a bad GitHub Release asset\"." >&2
+    echo "  If that is what you intend: git push --no-verify <remote> $tag" >&2
+    status=1
+    continue
+  fi
+
+  # Anything else — malformed.
+  echo "pre-push: refusing tag '$tag' — release tags must be vMAJOR.MINOR.PATCH (e.g. v1.27.2)." >&2
+  status=1
 done
 
 exit $status
