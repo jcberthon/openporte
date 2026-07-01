@@ -6,9 +6,11 @@ privacy-friendly CAPTCHA alternative.
 
 Website: https://github.com/jcberthon/openporte
 
-WordPress Plugin Directory: none yet
+WordPress Plugin Directory: https://wordpress.org/plugins/openporte/
 
-Having troubles? Please report in [Issues](https://github.com/jcberthon/openporte/issues).
+Having troubles?  
+Please report in [Issues](https://github.com/jcberthon/openporte/issues) or
+use the [WordPress.org Support Forum](https://wordpress.org/support/plugin/openporte/).
 
 > **AI-assisted project.** Architecture, security decisions, and final review
 > are mine; AI tools (Claude, Mistral, and others) help with drafting code,
@@ -66,10 +68,23 @@ Currently the Floating UI does not work with:
 
 ## Installation
 
-You cannot install version 1 currently by searching the plugin directory (at work). Alternatively, install the plugin manually:
+### WordPress.org Plugin Directory
+
+OpenPorte is listed in the WordPress.org plugin directory. So you can install
+it directly from the admin UI on your site.
+
+1. Open the WordPress admin UI
+2. Under Plugins → Add Plugin, search for openporte
+3. Install it and activate it.
+4. Review the settings and enable your integrations
+
+### GitHub release
+
+You can also download the GitHub release and install it via the WordPress
+admin UI.
 
 1. Download the `.zip` from the [Releases](https://github.com/jcberthon/openporte/releases).
-2. Upload `openporte` folder to the `/wp-content/plugins/` directory  
+2. Under Plugins → Add Plugin, click **Upload Plugin** and select the downloaded `.zip` file.
 3. Activate the plugin through the 'Plugins' menu in WordPress  
 4. Review the settings and enable your integrations
 
@@ -137,4 +152,4 @@ alias** (via WordPress' deprecated-hook mechanism); use the `openporte_*` names.
 
 ## License
 
-GPLv2
+GPLv2 - see [LICENSE](LICENSE)
