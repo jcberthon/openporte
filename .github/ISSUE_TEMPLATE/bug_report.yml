@@ -1,4 +1,4 @@
-name: 🐛 Bug report
+name: Bug report
 description: Report a reproducible bug in OpenPorte
 labels: ["bug"]
 body:
@@ -30,17 +30,29 @@ body:
     id: version
     attributes:
       label: OpenPorte version
+      description: |
+        - Use *n/a* for not applicable or *unknown* if you do not know it.
+        - You can find it in the Admin area of WordPress under Plugins.
+      placeholder: "ex. v1.27.2 or 1.28.0"
     validations:
       required: true
   - type: input
     id: wp-version
     attributes:
       label: WordPress version
+      description: |
+        - Use *n/a* for not applicable or *unknown* if you do not know it.
+        - You can find it in the Admin area of WordPress. Ex: under Tools → Site Health, and then Info.
+      placeholder: "ex. 7.0"
     validations:
       required: true
   - type: input
     id: php-version
     attributes:
       label: PHP version
+      description: |
+        - Use *n/a* for not applicable or *unknown* if you do not know it.
+        - You can find it in the Admin area of WordPress. Ex: under Tools → Site Health, and then Info.
+      placeholder: "ex. 8.5"
     validations:
       required: false
