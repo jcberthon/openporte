@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Security vulnerability
+    url: https://github.com/jcberthon/openporte/security/advisories/new
+    about: Do not open a public issue for vulnerabilities. Report privately here.
+  - name: ❓ Question / support
+    url: https://wordpress.org/support/plugin/openporte/
+    about: For usage questions, installation/configuration help, or unclear behavior, use the support forum instead.
