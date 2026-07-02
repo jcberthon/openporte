@@ -8,9 +8,7 @@ Website: https://github.com/jcberthon/openporte
 
 WordPress Plugin Directory: https://wordpress.org/plugins/openporte/
 
-Having troubles?  
-Please report in [Issues](https://github.com/jcberthon/openporte/issues) or
-use the [WordPress.org Support Forum](https://wordpress.org/support/plugin/openporte/).
+Need help? See [SUPPORT.md](SUPPORT.md).
 
 > **AI-assisted project.** Architecture, security decisions, and final review
 > are mine; AI tools (Claude, Mistral, and others) help with drafting code,
