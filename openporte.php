@@ -31,7 +31,7 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ||
 	function openporte_conflict_message() {
 		return sprintf(
 			/* translators: %s: link to the OpenPorte plugin page. */
-			__( 'OpenPorte is a fork of ALTCHA and cannot run while any ALTCHA plugin is active — the two share internal code. Please deactivate the ALTCHA plugin first, then activate OpenPorte. See the %s for details.', 'openporte' ),
+			__( 'OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate "ALTCHA Spam Protection" first, then activate OpenPorte. See the %s for details.', 'openporte' ),
 			'<a href="https://wordpress.org/plugins/openporte/" target="_blank" rel="noopener noreferrer">OpenPorte plugin page</a>'
 		);
 	}
