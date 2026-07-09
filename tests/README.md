@@ -49,7 +49,7 @@ The migration runs on **OpenPorte activation** (`register_activation_hook`), not
 as a silent in-place update. Because the entry file was renamed
 `altcha.php → openporte.php`, WordPress treats OpenPorte as a distinct plugin.
 
-1. Activate **ALTCHA** (v1.26.3, v2.x, or v3.x). Set some **non-default** config
+1. Activate **ALTCHA Spam Protection** (v1.26.3, v2.x, or v3.x). Set some **non-default** config
    (e.g. API mode `custom` + a Challenge URL, change the complexity, toggle the
    Contact Form 7 integration). Note the signing secret
    (`wp option get altcha_secret`).
