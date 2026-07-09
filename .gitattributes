@@ -1,3 +1,26 @@
-# Branding assets
+# Auto-detect text files
+* text=auto
+
+# Code & Shell scripts
+*.sh text eol=lf
+*.php text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.conf text eol=lf
+*.json text eol=lf
+
+# Images
 *.png binary linguist-generated
+*.jpg binary linguist-generated
+*.jpeg binary linguist-generated
+*.gif binary linguist-generated
+*.ico binary linguist-generated
+*.webp binary linguist-generated
 *.svg text eol=lf linguist-generated
+
+# Documents
+*.md text eol=lf
+docs/** linguist-documentation
+*.po text eol=lf linguist-documentation
+*.pot text eol=lf linguist-documentation
+*.mo binary linguist-generated
