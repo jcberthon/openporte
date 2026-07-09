@@ -10,6 +10,22 @@ in order; each one gates the next.
 > acceptance steps live in `docs/acceptance/`; the i18n discipline is in
 > `AGENTS.md` → "i18n discipline". This document ties them into one release flow.
 
+## Cheatsheet — npm scripts
+
+The mechanical parts of the phases below are wrapped as npm scripts, run in
+this order. Skip the conditional ones when they don't apply; the manual
+phases in between (changelog, validation, doc review) have no script — see
+their linked section.
+
+| Command | Purpose |
+|---|---|
+| `npm run release:version -- X.Y.Z` | Bump the version in `openporte.php`/`readme.txt` — Phase 1 |
+| `npm run release:i18n -- X.Y.Z` | Regenerate `.pot`/`.po`/`.mo` — Phase 2 (only if strings changed) |
+| `npm run release:assets` | Sync WordPress.org listing icons from `share/branding` — Phase 7 (only if branding changed) |
+| `npm run release:check` | Run `php -l`/`bash -n` (blocking) and `phpcs`/`phpstan` (informative) — Phase 4 |
+| `npm run release:dist` | Build and verify the local/archival zip — Phase 7 |
+| `npm run release:tag -- vX.Y.Z` | Create the signed, annotated release tag (does not push) — Phase 7 |
+
 ## Phase 0 — Pre-flight
 
 1. **Branch.** `main` is protected — never commit the release prep directly to
@@ -50,6 +66,12 @@ header, and `OPENPORTE_VERSION` busts the asset cache):
 | `readme.txt` | `Stable tag:` |
 | `readme.txt` | new `= X.Y.Z =` changelog section (Phase 3) |
 
+The first four (everything except the changelog entry) can be done with:
+
+```bash
+npm run release:version -- X.Y.Z
+```
+
 If the WordPress "Tested up to" ceiling changed since the last release, update
 `Tested up to:` in both `readme.txt` and the plugin header too.
 
@@ -63,6 +85,8 @@ prompt, see `docs/agents/i18n.md`.
 
 Please note that we exclude public/altcha.min.js (vendored, not your strings) and
 other directories on purpose. 
+
+Run as one step with `npm run release:i18n -- X.Y.Z`, or manually:
 
 ```bash
 # 1. Regenerate the POT template
@@ -120,6 +144,8 @@ Per `AGENTS.md` → `docs/agents/static-analysis.md`:
   These do not block the release, but unexplained new findings should be
   understood or suppressed with a documented `phpcs:ignore`.
 
+Run all of the above with `npm run release:check`.
+
 ## Phase 5 — Validation (manual acceptance)
 
 There is no automated test suite — validate by hand on the `wp-env` bench (see
@@ -154,6 +180,12 @@ There is no automated test suite — validate by hand on the `wp-env` bench (see
 
 ## Phase 7 — Build and publish
 
+If `share/branding` changed since the last release, refresh the WordPress.org
+listing icons first: `npm run release:assets` copies the current
+`share/branding` exports into `.wordpress-org/` so it's never hand-edited
+separately. (It does not touch the header banner — see the script's own
+comment for why.)
+
 The release branch is merged into `main` via PR, then a tag triggers the
 automated WordPress.org deploy.
 
@@ -168,6 +200,12 @@ VERSION="vX.Y.Z"
 git tag -a "${VERSION}" -m "Release ${VERSION}"
 git push origin "${VERSION}"
 ```
+
+Step 2 can also be run as `npm run release:tag -- vX.Y.Z` — it creates the same
+signed, annotated tag (this clone has `tag.gpgsign`/SSH signing configured) and
+refuses to run on a dirty tree or unsigned config, but deliberately does not
+push; `git push origin vX.Y.Z` stays a separate, explicit command since that's
+what triggers the live WordPress.org deploy.
 
 The tag name must be `vX.Y.Z`. If you enabled the `pre-push` hook
 (`git config core.hooksPath .githooks`, see
@@ -198,7 +236,7 @@ anywhere, verify it:**
 
 This flags any file in the archive that git doesn't track. It should print
 nothing but an `OK` line; if it lists files, clean them up (or extend
-`.distignore`) before uploading.
+`.distignore`) before uploading. Both commands together: `npm run release:dist`.
 
 ## Post-release
 
