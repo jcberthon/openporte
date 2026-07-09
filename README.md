@@ -1,15 +1,25 @@
-# OpenPorte
+<div align="center">
+  <h1>OpenPorte</h1>
+</div>
+<div>
+  <div style="float: right">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="share/branding/png/openporte-grayscale-dark-256px.png">
+      <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="share/branding/png/openporte-grayscale-light-256px.png" width="128">
+    </picture>
+  </div>
+  <div>
+    <p><strong>OpenPorte is a community-maintained fork of the retired ALTCHA Spam
+      Protection plugin for WordPress (v1)</strong> — a free, open source, self-hostable,
+      privacy-friendly CAPTCHA alternative.</p>
+    <p>Website: <a href="https://github.com/jcberthon/openporte" title="OpenPorte on GitHub" alt="Link to website">https://github.com/jcberthon/openporte</a></p>
+    <p>WordPress Plugin Directory: <a href="https://wordpress.org/plugins/openporte/" title="OpenPorte on WordPress.org" alt="Link to WordPress.org plugin directory">https://wordpress.org/plugins/openporte/</a></p>
+    <p>Need help? See <a href="SUPPORT.md" title="Support Information" alt="Link to Support Information">SUPPORT.md</a>.</p>
+  </div>
+</div>
 
-**OpenPorte is a community-maintained fork of the retired ALTCHA Spam
-Protection plugin for WordPress (v1)** — a free, open source, self-hostable,
-privacy-friendly CAPTCHA alternative.
 
-Website: https://github.com/jcberthon/openporte
-
-WordPress Plugin Directory: https://wordpress.org/plugins/openporte/
-
-Need help? See [SUPPORT.md](SUPPORT.md).
-
+> [!IMPORTANT]
 > **AI-assisted project.** Architecture, security decisions, and final review
 > are mine; AI tools (Claude, Mistral, and others) help with drafting code,
 > tests, translations, and documentation — without them, one person couldn't
