@@ -25,11 +25,13 @@ wpcli() { wp-env run cli -- wp "$@"; }
 ALTCHA_SLUG="altcha-spam-protection"
 # The plugin dir is mapped to wp-content/plugins/openporte, so the zip in local/
 # is reachable from the container at this path (relative to the WordPress root).
-ALTCHA_ZIP_HOST="local/${ALTCHA_SLUG}.1.26.3.zip"
-ALTCHA_ZIP_CONTAINER="wp-content/plugins/openporte/local/${ALTCHA_SLUG}.1.26.3.zip"
-ALTCHA_URL="https://downloads.wordpress.org/plugin/${ALTCHA_SLUG}.1.26.3.zip"
+# You can change the version between 1.26.3 and 3.0.0
+ALTCHA_VERSION="1.26.3"
+ALTCHA_ZIP_HOST="local/evidence/${ALTCHA_SLUG}.${ALTCHA_VERSION}.zip"
+ALTCHA_ZIP_CONTAINER="wp-content/plugins/openporte/local/${ALTCHA_SLUG}.${ALTCHA_VERSION}.zip"
+ALTCHA_URL="https://downloads.wordpress.org/plugin/${ALTCHA_SLUG}.${ALTCHA_VERSION}.zip"
 
-echo "wp-init: installing legacy ALTCHA v1.26.3 (source plugin for the migration test)…"
+echo "wp-init: installing legacy ALTCHA v${ALTCHA_VERSION} (source plugin for the migration test)…"
 if [ -f "$ALTCHA_ZIP_HOST" ] && wpcli plugin install "$ALTCHA_ZIP_CONTAINER" --force; then
   echo "wp-init: installed ALTCHA from the local zip."
 else
