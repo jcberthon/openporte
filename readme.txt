@@ -3,7 +3,7 @@ Tags: captcha, spam, anti-spam, anti-bot, gdpr
 Stable tag: 1.27.2
 Requires at least: 5.6
 Requires PHP: 8.0
-Tested up to: 7.0
+Tested up to: 7.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Contributors: huygens-25
@@ -52,17 +52,13 @@ what they map to.
 
 == Upgrade Notice ==
 
-= 1.27.2 =
-Security-hardening release: defence-in-depth improvements to token and
-server-signature validation, a stronger HMAC signing key for new installs,
-and a few minor fixes. No exploitable vulnerabilities, no required action,
-no behavior change for existing installs.
-
-= 1.27.1 =
-Changes requested by the wordpress.org plugin review: renamed an internal
-Elementor integration class, removed the directory asset files from the plugin
-package, and dropped the no-longer-needed load_plugin_textdomain() call. No
-functional change.
+= 1.27.3 (unreleased) =
+We do not migrate ALTCHA v2+ settings on activation, OpenPorte is a continuation
+of the ALTCHA v1 plugin. If your plugin deployement was automatically upgraded
+to v2+, the v1 data are still in the database and will be migrated upon
+activation. We extended conflict guards at activation to avoid issues with later
+versions of ALTCHA (v2+).
+Nothing to do on the user end. Read upgrade notice for 1.27.0.
 
 = 1.27.0 =
 First release of the OpenPorte community fork of ALTCHA Spam Protection v1. The
@@ -169,6 +165,13 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 5. Floating UI Captcha
 
 == Changelog ==
+
+= 1.27.3 (unreleased) =
+This is a small bug-fix release.
+* Branding: add a logo refresh and new banners
+* Fix a conflict with ALTCHA v2+ by extending the plugin's guard at activation
+* Doc: define support workflow and add it to the readmes
+* Support up to WordPress 7.0.1
 
 = 1.27.2 =
 This is a security-hardening release. None of these are exploitable vulnerabilities; they are defence-in-depth improvements with no change to normal behaviour.
