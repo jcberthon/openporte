@@ -4,6 +4,7 @@
 /.githooks
 /.github
 /.wordpress-org
+/bin
 /docs
 /local
 /node_modules
@@ -12,6 +13,7 @@
 /vendor
 .distignore
 .DS_Store
+.gitattributes
 .gitignore
 .shellcheckrc
 .wp-env.conf
@@ -21,6 +23,8 @@ AGENTS.md
 composer.json
 composer.lock
 CONTRIBUTING.md
+package.json
+package-lock.json
 phpcs.xml.dist
 README.md
 SECURITY.md
