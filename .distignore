@@ -7,6 +7,7 @@
 /docs
 /local
 /node_modules
+/share
 /tests
 /vendor
 .distignore
@@ -23,5 +24,6 @@ CONTRIBUTING.md
 phpcs.xml.dist
 README.md
 SECURITY.md
+SUPPORT.md
 wp-env.sh
 
