@@ -3,7 +3,7 @@ Tags: captcha, spam, anti-spam, anti-bot, gdpr
 Stable tag: 1.27.3
 Requires at least: 5.6
 Requires PHP: 8.0
-Tested up to: 7.0.1
+Tested up to: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Contributors: huygens-25
@@ -53,12 +53,9 @@ what they map to.
 == Upgrade Notice ==
 
 = 1.27.3 =
-We do not migrate ALTCHA v2+ settings on activation, OpenPorte is a continuation
-of the ALTCHA v1 plugin. If your plugin deployement was automatically upgraded
-to v2+, the v1 data are still in the database and will be migrated upon
-activation. We extended conflict guards at activation to avoid issues with later
-versions of ALTCHA (v2+).
-Nothing to do on the user end. See section **Upgrading**.
+Extended the activation conflict guard: sites auto-upgraded to ALTCHA v2+ can
+now activate OpenPorte cleanly. Your v1 settings still migrate automatically;
+v2+ settings are not read. Nothing to do — see section **Upgrading**.
 
 
 == Upgrading ==

@@ -73,7 +73,11 @@ npm run release:version -- X.Y.Z
 ```
 
 If the WordPress "Tested up to" ceiling changed since the last release, update
-`Tested up to:` in both `readme.txt` and the plugin header too.
+`Tested up to:` in both `readme.txt` and the plugin header too. This field
+must be **major.minor only** (e.g. `7.0`) — a patch-level value (`7.0.1`)
+fails Plugin Check's `invalid_tested_upto_minor` rule in Phase 5, even if
+that's the exact patch validated in CI. If the specific patch matters, note
+it in the changelog bullet instead (see Phase 3).
 
 ## Phase 2 — Translations (only if user-facing strings changed)
 
@@ -129,7 +133,10 @@ In `readme.txt`:
    do. The same bullets are the GitHub release notes for this version.
 2. If users need to *do* or *know* something on upgrade (a behaviour change, a
    required reconfiguration, a deactivate-the-old-plugin step), add a matching
-   `= X.Y.Z =` block under `== Upgrade Notice ==`.
+   `= X.Y.Z =` block under `== Upgrade Notice ==`. Keep each entry under
+   **300 characters** — Plugin Check's `upgrade_notice_limit` rule (Phase 5)
+   flags anything longer. This limit applies only to `== Upgrade Notice ==`
+   entries, not the changelog.
 3. Call out anything a translator needs to refresh (per the i18n discipline) and
    any removed public symbol (so third-party integrators are warned).
 
@@ -163,7 +170,10 @@ There is no automated test suite — validate by hand on the `wp-env` bench (see
 4. **WordPress Plugin Check.** Run the
    [Plugin Check](https://wordpress.org/plugins/plugin-check/) plugin against the
    build on a **WordPress 6.3+** bench and resolve or justify (with a documented
-   `phpcs:ignore`) every flagged item.
+   `phpcs:ignore`) every flagged item. Two `readme.txt`-only findings are known
+   and covered by Phase 1/Phase 3 above rather than a `phpcs:ignore`: a
+   patch-level `Tested up to` value (`invalid_tested_upto_minor`) and an
+   `== Upgrade Notice ==` entry over 300 characters (`upgrade_notice_limit`).
 5. **Widget integration.** If `public/altcha.min.js` was re-vendored this
    release, run the widget integration checks in `docs/maintenance-testing.md`
    → "The `altcha.min.js` widget dependency".

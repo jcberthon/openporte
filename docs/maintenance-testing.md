@@ -229,6 +229,11 @@ requirements and will abort the `afterStart` hook unless adjusted:
   (`wp plugin install plugin-check`) on older benches. Static analysis is not
   available on these versions anyway — run Plugin Check on a recent-WordPress
   bench (e.g. WP 7.0) and use the older bench for runtime verification only.
+  Two `readme.txt` rules it enforces are easy to trip on release day: the
+  `Tested up to:` header must be **major.minor only** (`7.0`, never `7.0.1`),
+  and each `== Upgrade Notice ==` entry is capped at **300 characters** (the
+  changelog itself has no such limit). See `docs/release-preparation.md`
+  Phases 1 and 3.
 - **Contact Form 7** installs the latest release by default, which fails the
   WordPress-version requirement on older cores. Pin a compatible version with
   `--version=`, e.g. `--version=5.3.2` for WP 5.6. (`wp-cli`'s
