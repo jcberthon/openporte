@@ -1,6 +1,6 @@
 === OpenPorte Spam Protection ===
 Tags: captcha, spam, anti-spam, anti-bot, gdpr
-Stable tag: 1.27.2
+Stable tag: 1.27.3
 Requires at least: 5.6
 Requires PHP: 8.0
 Tested up to: 7.0.1
