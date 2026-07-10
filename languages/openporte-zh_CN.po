@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.2\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-06-22T10:57:56+00:00\n"
+"POT-Creation-Date: 2026-07-10T15:24:36+00:00\n"
 "PO-Revision-Date: 2026-06-20 21:40+00:00\n"
 "Last-Translator: Goose w/ Gemma 4\n"
 "Language-Team: Chinese (simplified)\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Protection 插件 (v1) 的社区维护分支。"
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
+#: openporte.php admin/options.php:34 integrations/elementor/field.php:18
 msgid "OpenPorte"
 msgstr "OpenPorte"
 
@@ -39,20 +39,20 @@ msgstr "OpenPorte"
 msgid "https://github.com/jcberthon/openporte"
 msgstr "https://github.com/jcberthon/openporte"
 
-#: admin/options.php:36
+#: admin/options.php:35
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr "一个注重隐私的 CAPTCHA 替代方案。"
 
-#: admin/options.php:40
+#: admin/options.php:39
 msgid "Do you like OpenPorte?"
 msgstr "你喜欢 OpenPorte 吗？"
 
-#: admin/options.php:43
+#: admin/options.php:42
 msgid "Review it!"
 msgstr "去评价一下吧！"
 
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
-#: admin/options.php:66
+#: admin/options.php:65
 #, php-format
 msgid ""
 "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget "
@@ -62,22 +62,22 @@ msgstr ""
 "%2$s"
 
 #. translators: the placeholders are opening and closing tags for a link (<a> tag)
-#: admin/options.php:77
+#: admin/options.php:76
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr "请在 WordPress.org 上为 OpenPorte 评分，帮助我们推广。"
 
 #. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
-#: admin/options.php:90
+#: admin/options.php:89
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
 msgstr "由 %1$sALTCHA%2$s PoW 开源项目提供支持。"
 
-#: admin/options.php:97
+#: admin/options.php:96
 msgid "Star OpenPorte on GitHub!"
 msgstr "在 GitHub 上为 OpenPorte 点个 Star！"
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:111
+#: admin/options.php:110
 #, php-format
 msgid ""
 "Both modes run without any external paid service. %1$sSelf-hosted%2$s "
@@ -88,7 +88,7 @@ msgstr ""
 "生成挑战。%3$sCustom%4$s 允许你指向自己的 ALTCHA 兼容后端。"
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:130
+#: admin/options.php:129
 #, php-format
 msgid ""
 "The Spam Filter acts on the classification returned by a %1$sCustom%2$s "
@@ -98,15 +98,15 @@ msgstr ""
 "Spam Filter 根据 %1$sCustom%2$s 后端返回的分类进行操作。在 %3$sSelf-"
 "hosted%4$s 模式下无效，该模式仅使用 PoW。"
 
-#: admin/options.php:147
+#: admin/options.php:146
 msgid "Customize the widget to fit your needs."
 msgstr "自定义 widget 以满足您的需求。"
 
-#: admin/options.php:156
+#: admin/options.php:155
 msgid "Activate OpenPorte for these integrations:"
 msgstr "为以下集成启用 OpenPorte："
 
-#: admin/options.php:165
+#: admin/options.php:164
 msgid "Activate OpenPorte for the core WordPress functionality:"
 msgstr "为 WordPress 核心功能启用 OpenPorte："
 

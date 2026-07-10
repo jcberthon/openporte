@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.2\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-06-22T10:57:56+00:00\n"
+"POT-Creation-Date: 2026-07-10T15:24:36+00:00\n"
 "PO-Revision-Date: 2026-06-08 00:00+0000\n"
 "Last-Translator: Mistral Vibe <vibe@mistral.ai>\n"
 "Language-Team: German <de@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Schutz-Plugins (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
+#: openporte.php admin/options.php:34 integrations/elementor/field.php:18
 msgid "OpenPorte"
 msgstr "OpenPorte"
 
@@ -40,20 +40,20 @@ msgstr "OpenPorte"
 msgid "https://github.com/jcberthon/openporte"
 msgstr "https://github.com/jcberthon/openporte"
 
-#: admin/options.php:36
+#: admin/options.php:35
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr "Eine datenschutzfreundliche CAPTCHA-Alternative."
 
-#: admin/options.php:40
+#: admin/options.php:39
 msgid "Do you like OpenPorte?"
 msgstr "Gefällt Ihnen OpenPorte?"
 
-#: admin/options.php:43
+#: admin/options.php:42
 msgid "Review it!"
 msgstr "Bewerten Sie es!"
 
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
-#: admin/options.php:66
+#: admin/options.php:65
 #, php-format
 msgid ""
 "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget "
@@ -63,23 +63,23 @@ msgstr ""
 "Version %2$s"
 
 #. translators: the placeholders are opening and closing tags for a link (<a> tag)
-#: admin/options.php:77
+#: admin/options.php:76
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
 "Bitte bewerten Sie OpenPorte auf WordPress.org, um uns bekannt zu machen."
 
 #. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
-#: admin/options.php:90
+#: admin/options.php:89
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
 msgstr "Betrieben durch das %1$sALTCHA%2$s-Proof-of-Work-Open-Source-Projekt."
 
-#: admin/options.php:97
+#: admin/options.php:96
 msgid "Star OpenPorte on GitHub!"
 msgstr "Sternchen für OpenPorte auf GitHub!"
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:111
+#: admin/options.php:110
 #, php-format
 msgid ""
 "Both modes run without any external paid service. %1$sSelf-hosted%2$s "
@@ -92,7 +92,7 @@ msgstr ""
 "kompatibles Backend zu verweisen."
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:130
+#: admin/options.php:129
 #, php-format
 msgid ""
 "The Spam Filter acts on the classification returned by a %1$sCustom%2$s "
@@ -103,15 +103,15 @@ msgstr ""
 "%1$sBenutzerdefinierten%2$s-Backend zurückgegeben wird. Er hat keine Wirkung "
 "im %3$sSelbst gehosteten%4$s-Modus, der nur Proof-of-Work verwendet."
 
-#: admin/options.php:147
+#: admin/options.php:146
 msgid "Customize the widget to fit your needs."
 msgstr "Passen Sie das Widget an Ihre Bedürfnisse an."
 
-#: admin/options.php:156
+#: admin/options.php:155
 msgid "Activate OpenPorte for these integrations:"
 msgstr "Aktivieren Sie OpenPorte für diese Integrationen:"
 
-#: admin/options.php:165
+#: admin/options.php:164
 msgid "Activate OpenPorte for the core WordPress functionality:"
 msgstr "Aktivieren Sie OpenPorte für die WordPress-Kernfunktionalität:"
 

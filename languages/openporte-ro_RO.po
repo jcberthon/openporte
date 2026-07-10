@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.27.2\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.27.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-06-22T10:57:56+00:00\n"
+"POT-Creation-Date: 2026-07-10T15:24:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
+#: openporte.php admin/options.php:34 integrations/elementor/field.php:18
 msgid "OpenPorte"
 msgstr ""
 
@@ -36,20 +36,20 @@ msgstr ""
 msgid "https://github.com/jcberthon/openporte"
 msgstr ""
 
-#: admin/options.php:36
+#: admin/options.php:35
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr ""
 
-#: admin/options.php:40
+#: admin/options.php:39
 msgid "Do you like OpenPorte?"
 msgstr ""
 
-#: admin/options.php:43
+#: admin/options.php:42
 msgid "Review it!"
 msgstr ""
 
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
-#: admin/options.php:66
+#: admin/options.php:65
 #, php-format
 msgid ""
 "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget "
@@ -57,22 +57,22 @@ msgid ""
 msgstr ""
 
 #. translators: the placeholders are opening and closing tags for a link (<a> tag)
-#: admin/options.php:77
+#: admin/options.php:76
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
 
 #. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
-#: admin/options.php:90
+#: admin/options.php:89
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
 msgstr ""
 
-#: admin/options.php:97
+#: admin/options.php:96
 msgid "Star OpenPorte on GitHub!"
 msgstr ""
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:111
+#: admin/options.php:110
 #, php-format
 msgid ""
 "Both modes run without any external paid service. %1$sSelf-hosted%2$s "
@@ -81,7 +81,7 @@ msgid ""
 msgstr ""
 
 #. translators: the placeholders are opening and closing tags for bold
-#: admin/options.php:130
+#: admin/options.php:129
 #, php-format
 msgid ""
 "The Spam Filter acts on the classification returned by a %1$sCustom%2$s "
@@ -89,15 +89,15 @@ msgid ""
 "work only."
 msgstr ""
 
-#: admin/options.php:147
+#: admin/options.php:146
 msgid "Customize the widget to fit your needs."
 msgstr ""
 
-#: admin/options.php:156
+#: admin/options.php:155
 msgid "Activate OpenPorte for these integrations:"
 msgstr ""
 
-#: admin/options.php:165
+#: admin/options.php:164
 msgid "Activate OpenPorte for the core WordPress functionality:"
 msgstr ""
 
