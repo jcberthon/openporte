@@ -52,19 +52,14 @@ what they map to.
 
 == Upgrade Notice ==
 
-= 1.27.3 (unreleased) =
+= 1.27.3 =
 We do not migrate ALTCHA v2+ settings on activation, OpenPorte is a continuation
 of the ALTCHA v1 plugin. If your plugin deployement was automatically upgraded
 to v2+, the v1 data are still in the database and will be migrated upon
 activation. We extended conflict guards at activation to avoid issues with later
 versions of ALTCHA (v2+).
-Nothing to do on the user end. Read upgrade notice for 1.27.0.
+Nothing to do on the user end. See section **Upgrading**.
 
-= 1.27.0 =
-First release of the OpenPorte community fork of ALTCHA Spam Protection v1. The
-paid altcha.org SaaS classifier is removed; self-hosted and custom backends are
-unchanged. ALTCHA v1 settings migrate automatically on activation. Deactivate
-the old ALTCHA plugin first; don't run both at once.
 
 == Upgrading ==
 
@@ -166,7 +161,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 == Changelog ==
 
-= 1.27.3 (unreleased) =
+= 1.27.3 =
 This is a small bug-fix release.
 * Branding: add a logo refresh and new banners
 * Fix a conflict with ALTCHA v2+ by extending the plugin's guard at activation
