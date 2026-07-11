@@ -11,7 +11,7 @@ source bin/release/lib.sh
 
 # --- arguments ----------------------------------------------------------
 TARGET_VERSION="${1:-}"
-GH_TAGGED_URL="$GH_ALTCHA_URL/$GH_TAG_REF/v${TARGET_VERSION}"
+GH_TAGGED_URL="$GH_RAW_ALTCHA_URL/$GH_TAG_REF/v${TARGET_VERSION}"
 TMPDIR=""
 
 cleanup() {

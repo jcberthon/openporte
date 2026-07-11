@@ -11,7 +11,8 @@ sed_inplace() {
   fi
 }
 
-GH_ALTCHA_URL="https://raw.githubusercontent.com/altcha-org/altcha"
+GH_ALTCHA_URL="https://github.com/altcha-org/altcha"
+GH_RAW_ALTCHA_URL="https://raw.githubusercontent.com/altcha-org/altcha"
 GH_TAG_REF="refs/tags"
 GH_ALTCHA_WIDGET_FILENAME="altcha.umd.cjs"
 GH_DIST_DIR="dist"
@@ -19,4 +20,4 @@ GH_DIST_DIR="dist"
 #   - filename: altcha.umd.min.cjs
 #.  - dist dir: dist/main/
 # In a future version when migrating to an altcha v3 release, the logic should be added.
-export GH_ALTCHA_URL GH_TAG_REF GH_ALTCHA_WIDGET_FILENAME GH_DIST_DIR
+export GH_ALTCHA_URL GH_RAW_ALTCHA_URL GH_TAG_REF GH_ALTCHA_WIDGET_FILENAME GH_DIST_DIR
