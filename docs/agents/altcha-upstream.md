@@ -6,11 +6,24 @@ Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
 
 ## Upgrade procedure
 
-1. Confirm upstream release is still under an OSI-approved OSS license.
-2. Replace the file from the upstream release.
-3. Update `OPENPORTE_WIDGET_VERSION`.
-4. Add a changelog entry in `readme.txt`.
-5. Update the "Last verified MIT upstream" line below.
+1. Confirm upstream release is OSI-approved OSS; update "Upstream provenance ledger"
+   section (`docs/agents/altcha-upstream.md#Upstream-provenance-ledger`).
+2. Replace `public/altcha.min.js` from the upstream release, use
+   `npm run altcha:update -- X.Y.Z`.
+3. Bump `OPENPORTE_WIDGET_VERSION` (`openporte.php:57`) — the `ALTCHA_WIDGET_VERSION`
+   alias at `openporte.php:69` derives from it (no separate edit). This moves
+   independently of `OPENPORTE_VERSION` (`docs/release-preparation.md#Phase 0-—-Pre-flight`).
+4. Add a changelog entry in `readme.txt` (WP.org `= X.Y.Z =` format, newest first;
+   prior convention e.g. `readme.txt:214` `* ALTCHA Widget 2.2.2`).
+5. Update the vendored-version reference in `docs/security-audit.md:475`.
+6. Run the integration test checklist (widget renders; self-hosted challenge
+   fetch + solve; PHP `verify()` accepts a valid token; tampered token rejected;
+   `script.js` de-dup still works; attribute-API compatibility).
+7. **Record provenance** — capture the SHA-256 of the re-vendored
+   `public/altcha.min.js` plus the upstream source ref (tag/commit) in
+   `docs/agents/altcha-upstream.md`, so the shipped build is independently verifiable
+   on every future upgrade.
+
 
 ## Licensing-risk contingency
 

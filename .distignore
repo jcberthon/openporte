@@ -26,6 +26,7 @@ CONTRIBUTING.md
 package.json
 package-lock.json
 phpcs.xml.dist
+public/altcha.min.js.sha256
 README.md
 SECURITY.md
 SUPPORT.md
