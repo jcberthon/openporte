@@ -8,6 +8,8 @@
     "release:assets": "bash bin/release/sync-wordpress-org-assets.sh",
     "release:check": "bash bin/release/check.sh",
     "release:dist": "bash bin/release/dist.sh",
-    "release:tag": "bash bin/release/tag.sh"
+    "release:tag": "bash bin/release/tag.sh",
+    "altcha:update": "bash bin/release/altcha-update.sh",
+    "altcha:verify": "bash bin/release/altcha-verify.sh"
   }
 }
