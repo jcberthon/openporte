@@ -39,4 +39,8 @@ WP plugin):
    does not have the maintainer bandwidth to own the JS library too.
 3. **Track but don't depend.** Record the last MIT-licensed git SHA below.
 
-Last verified MIT upstream: `v2.3.0` (8b87cf5) on 2025-12-18.
+## Upstream provenance ledger
+
+Last verified MIT upstream (including altcha.umd.cjs SHA-256 sum):
+- `v2.3.0` (8b87cf5) on 2025-12-18 - 0f557a9f535a15acbe0fc7abb4fe896502a6d4c27de1c4145cfa001d0d2be099
+- `v2.2.2` (81e92af) on 2025-09-09 - dca232f0f5ae3d5e32c63aaf66a6aa9ae33543993d8397c011ea6ccc4650c8c6

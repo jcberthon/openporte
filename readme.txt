@@ -158,6 +158,10 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 == Changelog ==
 
+= 1.28.0 (unreleased) =
+
+* ALTCHA Widget 2.3.0
+
 = 1.27.3 =
 This is a small bug-fix release.
 * Branding: add a logo refresh and new banners

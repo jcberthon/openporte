@@ -40,7 +40,7 @@ EXPECTED_SHA=""
 if [[ "$VERIF_MODE" == "offline" ]]; then
   EXPECTED_SHA=$(cat public/altcha.min.js.sha256)
 else # Online
-  EXPECTED_SHA=$(curl -fsSL "$GH_ALTCHA_URL/$GH_TAG_REF/v${VERSION}/$GH_DIST_DIR/$GH_ALTCHA_WIDGET_FILENAME" | sha256sum | awk '{print $1}')
+  EXPECTED_SHA=$(curl -fsSL "$GH_RAW_ALTCHA_URL/$GH_TAG_REF/v${VERSION}/$GH_DIST_DIR/$GH_ALTCHA_WIDGET_FILENAME" | sha256sum | awk '{print $1}')
 fi
 
 echo "Local body SHA-256:  $LOCAL_SHA"

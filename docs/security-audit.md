@@ -472,7 +472,7 @@ OWASP Top 10 (2021):
 | A03 Injection | Pass | SQL prepared; no command/code injection sinks; output escaped; autoloader note in finding #10 |
 | A04 Insecure Design | Pass (note) | Stateless-PoW replay accepted (finding #1); dead code in finding #11 |
 | A05 Security Misconfiguration | Pass (note) | Secure defaults; no debug output; PoW complexity has no seeded default → falls to the 100–10000 range (consider defaulting to medium/high) |
-| A06 Vulnerable & Outdated Components | Monitor | Vendored `public/altcha.min.js` (widget 2.2.2) — track upstream advisories on re-vendor |
+| A06 Vulnerable & Outdated Components | Monitor | Vendored `public/altcha.min.js` (widget 2.3.0) — track upstream advisories on re-vendor |
 | A07 Identification & Auth Failures | Pass | Delegates to WP/WooCommerce auth; adds an anti-automation layer, does not weaken auth |
 | A08 Software & Data Integrity Failures | Pass | Uses `json_decode` (not `unserialize`); submitted tokens are HMAC-signed and verified |
 | A09 Security Logging & Monitoring | Note | No built-in logging; operators can hook the `openporte_verify_result` action |
