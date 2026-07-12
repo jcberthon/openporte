@@ -80,7 +80,7 @@ if ! command -v rsync >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! ssh -q -o BatchMode=yes -o ConnectTimeout=5 ${REMOTE_USER}@${REMOTE_HOST} 'echo 2>&1'; then
+if ! ssh -q -o BatchMode=yes -o ConnectTimeout=5 -i "${REMOTE_RPC_KEY}" ${REMOTE_USER}@${REMOTE_HOST} 'echo 2>&1'; then
   echo "Unable to connect to ${REMOTE_USER}@${REMOTE_HOST}. Please check your SSH configuration and try again." >&2
   exit 1
 fi
@@ -91,10 +91,10 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
 fi
 
 if [ ! -f '.wpenvrc' ]; then
-  echo "Warning: .wpenvrc file exists locally. This file is meant to be used on the remote host to define environment variables." >&2
-  echo "         The local .wpenvrc will be ignored and not copied to the remote host." >&2
-  echo "         Please ensure that any necessary environment variables (e.g. PATH) are defined" >&2
-  echo "         or defined them in ~/.wpenvrc file locally, it will be copied to the remote host automatically." >&2
+  echo "Warning: no .wpenvrc file exists locally. This file is meant to be used on the remote host to define environment variables." >&2
+  echo "        The local .wpenvrc is copied/rsync to the remote host." >&2
+  echo "        Please ensure that any necessary environment variables (e.g. PATH) are defined" >&2
+  echo "        in ~/.wpenvrc file locally, it will be copied to the remote host automatically." >&2
 fi
 
 # Verify that the script is being run from the root of a git repository
@@ -148,7 +148,7 @@ print_environment_info() {
   # Get all info in a single SSH call for efficiency
   local all_info
   # shellcheck disable=SC2029
-  all_info=$(ssh ${REMOTE_USER}@${REMOTE_HOST} "
+  all_info=$(ssh -i "${REMOTE_RPC_KEY}" ${REMOTE_USER}@${REMOTE_HOST} "
     cd ~/${REMOTE_PATH} && \
     source ./.wpenvrc && \
     echo '===STATUS===' && \
@@ -211,11 +211,12 @@ if [[ "$IS_START" == "true" ]]; then
   rsync -az --delete --include="wp-env.sh" --include=".wp*" \
       --include="tests/" --include="tests/bin/" --include="tests/bin/wp-init.sh" \
       --exclude-from=./.distignore \
+      -e "ssh -i \"${REMOTE_RSYNC_KEY}\" -o IdentitiesOnly=yes" \
       . ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/
 fi
 
 # shellcheck disable=SC2029
-ssh ${REMOTE_USER}@${REMOTE_HOST} \
+ssh -i "${REMOTE_RPC_KEY}" -o IdentitiesOnly=yes ${REMOTE_USER}@${REMOTE_HOST} \
     "cd ~/${REMOTE_PATH} && \
      source ./.wpenvrc && \
      ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
