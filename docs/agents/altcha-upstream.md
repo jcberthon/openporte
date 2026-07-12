@@ -43,4 +43,11 @@ WP plugin):
 
 Last verified MIT upstream (including altcha.umd.cjs SHA-256 sum):
 - `v2.3.0` (8b87cf5) on 2025-12-18 - 0f557a9f535a15acbe0fc7abb4fe896502a6d4c27de1c4145cfa001d0d2be099
+  - Integration verified 2026-07-13 on the floor (PHP 8.0 / WP 5.6) and ceiling
+    (PHP 8.5 / WP 7.0) benches (#44, #45): all ten emitted attributes are still
+    in the widget's `customElements.define` map, the light-DOM contract used by
+    `public/script.js` (`.altcha[data-state]`, `input[type=checkbox]`) is
+    unchanged, and `refetchonexpire` re-fetches at expiry. The upstream
+    `spamfilter`/`blockspam` deprecation is documentation-only — no runtime
+    warning, attributes still accepted (keep-vs-drop decision: #6).
 - `v2.2.2` (81e92af) on 2025-09-09 - dca232f0f5ae3d5e32c63aaf66a6aa9ae33543993d8397c011ea6ccc4650c8c6
