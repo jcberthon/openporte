@@ -339,6 +339,39 @@ at least on the floor (PHP 8.0 / WP 5.6) and ceiling (PHP 8.5 / WP 7.0) benches:
    silently stripped on render.
 7. The browser console is clean and `wp-env logs` shows no PHP notices.
 
+New in widget 2.3.0, accepted but **unused** by OpenPorte (for the next
+attribute audit): `disablerefetchonexpire`, `sentinel`, `plugins`,
+`credentials`, `customfetch`, `overlay`/`overlaycontent`, `disableautofocus`,
+`floatingpersist`, `language`. The `spamfilter`/`blockspam` deprecation in
+2.3.0 is documentation-only — no runtime warning in the bundle.
+
+#### Bench provisioning notes (`wp-init.sh` tweaks per leg)
+
+`tests/bin/wp-init.sh` targets the ceiling; the floor leg needs adjustments
+(the script is tweaked often — record what and why here):
+
+- **Floor (WP 5.6): pin Contact Form 7 to 5.4.2.** Current CF7 6.x calls
+  `wp_is_serving_rest_request()` (added in WP 6.5) and fatals on every
+  front-end request. CF7 5.4.2 (requires WP 5.5) works; on PHP 8.5 it logs
+  `ArrayAccess` return-type deprecations — CF7's, not ours.
+- **Plugin Check requires WP ≥ 6.3** — install it on the ceiling leg only
+  (static plugin checks don't need to run on the floor).
+- **Enable the form integration**: fresh installs default all integrations to
+  off — `wp option update openporte_integration_contact_form_7 captcha` or the
+  widget is never injected into the CF7 form.
+- **Turn off `WP_DEBUG_DISPLAY`** (`wp config set WP_DEBUG_DISPLAY false
+  --raw`, keep `WP_DEBUG_LOG`): with display on, notices are prepended to REST
+  bodies, which corrupts the challenge JSON and breaks the widget itself, not
+  just tooling.
+- **Run `wp-env cleanup` between WP-version switches** — the database volume
+  persists, and a newer install's active theme (e.g. `twentytwentyfive`)
+  renders blank pages on an older core. The `cleanup`/`destroy` confirmation
+  prompt needs a real TTY (`ssh -t …`); it cannot be answered through
+  `wp-env.sh`.
+- For expiry testing, `wp option update openporte_expires 60` makes both the
+  widget's `refetchonexpire` and the server-side expired-token rejection
+  observable within a minute.
+
 ---
 
 ### Testing tools
