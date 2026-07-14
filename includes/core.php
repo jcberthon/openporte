@@ -5,81 +5,42 @@ if (!defined('ABSPATH')) exit;
 class OpenPortePlugin
 {
   public static $instance;
-
   public static $language = "";
-
   public static $widget_script_src = "";
-
   public static $wp_script_src = "";
-
   public static $admin_script_src = "";
-
   public static $admin_css_src = "";
-
   public static $custom_script_src = "";
-
   public static $widget_style_src = "";
-
   public static $version = "0.0.0";
-
   public static $widget_version = "0.0.0";
-
   public static $option_api = "openporte_api";
-
   public static $option_api_custom_url = "openporte_api_custom_url";
-
   public static $option_secret = "openporte_secret";
-
   public static $option_complexity = "openporte_complexity";
-
   public static $option_expires = "openporte_expires";
-
-  public static $option_blockspam = "openporte_blockspam";
-
   public static $option_auto = "openporte_auto";
-
   public static $option_floating = "openporte_floating";
-
   public static $option_delay = "openporte_delay";
-
   public static $option_hidefooter = "openporte_hidefooter";
-
   public static $option_hidelogo = "openporte_hidelogo";
-
   public static $option_integration_coblocks = "openporte_integration_coblocks";
-
   public static $option_integration_contact_form_7 = "openporte_integration_contact_form_7";
-
   public static $option_integration_custom = "openporte_integration_custom";
-
   public static $option_integration_elementor = "openporte_integration_elementor";
-
   public static $option_integration_formidable = "openporte_integration_formidable";
-
   public static $option_integration_forminator = "openporte_integration_forminator";
-
   public static $option_integration_gravityforms = "openporte_integration_gravityforms";
-
   public static $option_integration_woocommerce_login = "openporte_integration_woocommerce_login";
-
   public static $option_integration_woocommerce_register = "openporte_integration_woocommerce_register";
-
   public static $option_integration_woocommerce_reset_password = "openporte_integration_woocommerce_reset_password";
-
   public static $option_integration_html_forms = "openporte_integration_html_forms";
-
   public static $option_integration_wordpress_login = "openporte_integration_wordpress_login";
-
   public static $option_integration_wordpress_register = "openporte_integration_wordpress_register";
-
   public static $option_integration_wordpress_reset_password = "openporte_integration_wordpress_reset_password";
-
   public static $option_integration_wordpress_comments = "openporte_integration_wordpress_comments";
-
   public static $option_integration_wpdiscuz = "openporte_integration_wpdiscuz";
-
   public static $option_integration_wpforms = "openporte_integration_wpforms";
-
   public static $option_integration_enfold_theme = "openporte_integration_enfold_theme";
 
   public static $html_espace_allowed_tags = array(
@@ -173,61 +134,61 @@ class OpenPortePlugin
 
   public function get_integration_coblocks()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_coblocks));
+    return get_option(OpenPortePlugin::$option_integration_coblocks);
   }
 
   public function get_integration_contact_form_7()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_contact_form_7));
+    return get_option(OpenPortePlugin::$option_integration_contact_form_7);
   }
 
   public function get_integration_custom()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_custom));
+    return get_option(OpenPortePlugin::$option_integration_custom);
   }
 
   public function get_integration_elementor()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_elementor));
+    return get_option(OpenPortePlugin::$option_integration_elementor);
   }
 
   public function get_integration_enfold_theme() {
-    return trim(get_option(OpenPortePlugin::$option_integration_enfold_theme));
+    return get_option(OpenPortePlugin::$option_integration_enfold_theme);
   }
 
   public function get_integration_formidable()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_formidable));
+    return get_option(OpenPortePlugin::$option_integration_formidable);
   }
 
   public function get_integration_forminator()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_forminator));
+    return get_option(OpenPortePlugin::$option_integration_forminator);
   }
 
   public function get_integration_gravityforms()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_gravityforms));
+    return get_option(OpenPortePlugin::$option_integration_gravityforms);
   }
 
   public function get_integration_woocommerce_register()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_woocommerce_register));
+    return get_option(OpenPortePlugin::$option_integration_woocommerce_register);
   }
 
   public function get_integration_woocommerce_reset_password()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_woocommerce_reset_password));
+    return get_option(OpenPortePlugin::$option_integration_woocommerce_reset_password);
   }
 
   public function get_integration_woocommerce_login()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_woocommerce_login));
+    return get_option(OpenPortePlugin::$option_integration_woocommerce_login);
   }
 
   public function get_integration_html_forms()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_html_forms));
+    return get_option(OpenPortePlugin::$option_integration_html_forms);
   }
 
   public function get_integration_wordpress_register()
@@ -252,12 +213,12 @@ class OpenPortePlugin
 
   public function get_integration_wpdiscuz()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_wpdiscuz));
+    return get_option(OpenPortePlugin::$option_integration_wpdiscuz);
   }
 
   public function get_integration_wpforms()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_wpforms));
+    return get_option(OpenPortePlugin::$option_integration_wpforms);
   }
 
 

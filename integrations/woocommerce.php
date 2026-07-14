@@ -6,9 +6,9 @@ add_action(
   'woocommerce_register_form',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_woocommerce_register();
-    if (!empty($mode)) {
-      openporte_woocommerce_comments_render_widget($mode, 'openporte_register');
+    $active = $plugin->get_integration_woocommerce_register();
+    if ($active) {
+      openporte_woocommerce_comments_render_widget($active, 'openporte_register');
     }
   },
   10,
@@ -19,8 +19,8 @@ add_action(
   'woocommerce_register_post',
   function ($user_login, $user_email, $errors) {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_woocommerce_register();
-    if (!empty($mode)) {
+    $active = $plugin->get_integration_woocommerce_register();
+    if ($active) {
       $altcha = isset($_POST['openporte_register']) ? trim(sanitize_text_field(wp_unslash($_POST['openporte_register']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         return $errors->add(
@@ -39,9 +39,9 @@ add_action(
   'woocommerce_login_form',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_woocommerce_login();
-    if (!empty($mode)) {
-      openporte_woocommerce_comments_render_widget($mode);
+    $active = $plugin->get_integration_woocommerce_login();
+    if ($active) {
+      openporte_woocommerce_comments_render_widget($active);
     }
   },
   10,
@@ -66,8 +66,8 @@ add_filter(
     }
 
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_woocommerce_login();
-    if (!empty($mode)) {
+    $active = $plugin->get_integration_woocommerce_login();
+    if ($active) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         return new WP_Error(
@@ -86,9 +86,9 @@ add_action(
   'woocommerce_lostpassword_form',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_woocommerce_reset_password();
-    if (!empty($mode)) {
-      openporte_woocommerce_comments_render_widget($mode);
+    $active = $plugin->get_integration_woocommerce_reset_password();
+    if ($active) {
+      openporte_woocommerce_comments_render_widget($active);
     }
   },
   10,
@@ -107,8 +107,8 @@ add_filter(
       return $errors;
     }
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_woocommerce_reset_password();
-    if (!empty($mode)) {
+    $active = $plugin->get_integration_woocommerce_reset_password();
+    if ($active) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         $errors->add(
@@ -123,8 +123,8 @@ add_filter(
   1
 );
 
-function openporte_woocommerce_comments_render_widget($mode, $name = null)
+function openporte_woocommerce_comments_render_widget($active, $name = null)
 {
   $plugin = OpenPortePlugin::$instance;
-  echo wp_kses($plugin->render_widget($mode, true, null, $name), OpenPortePlugin::$html_espace_allowed_tags);
+  echo wp_kses($plugin->render_widget($active, true, null, $name), OpenPortePlugin::$html_espace_allowed_tags);
 }

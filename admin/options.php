@@ -153,6 +153,7 @@ function openporte_settings_field_callback(array $args)
   $type = $args['type'];
   $name = $args['name'];
   $hint = isset($args['hint']) ? $args['hint'] : null;
+  $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $custom = isset($args['custom']) ? $args['custom'] : '';
   $description = isset($args['description']) ? $args['description'] : null;
   $setting = get_option($name);
@@ -179,7 +180,7 @@ function openporte_settings_select_callback(array $args)
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
-  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>">
+  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" <?php echo $disabled === true ? ' disabled' : ''; ?>>
   <?php
     foreach ( $options as $opt_key => $opt_value ) {
       echo '<option value="' . esc_attr( $opt_key ) . '" '

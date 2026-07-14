@@ -93,25 +93,25 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_coblocks,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_contact_form_7,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_custom,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_elementor,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
@@ -123,43 +123,43 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_formidable,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_forminator,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_gravityforms,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_woocommerce_login,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_woocommerce_register,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_woocommerce_reset_password,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_html_forms,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
@@ -189,13 +189,13 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_wpdiscuz,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_wpforms,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     // Section
@@ -374,301 +374,212 @@ if (is_admin()) {
       'openporte_admin'
     );
 
+    $active = openporte_plugin_active('coblocks');
     add_settings_field(
         'openporte_settings_coblocks_integration_field',
         __('CoBlocks', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_coblocks,
-            "disabled" => !openporte_plugin_active('coblocks'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
+          "disabled" => !$active,
+          'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+          "type" => "checkbox"
+      )
     );
 
+    $active = openporte_plugin_active('contact-form-7');
     add_settings_field(
         'openporte_settings_contact_form_7_integration_field',
         __('Contact Form 7', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_contact_form_7,
-            "disabled" => !openporte_plugin_active('contact-form-7'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-              "shortcode" => __('Shortcode', 'openporte'),
-            ),
-        )
+          "disabled" => !$active,
+          'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+          "type" => "checkbox"
+      )
     );
 
+    $active = openporte_plugin_active('elementor');
     add_settings_field(
         'openporte_settings_elementor_integration_field',
         __('Elementor Pro Forms', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_elementor,
-            "disabled" => !openporte_plugin_active('elementor'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
+          "disabled" => !$active,
+          'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+          "type" => "checkbox"
+      )
     );
 
+    $active = !empty(array_filter(wp_get_themes(), function($theme) { 
+          return stripos($theme, 'enfold') !== false;
+          }));
     add_settings_field(
       'openporte_settings_enfold_theme_integration_field',
       __('Enfold Theme', 'openporte'),
-      'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
       'openporte_admin',
       'openporte_integrations_settings_section',
       array(
         "name" => OpenPortePlugin::$option_integration_enfold_theme,
-        "disabled" => empty(array_filter(wp_get_themes(), function($theme) { 
-          return stripos($theme, 'enfold') !== false;
-          })),
-        "spamfilter_options" => array(
-          "spamfilter",
-          "captcha_spamfilter",
-        ),
-        "options" => array(
-          "" => __('Disable', 'openporte'),
-          "captcha" => __('Captcha', 'openporte'),
-          "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-        ),
+        "disabled" => !$active,
+        'hint'     => $active ? '' : __( 'Theme not active.', 'openporte' ),
+        "type" => "checkbox"
       )
     );
 
+    $active = openporte_plugin_active('formidable');
     add_settings_field(
         'openporte_settings_formidable_integration_field',
         __('Formidable Forms', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_formidable,
-            "disabled" => !openporte_plugin_active('formidable'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
+        "disabled" => !$active,
+        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+        "type" => "checkbox"
+      )
     );
 
+    $active = openporte_plugin_active('forminator');
     add_settings_field(
         'openporte_settings_forminator_integration_field',
         __('Forminator', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_forminator,
-            "disabled" => !openporte_plugin_active('forminator'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
+        "disabled" => !$active,
+        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+        "type" => "checkbox"
+      )
     );
 
+    $active = openporte_plugin_active('gravityforms');
     add_settings_field(
         'openporte_settings_gravityforms_integration_field',
         __('Gravity Forms', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_gravityforms,
-            "disabled" => !openporte_plugin_active('gravityforms'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
+        "disabled" => !$active,
+        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+        "type" => "checkbox"
+      )
     );
 
+    $active = openporte_plugin_active('html-forms');
     add_settings_field(
         'openporte_settings_html_forms_integration_field',
         __('HTML Forms', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_html_forms,
-            "disabled" => !openporte_plugin_active('html-forms'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-              "shortcode" => __('Shortcode', 'openporte'),
-            ),
-        )
+        "disabled" => !$active,
+        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+        "type" => "checkbox"
+      )
     );
 
+    $active = openporte_plugin_active('wpdiscuz');
     add_settings_field(
         'openporte_settings_wpdiscuz_integration_field',
         __('WPDiscuz', 'openporte'),
-        'openporte_settings_select_callback',
+        'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_wpdiscuz,
-            "disabled" => !openporte_plugin_active('wpdiscuz'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
+            "disabled" => !$active,
+            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+            "type" => "checkbox"
         )
     );
 
+    $active = openporte_plugin_active('wpforms');
     add_settings_field(
         'openporte_settings_wpforms_integration_field',
         __('WP Forms', 'openporte'),
-        'openporte_settings_select_callback',
+        'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_wpforms,
-            "disabled" => !openporte_plugin_active('wpforms'),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
+            "disabled" => !$active,
+            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+            "type" => "checkbox"
         )
     );
 
+    $active = openporte_plugin_active('woocommerce');
     add_settings_field(
         'openporte_settings_woocommerce_register_integration_field',
         __('WooCommerce register page', 'openporte'),
-        'openporte_settings_select_callback',
+        'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_woocommerce_register,
-            "disabled" => !openporte_plugin_active('woocommerce'),
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
+            "disabled" => !$active,
+            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+            "type" => "checkbox"
         )
     );
-
     add_settings_field(
         'openporte_settings_woocommerce_reset_password_integration_field',
         __('WooCommerce reset password page', 'openporte'),
-        'openporte_settings_select_callback',
+        'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_woocommerce_reset_password,
-            "disabled" => !openporte_plugin_active('woocommerce'),
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
+            "disabled" => !$active,
+            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+            "type" => "checkbox"
         )
     );
-
     add_settings_field(
         'openporte_settings_woocommerce_login_integration_field',
         __('WooCommerce login page', 'openporte'),
-        'openporte_settings_select_callback',
+        'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_woocommerce_login,
-            "disabled" => !openporte_plugin_active('woocommerce'),
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
+            "disabled" => !$active,
+            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
+            "type" => "checkbox"
         )
     );
 
     add_settings_field(
         'openporte_settings_custom_integration_field',
         __('Custom HTML', 'openporte'),
-        'openporte_settings_select_callback',
+      'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
             "name" => OpenPortePlugin::$option_integration_custom,
             "hint" => sprintf(
               /* translators: the placeholder will be replaced with the shortcode */
-              __('Use %s shortcode anywhere in your HTML.', 'openporte'), '[openporte]',
+          __('Or use %s shortcode anywhere in your HTML.', 'openporte'), '[openporte]',
             ),
-            "spamfilter_options" => array(
-              "spamfilter",
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
+        "type" => "checkbox"
         )
     );
 

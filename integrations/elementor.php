@@ -10,7 +10,7 @@ if (openporte_plugin_active('elementor')){
   }
   $openporte_plugin = OpenPortePlugin::$instance;
   $openporte_mode = $openporte_plugin->get_integration_elementor();
-  if ($openporte_mode === 'captcha' || $openporte_mode === 'captcha_spamfilter') {
+  if ($openporte_mode === 'captcha') {
     add_action('elementor_pro/forms/fields/register', 'openporte_register_form_field');
   }
 }

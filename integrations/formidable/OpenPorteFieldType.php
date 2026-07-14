@@ -46,15 +46,13 @@ class OpenPorteFieldType extends FrmFieldType
 	public function validate($args)
 	{
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_formidable();
+    $active = $plugin->get_integration_formidable();
 		$errors = array();
-    if (!empty($mode)) {
-      if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
-        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        if ($plugin->verify($altcha) === false) {
-					$errors['field' . $args['id']] = esc_html__('Verification failed.', 'openporte');
-        }
-      }
+    if ($active) {
+			$altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ($plugin->verify($altcha) === false) {
+				$errors['field' . $args['id']] = esc_html__('Verification failed.', 'openporte');
+			}
     }
 
 		return $errors;
@@ -63,9 +61,9 @@ class OpenPorteFieldType extends FrmFieldType
 	public function front_field_input($args, $shortcode_atts)
 	{
 		$plugin = OpenPortePlugin::$instance;
-		$mode = $plugin->get_integration_formidable();
-		if (!empty($mode) && $mode === 'captcha') {
-			return wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($mode, false) . "</div>", OpenPortePlugin::$html_espace_allowed_tags);
+		$active = $plugin->get_integration_formidable();
+		if ($active) {
+			return wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($active, false) . "</div>", OpenPortePlugin::$html_espace_allowed_tags);
 		}
 		return '';
 	}

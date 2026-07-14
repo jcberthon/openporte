@@ -43,8 +43,8 @@ class OPENPORTE_GFForms_Field extends GF_Field
 	public function get_field_input($form, $value = '', $entry = null)
 	{
 		$plugin = OpenPortePlugin::$instance;
-		$mode = $plugin->get_integration_gravityforms();
-		if (empty($mode) || $mode === 'spamfilter') {
+		$active = $plugin->get_integration_gravityforms();
+		if (!$active) {
 			return '';
 		}
 		if ($this->is_form_editor()) {
@@ -53,7 +53,7 @@ class OPENPORTE_GFForms_Field extends GF_Field
 				. '<div><span>' . __("OpenPorte placeholder", 'openporte') . '</span></div>'
 				. '</div>';
 		} else {
-			$widget_html = wp_kses($plugin->render_widget($mode), OpenPortePlugin::$html_espace_allowed_tags);
+			$widget_html = wp_kses($plugin->render_widget($active), OpenPortePlugin::$html_espace_allowed_tags);
 		}
 		return sprintf("<div class='ginput_container ginput_container_%s gfield--type-html'>%s</div>", $this->type, $widget_html);
 	}
@@ -70,19 +70,12 @@ class OPENPORTE_GFForms_Field extends GF_Field
 			return;
 		}
 		$plugin = OpenPortePlugin::$instance;
-		$mode = $plugin->get_integration_gravityforms();
-    if (!empty($mode)) {
-			if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-				if ($plugin->verify($altcha) === false) {
-					if ($plugin->get_api() === "custom" && $plugin->spamfilter_result && $plugin->spamfilter_result['classification'] === 'BAD') {
-						// uses gform_entry_is_spam handler
-
-					} else {
-						$this->failed_validation  = true;
-						$this->validation_message = __('Could not verify you are not a robot.', 'openporte');
-					}
-				}
+		$active = $plugin->get_integration_gravityforms();
+    if ($active) {
+			$altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ($plugin->verify($altcha) === false) {
+					$this->failed_validation  = true;
+					$this->validation_message = __('Could not verify you are not a robot.', 'openporte');
 			}
 		}
 	}
