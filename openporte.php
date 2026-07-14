@@ -161,7 +161,6 @@ function openporte_migrate_legacy_options()
     OpenPortePlugin::$option_secret,
     OpenPortePlugin::$option_complexity,
     OpenPortePlugin::$option_expires,
-    OpenPortePlugin::$option_blockspam,
     OpenPortePlugin::$option_auto,
     OpenPortePlugin::$option_floating,
     OpenPortePlugin::$option_delay,
