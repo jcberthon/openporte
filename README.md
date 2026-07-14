@@ -126,8 +126,11 @@ alias** (via WordPress' deprecated-hook mechanism); use the `openporte_*` names.
   **Returns:** `string`
 
 * `apply_filters('openporte_integrations', $integrations)`  
-  Modify the list of available integrations. Supported values: `captcha`, `captcha_spamfilter`, `shortcode`.  
-  **Returns:** `array<string>`
+  Modify the list of integration states. Since 1.28 each entry is the raw
+  checkbox option value — truthy (`1`) when the integration is enabled, falsy
+  (`0` or `''`) otherwise. The legacy mode strings (`captcha`,
+  `captcha_spamfilter`, `shortcode`) are no longer used.  
+  **Returns:** `array<int|string>`
 
 * `apply_filters('openporte_plugin_active', false, $name)`  
   Check if an integration by `$name` is active.  
@@ -150,11 +153,11 @@ alias** (via WordPress' deprecated-hook mechanism); use the `openporte_*` names.
 * `do_action('openporte_verify_result', $result)`  
   Triggered after payload verification.
 
-  * `$result`: `bool` verification result.  
-  * Full server verification payload is available via:
+  * `$result`: `bool` verification result.
 
-    ```php
-    OpenPortePlugin::$instance->spamfilter_result
+  The former `OpenPortePlugin::$instance->spamfilter_result` property was
+  removed together with the spam-filter feature in 1.28 (see issue #6); the
+  action now only carries the boolean result.
 
 ## License
 

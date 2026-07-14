@@ -9,8 +9,10 @@ if (openporte_plugin_active('elementor')){
     $form_fields_registrar->register(new \OpenPorte_Elementor_Form_Field());
   }
   $openporte_plugin = OpenPortePlugin::$instance;
-  $openporte_mode = $openporte_plugin->get_integration_elementor();
-  if ($openporte_mode === 'captcha') {
+  $openporte_active = $openporte_plugin->get_integration_elementor();
+  // Truthy check: the option is a checkbox (0/1) since the spam-filter removal;
+  // legacy string values ('captcha', …) are normalized on upgrade.
+  if ($openporte_active) {
     add_action('elementor_pro/forms/fields/register', 'openporte_register_form_field');
   }
 }
