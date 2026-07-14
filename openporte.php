@@ -139,9 +139,8 @@ function openporte_activate()
   // be regenerated, or previously issued challenges would stop verifying.
   add_option(OpenPortePlugin::$option_api, 'selfhosted');
   add_option(OpenPortePlugin::$option_api_custom_url, '');
-  add_option(OpenPortePlugin::$option_expires, '3600');
+  add_option(OpenPortePlugin::$option_expires, '300');
   add_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
-  add_option(OpenPortePlugin::$option_hidefooter, true);
   add_option(OpenPortePlugin::$option_integration_custom, 'captcha');
 }
 

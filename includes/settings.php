@@ -281,6 +281,10 @@ if (is_admin()) {
         "name" => OpenPortePlugin::$option_expires,
         "hint" => __('Select the life-span of the challenge.', 'openporte'),
         "options" => array(
+          "300" => __('5 minutes', 'openporte'),
+          "600" => __('10 minutes', 'openporte'),
+          "900" => __('15 minutes', 'openporte'),
+          "1800" => __('30 minutes', 'openporte'),
           "3600" => __('1 hour', 'openporte'),
           "14400" => __('4 hours', 'openporte'),
           "0" => __('None', 'openporte'),
@@ -441,13 +445,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('coblocks');
     add_settings_field(
-        'openporte_settings_coblocks_integration_field',
-        __('CoBlocks', 'openporte'),
+      'openporte_settings_coblocks_integration_field',
+      __('CoBlocks', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_coblocks,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+          "name" => OpenPortePlugin::$option_integration_coblocks,
           "disabled" => !$active,
           'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
           "type" => "checkbox"
@@ -456,13 +460,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('contact-form-7');
     add_settings_field(
-        'openporte_settings_contact_form_7_integration_field',
-        __('Contact Form 7', 'openporte'),
+      'openporte_settings_contact_form_7_integration_field',
+      __('Contact Form 7', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_contact_form_7,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+          "name" => OpenPortePlugin::$option_integration_contact_form_7,
           "disabled" => !$active,
           'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
           "type" => "checkbox"
@@ -471,13 +475,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('elementor');
     add_settings_field(
-        'openporte_settings_elementor_integration_field',
-        __('Elementor Pro Forms', 'openporte'),
+      'openporte_settings_elementor_integration_field',
+      __('Elementor Pro Forms', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_elementor,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+          "name" => OpenPortePlugin::$option_integration_elementor,
           "disabled" => !$active,
           'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
           "type" => "checkbox"
@@ -503,13 +507,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('formidable');
     add_settings_field(
-        'openporte_settings_formidable_integration_field',
-        __('Formidable Forms', 'openporte'),
+      'openporte_settings_formidable_integration_field',
+      __('Formidable Forms', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_formidable,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_integration_formidable,
         "disabled" => !$active,
         'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
         "type" => "checkbox"
@@ -518,13 +522,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('forminator');
     add_settings_field(
-        'openporte_settings_forminator_integration_field',
-        __('Forminator', 'openporte'),
+      'openporte_settings_forminator_integration_field',
+      __('Forminator', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_forminator,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_integration_forminator,
         "disabled" => !$active,
         'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
         "type" => "checkbox"
@@ -533,13 +537,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('gravityforms');
     add_settings_field(
-        'openporte_settings_gravityforms_integration_field',
-        __('Gravity Forms', 'openporte'),
+      'openporte_settings_gravityforms_integration_field',
+      __('Gravity Forms', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_gravityforms,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_integration_gravityforms,
         "disabled" => !$active,
         'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
         "type" => "checkbox"
@@ -548,13 +552,13 @@ if (is_admin()) {
 
     $active = openporte_plugin_active('html-forms');
     add_settings_field(
-        'openporte_settings_html_forms_integration_field',
-        __('HTML Forms', 'openporte'),
+      'openporte_settings_html_forms_integration_field',
+      __('HTML Forms', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_html_forms,
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_integration_html_forms,
         "disabled" => !$active,
         'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
         "type" => "checkbox"
@@ -633,19 +637,19 @@ if (is_admin()) {
     );
 
     add_settings_field(
-        'openporte_settings_custom_integration_field',
-        __('Custom HTML', 'openporte'),
+      'openporte_settings_custom_integration_field',
+      __('Custom HTML', 'openporte'),
       'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_custom,
-            "hint" => sprintf(
-              /* translators: the placeholder will be replaced with the shortcode */
+      'openporte_admin',
+      'openporte_integrations_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_integration_custom,
+        "hint" => sprintf(
+          /* translators: the placeholder will be replaced with the shortcode */
           __('Or use %s shortcode anywhere in your HTML.', 'openporte'), '[openporte]',
-            ),
+        ),
         "type" => "checkbox"
-        )
+      )
     );
 
     do_action('openporte_settings_integrations');
