@@ -205,3 +205,41 @@ function openporte_settings_select_callback(array $args)
   <?php } ?>
 <?php
 }
+
+/**
+ * Renderer for the Expiration setting: a preset <select> plus a "Custom"
+ * choice revealing a number input (0–14400 seconds). The number input's name,
+ * openporte_expires_custom, is a plain form field, NOT a registered option:
+ * openporte_sanitize_expires() reads it when the select submits 'custom'.
+ * public/admin.js toggles the input's visibility with the select.
+ */
+function openporte_settings_expires_callback(array $args)
+{
+  $name = $args['name'];
+  $hint = isset($args['hint']) ? $args['hint'] : null;
+  $value = absint(get_option($name));
+  $presets = array(
+    300 => __('5 minutes', 'openporte'),
+    1800 => __('30 minutes', 'openporte'),
+    3600 => __('1 hour', 'openporte'),
+  );
+  // Any stored value outside the presets (e.g. a pre-1.28 '14400' or '0')
+  // renders as "Custom" with the number input pre-filled — no migration needed.
+  $is_custom = !isset($presets[$value]);
+?>
+  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>">
+  <?php
+    foreach ( $presets as $preset_seconds => $preset_label ) {
+      echo '<option value="' . esc_attr( $preset_seconds ) . '" '
+        . selected($value, $preset_seconds, false )
+        . '>' . esc_html($preset_label) . '</option>';
+    }
+  ?>
+    <option value="custom" <?php selected($is_custom); ?>><?php echo esc_html__('Custom', 'openporte'); ?></option>
+  </select>
+  <input type="number" name="openporte_expires_custom" id="openporte_expires_custom" min="0" max="14400" step="1" value="<?php echo esc_attr($value); ?>"<?php echo $is_custom ? '' : ' style="display:none"'; ?>>
+  <?php if ($hint) { ?>
+  <div style="opacity:0.7;font-size:85%;margin-top:3px"><?php echo esc_html($hint); ?></div>
+  <?php } ?>
+<?php
+}

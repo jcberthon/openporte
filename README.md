@@ -104,7 +104,8 @@ OpenPorte verifies submissions in one of two modes, selected in the settings
   service, no account.
 - **Custom** — point the Challenge URL at your own ALTCHA-compatible backend
   (e.g. a self-hosted ALTCHA Sentinel); submissions are verified with your site's
-  signing secret.
+  signing secret. The Algorithm setting must match the hash algorithm your
+  backend uses (most ALTCHA-compatible backends default to SHA-256).
 
 The paid altcha.org regional SaaS classifier offered by earlier versions has been
 removed; both remaining modes are free and self-hostable.
@@ -158,6 +159,12 @@ alias** (via WordPress' deprecated-hook mechanism); use the `openporte_*` names.
   The former `OpenPortePlugin::$instance->spamfilter_result` property was
   removed together with the spam-filter feature in 1.28 (see issue #6); the
   action now only carries the boolean result.
+
+## Acknowledgements
+
+The settings-page integration registration loop is adapted from the
+GPL-licensed [GateCHA for WordPress](https://github.com/Upellift99/GateCHA-WordPress)
+plugin by Upellift99 — thank you!
 
 ## License
 
