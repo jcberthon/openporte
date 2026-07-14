@@ -376,9 +376,9 @@ class OpenPortePlugin
       || !isset($data->algorithm, $data->verificationData, $data->signature)) {
       return false;
     }
-    $alg_ok = ($data->algorithm === 'SHA-256');
-    $calculated_hash = hash('sha256', $data->verificationData, true);
-    $calculated_signature = hash_hmac('sha256', $calculated_hash, $hmac_key);
+    $alg_ok = ($data->algorithm === 'SHA-512');
+    $calculated_hash = hash('sha512', $data->verificationData, true);
+    $calculated_signature = hash_hmac('sha512', $calculated_hash, $hmac_key);
     // hash_equals: constant-time comparison so the HMAC can't be recovered via timing.
     $signature_ok = hash_equals($calculated_signature, $data->signature);
     if (!($alg_ok && $signature_ok)) {
@@ -408,10 +408,10 @@ class OpenPortePlugin
         }
       }
     }
-    $alg_ok = ($data->algorithm === 'SHA-256');
-    $calculated_challenge = hash('sha256', $data->salt . $data->number);
+    $alg_ok = ($data->algorithm === 'SHA-512');
+    $calculated_challenge = hash('sha512', $data->salt . $data->number);
     $challenge_ok = ($data->challenge === $calculated_challenge);
-    $calculated_signature = hash_hmac('sha256', $data->challenge, $hmac_key);
+    $calculated_signature = hash_hmac('sha512', $data->challenge, $hmac_key);
     // hash_equals: constant-time comparison so the HMAC can't be recovered via timing.
     $signature_ok = hash_equals($calculated_signature, $data->signature);
     $verified = ($alg_ok && $challenge_ok && $signature_ok);
@@ -440,28 +440,36 @@ class OpenPortePlugin
     if (substr($salt, -1) !== '&') {
       $salt .= '&';
     }
+    // TODO: the low, medium and high ranges are arbitrary and not based on any empirical data.
+    // Consider revising them based on actual usage and feedback. And perhaps also consider adding
+    // a "custom" option to allow users to specify their own range. This should not be hardcoded
+    // here, but a "matrix" should be defined globally, so that we have one clear area where this
+    // is defined.
     switch ($complexity) {
       case 'low':
-        $min_secret = 100;
-        $max_secret = 1000;
+        $min_secret = 5000;
+        $max_secret = 25000;
         break;
       case 'medium':
-        $min_secret = 1000;
-        $max_secret = 20000;
+        $min_secret = 25000;
+        $max_secret = 75000;
         break;
       case 'high':
-        $min_secret = 10000;
-        $max_secret = 100000;
+        $min_secret = 125000;
+        $max_secret = 200000;
         break;
       default:
-        $min_secret = 100;
-        $max_secret = 10000;
+        $min_secret = 5000;
+        $max_secret = 25000;
     }
     $secret_number = random_int($min_secret, $max_secret);
-    $challenge = hash('sha256', $salt . $secret_number);
-    $signature = hash_hmac('sha256', $challenge, $hmac_key);
+    // TODO: consider adding in the admin settings an algorithm field to allow choosing between
+    //     SHA-256. SHA-384 or SHA-512
+    // For now, we hardcode SHA-512 (was SHA-256 for v1.27 and earlier).
+    $challenge = hash('sha512', $salt . $secret_number);
+    $signature = hash_hmac('sha512', $challenge, $hmac_key);
     $response = [
-      'algorithm' => 'SHA-256',
+      'algorithm' => 'SHA-512',
       'challenge' => $challenge,
       'maxnumber' => $max_secret,
       'salt' => $salt,
