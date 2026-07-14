@@ -25,6 +25,31 @@ function openporte_sanitize_challenge_url( $value ) {
   return esc_url_raw( (string) $value );
 }
 
+/**
+ * Sanitize the Expiration setting.
+ *
+ * The field is a preset <select> (values in seconds) plus a "Custom" choice
+ * backed by a companion number input (form field openporte_expires_custom —
+ * not a registered option, see openporte_settings_expires_callback). When
+ * "Custom" is selected the <select> submits the literal string 'custom' and
+ * the real value comes from the number input. Allowed range: 0–14400 seconds,
+ * where 0 means no expiry (None) and 14400 (4 hours) is the historical maximum.
+ */
+function openporte_sanitize_expires( $value ) {
+  if ( 'custom' === $value && isset( $_POST['openporte_expires_custom'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- wp-admin/options.php verifies the settings nonce before sanitize callbacks run; absint() below is the sanitizer.
+    $value = wp_unslash( $_POST['openporte_expires_custom'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+  }
+  return min( absint( $value ), 14400 );
+}
+
+/**
+ * Only the ALTCHA-standard hash algorithms are accepted; anything else falls
+ * back to SHA-256, mirroring OpenPortePlugin::get_algorithm().
+ */
+function openporte_sanitize_algorithm( $value ) {
+  return in_array( $value, OpenPortePlugin::get_allowed_algorithms(), true ) ? $value : 'SHA-256';
+}
+
 if (is_admin()) {
   add_action('admin_init', 'openporte_settings_init');
 
@@ -57,7 +82,13 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_expires,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'sanitize_callback' => 'openporte_sanitize_expires' )
+    );
+
+    register_setting(
+      'openporte_options',
+      OpenPortePlugin::$option_algorithm,
+      array( 'sanitize_callback' => 'openporte_sanitize_algorithm' )
     );
 
     register_setting(
@@ -88,114 +119,6 @@ if (is_admin()) {
       'openporte_options',
       OpenPortePlugin::$option_delay,
       array( 'sanitize_callback' => 'sanitize_text_field' )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_coblocks,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_contact_form_7,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_custom,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_elementor,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_enfold_theme,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_formidable,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_forminator,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_gravityforms,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_woocommerce_login,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_woocommerce_register,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_woocommerce_reset_password,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_html_forms,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_comments,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_login,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_register,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_wordpress_reset_password,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_wpdiscuz,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
-    );
-
-    register_setting(
-      'openporte_options',
-      OpenPortePlugin::$option_integration_wpforms,
-      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     /*
@@ -254,6 +177,35 @@ if (is_admin()) {
       )
     );
 
+    $openporte_algorithms = OpenPortePlugin::get_allowed_algorithms();
+    add_settings_field(
+      'openporte_settings_algorithm_field',
+      __('Algorithm', 'openporte'),
+      'openporte_settings_select_callback',
+      'openporte_admin',
+      'openporte_general_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_algorithm,
+        "hint" => __('Hash algorithm for the challenges. In Self-hosted mode this is the algorithm used to generate and verify the proof-of-work challenges. In Custom mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256.', 'openporte'),
+        // Algorithm identifiers are proper nouns — not translatable.
+        "options" => array_combine($openporte_algorithms, $openporte_algorithms),
+      )
+    );
+
+    // The select options follow the complexity matrix (one authoritative
+    // definition in core.php, filterable via openporte_complexity_matrix);
+    // levels added through the filter fall back to their raw key as label.
+    $openporte_complexity_labels = array(
+      "low" => __('Low', 'openporte'),
+      "medium" => __('Medium', 'openporte'),
+      "high" => __('High', 'openporte'),
+    );
+    $openporte_complexity_options = array();
+    foreach (array_keys(OpenPortePlugin::get_complexity_matrix()) as $openporte_level) {
+      $openporte_complexity_options[$openporte_level] = isset($openporte_complexity_labels[$openporte_level])
+        ? $openporte_complexity_labels[$openporte_level]
+        : ucfirst($openporte_level);
+    }
     add_settings_field(
       'openporte_settings_complexity_field',
       __('Complexity', 'openporte'),
@@ -262,33 +214,20 @@ if (is_admin()) {
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_complexity,
-        "hint" => __('Select the PoW complexity for the widget.', 'openporte'),
-        "options" => array(
-          "low" => __('Low', 'openporte'),
-          "medium" => __('Medium', 'openporte'),
-          "high" => __('High', 'openporte'),
-        )
+        "hint" => __('Select the PoW complexity for the widget: the higher the complexity, the longer visitors (and bots) work to solve the challenge.', 'openporte'),
+        "options" => $openporte_complexity_options,
       )
     );
 
     add_settings_field(
       'openporte_settings_expires_field',
       __('Expiration', 'openporte'),
-      'openporte_settings_select_callback',
+      'openporte_settings_expires_callback',
       'openporte_admin',
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_expires,
-        "hint" => __('Select the life-span of the challenge.', 'openporte'),
-        "options" => array(
-          "300" => __('5 minutes', 'openporte'),
-          "600" => __('10 minutes', 'openporte'),
-          "900" => __('15 minutes', 'openporte'),
-          "1800" => __('30 minutes', 'openporte'),
-          "3600" => __('1 hour', 'openporte'),
-          "14400" => __('4 hours', 'openporte'),
-          "0" => __('None', 'openporte'),
-        )
+        "hint" => __('Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no expiry (None) and 14400 is 4 hours.', 'openporte'),
       )
     );
 
@@ -385,53 +324,32 @@ if (is_admin()) {
       'openporte_admin'
     );
 
-    add_settings_field(
-        'openporte_settings_wordpress_register_integration_field',
-        __('Register page', 'openporte'),
+    // One checkbox per core-WordPress surface; registration and field share a
+    // single loop (see the Integrations section below for the pattern source).
+    $openporte_wordpress_integrations = array(
+      OpenPortePlugin::$option_integration_wordpress_register => __('Register page', 'openporte'),
+      OpenPortePlugin::$option_integration_wordpress_reset_password => __('Reset password page', 'openporte'),
+      OpenPortePlugin::$option_integration_wordpress_login => __('Login page', 'openporte'),
+      OpenPortePlugin::$option_integration_wordpress_comments => __('Comments', 'openporte'),
+    );
+    foreach ($openporte_wordpress_integrations as $openporte_option_name => $openporte_label) {
+      register_setting(
+        'openporte_options',
+        $openporte_option_name,
+        array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
+      );
+      add_settings_field(
+        $openporte_option_name . '_field',
+        $openporte_label,
         'openporte_settings_field_callback',
         'openporte_admin',
         'openporte_wordpress_settings_section',
         array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_register,
-            "type" => "checkbox"
+          "name" => $openporte_option_name,
+          "type" => "checkbox"
         )
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_reset_password_integration_field',
-        __('Reset password page', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_reset_password,
-            "type" => "checkbox"
-        )
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_login_integration_field',
-        __('Login page', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_login,
-            "type" => "checkbox"
-        )
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_comments_integration_field',
-        __('Comments', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_comments,
-            "type" => "checkbox"
-        )
-    );
+      );
+    }
 
     /*
      * ================ Section - Integrations ================
@@ -443,214 +361,107 @@ if (is_admin()) {
       'openporte_admin'
     );
 
-    $active = openporte_plugin_active('coblocks');
-    add_settings_field(
-      'openporte_settings_coblocks_integration_field',
-      __('CoBlocks', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-          "name" => OpenPortePlugin::$option_integration_coblocks,
-          "disabled" => !$active,
-          'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-          "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('contact-form-7');
-    add_settings_field(
-      'openporte_settings_contact_form_7_integration_field',
-      __('Contact Form 7', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-          "name" => OpenPortePlugin::$option_integration_contact_form_7,
-          "disabled" => !$active,
-          'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-          "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('elementor');
-    add_settings_field(
-      'openporte_settings_elementor_integration_field',
-      __('Elementor Pro Forms', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-          "name" => OpenPortePlugin::$option_integration_elementor,
-          "disabled" => !$active,
-          'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-          "type" => "checkbox"
-      )
-    );
-
-    $active = !empty(array_filter(wp_get_themes(), function($theme) { 
-          return stripos($theme, 'enfold') !== false;
-          }));
-    add_settings_field(
-      'openporte_settings_enfold_theme_integration_field',
-      __('Enfold Theme', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-        "name" => OpenPortePlugin::$option_integration_enfold_theme,
-        "disabled" => !$active,
-        'hint'     => $active ? '' : __( 'Theme not active.', 'openporte' ),
-        "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('formidable');
-    add_settings_field(
-      'openporte_settings_formidable_integration_field',
-      __('Formidable Forms', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-        "name" => OpenPortePlugin::$option_integration_formidable,
-        "disabled" => !$active,
-        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-        "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('forminator');
-    add_settings_field(
-      'openporte_settings_forminator_integration_field',
-      __('Forminator', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-        "name" => OpenPortePlugin::$option_integration_forminator,
-        "disabled" => !$active,
-        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-        "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('gravityforms');
-    add_settings_field(
-      'openporte_settings_gravityforms_integration_field',
-      __('Gravity Forms', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-        "name" => OpenPortePlugin::$option_integration_gravityforms,
-        "disabled" => !$active,
-        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-        "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('html-forms');
-    add_settings_field(
-      'openporte_settings_html_forms_integration_field',
-      __('HTML Forms', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-        "name" => OpenPortePlugin::$option_integration_html_forms,
-        "disabled" => !$active,
-        'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-        "type" => "checkbox"
-      )
-    );
-
-    $active = openporte_plugin_active('wpdiscuz');
-    add_settings_field(
-        'openporte_settings_wpdiscuz_integration_field',
-        __('WPDiscuz', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wpdiscuz,
-            "disabled" => !$active,
-            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-            "type" => "checkbox"
-        )
-    );
-
-    $active = openporte_plugin_active('wpforms');
-    add_settings_field(
-        'openporte_settings_wpforms_integration_field',
-        __('WP Forms', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wpforms,
-            "disabled" => !$active,
-            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-            "type" => "checkbox"
-        )
-    );
-
-    $active = openporte_plugin_active('woocommerce');
-    add_settings_field(
-        'openporte_settings_woocommerce_register_integration_field',
-        __('WooCommerce register page', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_woocommerce_register,
-            "disabled" => !$active,
-            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-            "type" => "checkbox"
-        )
-    );
-    add_settings_field(
-        'openporte_settings_woocommerce_reset_password_integration_field',
-        __('WooCommerce reset password page', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_woocommerce_reset_password,
-            "disabled" => !$active,
-            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-            "type" => "checkbox"
-        )
-    );
-    add_settings_field(
-        'openporte_settings_woocommerce_login_integration_field',
-        __('WooCommerce login page', 'openporte'),
-        'openporte_settings_field_callback',
-        'openporte_admin',
-        'openporte_integrations_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_woocommerce_login,
-            "disabled" => !$active,
-            'hint'     => $active ? '' : __( 'Plugin not active.', 'openporte' ),
-            "type" => "checkbox"
-        )
-    );
-
-    add_settings_field(
-      'openporte_settings_custom_integration_field',
-      __('Custom HTML', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_integrations_settings_section',
-      array(
-        "name" => OpenPortePlugin::$option_integration_custom,
-        "hint" => sprintf(
+    /*
+     * One entry per third-party integration; the loop below registers the
+     * option and its checkbox field in one place. 'requires' is the
+     * openporte_plugin_active() name gating availability; omit it for
+     * integrations that are always available. This registration-loop pattern
+     * is adapted from the GPL-licensed plugin "GateCHA for WordPress" by
+     * Upellift99 (includes/class-gatecha-admin.php) — thank you!
+     * https://github.com/Upellift99/GateCHA-WordPress
+     */
+    $openporte_integrations = array(
+      OpenPortePlugin::$option_integration_coblocks => array(
+        'label' => __('CoBlocks', 'openporte'),
+        'requires' => 'coblocks',
+      ),
+      OpenPortePlugin::$option_integration_contact_form_7 => array(
+        'label' => __('Contact Form 7', 'openporte'),
+        'requires' => 'contact-form-7',
+      ),
+      OpenPortePlugin::$option_integration_elementor => array(
+        'label' => __('Elementor Pro Forms', 'openporte'),
+        'requires' => 'elementor',
+      ),
+      OpenPortePlugin::$option_integration_enfold_theme => array(
+        'label' => __('Enfold Theme', 'openporte'),
+        'requires' => 'enfold-theme',
+        'inactive_hint' => __('Theme not active.', 'openporte'),
+      ),
+      OpenPortePlugin::$option_integration_formidable => array(
+        'label' => __('Formidable Forms', 'openporte'),
+        'requires' => 'formidable',
+      ),
+      OpenPortePlugin::$option_integration_forminator => array(
+        'label' => __('Forminator', 'openporte'),
+        'requires' => 'forminator',
+      ),
+      OpenPortePlugin::$option_integration_gravityforms => array(
+        'label' => __('Gravity Forms', 'openporte'),
+        'requires' => 'gravityforms',
+      ),
+      OpenPortePlugin::$option_integration_html_forms => array(
+        'label' => __('HTML Forms', 'openporte'),
+        'requires' => 'html-forms',
+      ),
+      OpenPortePlugin::$option_integration_wpdiscuz => array(
+        'label' => __('WPDiscuz', 'openporte'),
+        'requires' => 'wpdiscuz',
+      ),
+      OpenPortePlugin::$option_integration_wpforms => array(
+        'label' => __('WP Forms', 'openporte'),
+        'requires' => 'wpforms',
+      ),
+      OpenPortePlugin::$option_integration_woocommerce_register => array(
+        'label' => __('WooCommerce register page', 'openporte'),
+        'requires' => 'woocommerce',
+      ),
+      OpenPortePlugin::$option_integration_woocommerce_reset_password => array(
+        'label' => __('WooCommerce reset password page', 'openporte'),
+        'requires' => 'woocommerce',
+      ),
+      OpenPortePlugin::$option_integration_woocommerce_login => array(
+        'label' => __('WooCommerce login page', 'openporte'),
+        'requires' => 'woocommerce',
+      ),
+      OpenPortePlugin::$option_integration_custom => array(
+        'label' => __('Custom HTML', 'openporte'),
+        'hint' => sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
           __('Or use %s shortcode anywhere in your HTML.', 'openporte'), '[openporte]',
         ),
-        "type" => "checkbox"
-      )
+      ),
     );
+
+    foreach ($openporte_integrations as $openporte_option_name => $openporte_integration) {
+      register_setting(
+        'openporte_options',
+        $openporte_option_name,
+        array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
+      );
+      $openporte_available = !isset($openporte_integration['requires'])
+        || openporte_plugin_active($openporte_integration['requires']);
+      if ($openporte_available) {
+        $openporte_hint = isset($openporte_integration['hint']) ? $openporte_integration['hint'] : '';
+      } else {
+        $openporte_hint = isset($openporte_integration['inactive_hint'])
+          ? $openporte_integration['inactive_hint']
+          : __('Plugin not active.', 'openporte');
+      }
+      add_settings_field(
+        $openporte_option_name . '_field',
+        $openporte_integration['label'],
+        'openporte_settings_field_callback',
+        'openporte_admin',
+        'openporte_integrations_settings_section',
+        array(
+          "name" => $openporte_option_name,
+          "disabled" => !$openporte_available,
+          "hint" => $openporte_hint,
+          "type" => "checkbox"
+        )
+      );
+    }
 
     do_action('openporte_settings_integrations');
     do_action_deprecated('altcha_settings_integrations', array(), '1.27.0', 'openporte_settings_integrations');

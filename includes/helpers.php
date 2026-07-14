@@ -26,6 +26,11 @@ function openporte_plugin_active($name) {
       return is_plugin_active('wp-members/wp-members.php');
     case 'wpforms':
       return is_plugin_active('wpforms/wpforms.php') || is_plugin_active('wpforms-lite/wpforms.php');
+    case 'enfold-theme':
+      // Enfold is a theme, not a plugin: available when the ACTIVE theme (or
+      // its parent — get_template() returns the parent's directory) is Enfold.
+      // An installed-but-inactive Enfold can't render forms, so it doesn't count.
+      return stripos(get_template(), 'enfold') !== false;
     default:
       $active = apply_filters('openporte_plugin_active', false, $name);
       // Deprecated alias kept for back-compat; remove in a future release.

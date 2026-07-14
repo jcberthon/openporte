@@ -143,6 +143,9 @@ function openporte_activate()
   add_option(OpenPortePlugin::$option_api, 'selfhosted');
   add_option(OpenPortePlugin::$option_api_custom_url, '');
   add_option(OpenPortePlugin::$option_expires, '300');
+  // New installs get SHA-512; upgraded sites without this option fall back to
+  // SHA-256 in get_algorithm(), preserving pre-1.28 verification behavior.
+  add_option(OpenPortePlugin::$option_algorithm, 'SHA-512');
   add_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
   add_option(OpenPortePlugin::$option_integration_custom, 1);
 }

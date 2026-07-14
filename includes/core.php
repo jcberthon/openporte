@@ -20,6 +20,7 @@ class OpenPortePlugin
   public static $option_secret = "openporte_secret";
   public static $option_complexity = "openporte_complexity";
   public static $option_expires = "openporte_expires";
+  public static $option_algorithm = "openporte_algorithm";
   public static $option_auto = "openporte_auto";
   public static $option_floating = "openporte_floating";
   public static $option_delay = "openporte_delay";
@@ -101,6 +102,32 @@ class OpenPortePlugin
   public function get_expires()
   {
     return get_option(OpenPortePlugin::$option_expires);
+  }
+
+  public static function get_allowed_algorithms()
+  {
+    return array('SHA-256', 'SHA-384', 'SHA-512');
+  }
+
+  public function get_algorithm()
+  {
+    $algorithm = get_option(OpenPortePlugin::$option_algorithm);
+    // Default to SHA-256 when unset or invalid: every release before 1.28
+    // hardcoded it, so upgraded sites keep verifying their in-flight
+    // challenges, and custom ALTCHA-compatible backends default to it too.
+    // New installs are seeded with SHA-512 on activation.
+    return in_array($algorithm, OpenPortePlugin::get_allowed_algorithms(), true)
+      ? $algorithm
+      : 'SHA-256';
+  }
+
+  /**
+   * Map an ALTCHA algorithm label to the PHP hash() identifier.
+   * 'SHA-256' -> 'sha256', 'SHA-384' -> 'sha384', 'SHA-512' -> 'sha512'.
+   */
+  public static function hash_ident($algorithm)
+  {
+    return strtolower(str_replace('-', '', $algorithm));
   }
 
   public function get_secret()
@@ -379,9 +406,13 @@ class OpenPortePlugin
       || !isset($data->algorithm, $data->verificationData, $data->signature)) {
       return false;
     }
-    $alg_ok = ($data->algorithm === 'SHA-512');
-    $calculated_hash = hash('sha512', $data->verificationData, true);
-    $calculated_signature = hash_hmac('sha512', $calculated_hash, $hmac_key);
+    // Same configured algorithm as verify_solution(). Preserve the true (raw
+    // binary) flag on hash() — removing it breaks all verification.
+    $algorithm = $this->get_algorithm();
+    $hash_ident = OpenPortePlugin::hash_ident($algorithm);
+    $alg_ok = ($data->algorithm === $algorithm);
+    $calculated_hash = hash($hash_ident, $data->verificationData, true);
+    $calculated_signature = hash_hmac($hash_ident, $calculated_hash, $hmac_key);
     // hash_equals: constant-time comparison so the HMAC can't be recovered via timing.
     $signature_ok = hash_equals($calculated_signature, $data->signature);
     if (!($alg_ok && $signature_ok)) {
@@ -431,10 +462,14 @@ class OpenPortePlugin
         }
       }
     }
-    $alg_ok = ($data->algorithm === 'SHA-512');
-    $calculated_challenge = hash('sha512', $data->salt . $data->number);
+    // The payload must use the configured algorithm (see get_algorithm(); in
+    // Custom mode this must match the backend, hence the settings hint).
+    $algorithm = $this->get_algorithm();
+    $hash_ident = OpenPortePlugin::hash_ident($algorithm);
+    $alg_ok = ($data->algorithm === $algorithm);
+    $calculated_challenge = hash($hash_ident, $data->salt . $data->number);
     $challenge_ok = ($data->challenge === $calculated_challenge);
-    $calculated_signature = hash_hmac('sha512', $data->challenge, $hmac_key);
+    $calculated_signature = hash_hmac($hash_ident, $data->challenge, $hmac_key);
     // hash_equals: constant-time comparison so the HMAC can't be recovered via timing.
     $signature_ok = hash_equals($calculated_signature, $data->signature);
     $verified = ($alg_ok && $challenge_ok && $signature_ok);
@@ -463,42 +498,44 @@ class OpenPortePlugin
     if (substr($salt, -1) !== '&') {
       $salt .= '&';
     }
-    // TODO: the low, medium and high ranges are arbitrary and not based on any empirical data.
-    // Consider revising them based on actual usage and feedback. And perhaps also consider adding
-    // a "custom" option to allow users to specify their own range. This should not be hardcoded
-    // here, but a "matrix" should be defined globally, so that we have one clear area where this
-    // is defined.
-    switch ($complexity) {
-      case 'low':
-        $min_secret = 5000;
-        $max_secret = 25000;
-        break;
-      case 'medium':
-        $min_secret = 25000;
-        $max_secret = 75000;
-        break;
-      case 'high':
-        $min_secret = 125000;
-        $max_secret = 200000;
-        break;
-      default:
-        $min_secret = 5000;
-        $max_secret = 25000;
-    }
-    $secret_number = random_int($min_secret, $max_secret);
-    // TODO: consider adding in the admin settings an algorithm field to allow choosing between
-    //     SHA-256. SHA-384 or SHA-512
-    // For now, we hardcode SHA-512 (was SHA-256 for v1.27 and earlier).
-    $challenge = hash('sha512', $salt . $secret_number);
-    $signature = hash_hmac('sha512', $challenge, $hmac_key);
+    $matrix = OpenPortePlugin::get_complexity_matrix();
+    // 'low' is the fallback for unknown/legacy stored values.
+    $range = isset($matrix[$complexity]) ? $matrix[$complexity] : $matrix['low'];
+    $secret_number = random_int($range['min'], $range['max']);
+    $algorithm = $this->get_algorithm();
+    $hash_ident = OpenPortePlugin::hash_ident($algorithm);
+    $challenge = hash($hash_ident, $salt . $secret_number);
+    $signature = hash_hmac($hash_ident, $challenge, $hmac_key);
     $response = [
-      'algorithm' => 'SHA-512',
+      'algorithm' => $algorithm,
       'challenge' => $challenge,
-      'maxnumber' => $max_secret,
+      'maxnumber' => $range['max'],
       'salt' => $salt,
       'signature' => $signature
     ];
     return $response;
+  }
+
+  /**
+   * Proof-of-work complexity matrix — the single authoritative definition of
+   * the difficulty ranges. The widget brute-forces 0..maxnumber, so 'max'
+   * bounds the worst case and the min..max window sets the average work.
+   *
+   * TODO: the ranges are provisional, not yet backed by empirical data —
+   * validate on old/low-end hardware before considering them final.
+   *
+   * Filterable so a site can tune difficulty without forking the plugin:
+   * add_filter('openporte_complexity_matrix', ...). A 'low' entry must always
+   * exist — it is the fallback for unknown/legacy stored values.
+   */
+  public static function get_complexity_matrix()
+  {
+    $matrix = array(
+      'low'    => array('min' => 5000,   'max' => 25000),
+      'medium' => array('min' => 25000,  'max' => 75000),
+      'high'   => array('min' => 125000, 'max' => 200000),
+    );
+    return apply_filters('openporte_complexity_matrix', $matrix);
   }
 
   public function get_widget_attrs($mode, $language = null, $name = null)
