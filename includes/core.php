@@ -124,12 +124,12 @@ class OpenPortePlugin
 
   public function get_floating()
   {
-    return trim(get_option(OpenPortePlugin::$option_floating));
+    return get_option(OpenPortePlugin::$option_floating);
   }
 
   public function get_delay()
   {
-    return trim(get_option(OpenPortePlugin::$option_delay));
+    return get_option(OpenPortePlugin::$option_delay);
   }
 
   public function get_integration_coblocks()
@@ -193,22 +193,22 @@ class OpenPortePlugin
 
   public function get_integration_wordpress_register()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_register));
+    return get_option(OpenPortePlugin::$option_integration_wordpress_register);
   }
 
   public function get_integration_wordpress_reset_password()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_reset_password));
+    return get_option(OpenPortePlugin::$option_integration_wordpress_reset_password);
   }
 
   public function get_integration_wordpress_login()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_login));
+    return get_option(OpenPortePlugin::$option_integration_wordpress_login);
   }
 
   public function get_integration_wordpress_comments()
   {
-    return trim(get_option(OpenPortePlugin::$option_integration_wordpress_comments));
+    return get_option(OpenPortePlugin::$option_integration_wordpress_comments);
   }
 
   public function get_integration_wpdiscuz()

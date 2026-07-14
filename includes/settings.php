@@ -165,25 +165,25 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_wordpress_comments,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_wordpress_login,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_wordpress_register,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_integration_wordpress_reset_password,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
     register_setting(
@@ -198,7 +198,9 @@ if (is_admin()) {
       array( 'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => 0 )
     );
 
-    // Section
+    /*
+     * ================ Section - General ================
+    */
     add_settings_section(
       'openporte_general_settings_section',
       __('General', 'openporte'),
@@ -222,6 +224,8 @@ if (is_admin()) {
       )
     );
 
+    $custom_api_mode_active = (get_option(OpenPortePlugin::$option_api, 'selfhosted') === 'custom');
+
     add_settings_field(
       'openporte_settings_challenge_url_field',
       __('Challenge URL', 'openporte'),
@@ -231,7 +235,8 @@ if (is_admin()) {
       array(
         "custom" => true,
         "name" => OpenPortePlugin::$option_api_custom_url,
-        "hint" => __('Configure your custom Challenge URL.', 'openporte'),
+        'disabled' => !$custom_api_mode_active,
+        "hint" => $custom_api_mode_active ? __('Configure your custom Challenge URL.', 'openporte') : __('Disabled in Self-hosted mode.', 'openporte'),
         "type" => "text"
       )
     );
@@ -366,7 +371,67 @@ if (is_admin()) {
       )
     );
 
-    // Section
+    /*
+     * ================ Section - WordPress Built-in ================
+    */
+    add_settings_section(
+      'openporte_wordpress_settings_section',
+      __('WordPress', 'openporte'),
+      'openporte_wordpress_section_callback',
+      'openporte_admin'
+    );
+
+    add_settings_field(
+        'openporte_settings_wordpress_register_integration_field',
+        __('Register page', 'openporte'),
+        'openporte_settings_field_callback',
+        'openporte_admin',
+        'openporte_wordpress_settings_section',
+        array(
+            "name" => OpenPortePlugin::$option_integration_wordpress_register,
+            "type" => "checkbox"
+        )
+    );
+
+    add_settings_field(
+        'openporte_settings_wordpress_reset_password_integration_field',
+        __('Reset password page', 'openporte'),
+        'openporte_settings_field_callback',
+        'openporte_admin',
+        'openporte_wordpress_settings_section',
+        array(
+            "name" => OpenPortePlugin::$option_integration_wordpress_reset_password,
+            "type" => "checkbox"
+        )
+    );
+
+    add_settings_field(
+        'openporte_settings_wordpress_login_integration_field',
+        __('Login page', 'openporte'),
+        'openporte_settings_field_callback',
+        'openporte_admin',
+        'openporte_wordpress_settings_section',
+        array(
+            "name" => OpenPortePlugin::$option_integration_wordpress_login,
+            "type" => "checkbox"
+        )
+    );
+
+    add_settings_field(
+        'openporte_settings_wordpress_comments_integration_field',
+        __('Comments', 'openporte'),
+        'openporte_settings_field_callback',
+        'openporte_admin',
+        'openporte_wordpress_settings_section',
+        array(
+            "name" => OpenPortePlugin::$option_integration_wordpress_comments,
+            "type" => "checkbox"
+        )
+    );
+
+    /*
+     * ================ Section - Integrations ================
+    */
     add_settings_section(
       'openporte_integrations_settings_section',
       __('Integrations', 'openporte'),
@@ -585,89 +650,5 @@ if (is_admin()) {
 
     do_action('openporte_settings_integrations');
     do_action_deprecated('altcha_settings_integrations', array(), '1.27.0', 'openporte_settings_integrations');
-
-    // Section
-    add_settings_section(
-      'openporte_wordpress_settings_section',
-      __('WordPress', 'openporte'),
-      'openporte_wordpress_section_callback',
-      'openporte_admin'
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_register_integration_field',
-        __('Register page', 'openporte'),
-        'openporte_settings_select_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_register,
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_reset_password_integration_field',
-        __('Reset password page', 'openporte'),
-        'openporte_settings_select_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_reset_password,
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_login_integration_field',
-        __('Login page', 'openporte'),
-        'openporte_settings_select_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_login,
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
-    );
-
-    add_settings_field(
-        'openporte_settings_wordpress_comments_integration_field',
-        __('Comments', 'openporte'),
-        'openporte_settings_select_callback',
-        'openporte_admin',
-        'openporte_wordpress_settings_section',
-        array(
-            "name" => OpenPortePlugin::$option_integration_wordpress_comments,
-            "spamfilter_options" => array(
-              "captcha_spamfilter",
-            ),
-            "options" => array(
-              "" => __('Disable', 'openporte'),
-              "captcha" => __('Captcha', 'openporte'),
-              "captcha_spamfilter" => __('Captcha + Spam Filter', 'openporte'),
-            ),
-        )
-    );
   }
 }

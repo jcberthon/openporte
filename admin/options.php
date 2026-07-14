@@ -111,10 +111,10 @@ function openporte_general_section_callback()
           'Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend.',
           'openporte',
         ),
-        '<b>',
-        '</b>',
-        '<b>',
-        '</b>',
+        '<br/><strong>',
+        '</strong>',
+        '<br/><strong>',
+        '</strong>',
       );
     ?></p>
   <?php
@@ -135,6 +135,11 @@ function openporte_integrations_section_callback()
   ?>
 
     <p><?php echo esc_html__('Activate OpenPorte for these integrations:', 'openporte'); ?></p>
+    <p><?php echo sprintf(
+          /* translators: the placeholder will be replaced with the shortcode */
+          __('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '[openporte]',
+        );
+      ?></p>
 
   <?php
 }
@@ -144,6 +149,11 @@ function openporte_wordpress_section_callback()
   ?>
 
     <p><?php echo esc_html__('Activate OpenPorte for the core WordPress functionality:', 'openporte'); ?></p>
+    <p><?php echo sprintf(
+          /* translators: the placeholder will be replaced with the shortcode */
+          __('Use %s shortcode anywhere in your HTML, Post, or Page content.', 'openporte'), '[openporte]',
+        );
+      ?></p>
 
   <?php
 }
