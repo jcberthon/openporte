@@ -45,7 +45,21 @@ echo "wp-init: ALTCHA + OpenPorte left deactivated; installing & activating Cont
 # Deactivation is a no-op (and harmless) when the plugin is already inactive.
 wpcli plugin deactivate "$ALTCHA_SLUG" || true
 wpcli plugin deactivate openporte || true
-wpcli plugin install contact-form-7 --activate
+wpcli plugin install contact-form-7 --activate --force # --version=5.4.2
+#wpcli plugin install gatecha-captcha
+#wpcli plugin deactivate gatecha-captcha || true
+
+# Full test suite of plugins installation - uncomment to activate
+# List of plugins not found: gravityforms
+# List of plugins not testable (requires paid license): elementor
+# List of themes not found: enfold
+#
+# PLUGINS_SUITE=(coblocks formidable forminator html-forms wpdiscuz wpforms-lite woocommerce)
+# for plugin in "${PLUGINS_SUITE[@]}"; do
+#   if ! wpcli plugin is-installed "$plugin"; then
+#     wpcli plugin install "$plugin"
+#   fi
+# done
 
 echo "wp-init: installing Plugin Check (a WordPress plugin test suite)…"
 wpcli plugin install plugin-check --force
