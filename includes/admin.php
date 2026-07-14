@@ -3,6 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 require plugin_dir_path(__FILE__) . '../admin/options.php';
+require plugin_dir_path(__FILE__) . '../admin/healthcheck.php';
 
 if (is_admin()) {
 
