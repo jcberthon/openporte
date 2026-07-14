@@ -110,6 +110,33 @@ OpenPorte verifies submissions in one of two modes, selected in the settings
 The paid altcha.org regional SaaS classifier offered by earlier versions has been
 removed; both remaining modes are free and self-hostable.
 
+#### Which settings apply in which mode
+
+Verification always happens **locally** in WordPress, in both modes: OpenPorte
+recomputes the challenge and its HMAC signature with your Signing secret. It
+never calls a backend verification API (such as GateCHA's `/api/v1/verify` or
+ALTCHA Sentinel's verify endpoint) — so in Custom mode the backend only
+*issues* challenges, and its dashboard will show challenges as issued but
+never verified. A consequence: backend-side features that live in the verify
+call (replay tracking, verification statistics) are not used.
+
+| Setting | Self-hosted | Custom |
+|---|---|---|
+| Challenge URL | ignored (the built-in REST endpoint is used) | fetched by the widget — include any required query parameters (e.g. an `apiKey`) |
+| Signing secret | signs and verifies challenges | must **equal the backend's HMAC secret**; used to verify locally |
+| Algorithm | generates and verifies challenges | must **match the backend's algorithm**; used at verification only |
+| Complexity | sets the PoW difficulty | ignored — the backend decides |
+| Expiration | sets the challenge life-span | ignored — the backend's expiry (embedded in the salt) is enforced instead |
+| Widget customization (auto-verify, floating, delay, logo/footer) | applies | applies |
+| Integrations | apply | apply |
+
+Two things worth knowing in Custom mode: a mismatched Algorithm or Signing
+secret is invisible while the widget solves (the widget reads the algorithm
+from the challenge itself) and only shows up when a form submission is
+verified server-side; and the self-hosted REST challenge endpoint remains
+registered, so challenges signed with the same secret can also be obtained
+from WordPress itself.
+
 ### REST API
 
 This plugin requires the WordPress REST API. If you are using any "Disable REST API" plugins, ensure that the endpoint `/altcha/v1/challenge` (now deprecated) and `/openporte/v1/challenge` is allowed.
