@@ -33,7 +33,7 @@ add_filter( 'frm_get_field_type_class', 'openporte_get_field_type_class', 10, 2 
 function openporte_add_new_field( $fields ) {
 	$fields['altcha'] = array(
 		'name' => 'OpenPorte',
-		'icon' => 'frm_icon_font frm_shield_check_icon',
+		'icon' => 'frm_icon_font frm_shield_check2_icon',
 	);
 	return $fields;
 }

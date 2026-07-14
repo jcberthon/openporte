@@ -20,9 +20,9 @@ if (openporte_plugin_active('coblocks')) {
       }
 
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_coblocks();
-      if ($mode === "captcha") {
-        return str_replace('<button type="submit"', wp_kses($plugin->render_widget($mode, true), OpenPortePlugin::$html_espace_allowed_tags) . '<button type="submit"', $block_content);
+      $active = $plugin->get_integration_coblocks();
+      if ($active) {
+        return str_replace('<button type="submit"', wp_kses($plugin->render_widget($active, true), OpenPortePlugin::$html_espace_allowed_tags) . '<button type="submit"', $block_content);
       }
 
       return $block_content;
@@ -82,20 +82,18 @@ if (openporte_plugin_active('coblocks')) {
       remove_filter('pre_http_request', ['OpenPortePlugin_Coblocks', 'verify']);
 
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_coblocks();
-      if (!empty($mode)) {
-        if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-          if ($plugin->verify($altcha) === false) {
-            return [
-              'body'     => '{"success":false}',
-              'response' =>
-              [
-                'code'    => 200,
-                'message' => 'OK',
-              ],
-            ];
-          }
+      $active = $plugin->get_integration_coblocks();
+      if ($active) {
+        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if ($plugin->verify($altcha) === false) {
+          return [
+            'body'     => '{"success":false}',
+            'response' =>
+            [
+              'code'    => 200,
+              'message' => 'OK',
+            ],
+          ];
         }
       }
       return [

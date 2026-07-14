@@ -9,11 +9,11 @@ if (openporte_plugin_active('contact-form-7')) {
     'wpcf7_form_elements',
     function ($elements) {
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_contact_form_7();
-      if ($mode === "captcha" || $mode === "captcha_spamfilter") {
+      $active = $plugin->get_integration_contact_form_7();
+      if ($active) {
         $input = '<input class="wpcf7-form-control wpcf7-submit ';
         $button = '<button class="wpcf7-form-control wpcf7-submit ';
-        $widget = wp_kses($plugin->render_widget($mode, true, OpenPortePlugin::$language), OpenPortePlugin::$html_espace_allowed_tags);
+        $widget = wp_kses($plugin->render_widget($active, true, OpenPortePlugin::$language), OpenPortePlugin::$html_espace_allowed_tags);
         if (strpos($elements, $input) !== false) {
           $elements = str_replace($input, $widget . $input, $elements);
         } else if (strpos($elements, $button) !== false) {
@@ -35,12 +35,10 @@ if (openporte_plugin_active('contact-form-7')) {
         return $spam;
       }
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_contact_form_7();
-      if (!empty($mode)) {
-        if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-          return $plugin->verify($altcha) === false;
-        }
+      $active = $plugin->get_integration_contact_form_7();
+      if ($active) {
+        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        return $plugin->verify($altcha) === false;
       }
       return $spam;
     },

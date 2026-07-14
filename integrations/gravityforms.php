@@ -7,8 +7,8 @@ if (openporte_plugin_active('gravityforms')) {
     'gform_loaded',
     function () {
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_gravityforms();
-      if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
+      $active = $plugin->get_integration_gravityforms();
+      if ($active) {
         require_once('gravityforms/addon.php');
         GFAddOn::register('OPENPORTE_GFFormsAddOn');
       }
@@ -16,6 +16,7 @@ if (openporte_plugin_active('gravityforms')) {
     5
   );
 
+  /* Deactivated
   add_filter(
     'gform_entry_is_spam',
     function ($is_spam, $form, $entry) {
@@ -41,5 +42,5 @@ if (openporte_plugin_active('gravityforms')) {
     },
     10,
     3
-  );
+  ); */
 }

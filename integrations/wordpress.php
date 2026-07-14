@@ -6,9 +6,9 @@ add_action(
   'register_form',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_register();
-    if (!empty($mode)) {
-      openporte_wordpress_comments_render_widget($mode, 'openporte_register');
+    $active = $plugin->get_integration_wordpress_register();
+    if ($active) {
+      openporte_wordpress_comments_render_widget($active, 'openporte_register');
     }
   },
   10,
@@ -19,8 +19,8 @@ add_action(
   'register_post',
   function ($user_login, $user_email, $errors) {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_register();
-    if (!empty($mode)) {
+    $active = $plugin->get_integration_wordpress_register();
+    if ($active) {
       $altcha = isset($_POST['openporte_register']) ? trim(sanitize_text_field(wp_unslash($_POST['openporte_register']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         return $errors->add(
@@ -39,9 +39,9 @@ add_action(
   'login_form',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_login();
-    if (!empty($mode)) {
-      openporte_wordpress_comments_render_widget($mode);
+    $active = $plugin->get_integration_wordpress_login();
+    if ($active) {
+      openporte_wordpress_comments_render_widget($active);
     }
   },
   10,
@@ -65,8 +65,8 @@ add_filter(
       return $user; // WooCommerce form submissions are handled separately
     }
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_login();
-    if (!empty($mode)) {
+    $active = $plugin->get_integration_wordpress_login();
+    if ($active) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         return new WP_Error("altcha-error", '<strong>' . esc_html__('Error', 'openporte') . '</strong> : ' . esc_html__('Could not verify you are not a robot.', 'openporte'));
@@ -82,9 +82,9 @@ add_action(
   'lostpassword_form',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_reset_password();
-    if (!empty($mode)) {
-      openporte_wordpress_comments_render_widget($mode);
+    $active = $plugin->get_integration_wordpress_reset_password();
+    if ($active) {
+      openporte_wordpress_comments_render_widget($active);
     }
   },
   10,
@@ -102,8 +102,8 @@ add_filter(
       return $errors; // WooCommerce form submissions are handled separately
     }
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_reset_password();
-    if (!empty($mode)) {
+    $active = $plugin->get_integration_wordpress_reset_password();
+    if ($active) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         $errors->add(
@@ -122,9 +122,9 @@ add_action(
   'comment_form_after_fields',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_comments();
-    if (!empty($mode)) {
-      openporte_wordpress_comments_render_widget($mode);
+    $active = $plugin->get_integration_wordpress_comments();
+    if ($active) {
+      openporte_wordpress_comments_render_widget($active);
     }
   },
   10,
@@ -135,9 +135,9 @@ add_action(
   'comment_form_logged_in_after',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_wordpress_comments();
-    if (!empty($mode)) {
-      openporte_wordpress_comments_render_widget($mode);
+    $active = $plugin->get_integration_wordpress_comments();
+    if ($active) {
+      openporte_wordpress_comments_render_widget($active);
     }
   },
   10,
@@ -156,8 +156,8 @@ add_filter(
       return $comment;
     }
     $plugin = OpenPortePlugin::$instance;
-    $mode = (openporte_plugin_active('wpdiscuz') && $plugin->get_integration_wpdiscuz()) || $plugin->get_integration_wordpress_comments();
-    if (!empty($mode)) {
+    $active = (openporte_plugin_active('wpdiscuz') && $plugin->get_integration_wpdiscuz()) || $plugin->get_integration_wordpress_comments();
+    if ($active) {
       $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
       if ($plugin->verify($altcha) === false) {
         wp_die('<strong>' . esc_html__('Error', 'openporte') . '</strong> : ' . esc_html__('Could not verify you are not a robot.', 'openporte'));
@@ -169,8 +169,8 @@ add_filter(
   1
 );
 
-function openporte_wordpress_comments_render_widget($mode, $name = null)
+function openporte_wordpress_comments_render_widget($active, $name = null)
 {
   $plugin = OpenPortePlugin::$instance;
-  echo wp_kses($plugin->render_widget($mode, true, null, $name), OpenPortePlugin::$html_espace_allowed_tags);
+  echo wp_kses($plugin->render_widget($active, true, null, $name), OpenPortePlugin::$html_espace_allowed_tags);
 }

@@ -6,8 +6,8 @@ add_action(
   'wp_enqueue_scripts',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_custom();
-    if ($mode === 'captcha' || $mode === 'captcha_spamfilter') {
+    $active = $plugin->get_integration_custom();
+    if ($active) {
       // Register the base widget script first
       openporte_enqueue_scripts();
 
@@ -23,7 +23,7 @@ add_action(
       // below: it escapes <, >, &, ' and " and so cannot break out of the script
       // context (e.g. a literal "</script>" in any attribute value).
       $attrs = wp_json_encode(
-        $plugin->get_widget_attrs($mode),
+        $plugin->get_widget_attrs($active),
         JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
       );
       wp_register_script(

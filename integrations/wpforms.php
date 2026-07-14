@@ -7,9 +7,9 @@ if (openporte_plugin_active('wpforms')) {
     'wpforms_display_submit_before',
     function () {
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_wpforms();
-      if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        echo wp_kses($plugin->render_widget($mode, true), OpenPortePlugin::$html_espace_allowed_tags);
+      $active = $plugin->get_integration_wpforms();
+      if ($active) {
+        echo wp_kses($plugin->render_widget($active, true), OpenPortePlugin::$html_espace_allowed_tags);
       }
     },
     10,
@@ -20,13 +20,11 @@ if (openporte_plugin_active('wpforms')) {
     'wpforms_process',
     function ($fields, $entry, $form_data) {
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_wpforms();
-      if (!empty($mode)) {
-        if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-          if ($plugin->verify($altcha) === false) {
-            wpforms()->process->errors[$form_data['id']]['header'] = esc_html__('Could not verify you are not a robot.', 'openporte');
-          }
+      $active = $plugin->get_integration_wpforms();
+      if ($active) {
+        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if ($plugin->verify($altcha) === false) {
+          wpforms()->process->errors[$form_data['id']]['header'] = esc_html__('Could not verify you are not a robot.', 'openporte');
         }
       }
     },

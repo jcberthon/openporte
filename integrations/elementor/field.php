@@ -21,11 +21,11 @@ class OpenPorte_Elementor_Form_Field extends \ElementorPro\Modules\Forms\Fields\
   public function render($item, $item_index, $form)
   {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_elementor();
-    if (empty($mode) || $mode === 'spamfilter') {
+    $active = $plugin->get_integration_elementor();
+    if (!$active) {
       return '';
     }
-    echo wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($mode, false) . "</div>", OpenPortePlugin::$html_espace_allowed_tags);
+    echo wp_kses("<div style=\"flex-basis:100%\">" . $plugin->render_widget($active, false) . "</div>", OpenPortePlugin::$html_espace_allowed_tags);
     // shadow element for error reporting
 		echo wp_kses('<input type="hidden" ' . $form->get_render_attribute_string('input' . $item_index) . '>', OpenPortePlugin::$html_espace_allowed_tags);
   }
@@ -62,16 +62,14 @@ class OpenPorte_Elementor_Form_Field extends \ElementorPro\Modules\Forms\Fields\
   public function validation($field, $record, $ajax_handler)
   {
     $plugin = OpenPortePlugin::$instance;
-    $mode = $plugin->get_integration_elementor();
-    if (!empty($mode)) {
-      if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        if ($plugin->verify($altcha) === false) {
-          $ajax_handler->add_error(
-            $field['id'],
-            esc_html__('Verification failed.', 'openporte')
-          );
-        }
+    $active = $plugin->get_integration_elementor();
+    if ($active) {
+      $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+      if ($plugin->verify($altcha) === false) {
+        $ajax_handler->add_error(
+          $field['id'],
+          esc_html__('Verification failed.', 'openporte')
+        );
       }
     }
   }

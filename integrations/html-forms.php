@@ -12,9 +12,9 @@ if (openporte_plugin_active('html-forms')) {
     'hf_form_html',
     function ($html) {
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_html_forms();
-      if ($mode === "captcha" || $mode === "captcha_spamfilter") {
-        return str_replace('</form>', wp_kses($plugin->render_widget($mode), OpenPortePlugin::$html_espace_allowed_tags) . '</form>', $html);
+      $active = $plugin->get_integration_html_forms();
+      if ($active) {
+        return str_replace('</form>', wp_kses($plugin->render_widget($active), OpenPortePlugin::$html_espace_allowed_tags) . '</form>', $html);
       }
       return $html;
     }
@@ -24,17 +24,16 @@ if (openporte_plugin_active('html-forms')) {
     'hf_validate_form',
     function ($error_code, $form, $data) {
       $plugin = OpenPortePlugin::$instance;
-      $mode = $plugin->get_integration_html_forms();
-      if (!empty($mode)) {
-        if ($mode === "shortcode" && strpos($form, "<altcha-widget ") === false) {
-          // if the altcha widget is not found in the form markup in shortcode mode, skip verification
+      $active = $plugin->get_integration_html_forms();
+      if (!$active) {
+        if (strpos($form, "<altcha-widget ") === false) {
+          // If the integration isn't activated and when the altcha widget is not found in the form markup then the verification is skipped
           return $error_code;
         }
-        if ($mode === "captcha" || $mode === "captcha_spamfilter" || $mode === "shortcode") {
-          $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-          if ($plugin->verify($altcha ) === false) {
-            return "openporte_invalid";
-          }
+      } else {
+        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if ($plugin->verify($altcha ) === false) {
+          return "openporte_invalid";
         }
       }
       return $error_code;
