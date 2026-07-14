@@ -92,8 +92,6 @@ class OpenPortePlugin
       'delay' => array(),
       'hidelogo' => array(),
       'hidefooter' => array(),
-      'blockspam' => array(),
-      'spamfilter' => array(),
       'name' => array(),
     ),
     'div' => array(
@@ -110,8 +108,6 @@ class OpenPortePlugin
     ),
     'noscript' => array(),
   );
-
-  public $spamfilter_result = null;
 
   public function init()
   {
@@ -158,11 +154,6 @@ class OpenPortePlugin
   public function get_hidefooter()
   {
     return get_option(OpenPortePlugin::$option_hidefooter);
-  }
-
-  public function get_blockspam()
-  {
-    return get_option(OpenPortePlugin::$option_blockspam);
   }
 
   public function get_auto()
@@ -348,7 +339,7 @@ class OpenPortePlugin
   {
     $integrations = $this->get_integrations();
 
-    return in_array("captcha", $integrations, true) || in_array("captcha_spamfilter", $integrations, true) || in_array("shortcode", $integrations, true);
+    return in_array("captcha", $integrations, true) || in_array("shortcode", $integrations, true);
   }
 
   public function random_secret()
@@ -432,28 +423,8 @@ class OpenPortePlugin
     if (!($alg_ok && $signature_ok)) {
       return false;
     }
-    $this->spamfilter_result = array();
-    parse_str($data->verificationData, $this->spamfilter_result);
-    // Mirror verify_solution() and the ALTCHA reference (verified === true &&
-    // expire > now): a signed server payload is only valid while unexpired and
-    // explicitly verified. Each check is applied only when the backend supplies
-    // the field, so a minimal custom backend that omits them keeps working.
-    if (isset($this->spamfilter_result['expire'])) {
-      $expire = intval($this->spamfilter_result['expire'], 10);
-      if ($expire > 0 && $expire < time()) {
-        return false;
-      }
-    }
-    if (isset($this->spamfilter_result['verified'])) {
-      $verified_flag = strtolower((string) $this->spamfilter_result['verified']);
-      if (in_array($verified_flag, array('', '0', 'false', 'no'), true)) {
-        return false;
-      }
-    }
-    // Absent classification is treated as "not spam" (isset-guarded to avoid a
-    // warning); only an explicit BAD classification blocks the submission.
-    return !isset($this->spamfilter_result['classification'])
-      || $this->spamfilter_result['classification'] !== 'BAD';
+    // No more reason to block the submission.
+    return true;
   }
 
   public function verify_solution($payload, $hmac_key = null)
@@ -541,13 +512,10 @@ class OpenPortePlugin
   public function get_widget_attrs($mode, $language = null, $name = null)
   {
     $challengeurl = $this->get_challengeurl();
-    $api = $this->get_api();
     $floating = $this->get_floating();
     $delay = $this->get_delay();
-    $can_hide_branding = $api === 'selfhosted' || $api === 'custom';
-    $hidelogo = $can_hide_branding && $this->get_hidelogo();
-    $hidefooter = $can_hide_branding && $this->get_hidefooter();
-    $blockspam = $this->get_blockspam();
+    $hidelogo = $this->get_hidelogo();
+    $hidefooter = $this->get_hidefooter();
     $auto = $this->get_auto();
     $strings = wp_json_encode($this->get_translations($language));
     $attrs = array(
@@ -571,12 +539,6 @@ class OpenPortePlugin
     }
     if ($hidefooter) {
       $attrs['hidefooter'] = '1';
-    }
-    if ($blockspam) {
-      $attrs['blockspam'] = '1';
-    }
-    if ($mode === "captcha_spamfilter") {
-      $attrs['spamfilter'] = '1';
     }
     $attrs = apply_filters('openporte_widget_attrs', $attrs, $mode, $language, $name);
     // Deprecated alias kept for back-compat; remove in a future release.

@@ -120,25 +120,7 @@ function openporte_general_section_callback()
   <?php
 }
 
-function openporte_spam_filter_section_callback()
-{
-  ?>
-    <p><?php
-      echo sprintf(
-        /* translators: the placeholders are opening and closing tags for bold */
-        esc_html__(
-          'The Spam Filter acts on the classification returned by a %1$sCustom%2$s backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-of-work only.',
-          'openporte',
-        ),
-        '<b>',
-        '</b>',
-        '<b>',
-        '</b>',
-      );
-    ?></p>
-  <?php
-}
-
+// TODO: where is it used or where was it used?
 function openporte_widget_section_callback()
 {
   ?>
@@ -172,7 +154,6 @@ function openporte_settings_field_callback(array $args)
   $name = $args['name'];
   $hint = isset($args['hint']) ? $args['hint'] : null;
   $custom = isset($args['custom']) ? $args['custom'] : '';
-  $spamfilter = isset($args['spamfilter']) ? $args['spamfilter'] : '';
   $description = isset($args['description']) ? $args['description'] : null;
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
@@ -180,7 +161,7 @@ function openporte_settings_field_callback(array $args)
     $value = 1;
   }
 ?>
-  <input autocomplete="off" class="regular-text" <?php echo $custom === true ? ' data-custom-api' : ''; ?> <?php echo $spamfilter === true ? ' data-spamfilter' : ''; ?> type="<?php echo esc_attr($type); ?>" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value) ?>" <?php $type == "checkbox" ? checked(1, $setting, true) : "" ?>>
+  <input autocomplete="off" class="regular-text" <?php echo $custom === true ? ' data-custom-api' : ''; ?> type="<?php echo esc_attr($type); ?>" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value) ?>" <?php $type == "checkbox" ? checked(1, $setting, true) : "" ?><?php echo $disabled === true ? ' disabled' : ''; ?>>
   <label class="description" for="<?php echo esc_attr($name); ?>"><?php echo esc_html($description); ?></label>
   <?php if ($hint) { ?>
   <div style="opacity:0.7;font-size:85%;margin-top:3px"><?php echo esc_html($hint); ?></div>
@@ -195,7 +176,6 @@ function openporte_settings_select_callback(array $args)
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
   $options = isset($args['options']) ? $args['options'] : array();
-  $spamfilter_options = isset($args['spamfilter_options']) ? $args['spamfilter_options'] : array();
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
@@ -203,7 +183,6 @@ function openporte_settings_select_callback(array $args)
   <?php
     foreach ( $options as $opt_key => $opt_value ) {
       echo '<option value="' . esc_attr( $opt_key ) . '" '
-        . (in_array($opt_key, $spamfilter_options, true) ? ' data-spamfilter ' : '')
         . selected($value, $opt_key, false )
         . '>' . esc_html($opt_value) . '</option>';
     }

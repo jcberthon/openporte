@@ -74,12 +74,6 @@ if (is_admin()) {
 
     register_setting(
       'openporte_options',
-      OpenPortePlugin::$option_blockspam,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
-    );
-
-    register_setting(
-      'openporte_options',
       OpenPortePlugin::$option_auto,
       array( 'sanitize_callback' => 'sanitize_text_field' )
     );
@@ -289,30 +283,9 @@ if (is_admin()) {
       )
     );
 
-    // Section
-    add_settings_section(
-      'openporte_spamfilter_settings_section',
-      __('Spam Filter', 'openporte'),
-      'openporte_spam_filter_section_callback',
-      'openporte_admin'
-    );
-
-    add_settings_field(
-      'openporte_settings_blockspam_field',
-      __('Block Spam Submissions', 'openporte'),
-      'openporte_settings_field_callback',
-      'openporte_admin',
-      'openporte_spamfilter_settings_section',
-      array(
-        "spamfilter" => true,
-        "name" => OpenPortePlugin::$option_blockspam,
-        "description" => __('Yes', 'openporte'),
-        "hint" => __('Don\'t allow form submissions if the Spam Filter detects potential spam.', 'openporte'),
-        "type" => "checkbox"
-      )
-    );
-
-    // Section
+    /*
+     * ================ Section - Widget Customisation ================
+    */
     add_settings_section(
       'openporte_widget_settings_section',
       __('Widget Customization', 'openporte'),
