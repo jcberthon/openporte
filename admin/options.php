@@ -137,7 +137,7 @@ function openporte_integrations_section_callback()
     <p><?php echo esc_html__('Activate OpenPorte for these integrations:', 'openporte'); ?></p>
     <p><?php echo sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
-          __('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '[openporte]',
+          esc_html__('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '[openporte]',
         );
       ?></p>
 
@@ -151,7 +151,7 @@ function openporte_wordpress_section_callback()
     <p><?php echo esc_html__('Activate OpenPorte for the core WordPress functionality:', 'openporte'); ?></p>
     <p><?php echo sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
-          __('Use %s shortcode anywhere in your HTML, Post, or Page content.', 'openporte'), '[openporte]',
+          esc_html__('Use %s shortcode anywhere in your HTML, Post, or Page content.', 'openporte'), '[openporte]',
         );
       ?></p>
 

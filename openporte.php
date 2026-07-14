@@ -132,6 +132,9 @@ add_shortcode('altcha', $openporte_shortcode);
 function openporte_activate()
 {
   openporte_migrate_legacy_options();
+  // Normalize AFTER the migration: it may have just imported legacy ALTCHA
+  // select-mode strings that the checkbox settings cannot represent.
+  openporte_normalize_integration_options();
 
   // Seed defaults only when the option is absent (add_option is a no-op when it
   // already exists), so a freshly migrated or a pre-existing configuration is
@@ -141,7 +144,76 @@ function openporte_activate()
   add_option(OpenPortePlugin::$option_api_custom_url, '');
   add_option(OpenPortePlugin::$option_expires, '300');
   add_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
-  add_option(OpenPortePlugin::$option_integration_custom, 'captcha');
+  add_option(OpenPortePlugin::$option_integration_custom, 1);
+}
+
+/**
+ * Version-gated upgrade routine.
+ *
+ * Plugin updates do NOT re-run the activation hook, so value/schema migrations
+ * must run from plugins_loaded, gated by the stored plugin version. Every step
+ * in here must be idempotent: the gate re-opens on each version bump.
+ */
+function openporte_upgrade()
+{
+  if (get_option(OpenPortePlugin::$option_version) === OPENPORTE_VERSION) {
+    return;
+  }
+  openporte_normalize_integration_options();
+  // The spam filter is gone (issue #6): drop its orphaned option. The raw key
+  // is hardcoded on purpose — its static property was removed with the feature
+  // (same convention as the legacy altcha_* keys in the migration map).
+  delete_option('openporte_blockspam');
+  update_option(OpenPortePlugin::$option_version, OPENPORTE_VERSION);
+}
+add_action('plugins_loaded', 'openporte_upgrade');
+
+/**
+ * Map legacy select-mode strings to the checkbox (0/1) integration options.
+ *
+ * Pre-1.28 the integration options stored a mode string. Every mode except
+ * 'spamfilter' (spam filter without captcha — feature removed in #6) showed
+ * and/or verified the captcha, so they map to 1. Exception: HTML Forms'
+ * 'shortcode' maps to 0 — that mode never auto-injected the widget, and
+ * hf_validate_form still verifies a shortcode-placed widget on its own, so 0
+ * preserves the exact legacy behavior. (Contact Form 7's 'shortcode' maps to
+ * 1: verification must stay enforced, at the cost of the widget now also being
+ * auto-injected.)
+ */
+function openporte_normalize_integration_options()
+{
+  $integration_keys = array(
+    OpenPortePlugin::$option_integration_coblocks,
+    OpenPortePlugin::$option_integration_contact_form_7,
+    OpenPortePlugin::$option_integration_custom,
+    OpenPortePlugin::$option_integration_elementor,
+    OpenPortePlugin::$option_integration_formidable,
+    OpenPortePlugin::$option_integration_forminator,
+    OpenPortePlugin::$option_integration_gravityforms,
+    OpenPortePlugin::$option_integration_woocommerce_login,
+    OpenPortePlugin::$option_integration_woocommerce_register,
+    OpenPortePlugin::$option_integration_woocommerce_reset_password,
+    OpenPortePlugin::$option_integration_html_forms,
+    OpenPortePlugin::$option_integration_wordpress_login,
+    OpenPortePlugin::$option_integration_wordpress_register,
+    OpenPortePlugin::$option_integration_wordpress_reset_password,
+    OpenPortePlugin::$option_integration_wordpress_comments,
+    OpenPortePlugin::$option_integration_wpdiscuz,
+    OpenPortePlugin::$option_integration_wpforms,
+    OpenPortePlugin::$option_integration_enfold_theme,
+  );
+
+  foreach ($integration_keys as $key) {
+    $value = get_option($key, null);
+    // Skip absent options (don't create rows), values that are already
+    // numeric (0/1 checkbox era), and '' which is falsy in both eras.
+    if (!is_string($value) || $value === '' || is_numeric($value)) {
+      continue;
+    }
+    $disable = ($value === 'spamfilter')
+      || ($key === OpenPortePlugin::$option_integration_html_forms && $value === 'shortcode');
+    update_option($key, $disable ? 0 : 1);
+  }
 }
 
 /**

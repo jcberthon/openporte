@@ -14,6 +14,7 @@ class OpenPortePlugin
   public static $widget_style_src = "";
   public static $version = "0.0.0";
   public static $widget_version = "0.0.0";
+  public static $option_version = "openporte_version";
   public static $option_api = "openporte_api";
   public static $option_api_custom_url = "openporte_api_custom_url";
   public static $option_secret = "openporte_secret";
@@ -300,7 +301,9 @@ class OpenPortePlugin
   {
     $integrations = $this->get_integrations();
 
-    return in_array("captcha", $integrations, true) || in_array("shortcode", $integrations, true);
+    // Checkbox era: any truthy option value means the integration is enabled
+    // (legacy mode strings are normalized to 0/1 on upgrade).
+    return array_filter($integrations) !== array();
   }
 
   public function random_secret()
@@ -384,7 +387,27 @@ class OpenPortePlugin
     if (!($alg_ok && $signature_ok)) {
       return false;
     }
-    // No more reason to block the submission.
+    // The spam-filter classification is gone (issue #6), but expire/verified
+    // are protocol-level validity checks, not spam plumbing. Mirror the ALTCHA
+    // reference (verified === true && expire > now): a signed server payload is
+    // only valid while unexpired and explicitly verified — without the expire
+    // check a once-valid token could be replayed forever. Each check applies
+    // only when the backend supplies the field, so a minimal custom backend
+    // that omits them keeps working.
+    $verification = array();
+    parse_str($data->verificationData, $verification);
+    if (isset($verification['expire'])) {
+      $expire = intval($verification['expire'], 10);
+      if ($expire > 0 && $expire < time()) {
+        return false;
+      }
+    }
+    if (isset($verification['verified'])) {
+      $verified_flag = strtolower((string) $verification['verified']);
+      if (in_array($verified_flag, array('', '0', 'false', 'no'), true)) {
+        return false;
+      }
+    }
     return true;
   }
 

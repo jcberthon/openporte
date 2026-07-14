@@ -26,7 +26,9 @@ if ( ! function_exists('openporte_enfold_theme_add_captcha_field') ) {
   {
     $plugin = OpenPortePlugin::$instance;
     $active = $plugin->get_integration_enfold_theme();
-    if ($active) {
+    // Early-return when the integration is NOT active (the widget is only
+    // injected when enabled; avf_form_send verifies under the same condition).
+    if (!$active) {
       return $elements;
     }
 
