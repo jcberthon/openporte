@@ -30,6 +30,43 @@
         childList: true,
         subtree: true,
       });
+
+      // wpDiscuz submits comments from a jQuery click handler delegated on
+      // <body> (bubble phase) and never fires a native form submit, so the
+      // widget's auto="onsubmit" interception — and Floating UI, which
+      // implies onsubmit — cannot pause the submission: the AJAX serializes
+      // an empty altcha field while the PoW is still being solved. Intercept
+      // the click in the CAPTURE phase (which always runs before any
+      // bubble-phase delegation), solve first, then replay the click; the
+      // guard then sees state "verified" and lets it through to wpDiscuz.
+      const wpdiscuzPending = new WeakSet();
+      document.addEventListener('click', (ev) => {
+        const button = ev.target instanceof Element ? ev.target.closest('.wc_comm_submit') : null;
+        if (!button) {
+          return;
+        }
+        const form = button.closest('form');
+        const widgetEl = form ? form.querySelector('altcha-widget') : null;
+        const state = widgetEl?.querySelector('.altcha')?.getAttribute('data-state');
+        // No widget in this form, code-challenge mode, or already solved:
+        // let wpDiscuz handle the click normally.
+        if (!widgetEl || !state || state === 'verified' || state === 'code') {
+          return;
+        }
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (!wpdiscuzPending.has(widgetEl)) {
+          wpdiscuzPending.add(widgetEl);
+          widgetEl.addEventListener('verified', () => {
+            wpdiscuzPending.delete(widgetEl);
+            button.click();
+          }, { once: true });
+        }
+        // 'verifying' means a solve is already in flight — just wait for it.
+        if (state !== 'verifying') {
+          widgetEl.verify?.();
+        }
+      }, true);
     });
   });
 })();
