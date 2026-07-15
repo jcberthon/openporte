@@ -23,6 +23,24 @@ both are excluded via `.distignore`.
 
 Compat floor: PHP/WP minimums in `readme.txt`. Don't use syntax/APIs newer than the floor.
 
+## Auditing upstream ALTCHA v1 (plugin history)
+
+For "what did the original plugin actually do" questions, don't rely on
+memory or docs — audit the source. Two ways:
+
+- **In this repo:** branch `altcha-spam-protection-gpl-1.x` (local and on
+  origin) imports the full WordPress.org release history — one commit per
+  release, 0.3.2 → 1.26.3 (the last GPL v1) → 3.0.0. The final commit is the
+  upstream "kill switch": 3.0.0 replaced the entire GPL plugin with a stub
+  that downloads the non-free v3 from GitHub. Diff the two topmost commits to
+  see it; diff against the 1.26.3 commit for v1-behavior questions.
+- **WordPress.org SVN:** `https://plugins.svn.wordpress.org/altcha-spam-protection/`
+  (e.g. `svn export …/tags/1.26.3`). Gotcha: the tags listing sorts
+  lexicographically, so `1.26.x` appears *before* `1.6.x` — don't read the
+  tail of the list as "the newest tags".
+
+(The bundled *widget* has its own upstream doc: @docs/agents/altcha-upstream.md.)
+
 ## Scope: paid-plugin integrations being removed
 
    Integrations targeting paid-only plugins (Enfold; check others in
