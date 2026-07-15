@@ -19,6 +19,10 @@ Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
 6. Run the integration test checklist (widget renders; self-hosted challenge
    fetch + solve; PHP `verify()` accepts a valid token; tampered token rejected;
    `script.js` de-dup still works; attribute-API compatibility).
+   Also grep the new bundle for the allowed-algorithms array
+   (`grep -o '\["SHA-256[^]]*\]' public/altcha.min.js` — currently
+   `["SHA-256","SHA-384","SHA-512"]`, behind a minifier-renamed identifier)
+   and sync `OpenPortePlugin::get_allowed_algorithms()` if it ever changes.
 7. **Record provenance** — capture the SHA-256 of the re-vendored
    `public/altcha.min.js` plus the upstream source ref (tag/commit) in
    `docs/agents/altcha-upstream.md`, so the shipped build is independently verifiable
