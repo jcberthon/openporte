@@ -1,8 +1,10 @@
 # OpenPorte test bench (wp-env)
 
-Manual, browser-driven test environment for the plugin. There is no automated
-test suite (see `AGENTS.md`); this harness just provisions a reproducible
-WordPress instance with fixtures so changes can be exercised by hand.
+Manual, browser-driven test environment for the plugin. This harness
+provisions a reproducible WordPress instance with fixtures so changes can be
+exercised by hand. For the automated settings-matrix suite (integrations ×
+auto-mode × Floating UI, run manually against this bench), see
+[`e2e/README.md`](e2e/README.md).
 
 ## What it sets up
 

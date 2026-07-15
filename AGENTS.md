@@ -51,7 +51,10 @@ memory or docs — audit the source. Two ways:
 
 ## Verification protocol
 
-There are zero automated tests. Before and after changes:
+There is no CI test suite. A manually-run browser E2E matrix (integrations ×
+auto-mode × Floating UI) lives in `tests/e2e/` (Playwright against the wp-env
+bench — see `tests/e2e/README.md`); run it when touching widget rendering,
+verification, or integration code. Beyond that, before and after changes:
 
 1. Use [`wp-env`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) (requires Docker — OrbStack or Docker Desktop on macOS) to spin up a local WordPress instance and test manually.
 2. Tail `wp-env`'s PHP error log (`wp-env logs`) after any change — PHP warnings and notices surface here and are otherwise silent.
