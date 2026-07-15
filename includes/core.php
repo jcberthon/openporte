@@ -106,6 +106,12 @@ class OpenPortePlugin
 
   public static function get_allowed_algorithms()
   {
+    // Mirrors the ALTCHA spec's permitted algorithms. The vendored widget
+    // enforces the same set internally (a module-scope constant in
+    // public/altcha.min.js, not exposed on its public API — and a browser
+    // runtime value would be unreachable from PHP anyway), so this array is
+    // our server-side copy of the spec constant. Re-check on widget upgrade;
+    // see docs/agents/altcha-upstream.md (upgrade procedure).
     return array('SHA-256', 'SHA-384', 'SHA-512');
   }
 
