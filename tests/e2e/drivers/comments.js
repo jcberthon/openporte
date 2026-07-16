@@ -1,5 +1,5 @@
 const { expect } = require('@playwright/test');
-const { wp, wpSetOption } = require('../helpers');
+const { wp, ensureCommentsPost, purgeComments } = require('../helpers');
 
 /**
  * WordPress core comments (native form POST to wp-comments-post.php).
@@ -18,17 +18,14 @@ module.exports = {
     } catch (e) {
       /* not installed/active — fine */
     }
-    let postId = wp('post list --post_type=post --name=e2e-comments --field=ID');
-    if (!postId) {
-      postId = wp(
-        "post create --post_title='E2E Comments' --post_name=e2e-comments --post_status=publish --post_content='e2e fixture' --porcelain"
-      );
-    }
-    wp(`post update ${postId} --comment_status=open`);
-    // Approve anonymous comments immediately so acceptance is assertable.
-    wpSetOption('comment_moderation', '0');
-    wpSetOption('comment_previously_approved', '0');
-    return { path: `/?p=${postId}` };
+    const postId = ensureCommentsPost();
+    return { path: `/?p=${postId}`, postId };
+  },
+
+  // Runs before every test: core's 15-s same-IP comment throttle measures
+  // against the latest existing comment, so start from zero each time.
+  reset(ctx) {
+    purgeComments(ctx.postId);
   },
 
   async open(page, ctx) {

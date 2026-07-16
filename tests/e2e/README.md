@@ -65,18 +65,23 @@ Create `drivers/<name>.js` exporting
 create fixtures idempotently, return the context (page path) the other hooks
 receive.
 
-## Known caveats (needs one live pass)
+## Known caveats
 
-- **This suite has not yet been executed against a live bench** — it was
-  authored offline. Selector notes below are the places most likely to need a
-  first-run adjustment.
-- **wpDiscuz driver**: selectors target wpDiscuz 7.x guest markup
-  (`.wc_comm_submit`, `wc_name`/`wc_email`, Quill `.ql-editor` with a
-  plain-textarea fallback). Its onboarding banner or layout options may
-  require a tweak.
+- **wp-cli argument quoting**: `wp-env.sh` forwards commands through
+  `ssh "… wp-env $*"`, so the remote shell strips one layer of quoting.
+  Values passed to the `wp()` helper must contain no spaces or quotes
+  (fixture values are deliberately space-free, e.g. `E2E-Comments`).
+- **Comment flood throttle**: core rejects a comment posted within 15 s of
+  the previous one from the same IP ("You are posting comments too
+  quickly") — every submission here comes from one browser IP, so the
+  comment drivers purge the fixture post's comments before each test
+  (`driver.reset()`).
 - **CF7 acceptance** treats `data-status="failed"` as captcha-accepted: on a
   bench with no mailer the mail send fails *after* the spam check. `spam` is
-  the captcha-rejected status.
+  the captcha-rejected status. All four visible fields must be filled — the
+  default form's Subject is required, and CF7 6.x may block an invalid form
+  client-side with the status silently stuck on `init`.
 - **Floating UI combos** intentionally use the submit-triggered flow; the
   widget's floating popup positioning is not asserted (only that the
-  submission ultimately succeeds).
+  submission ultimately succeeds). This is the path that caught the
+  submit-swallowed-while-verifying bug fixed in `public/script.js`.

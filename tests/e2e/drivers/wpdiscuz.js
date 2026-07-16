@@ -1,15 +1,19 @@
 const { expect } = require('@playwright/test');
-const { wp, wpSetOption } = require('../helpers');
+const { wp, ensureCommentsPost, purgeComments } = require('../helpers');
 
 /**
  * wpDiscuz (jQuery click-delegated AJAX; never fires a native form submit —
  * the integration that exposed the auto="onsubmit"/Floating UI race).
  *
- * NOTE: selectors follow wpDiscuz 7.x guest-form markup (wc_name/wc_email
- * fields, .wc_comm_submit button, Quill .ql-editor or plain textarea for the
- * message). This driver is the one most likely to need a tuning pass against
- * the live DOM — see README.
+ * Selectors verified against wpDiscuz 7.6 on the bench: container #wpdcom,
+ * visible main form .wpd_main_comm_form (a hidden secondary template form
+ * duplicates every field — always scope to the main form), Quill .ql-editor
+ * for the message, [name=wc_name]/[name=wc_email] guest fields, and the
+ * .wc_comm_submit button (the same class public/script.js's capture-phase
+ * race glue targets).
  */
+const FORM = '#wpdcom form.wpd_main_comm_form';
+
 module.exports = {
   key: 'wpdiscuz',
   option: 'openporte_integration_wpdiscuz',
@@ -21,48 +25,45 @@ module.exports = {
       wp('plugin install wpdiscuz');
     }
     wp('plugin activate wpdiscuz');
-    let postId = wp('post list --post_type=post --name=e2e-comments --field=ID');
-    if (!postId) {
-      postId = wp(
-        "post create --post_title='E2E Comments' --post_name=e2e-comments --post_status=publish --post_content='e2e fixture' --porcelain"
-      );
-    }
-    wp(`post update ${postId} --comment_status=open`);
-    wpSetOption('comment_moderation', '0');
-    wpSetOption('comment_previously_approved', '0');
-    return { path: `/?p=${postId}` };
+    const postId = ensureCommentsPost();
+    return { path: `/?p=${postId}`, postId };
+  },
+
+  // See comments.js — same core comment-flood throttle applies to the
+  // wpDiscuz AJAX pipeline (it ends in wp_new_comment() too).
+  reset(ctx) {
+    purgeComments(ctx.postId);
   },
 
   async open(page, ctx) {
     await page.goto(ctx.path);
-    await page.locator('#wpcomm').waitFor();
+    await page.locator('#wpdcom').waitFor();
   },
 
   async fill(page, ctx, marker) {
     // Message: rich editor (Quill) in default wpDiscuz 7, plain textarea in
     // "minimal" layouts — support both.
-    const rich = page.locator('#wpcomm .ql-editor').first();
+    const rich = page.locator(`${FORM} .ql-editor`).first();
     if (await rich.count()) {
       await rich.click();
       await rich.fill(marker);
     } else {
-      await page.locator('#wpcomm textarea').first().fill(marker);
+      await page.locator(`${FORM} textarea[name="wc_comment"]`).fill(marker);
     }
-    // Guest fields appear once the editor is focused.
-    const name = page.locator('#wpcomm [name="wc_name"]').first();
+    const name = page.locator(`${FORM} [name="wc_name"]`);
     if (await name.count()) {
       await name.fill('E2E Tester');
-      await page.locator('#wpcomm [name="wc_email"]').first().fill('e2e@example.com');
+      await page.locator(`${FORM} [name="wc_email"]`).fill('e2e@example.com');
     }
   },
 
   async submit(page) {
-    await page.locator('#wpcomm .wc_comm_submit').first().click();
+    await page.locator(`${FORM} .wc_comm_submit`).click();
   },
 
   async expectAccepted(page, ctx, marker) {
     // The AJAX flow inserts the new comment into the thread.
-    await expect(page.locator('#wpcomm')).toContainText(marker);
+    await expect(page.locator('#wpdcom')).toContainText(marker);
   },
 
   async expectRejected(page) {

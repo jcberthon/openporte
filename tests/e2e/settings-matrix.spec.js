@@ -31,6 +31,7 @@ for (const driver of drivers) {
 
         test(`accepts a solved submission (${label})`, async ({ page }) => {
           applyCombo({ auto, floating });
+          driver.reset?.(ctx);
           const marker = `e2e ${driver.key} ${label} #${++counter} ${Date.now()}`;
 
           await driver.open(page, ctx);
@@ -61,6 +62,7 @@ for (const driver of drivers) {
       // One negative control per integration: without it, a combo could
       // "pass" simply because server-side verification is not wired up.
       applyCombo({ auto: '', floating: 0 });
+      driver.reset?.(ctx);
       const marker = `e2e ${driver.key} bypass #${++counter} ${Date.now()}`;
 
       await driver.open(page, ctx);
