@@ -1,6 +1,11 @@
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => {
+      // Tracks widgets whose in-flight solve was started by the widget's own
+      // submit interception (auto="onsubmit" / Floating UI): those replay the
+      // submission themselves once solved, so we must not queue a second one.
+      const widgetManagedSolve = new WeakSet();
+      const pendingResubmit = new WeakSet();
       [...document.querySelectorAll('altcha-widget')].forEach((el) => {
         // add the name attr to fix input validation exception
         const altcha = el.querySelector('.altcha')
@@ -9,7 +14,38 @@
         const form = el.closest('form');
         if (form && checkbox && altcha?.getAttribute('data-state') !== 'code') {
           form.addEventListener('submit', (ev) => {
-            if (altcha?.getAttribute('data-state') !== 'code' && !checkbox.reportValidity()) {
+            const state = altcha?.getAttribute('data-state');
+            if (state === 'code') {
+              return;
+            }
+            if (state === 'unverified' || state === 'error') {
+              // In onsubmit/floating modes the widget intercepts this submit,
+              // solves, and replays it itself when done — remember that so the
+              // 'verifying' branch below doesn't queue a duplicate replay.
+              widgetManagedSolve.add(el);
+              return;
+            }
+            if (state === 'verifying') {
+              // A submit landing while a solve is already in flight (started
+              // by auto="onload"/"onfocus") is dropped: the widget's floating/
+              // onsubmit interception preventDefaults it but never replays it,
+              // and in the other modes the unchecked-checkbox guard below
+              // would block it. Queue exactly one replay for when the solve
+              // finishes — unless the widget started this solve from a submit
+              // and will replay on its own.
+              ev.preventDefault();
+              ev.stopPropagation();
+              if (!widgetManagedSolve.has(el) && !pendingResubmit.has(el)) {
+                pendingResubmit.add(el);
+                el.addEventListener('verified', () => {
+                  pendingResubmit.delete(el);
+                  form.requestSubmit ? form.requestSubmit() : form.submit();
+                }, { once: true });
+              }
+              return;
+            }
+            widgetManagedSolve.delete(el);
+            if (!checkbox.reportValidity()) {
               ev.preventDefault();
               ev.stopPropagation();
             }
