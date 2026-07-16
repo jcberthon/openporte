@@ -31,6 +31,9 @@ module.exports = {
   async fill(page, ctx, marker) {
     await page.locator('[name="your-name"]').fill('E2E Tester');
     await page.locator('[name="your-email"]').fill('e2e@example.com');
+    // The default CF7 template marks Subject required — leaving it empty
+    // makes every submission come back data-status="invalid".
+    await page.locator('[name="your-subject"]').fill('E2E matrix');
     await page.locator('[name="your-message"]').fill(marker);
   },
 

@@ -11,7 +11,10 @@ const WP_CLI = process.env.WP_CLI_CMD || './wp-env.sh run cli -- wp';
 
 /**
  * Run a wp-cli command and return trimmed stdout. `args` is a plain string —
- * keep values shell-safe (option names/values used here are alphanumeric).
+ * values must contain NO spaces or quotes: wp-env.sh forwards the command
+ * through `ssh "… wp-env $*"`, so the remote shell re-parses it and strips
+ * one layer of quoting (same boundary tests/bin/wp-init.sh works around by
+ * passing content through a file).
  */
 function wp(args) {
   return execSync(`${WP_CLI} ${args}`, {
@@ -31,6 +34,37 @@ function wpSetOption(name, value) {
     }
   } else {
     wp(`option update ${name} ${value}`);
+  }
+}
+
+/**
+ * Fixture post for the comment-based drivers (core comments, wpDiscuz).
+ * Values are deliberately space-free — see the wp() quoting caveat.
+ */
+function ensureCommentsPost() {
+  let postId = wp('post list --post_type=post --name=e2e-comments --field=ID');
+  if (!postId) {
+    postId = wp(
+      'post create --post_title=E2E-Comments --post_name=e2e-comments --post_status=publish --post_content=e2e-fixture --porcelain'
+    );
+  }
+  wp(`post update ${postId} --comment_status=open`);
+  // Approve anonymous comments immediately so acceptance is assertable.
+  wpSetOption('comment_moderation', '0');
+  wpSetOption('comment_previously_approved', '0');
+  return postId;
+}
+
+/**
+ * Delete every comment on a post. Core throttles comments from the same
+ * IP/email posted within 15 s of the previous one ("You are posting comments
+ * too quickly") — the whole matrix submits from one browser IP, so each test
+ * must start with no earlier comment to be measured against.
+ */
+function purgeComments(postId) {
+  const ids = wp(`comment list --post_id=${postId} --format=ids`);
+  if (ids) {
+    wp(`comment delete ${ids} --force`);
   }
 }
 
@@ -68,13 +102,24 @@ async function clickWidgetCheckbox(page) {
  */
 async function removeWidgets(page) {
   await page.evaluate(() => {
-    document.querySelectorAll('altcha-widget').forEach((el) => el.remove());
+    document.querySelectorAll('altcha-widget').forEach((el) => {
+      // public/script.js holds a closure over this checkbox in its submit
+      // guard; a detached required+unchecked checkbox fails reportValidity()
+      // and the guard would block the very submission this control needs to
+      // reach the server. Drop the constraint before detaching.
+      el.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+        cb.required = false;
+      });
+      el.remove();
+    });
   });
 }
 
 module.exports = {
   wp,
   wpSetOption,
+  ensureCommentsPost,
+  purgeComments,
   applyBaseline,
   applyCombo,
   waitForVerified,
