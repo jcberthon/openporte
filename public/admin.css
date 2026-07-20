@@ -21,3 +21,78 @@
   font-size: 85%;
   margin-top: 3px;
 }
+/* Toggle switch for two-named-states settings fields (see
+   openporte_settings_checkbox_callback in admin/options.php). This is purely a
+   skin over a real `input[type=checkbox]` — no JavaScript, no `button`
+   substitute — so keyboard (Tab + Space) and screen-reader behaviour stay
+   native. */
+.openporte-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.openporte-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 36px;
+  height: 20px;
+  min-width: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: #8c8f94;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+/* WordPress draws a checkbox's tick in ::before; reused here as the thumb so
+   the tick cannot show through the track. */
+.openporte-toggle input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease-in-out;
+}
+.openporte-toggle input[type="checkbox"]:checked {
+  background: var(--wp-admin-theme-color, #2271b1);
+}
+.openporte-toggle input[type="checkbox"]:checked::before {
+  transform: translateX(16px);
+}
+/* Core's checkbox focus style is a box-shadow sized for a square box; restate
+   it as an outline so the ring follows the rounded track. */
+.openporte-toggle input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--wp-admin-theme-color, #2271b1);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.openporte-toggle input[type="checkbox"]:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+/* Bold whichever state name is currently active. The "on" name follows the
+   input, so the sibling combinator reaches it from :checked. The "off" name
+   precedes it and CSS has no previous-sibling combinator, so it is bolded by
+   default and un-bolded via :has() on the wrapper when the box is checked. */
+.openporte-toggle-off {
+  font-weight: 600;
+}
+.openporte-toggle:has(input[type="checkbox"]:checked) .openporte-toggle-off {
+  font-weight: 400;
+}
+.openporte-toggle input[type="checkbox"]:checked ~ .openporte-toggle-on {
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  .openporte-toggle input[type="checkbox"],
+  .openporte-toggle input[type="checkbox"]::before {
+    transition: none;
+  }
+}

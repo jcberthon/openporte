@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Null-safe sanitizer for the custom Challenge URL option.
  *
- * When API mode is "Self-hosted" the Challenge URL input is disabled client-side
+ * When API Mode is "Self-hosted" the Challenge URL input is disabled client-side
  * (see public/admin.js), so the browser does not submit it. WordPress then passes
  * null to the sanitize callback. Calling esc_url_raw(null) would hand null to
  * ltrim() and raise a PHP 8.1+ "Passing null to parameter #1" deprecation, whose
@@ -139,7 +139,7 @@ if (is_admin()) {
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_api,
-        "hint" => __('Select the API mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend.', 'openporte'),
+        "hint" => __('Select the API Mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend.', 'openporte'),
         "options" => array(
           "selfhosted" => __('Self-hosted', 'openporte'),
           "custom" => __('Custom', 'openporte'),
@@ -175,7 +175,7 @@ if (is_admin()) {
       array(
         "name" => OpenPortePlugin::$option_secret,
         "description" => __('A secret key used to sign and verify challenges.', 'openporte'),
-        "hint" => __('OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend.', 'openporte'),
+        "hint" => __('OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API Mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend.', 'openporte'),
         "display_toggle" => true
       )
     );
@@ -190,7 +190,7 @@ if (is_admin()) {
       array(
         "name" => OpenPortePlugin::$option_algorithm,
         "description" => __('Hash algorithm for the challenges.', 'openporte'),
-        "hint" => __('In Self-hosted API mode this is the algorithm used to generate and verify the proof-of-work challenges.<br/>In Custom API mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256.', 'openporte'),
+        "hint" => __('In Self-hosted API Mode this is the algorithm used to generate and verify the proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256.', 'openporte'),
         // Algorithm identifiers are proper nouns — not translatable.
         "options" => array_combine($openporte_algorithms, $openporte_algorithms),
       )
@@ -240,7 +240,7 @@ if (is_admin()) {
     */
     add_settings_section(
       'openporte_widget_settings_section',
-      __('Widget Customization', 'openporte'),
+      __('Widget Customisation', 'openporte'),
       'openporte_widget_section_callback',
       'openporte_admin'
     );
@@ -265,13 +265,17 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_floating_field',
-      __('Floating UI', 'openporte'),
+      __('Display Mode', 'openporte'),
       'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_floating,
-        "hint" => __('Enable Floating UI.', 'openporte'),
+        "hint" => __('Choose whether the widget sits inline in the page or floats near the submit button.', 'openporte'),
+        "toggle_labels" => array(
+          "off" => __('Inline', 'openporte'),
+          "on" => __('Floating', 'openporte'),
+        ),
       )
     );
 
