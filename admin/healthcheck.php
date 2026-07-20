@@ -146,7 +146,7 @@ function openporte_evaluate_challenge_response($response, $secret, $configured_a
   if (!hash_equals($calculated, (string) $challenge['signature'])) {
     return array(
       'level' => 'error',
-      'message' => __('The Signing secret does not match the backend\'s HMAC secret — every form submission would fail verification. Copy the backend\'s HMAC secret into the Signing secret field.', 'openporte'),
+      'message' => __('The shared secret does not match the backend\'s HMAC secret — every form submission would fail verification. Copy the backend\'s HMAC secret into the Signing secret field.', 'openporte'),
     );
   }
   if ($served_algorithm !== $configured_algorithm) {
@@ -164,7 +164,7 @@ function openporte_evaluate_challenge_response($response, $secret, $configured_a
     'level' => 'success',
     'message' => sprintf(
       /* translators: %s is the algorithm confirmed with the backend */
-      __('The Challenge URL responds with a valid %s challenge and the Signing secret matches.', 'openporte'),
+      __('The Challenge URL responds with a valid %s challenge and the shared secret matches.', 'openporte'),
       $served_algorithm
     ),
   );

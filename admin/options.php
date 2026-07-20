@@ -2,6 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+
 function openporte_options_page_html()
 {
   wp_enqueue_script(
@@ -137,7 +138,7 @@ function openporte_integrations_section_callback()
     <p><?php echo esc_html__('Activate OpenPorte for these integrations:', 'openporte'); ?></p>
     <p><?php echo sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
-          esc_html__('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '[openporte]',
+          esc_html__('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '<code>[openporte]</code>',
         );
       ?></p>
 
@@ -151,35 +152,216 @@ function openporte_wordpress_section_callback()
     <p><?php echo esc_html__('Activate OpenPorte for the core WordPress functionality:', 'openporte'); ?></p>
     <p><?php echo sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
-          esc_html__('Use %s shortcode anywhere in your HTML, Post, or Page content.', 'openporte'), '[openporte]',
+          esc_html__('Use %s shortcode anywhere in your HTML, Post, or Page content.', 'openporte'), '<code>[openporte]</code>',
         );
       ?></p>
 
   <?php
 }
 
-function openporte_settings_field_callback(array $args)
+/**
+ * Renderer for text and URL input settings fields.
+ * Supports the `custom` arg to add a `data-custom-api` attribute for JS-based
+ * mode switching (see public/admin.js).
+ * 
+ * @since 1.28.0
+ */
+function openporte_settings_text_callback(array $args)
 {
   $type = $args['type'];
+  if ($type === 'url') {
+    $type = 'text';
+    $inputmode = 'url';
+  } else {
+    $inputmode = null;
+  }
   $name = $args['name'];
   $hint = isset($args['hint']) ? $args['hint'] : null;
+  $placeholder = isset($args['placeholder']) ? $args['placeholder'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $custom = isset($args['custom']) ? $args['custom'] : '';
   $description = isset($args['description']) ? $args['description'] : null;
+  $class = 'regular-text';
+  $autocomplete = 'off';
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
-  if ($type == "checkbox") {
-    $value = 1;
-  }
 ?>
-  <input autocomplete="off" class="regular-text" <?php echo $custom === true ? ' data-custom-api' : ''; ?> type="<?php echo esc_attr($type); ?>" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value) ?>" <?php $type == "checkbox" ? checked(1, $setting, true) : "" ?><?php echo $disabled === true ? ' disabled' : ''; ?>>
-  <label class="description" for="<?php echo esc_attr($name); ?>"><?php echo esc_html($description); ?></label>
+  <div><label class="description" for="<?php echo esc_attr($name); ?>">
+    <?php echo esc_html($description); ?>
+  </label></div>
+  <input autocomplete="<?php echo esc_attr($autocomplete); ?>"
+    <?php echo $custom === true ? ' data-custom-api' : ''; ?>
+    type="<?php echo esc_attr($type); ?>"
+    name="<?php echo esc_attr($name); ?>"
+    id="<?php echo esc_attr($name); ?>"
+    <?php echo is_null($inputmode) ? '' : ' inputmode="' . esc_attr($inputmode) . '"'; ?>
+    <?php echo is_null($class) ? '' : ' class="' . esc_attr($class) . '"'; ?>
+    <?php echo is_null($placeholder) ? '' : ' placeholder="' . esc_attr($placeholder) . '"'; ?>
+    value="<?php echo esc_attr($value); ?>"
+    <?php echo $disabled === true ? ' disabled' : ''; ?>>
   <?php if ($hint) { ?>
-  <div style="opacity:0.7;font-size:85%;margin-top:3px"><?php echo esc_html($hint); ?></div>
+    <div class="openporte-hint">
+      <?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?>
+    </div>
   <?php } ?>
 <?php
 }
 
+/**
+ * Renderer for password input settings fields. Includes an optional Show/Hide
+ * toggle button controlled by the `display_toggle` arg.
+ * 
+ * @since 1.28.0
+ */
+function openporte_settings_password_callback(array $args)
+{
+  $name = $args['name'];
+  $hint = isset($args['hint']) ? $args['hint'] : null;
+  $placeholder = isset($args['placeholder']) ? $args['placeholder'] : null;
+  $disabled = isset($args['disabled']) ? $args['disabled'] : false;
+  $display_toggle = isset($args['display_toggle']) ? $args['display_toggle'] : false;
+  $description = isset($args['description']) ? $args['description'] : null;
+  $class = 'openporte-large-text';
+  $autocomplete = 'new-password';
+  $setting = get_option($name);
+  $value = isset($setting) ? esc_attr($setting) : '';
+?>
+  <div><label class="description" for="<?php echo esc_attr($name); ?>">
+    <?php echo esc_html($description); ?>
+  </label></div>
+  <input autocomplete="<?php echo esc_attr($autocomplete); ?>"
+    type="password"
+    name="<?php echo esc_attr($name); ?>"
+    id="<?php echo esc_attr($name); ?>"
+    class="<?php echo esc_attr($class); ?>"
+    <?php echo is_null($placeholder) ? '' : ' placeholder="' . esc_attr($placeholder) . '"'; ?>
+    value="<?php echo esc_attr($value); ?>"
+    <?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <?php if ($display_toggle === true): ?>
+    <button type="button" class="button button-secondary openporte-toggle-password"
+      data-target="<?php echo esc_attr($name); ?>"
+      data-label-show="<?php echo esc_attr__('Show', 'openporte'); ?>"
+      data-label-hide="<?php echo esc_attr__('Hide', 'openporte'); ?>">
+      <?php echo esc_html__('Show', 'openporte'); ?>
+    </button>
+  <?php endif; ?>
+  <?php if ($hint) { ?>
+    <div class="openporte-hint">
+      <?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?>
+    </div>
+  <?php } ?>
+<?php
+}
+
+/**
+ * Renderer for checkbox input settings fields.
+ * 
+ * @since 1.28.0
+ */
+function openporte_settings_checkbox_callback(array $args)
+{
+  $name = $args['name'];
+  $hint = isset($args['hint']) ? $args['hint'] : null;
+  $disabled = isset($args['disabled']) ? $args['disabled'] : false;
+  $description = isset($args['description']) ? $args['description'] : null;
+  $setting = get_option($name);
+?>
+  <div><label class="description" for="<?php echo esc_attr($name); ?>">
+    <?php echo esc_html($description); ?>
+  </label></div>
+  <input autocomplete="off"
+    type="checkbox"
+    name="<?php echo esc_attr($name); ?>"
+    id="<?php echo esc_attr($name); ?>"
+    value="1"
+    <?php checked(1, $setting, true); ?>
+    <?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <?php if ($hint) { ?>
+    <div class="openporte-hint">
+      <?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?>
+    </div>
+  <?php } ?>
+<?php
+}
+
+/**
+ * Renderer for generic input settings fields: text, url, checkbox, number, password.
+ * Supports the `custom` arg to add a `data-custom-api` attribute for JS-based
+ * mode switching (see public/admin.js). For password type, includes an option to add
+ * a Show/Hide toggle button. Also displays an optional hint below the field.
+ * 
+ * @since 1.26.3
+ * @deprecated 1.28.0 Use the specific callback functions for each input type instead:
+ *   openporte_settings_text_callback, openporte_settings_password_callback,
+ *   openporte_settings_checkbox_callback, etc.
+ */
+function openporte_settings_field_callback(array $args)
+{
+  $type = $args['type']; // HTML `input` type attribute: text, url, checkbox, number, etc.
+  if ($type === 'url') {
+    $type = 'text'; // Use text input for URL, since WordPress sanitizes it as a URL anyway.
+    $inputmode = 'url'; // So that dynamic keyboards show the URL keyboard.
+  } else {
+    $inputmode = null;
+  }
+  $name = $args['name'];
+  $hint = isset($args['hint']) ? $args['hint'] : null;
+  $placeholder = isset($args['placeholder']) ? $args['placeholder'] : null;
+  $disabled = isset($args['disabled']) ? $args['disabled'] : false;
+  $custom = isset($args['custom']) ? $args['custom'] : ''; // Useful for the "Custom" mode, to add a data attribute for JS to detect it (so we can dynamically disable elements).
+  $display_toggle = isset($args['display_toggle']) ? $args['display_toggle'] : false; // Whether to display a toggle button for the field (e.g., for password fields).
+  $description = isset($args['description']) ? $args['description'] : null; // HTML `label` for the input field, displayed after the input.
+  $classes = array(
+    'password' => 'openporte-large-text',
+    'text' => 'regular-text',
+    );
+  $class = isset($classes[$args['type']]) ? $classes[$args['type']] : null;
+  $autocompletemodes = array(
+    'password' => 'new-password'
+    );
+  $autocomplete = isset($autocompletemodes[$args['type']]) ? $autocompletemodes[$args['type']] : 'off'; // HTML `autocomplete` attribute for the input field.
+  // Get the current value of the option from the database, useful for interpreting the value for checkboxes.
+  $setting = get_option($name);
+  $value = isset($setting) ? esc_attr($setting) : '';
+  if ($type === "checkbox") {
+    $value = 1;
+  }
+?>
+  <div><label class="description" for="<?php echo esc_attr($name); ?>">
+    <?php echo esc_html($description); ?>
+  </label></div>
+  <input autocomplete="<?php echo esc_attr($autocomplete); ?>"
+    <?php echo $custom === true ? ' data-custom-api' : ''; ?>
+    type="<?php echo esc_attr($type); ?>"
+    name="<?php echo esc_attr($name); ?>"
+    id="<?php echo esc_attr($name); ?>"
+    <?php echo is_null($inputmode) ? '' : ' inputmode="' . esc_attr($inputmode) . '"'; ?>
+    <?php echo is_null($class) ? '' : ' class="' . esc_attr($class) . '"'; ?>
+    <?php echo is_null($placeholder) ? '' : ' placeholder="' . esc_attr($placeholder) . '"'; ?>
+    value="<?php echo esc_attr($value); ?>"
+    <?php $type === "checkbox" ? checked(1, $setting, true) : ""; ?>
+    <?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <?php if ($type === 'password' && $display_toggle === true): ?>
+    <button type="button" class="button button-secondary openporte-toggle-password"
+      data-target="<?php echo esc_attr($name); ?>"
+      data-label-show="<?php echo esc_attr__('Show', 'openporte'); ?>"
+      data-label-hide="<?php echo esc_attr__('Hide', 'openporte'); ?>">
+      <?php echo esc_html__('Show', 'openporte'); ?>
+    </button>
+  <?php endif; ?>
+  <?php if ($hint) { ?>
+    <div class="openporte-hint">
+      <?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?>
+    </div>
+  <?php } ?>
+<?php
+}
+
+/**
+ * Renderer for select dropdown settings fields. Takes an `options` arg
+ * (key => label pairs) and renders a <select> with those options. Displays
+ * an optional description label and hint below the field.
+ */
 function openporte_settings_select_callback(array $args)
 {
   $name = $args['name'];
@@ -191,17 +373,19 @@ function openporte_settings_select_callback(array $args)
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
   <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" <?php echo $disabled === true ? ' disabled' : ''; ?>>
-  <?php
-    foreach ( $options as $opt_key => $opt_value ) {
-      echo '<option value="' . esc_attr( $opt_key ) . '" '
-        . selected($value, $opt_key, false )
-        . '>' . esc_html($opt_value) . '</option>';
-    }
-  ?>
+    <?php
+      foreach ( $options as $opt_key => $opt_value ) {
+        echo '<option value="' . esc_attr( $opt_key ) . '" '
+          . selected($value, $opt_key, false )
+          . '>' . esc_html($opt_value) . '</option>';
+      }
+    ?>
   </select>
-  <label class="description" for="<?php echo esc_attr($name); ?>"><?php echo esc_html($description) ?></label>
+  <label class="description" for="<?php echo esc_attr($name); ?>">
+    <?php echo esc_html($description) ?>
+  </label>
   <?php if ($hint) { ?>
-  <div style="opacity:0.7;font-size:85%;margin-top:3px"><?php echo esc_html($hint); ?></div>
+    <div class="openporte-hint"><?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?></div>
   <?php } ?>
 <?php
 }
@@ -212,6 +396,8 @@ function openporte_settings_select_callback(array $args)
  * openporte_expires_custom, is a plain form field, NOT a registered option:
  * openporte_sanitize_expires() reads it when the select submits 'custom'.
  * public/admin.js toggles the input's visibility with the select.
+ * 
+ * @since 1.28.0
  */
 function openporte_settings_expires_callback(array $args)
 {
@@ -239,7 +425,7 @@ function openporte_settings_expires_callback(array $args)
   </select>
   <input type="number" name="openporte_expires_custom" id="openporte_expires_custom" min="0" max="14400" step="1" value="<?php echo esc_attr($value); ?>"<?php echo $is_custom ? '' : ' style="display:none"'; ?>>
   <?php if ($hint) { ?>
-  <div style="opacity:0.7;font-size:85%;margin-top:3px"><?php echo esc_html($hint); ?></div>
+    <div class="openporte-hint"><?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?></div>
   <?php } ?>
 <?php
 }

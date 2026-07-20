@@ -152,28 +152,31 @@ if (is_admin()) {
     add_settings_field(
       'openporte_settings_challenge_url_field',
       __('Challenge URL', 'openporte'),
-      'openporte_settings_field_callback',
+      'openporte_settings_text_callback',
       'openporte_admin',
       'openporte_general_settings_section',
       array(
         "custom" => true,
         "name" => OpenPortePlugin::$option_api_custom_url,
         'disabled' => !$custom_api_mode_active,
-        "hint" => $custom_api_mode_active ? __('Configure your custom Challenge URL.', 'openporte') : __('Disabled in Self-hosted mode.', 'openporte'),
-        "type" => "text"
+        "hint" => __('Only available in Custom API mode.<br/>The URL is made up of the domain and path to your <strong>custom ALTCHA-compatible backend</strong>, and optionally an API key (it starts with <code>gk_</code>).', 'openporte'),
+        // Example URL, deliberately not translatable.
+        "placeholder" => 'https://your-backend.com/api/v1/challenge?apiKey=gk_959c...',
+        "type" => "url"
       )
     );
 
     add_settings_field(
       'openporte_settings_secret_field',
-      __('Signing secret', 'openporte'),
-      'openporte_settings_field_callback',
+      __('Shared secret', 'openporte'),
+      'openporte_settings_password_callback',
       'openporte_admin',
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_secret,
-        "hint" => __('Configure your HMAC signing secret.', 'openporte'),
-        "type" => "text"
+        "description" => __('A secret key used to sign and verify challenges.', 'openporte'),
+        "hint" => __('OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend.', 'openporte'),
+        "display_toggle" => true
       )
     );
 
@@ -186,7 +189,8 @@ if (is_admin()) {
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_algorithm,
-        "hint" => __('Hash algorithm for the challenges. In Self-hosted mode this is the algorithm used to generate and verify the proof-of-work challenges. In Custom mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256.', 'openporte'),
+        "description" => __('Hash algorithm for the challenges.', 'openporte'),
+        "hint" => __('In Self-hosted API mode this is the algorithm used to generate and verify the proof-of-work challenges.<br/>In Custom API mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256.', 'openporte'),
         // Algorithm identifiers are proper nouns — not translatable.
         "options" => array_combine($openporte_algorithms, $openporte_algorithms),
       )
@@ -214,7 +218,7 @@ if (is_admin()) {
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_complexity,
-        "hint" => __('Select the PoW complexity for the widget: the higher the complexity, the longer visitors (and bots) work to solve the challenge.', 'openporte'),
+        "hint" => __('Select the PoW complexity for the widget: the higher the complexity, the longer visitors (and bots) work to solve the challenge.<br/>Even High is usually solved in under a second on a recent computer; on older phones it can take a few seconds. High is roughly 2–3× the work of Low.', 'openporte'),
         "options" => $openporte_complexity_options,
       )
     );
@@ -262,55 +266,48 @@ if (is_admin()) {
     add_settings_field(
       'openporte_settings_floating_field',
       __('Floating UI', 'openporte'),
-      'openporte_settings_field_callback',
+      'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_floating,
-        "description" => __('Yes', 'openporte'),
         "hint" => __('Enable Floating UI.', 'openporte'),
-        "type" => "checkbox"
       )
     );
 
     add_settings_field(
       'openporte_settings_delay_field',
       __('Delay', 'openporte'),
-      'openporte_settings_field_callback',
+      'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_delay,
-        "description" => __('Yes', 'openporte'),
         "hint" => __('Add a delay of 1.5 seconds to verification.', 'openporte'),
-        "type" => "checkbox"
       )
     );
 
     add_settings_field(
       'openporte_settings_hidelogo_field',
       __('Hide logo', 'openporte'),
-      'openporte_settings_field_callback',
+      'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_hidelogo,
-        "description" => __('Yes', 'openporte'),
-        "type" => "checkbox"
+        "hint" => __('When checked, hide the ALTCHA logo inside the widget.', 'openporte'),
       )
     );
 
     add_settings_field(
       'openporte_settings_hidefooter_field',
       __('Hide footer', 'openporte'),
-      'openporte_settings_field_callback',
+      'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_hidefooter,
-        "description" => __('Yes', 'openporte'),
-        "hint" => __('Hide Powered by ALTCHA.', 'openporte'),
-        "type" => "checkbox"
+        "hint" => __('When checked, hide the "Protected by ALTCHA" text inside the widget.', 'openporte'),
       )
     );
 
@@ -327,10 +324,22 @@ if (is_admin()) {
     // One checkbox per core-WordPress surface; registration and field share a
     // single loop (see the Integrations section below for the pattern source).
     $openporte_wordpress_integrations = array(
-      OpenPortePlugin::$option_integration_wordpress_register => __('Register page', 'openporte'),
-      OpenPortePlugin::$option_integration_wordpress_reset_password => __('Reset password page', 'openporte'),
-      OpenPortePlugin::$option_integration_wordpress_login => __('Login page', 'openporte'),
-      OpenPortePlugin::$option_integration_wordpress_comments => __('Comments', 'openporte'),
+      OpenPortePlugin::$option_integration_wordpress_register => array(
+        'label' => __('Register page', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WordPress registration page.', 'openporte'),
+      ),
+      OpenPortePlugin::$option_integration_wordpress_reset_password => array(
+        'label' => __('Reset password page', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WordPress password reset page.', 'openporte'),
+      ),
+      OpenPortePlugin::$option_integration_wordpress_login => array(
+        'label' => __('Login page', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WordPress login page.', 'openporte'),
+      ),
+      OpenPortePlugin::$option_integration_wordpress_comments => array(
+        'label' => __('Comments', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WordPress comments section.', 'openporte'),
+      ),
     );
     foreach ($openporte_wordpress_integrations as $openporte_option_name => $openporte_label) {
       register_setting(
@@ -340,13 +349,13 @@ if (is_admin()) {
       );
       add_settings_field(
         $openporte_option_name . '_field',
-        $openporte_label,
-        'openporte_settings_field_callback',
+        $openporte_label['label'],
+        'openporte_settings_checkbox_callback',
         'openporte_admin',
         'openporte_wordpress_settings_section',
         array(
           "name" => $openporte_option_name,
-          "type" => "checkbox"
+          "hint" => $openporte_label['hint'],
         )
       );
     }
@@ -373,62 +382,75 @@ if (is_admin()) {
     $openporte_integrations = array(
       OpenPortePlugin::$option_integration_coblocks => array(
         'label' => __('CoBlocks', 'openporte'),
+        'hint' => __('Enable OpenPorte on CoBlocks forms.', 'openporte'),
         'requires' => 'coblocks',
       ),
       OpenPortePlugin::$option_integration_contact_form_7 => array(
         'label' => __('Contact Form 7', 'openporte'),
+        'hint' => __('Enable OpenPorte on Contact Form 7 forms.', 'openporte'),
         'requires' => 'contact-form-7',
       ),
       OpenPortePlugin::$option_integration_elementor => array(
         'label' => __('Elementor Pro Forms', 'openporte'),
+        'hint' => __('Enable OpenPorte on Elementor Pro forms.', 'openporte'),
         'requires' => 'elementor',
       ),
       OpenPortePlugin::$option_integration_enfold_theme => array(
         'label' => __('Enfold Theme', 'openporte'),
+        'hint' => __('Enable OpenPorte on Enfold theme forms.', 'openporte'),
         'requires' => 'enfold-theme',
         'inactive_hint' => __('Theme not active.', 'openporte'),
       ),
       OpenPortePlugin::$option_integration_formidable => array(
         'label' => __('Formidable Forms', 'openporte'),
+        'hint' => __('Enable OpenPorte on Formidable Forms.', 'openporte'),
         'requires' => 'formidable',
       ),
       OpenPortePlugin::$option_integration_forminator => array(
         'label' => __('Forminator', 'openporte'),
+        'hint' => __('Enable OpenPorte on Forminator forms.', 'openporte'),
         'requires' => 'forminator',
       ),
       OpenPortePlugin::$option_integration_gravityforms => array(
         'label' => __('Gravity Forms', 'openporte'),
+        'hint' => __('Enable OpenPorte on Gravity Forms.', 'openporte'),
         'requires' => 'gravityforms',
       ),
       OpenPortePlugin::$option_integration_html_forms => array(
         'label' => __('HTML Forms', 'openporte'),
+        'hint' => __('Enable OpenPorte on HTML Forms.', 'openporte'),
         'requires' => 'html-forms',
       ),
       OpenPortePlugin::$option_integration_wpdiscuz => array(
-        'label' => __('WPDiscuz', 'openporte'),
+        'label' => __('wpDiscuz', 'openporte'),
+        'hint' => __('Enable OpenPorte on wpDiscuz comment forms.', 'openporte'),
         'requires' => 'wpdiscuz',
       ),
       OpenPortePlugin::$option_integration_wpforms => array(
-        'label' => __('WP Forms', 'openporte'),
+        'label' => __('WPForms', 'openporte'),
+        'hint' => __('Enable OpenPorte on WPForms forms.', 'openporte'),
         'requires' => 'wpforms',
       ),
       OpenPortePlugin::$option_integration_woocommerce_register => array(
         'label' => __('WooCommerce register page', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WooCommerce register page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
       OpenPortePlugin::$option_integration_woocommerce_reset_password => array(
         'label' => __('WooCommerce reset password page', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WooCommerce reset password page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
       OpenPortePlugin::$option_integration_woocommerce_login => array(
         'label' => __('WooCommerce login page', 'openporte'),
+        'hint' => __('Enable OpenPorte on the WooCommerce login page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
       OpenPortePlugin::$option_integration_custom => array(
         'label' => __('Custom HTML', 'openporte'),
         'hint' => sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
-          __('Or use %s shortcode anywhere in your HTML.', 'openporte'), '[openporte]',
+          __('Or use the %s shortcode anywhere in your HTML.', 'openporte'), '<code>[openporte]</code>',
         ),
       ),
     );
@@ -451,14 +473,13 @@ if (is_admin()) {
       add_settings_field(
         $openporte_option_name . '_field',
         $openporte_integration['label'],
-        'openporte_settings_field_callback',
+        'openporte_settings_checkbox_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
           "name" => $openporte_option_name,
           "disabled" => !$openporte_available,
           "hint" => $openporte_hint,
-          "type" => "checkbox"
         )
       );
     }
