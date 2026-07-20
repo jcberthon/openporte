@@ -12,17 +12,25 @@ Driven by [`.wp-env.json`](../.wp-env.json) (`afterStart` →
 [`bin/wp-init.sh`](bin/wp-init.sh)):
 
 - **WordPress** (version pinned in `.wp-env.json`) on `http://localhost:8888`.
-- **Contact Form 7** — installed and **activated** (used by the integration page).
+- **A suite of third-party form plugins** (`PLUGINS_SUITE` in
+  [`bin/wp-init.sh`](bin/wp-init.sh)) — installed; only **Contact Form 7** is
+  **activated** (used by the integration page). The E2E drivers activate the
+  others themselves.
 - **ALTCHA Spam Protection v1.26.3** (the upstream plugin OpenPorte forks) and
   **OpenPorte** (this repo, mapped into `wp-content/plugins/openporte`) — both
-  **installed but deactivated**.
-- Two pages:
+  **installed**; their activation state is never touched by the script (a
+  fresh bench starts with both deactivated).
+- Three pages:
   - **Contact Us** — a Contact Form 7 form; the form id is discovered at
     provisioning time (not hard-coded, since Contact Form 7 assigns it on install).
+  - **WPForms Test** — a minimal WPForms fixture form (one textarea, message
+    confirmation, WPForms' own anti-spam token and honeypot disabled so
+    OpenPorte is the only spam gate) created as a `wpforms` CPT post.
   - **Test Page** — the `[altcha]` and `[openporte]` shortcodes, to check the
     primary shortcode and its deprecated alias render.
 
-`wp-init.sh` is idempotent: re-running leaves existing fixture pages untouched.
+`wp-init.sh` is idempotent: re-running leaves existing fixture pages and
+plugin activation states untouched.
 
 ## Running it
 
