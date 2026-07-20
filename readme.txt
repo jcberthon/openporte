@@ -134,7 +134,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 * Forminator
 * GravityForms
 * HTML Forms
-* WPDiscuz
+* wpDiscuz
 * WPForms
 * WordPress Login, Register, Password reset
 * WordPress Comments
