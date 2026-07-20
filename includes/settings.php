@@ -281,13 +281,24 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_delay_field',
-      __('Delay', 'openporte'),
+      __('Verification Delay', 'openporte'),
       'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_delay,
-        "hint" => __('When checked, add a delay of 1.5 seconds to verification.', 'openporte'),
+        // The duration comes from OpenPortePlugin::$delay_ms so the hint cannot
+        // drift from what the widget actually does; seconds, not milliseconds,
+        // because this is read by site owners rather than developers.
+        "hint" => sprintf(
+          /* translators: %s is the added delay in seconds, e.g. "0.5" */
+          __('Some visitors perceive a slower check as more trustworthy, and this adds about %s seconds for that reason alone. It does not make spam-blocking any stronger — to raise the bar for bots, increase Complexity instead.', 'openporte'),
+          number_format_i18n(OpenPortePlugin::$delay_ms / 1000, 1)
+        ),
+        "toggle_labels" => array(
+          "off" => __('Instant', 'openporte'),
+          "on" => __('Delayed', 'openporte'),
+        ),
       )
     );
 

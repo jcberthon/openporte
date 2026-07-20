@@ -45,6 +45,26 @@ class OpenPortePlugin
   public static $option_integration_wpforms = "openporte_integration_wpforms";
   public static $option_integration_enfold_theme = "openporte_integration_enfold_theme";
 
+  /**
+   * Extra pause, in milliseconds, added to verification when the Verification
+   * Delay setting is on. Single source of truth: the widget attribute and the
+   * settings-page hint are both derived from it.
+   *
+   * This is a perception knob, not a security control. ALTCHA v2's `delay` is a
+   * flat sleep stacked on top of the proof-of-work, not a minimum-duration floor
+   * (that is a v3 attribute the bundled widget does not have), so it costs an
+   * attacker nothing — a bot simply runs more threads while others wait. It is
+   * offered because a visible pause reads as work being done, which raises
+   * perceived trustworthiness. Complexity is the setting that actually raises
+   * the cost for bots.
+   *
+   * 500 is a deliberate guess, not a measured or tuned value.
+   *
+   * @since 1.28.0
+   * @var int
+   */
+  public static $delay_ms = 500;
+
   public static $html_espace_allowed_tags = array(
     'altcha-widget' => array(
       'debug' => array(),
@@ -579,7 +599,7 @@ class OpenPortePlugin
       $attrs['floating'] = 'auto';
     }
     if ($delay) {
-      $attrs['delay'] = '1500';
+      $attrs['delay'] = (string) OpenPortePlugin::$delay_ms;
     }
     if ($hidelogo) {
       $attrs['hidelogo'] = '1';
