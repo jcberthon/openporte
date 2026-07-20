@@ -1,5 +1,5 @@
 const { expect } = require('@playwright/test');
-const { wp, ensureCommentsPost, purgeComments } = require('../helpers');
+const { wp, waitForFrontEnd, ensureCommentsPost, purgeComments } = require('../helpers');
 
 /**
  * wpDiscuz (jQuery click-delegated AJAX; never fires a native form submit —
@@ -18,7 +18,7 @@ module.exports = {
   key: 'wpdiscuz',
   option: 'openporte_integration_wpdiscuz',
 
-  ensure() {
+  async ensure() {
     try {
       wp('plugin is-installed wpdiscuz');
     } catch (e) {
@@ -26,7 +26,13 @@ module.exports = {
     }
     wp('plugin activate wpdiscuz');
     const postId = ensureCommentsPost();
-    return { path: `/?p=${postId}`, postId };
+    const path = `/?p=${postId}`;
+    // On a first-ever activation wpDiscuz has no "Default Form" yet, and until
+    // some deferred first-run routine creates it (observed ~100 s later on the
+    // bench) it renders nothing: the theme falls back to core's comment form
+    // and #wpdcom never appears. Wait for the real thing before test one.
+    await waitForFrontEnd(path, 'wpdcom');
+    return { path, postId };
   },
 
   // See comments.js — same core comment-flood throttle applies to the
