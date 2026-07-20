@@ -167,6 +167,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Retuned the Low/Medium/High proof-of-work complexity for modern hardware; developers can adjust the ranges via the new `openporte_complexity_matrix` filter.
 * The settings page now health-checks a custom Challenge URL and warns about misconfiguration (unreachable backend, algorithm or secret mismatch) before visitors are impacted.
 * Settings screen refresh: per-field hints throughout, a Show/Hide toggle on the secret field (now called "Shared secret"), and clearer API-mode wording. The "Floating UI" checkbox is now a "Display Mode" switch reading Inline or Floating; the setting itself is unchanged, so sites keep their current behaviour.
+* "Delay" is now "Verification Delay", and the pause it adds drops from 1.5 seconds to 0.5. This setting only ever changed how the check is *perceived* — it never made spam-blocking stronger, and the hint now says so and points at Complexity, which does.
 * Fix: a form submitted while the widget was still verifying lost the click silently; the submission is now held and replayed once the challenge is solved.
 * Fix: WooCommerce login and registration silently failed with auto-verification "On form submit" or Display Mode set to Floating (the widget's replayed submission dropped the submit button's name, which WooCommerce requires).
 * Fix: wpDiscuz comments could be posted before the challenge was solved; the submission is now held until verification completes.
