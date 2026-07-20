@@ -46,6 +46,8 @@ OpenPorte is backward-compatible with ALTCHA v1:
 * Your existing settings are migrated automatically on activation.
 * The `[altcha]` shortcode keeps working (alongside the new `[openporte]`).
 * The `altcha_*` filters and actions keep firing as deprecated aliases.
+* Custom API Mode has been verified against [GateCHA](https://gatecha.org),
+an open source server implementing the creation and verification of ALTCHA challenges.
 
 See the Deprecations section for the full list of compatibility aliases and
 what they map to.
@@ -102,8 +104,8 @@ OpenPorte verifies submissions in one of two modes, selected in the settings
   external service and no additional setup beyond enabling the integrations you
   need.
 * Custom — point the Challenge URL at your own ALTCHA-compatible backend (for
-  example a self-hosted ALTCHA Sentinel). Submissions are verified with your
-  site's signing secret.
+  example a self-hosted ALTCHA Sentinel, or [GateCHA](https://gatecha.org)).
+  Submissions are verified with your site's shared secret.
 
 The paid altcha.org regional SaaS classifier offered by earlier versions has
 been removed; both remaining modes are free and self-hostable.
@@ -134,11 +136,10 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 * HTML Forms
 * WPDiscuz
 * WPForms
-* WP-Members
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
+* Custom HTML and many other plugins (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
 
 == Source Code ==
 
@@ -146,7 +147,6 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 * Plugin: https://github.com/jcberthon/openporte
 * ALTCHA Widget: https://github.com/altcha-org/altcha
-
 
 == Screenshots ==
 
@@ -161,6 +161,16 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 = 1.28.0 (unreleased) =
 
 * ALTCHA Widget 2.3.0
+* Removed the remaining spam-filter plumbing from the paid-SaaS classifier; verification relies on the proof-of-work challenge alone.
+* New Algorithm setting (SHA-256/384/512). New installs are seeded with SHA-512; upgraded sites keep SHA-256, so existing custom ALTCHA-compatible backends continue to verify.
+* Expiration is now a preset list (5/30/60 minutes) plus a Custom input accepting 0-14400 seconds; new installs default to 5 minutes.
+* Retuned the Low/Medium/High proof-of-work complexity for modern hardware; developers can adjust the ranges via the new `openporte_complexity_matrix` filter.
+* The settings page now health-checks a custom Challenge URL and warns about misconfiguration (unreachable backend, algorithm or secret mismatch) before visitors are impacted.
+* Settings screen refresh: per-field hints throughout, a Show/Hide toggle on the secret field (now called "Shared secret"), and clearer API-mode wording.
+* Fix: a form submitted while the widget was still verifying lost the click silently; the submission is now held and replayed once the challenge is solved.
+* Fix: WooCommerce login and registration silently failed with auto-verification "On form submit" or the Floating UI enabled (the widget's replayed submission dropped the submit button's name, which WooCommerce requires).
+* Fix: wpDiscuz comments could be posted before the challenge was solved; the submission is now held until verification completes.
+* Tested on WordPress 7.0.2. The browser E2E suite (tests/e2e, not shipped) covers WordPress comments, Contact Form 7, wpDiscuz, WPForms and WooCommerce login/registration across every auto-verification and Floating UI combination, with negative controls (missing, forged and expired tokens).
 
 = 1.27.3 =
 This is a small bug-fix release.
