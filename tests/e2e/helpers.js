@@ -128,6 +128,30 @@ async function clickWidgetCheckbox(page) {
 }
 
 /**
+ * Negative-control helper: corrupt the solved widget's token so the payload
+ * decodes fine but its HMAC signature no longer matches — the forged-token
+ * counterpart to removeWidgets()' missing-token control. Call only after
+ * waitForVerified(); the hidden field is empty before the solve completes.
+ * (The field's name varies per integration — e.g. WooCommerce registration
+ * uses "openporte_register" — so locate it by its non-empty value instead.)
+ */
+async function tamperWidgetToken(page) {
+  await page.evaluate(() => {
+    const input = [...document.querySelectorAll('altcha-widget input[type="hidden"]')]
+      .find((el) => el.value);
+    if (!input) {
+      throw new Error('No solved widget token found to tamper with.');
+    }
+    const payload = JSON.parse(atob(input.value));
+    // Flip the signature's first byte (hex), guaranteeing a mismatch while
+    // keeping every field structurally valid.
+    payload.signature = (payload.signature.startsWith('00') ? '11' : '00')
+      + payload.signature.slice(2);
+    input.value = btoa(JSON.stringify(payload));
+  });
+}
+
+/**
  * Negative-control helper: strip every widget from the DOM so the form posts
  * with no altcha field, which the server must reject. (Bypasses client-side
  * `required` validation the same way a bot skipping the widget would.)
@@ -157,5 +181,6 @@ module.exports = {
   applyCombo,
   waitForVerified,
   clickWidgetCheckbox,
+  tamperWidgetToken,
   removeWidgets,
 };

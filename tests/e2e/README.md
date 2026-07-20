@@ -12,9 +12,24 @@ Per integration driver it runs:
   floating ∈ {off, on}: fill the form, solve (pre-solve where the mode allows,
   submit-triggered for onsubmit/floating — the race paths), submit, assert the
   submission was accepted.
-- **1 negative control** — strip the widget from the DOM and submit; the
-  server must reject. Without this, a combo could "pass" because verification
-  isn't wired up at all.
+- **2 negative controls** — the server must reject both:
+  - *missing token*: strip the widget from the DOM and submit. Without this,
+    a combo could "pass" because verification isn't wired up at all.
+  - *forged token*: solve for real, then corrupt the payload's HMAC signature
+    before submitting. Client-side everything looks verified; only the
+    server's signature check can catch it.
+
+One suite-wide extra negative (on the core-comments driver only, because the
+server-side check is integration-agnostic): **expired token replay** — solve
+with `openporte_expires=2`, capture the token, detach the widget (a live one
+auto-refetches expired challenges), submit the stale token after the validity
+window, expect rejection.
+
+Drivers: WordPress core comments, Contact Form 7, wpDiscuz, WPForms Lite,
+WooCommerce login, WooCommerce registration. The third WooCommerce surface
+(reset password) is not driven: it shares the registration code path (render
+hook + a `*_post` filter) but its happy path ends in an email the mailer-less
+bench can't observe.
 
 Real browser, real PoW solving (no mocks): the widget genuinely computes the
 challenge, so this also catches timing regressions like the complexity-range
@@ -24,9 +39,11 @@ change that exposed the wpDiscuz race.
 
 1. A running bench: `./wp-env.sh start` (from the repo root; provisions
    fixtures via `tests/bin/wp-init.sh` — the CF7 driver relies on its
-   "Contact Us" page). **OpenPorte must be activated** on the bench
+   "Contact Us" page, the WPForms driver on its "WPForms Test" page).
+   **OpenPorte must be activated** on the bench
    (`./wp-env.sh run cli -- wp plugin activate openporte`) — the init script
-   leaves it deactivated for the migration test.
+   never activates it (a fresh bench starts with it deactivated, for the
+   migration test).
 2. Reachability: the suite talks to `WP_BASE_URL`
    (default `http://localhost:8888`). For the remote Docker host, either use
    `WP_BASE_URL=http://<remote-host>:8888` or an SSH tunnel
@@ -85,3 +102,9 @@ receive.
   widget's floating popup positioning is not asserted (only that the
   submission ultimately succeeds). This is the path that caught the
   submit-swallowed-while-verifying bug fixed in `public/script.js`.
+- **WooCommerce drivers** share one `[woocommerce_my_account]` fixture page:
+  logged out it holds the login form and (once registration is enabled) the
+  register form. Each driver zeroes the sibling WooCommerce integration
+  options in `ensure()` so exactly one widget renders — the shared helpers
+  target `.first()`. The register driver's `reset()` deletes the customers
+  its tests created, sparing the login driver's fixture user.

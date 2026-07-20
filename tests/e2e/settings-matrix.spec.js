@@ -6,6 +6,7 @@ const {
   applyCombo,
   waitForVerified,
   clickWidgetCheckbox,
+  tamperWidgetToken,
   removeWidgets,
 } = require('./helpers');
 
@@ -77,5 +78,67 @@ for (const driver of drivers) {
       await driver.submit(page, ctx);
       await driver.expectRejected(page, ctx);
     });
+
+    test('rejects a tampered widget token', async ({ page }) => {
+      // Second negative control: the bypass test covers a *missing* token,
+      // this one a *forged* token — a genuinely solved payload whose HMAC
+      // signature is corrupted after the solve. Client-side everything looks
+      // verified; only the server's signature check can catch it.
+      applyCombo({ auto: '', floating: 0 });
+      driver.reset?.(ctx);
+      const marker = `e2e ${driver.key} tampered #${++counter} ${Date.now()}`;
+
+      await driver.open(page, ctx);
+      await driver.fill(page, ctx, marker);
+      await clickWidgetCheckbox(page);
+      await waitForVerified(page);
+      await tamperWidgetToken(page);
+      await driver.submit(page, ctx);
+      await driver.expectRejected(page, ctx);
+    });
+
+    if (driver.key === 'wordpress-comments') {
+      test('rejects an expired (stale, replayed) token', async ({ page }) => {
+        // Expiry is enforced in OpenPortePlugin::verify_solution() from the
+        // expires timestamp the server signed into the salt — the check is
+        // integration-agnostic, so one driver covers it for the whole suite.
+        applyCombo({ auto: '', floating: 0 });
+        wpSetOption('openporte_expires', '2');
+        try {
+          driver.reset?.(ctx);
+          const marker = `e2e ${driver.key} expired #${++counter} ${Date.now()}`;
+
+          await driver.open(page, ctx);
+          await driver.fill(page, ctx, marker);
+          await clickWidgetCheckbox(page);
+          await waitForVerified(page);
+          // Capture the solved token and detach the widget: a live widget
+          // auto-refetches expired challenges (refetchonexpire defaults on)
+          // and would swap in a fresh token before we submit. Detaching turns
+          // this into the real attack shape — replaying a stale token.
+          const stale = await page.evaluate(() => {
+            const input = [...document.querySelectorAll('altcha-widget input[type="hidden"]')]
+              .find((el) => el.value);
+            input.form.dataset.openporteE2e = 'stale';
+            return { name: input.name, value: input.value };
+          });
+          await removeWidgets(page);
+          // Outlive the 2 s validity window, then replay the stale token.
+          await page.waitForTimeout(4000);
+          await page.evaluate(({ name, value }) => {
+            const form = document.querySelector('form[data-openporte-e2e="stale"]');
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            form.appendChild(input);
+          }, stale);
+          await driver.submit(page, ctx);
+          await driver.expectRejected(page, ctx);
+        } finally {
+          wpSetOption('openporte_expires', '300'); // restore the baseline
+        }
+      });
+    }
   });
 }
