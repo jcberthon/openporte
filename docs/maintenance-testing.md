@@ -15,7 +15,7 @@ section in sync with it.
 - PHP: 8.0
 
 **✅ Recommended**
-- WordPress: 6.8+
+- WordPress: 7.0+
 - PHP: 8.3–8.5
 
 **✅ Latest tested**

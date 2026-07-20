@@ -23,5 +23,19 @@
       expiresEl.addEventListener('change', (ev) => onExpiresChange(ev.target.value));
       onExpiresChange(expiresEl.value);
     }
+
+    // Show/Hide toggle for password-type settings fields. The labels come
+    // from data attributes rendered server-side, so they stay translated.
+    [...document.querySelectorAll('.openporte-toggle-password')].forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        if (!input) {
+          return;
+        }
+        const reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        btn.textContent = reveal ? btn.dataset.labelHide : btn.dataset.labelShow;
+      });
+    });
   });
 })();

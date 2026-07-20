@@ -46,6 +46,13 @@ keep working as **deprecated aliases** of their `openporte` equivalents.
 Integrations for paid-only plugins (e.g. Enfold) are also **deprecated** and
 will be removed.
 
+OpenPorte supports Custom API Mode. This mode has been verified against
+[GateCHA](https://gatecha.org), an open-source implementation of the ALTCHA
+server protocol and an alternative to the proprietary ALTCHA Sentinel. Sites
+using a Sentinel-compatible backend are expected to work as well, since both
+implement the same server-signature verification, though this has not been
+directly tested. 
+
 ## Supported Integrations
 
 * CoBlocks
@@ -58,11 +65,10 @@ will be removed.
 * HTML Forms
 * WPDiscuz
 * WPForms
-* WP-Members
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
+* Custom HTML and many other plugins (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
 
 ## Floating UI
 
@@ -103,9 +109,10 @@ OpenPorte verifies submissions in one of two modes, selected in the settings
   your own WordPress site via the REST API. Fully self-contained, no external
   service, no account.
 - **Custom** — point the Challenge URL at your own ALTCHA-compatible backend
-  (e.g. a self-hosted ALTCHA Sentinel); submissions are verified with your site's
-  signing secret. The Algorithm setting must match the hash algorithm your
-  backend uses (most ALTCHA-compatible backends default to SHA-256).
+  (e.g. a self-hosted ALTCHA Sentinel, or [GateCHA](https://gatecha.org));
+  submissions are verified with your site's shared secret. The Algorithm
+  setting must match the hash algorithm your backend uses (most
+  ALTCHA-compatible backends default to SHA-256).
 
 The paid altcha.org regional SaaS classifier offered by earlier versions has been
 removed; both remaining modes are free and self-hostable.
@@ -113,7 +120,7 @@ removed; both remaining modes are free and self-hostable.
 #### Which settings apply in which mode
 
 Verification always happens **locally** in WordPress, in both modes: OpenPorte
-recomputes the challenge and its HMAC signature with your Signing secret. It
+recomputes the challenge and its HMAC signature with your shared secret. It
 never calls a backend verification API (such as GateCHA's `/api/v1/verify` or
 ALTCHA Sentinel's verify endpoint) — so in Custom mode the backend only
 *issues* challenges, and its dashboard will show challenges as issued but
@@ -123,14 +130,14 @@ call (replay tracking, verification statistics) are not used.
 | Setting | Self-hosted | Custom |
 |---|---|---|
 | Challenge URL | ignored (the built-in REST endpoint is used) | fetched by the widget — include any required query parameters (e.g. an `apiKey`) |
-| Signing secret | signs and verifies challenges | must **equal the backend's HMAC secret**; used to verify locally |
+| Shared secret | signs and verifies challenges | must **equal the backend's HMAC secret**; used to verify locally |
 | Algorithm | generates and verifies challenges | must **match the backend's algorithm**; used at verification only |
 | Complexity | sets the PoW difficulty | ignored — the backend decides |
 | Expiration | sets the challenge life-span | ignored — the backend's expiry (embedded in the salt) is enforced instead |
 | Widget customization (auto-verify, floating, delay, logo/footer) | applies | applies |
 | Integrations | apply | apply |
 
-Two things worth knowing in Custom mode: a mismatched Algorithm or Signing
+Two things worth knowing in Custom mode: a mismatched Algorithm or shared
 secret is invisible while the widget solves (the widget reads the algorithm
 from the challenge itself) and only shows up when a form submission is
 verified server-side; and the self-hosted REST challenge endpoint remains

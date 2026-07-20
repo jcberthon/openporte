@@ -72,6 +72,16 @@ class OpenPortePlugin
     'noscript' => array(),
   );
 
+  // Formatting tags allowed in settings hints (see admin/options.php).
+  // Everything else is stripped.
+  public static $hint_allowed_tags = array(
+    'br'     => array(),
+    'em'     => array(),
+    'strong' => array(),
+    'code'   => array(),
+    'a'      => array( 'href' => true, 'target' => true, 'rel' => true ),
+  );
+
   public function init()
   {
     OpenPortePlugin::$instance = $this;
@@ -527,8 +537,10 @@ class OpenPortePlugin
    * the difficulty ranges. The widget brute-forces 0..maxnumber, so 'max'
    * bounds the worst case and the min..max window sets the average work.
    *
-   * TODO: the ranges are provisional, not yet backed by empirical data —
-   * validate on old/low-end hardware before considering them final.
+   * On a 2024 mid-range laptop (SHA-256):
+   *  60000 is ~0.2s – 100000 is ~0.4s – 150000 is ~0.8s.
+   * On a 2016 mid-range laptop (SHA-256):
+   *  60000 is ~1.4s – 100000 is ~2.4s – 150000 is ~3.4s.
    *
    * Filterable so a site can tune difficulty without forking the plugin:
    * add_filter('openporte_complexity_matrix', ...). A 'low' entry must always
@@ -537,9 +549,9 @@ class OpenPortePlugin
   public static function get_complexity_matrix()
   {
     $matrix = array(
-      'low'    => array('min' => 5000,   'max' => 25000),
-      'medium' => array('min' => 25000,  'max' => 75000),
-      'high'   => array('min' => 125000, 'max' => 200000),
+      'low'    => array('min' =>  50000, 'max' =>  70000),
+      'medium' => array('min' =>  90000, 'max' => 110000),
+      'high'   => array('min' => 140000, 'max' => 160000),
     );
     return apply_filters('openporte_complexity_matrix', $matrix);
   }
