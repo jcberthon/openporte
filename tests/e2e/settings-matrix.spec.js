@@ -19,9 +19,10 @@ for (const driver of drivers) {
   test.describe(driver.key, () => {
     let ctx;
 
-    test.beforeAll(() => {
+    test.beforeAll(async () => {
       applyBaseline();
-      ctx = driver.ensure();
+      // ensure() may be async (a driver waiting for its plugin to be live).
+      ctx = await driver.ensure();
       wpSetOption(driver.option, '1');
     });
 
@@ -37,11 +38,16 @@ for (const driver of drivers) {
           await driver.open(page, ctx);
           await driver.fill(page, ctx, marker);
 
-          // Pre-solve where the mode supports it. With floating on, or
-          // auto=onsubmit, solving is submit-triggered (Floating UI implies
-          // onsubmit when auto is unset) — submit first and let the widget /
-          // the capture-phase glue hold the submission. That submit-triggered
-          // path is exactly the race under test.
+          // Pre-solve where the mode supports it. The rows that don't:
+          //   - auto=onsubmit: nothing to pre-solve, the widget starts the
+          //     solve from the submit itself and replays it when done.
+          //   - floating on: the widget is anchored to the submit button, so
+          //     these rows submit straight away and land mid-solve. Floating
+          //     UI only implies onsubmit when auto is unset — with
+          //     auto=onload/onfocus the click hits a required, still-unticked
+          //     checkbox and is swallowed by constraint validation unless the
+          //     capture-phase glue in public/script.js holds and replays it.
+          //     That race is exactly what these rows cover.
           if (!floating && auto !== 'onsubmit') {
             if (auto === '') {
               await clickWidgetCheckbox(page);

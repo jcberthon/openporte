@@ -68,6 +68,38 @@ function purgeComments(postId) {
   }
 }
 
+const BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8888';
+
+/**
+ * Poll a front-end URL until its HTML contains `needle`.
+ *
+ * Some plugins are not fully wired up the moment wp-cli reports them active
+ * (see the wpDiscuz driver), and the first test then loads a page rendered as
+ * if the plugin were off. Warm up before the first navigation instead of
+ * letting one combo fail for a reason that has nothing to do with OpenPorte.
+ */
+async function waitForFrontEnd(path, needle, timeout = 120000) {
+  const deadline = Date.now() + timeout;
+  let last = '';
+  for (;;) {
+    try {
+      const res = await fetch(`${BASE_URL}${path}`);
+      last = `HTTP ${res.status}`;
+      if ((await res.text()).includes(needle)) {
+        return;
+      }
+    } catch (e) {
+      last = e.message;
+    }
+    if (Date.now() > deadline) {
+      throw new Error(
+        `Timed out waiting for "${needle}" at ${BASE_URL}${path} (last attempt: ${last}).`
+      );
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+}
+
 /** Baseline OpenPorte configuration every combo starts from. */
 function applyBaseline() {
   wpSetOption('openporte_api', 'selfhosted');
@@ -118,6 +150,7 @@ async function removeWidgets(page) {
 module.exports = {
   wp,
   wpSetOption,
+  waitForFrontEnd,
   ensureCommentsPost,
   purgeComments,
   applyBaseline,
