@@ -345,6 +345,16 @@ attribute audit): `disablerefetchonexpire`, `sentinel`, `plugins`,
 `floatingpersist`, `language`. The `spamfilter`/`blockspam` deprecation in
 2.3.0 is documentation-only — no runtime warning in the bundle.
 
+**Don't trust the version string in the bundle.** Upstream commits a prebuilt
+`dist/` and stamps the version at build time, so a release that doesn't rebuild
+ships an older string: the 2.3.0 bundle still reports `2.2.4` (its `dist/` is
+byte-identical to 2.2.4 — 2.3.0 only repackaged the unused
+obfuscation/analytics/upload plugins into `@altcha/plugins` for a disputed
+CVE). Verify a re-vendor
+against `OPENPORTE_WIDGET_VERSION` and the SHA-256 in the provenance ledger, not
+the embedded string — details in
+[`docs/agents/altcha-upstream.md`](agents/altcha-upstream.md).
+
 #### Bench provisioning notes (`wp-init.sh` tweaks per leg)
 
 `tests/bin/wp-init.sh` targets the ceiling; the floor leg needs adjustments

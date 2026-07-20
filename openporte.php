@@ -54,6 +54,9 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ||
 }
 
 define('OPENPORTE_VERSION', '1.28.0-dev');
+// Authoritative version of the vendored widget. The string embedded in
+// public/altcha.min.js can lag (2.3.0 ships a bundle reporting 2.2.4 — upstream
+// did not rebuild dist/); see docs/agents/altcha-upstream.md.
 define('OPENPORTE_WIDGET_VERSION', '2.3.0');
 
 // Upstream ALTCHA widget attribution: the visible "Protected by ALTCHA" footer
