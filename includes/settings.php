@@ -159,7 +159,7 @@ if (is_admin()) {
         "custom" => true,
         "name" => OpenPortePlugin::$option_api_custom_url,
         'disabled' => !$custom_api_mode_active,
-        "hint" => __('Only available in Custom API mode.<br/>The URL is made up of the domain and path to your <strong>custom ALTCHA-compatible backend</strong>, and optionally an API key (it starts with <code>gk_</code>).', 'openporte'),
+        "hint" => __('Only available when API Mode is set to Custom.<br/>The URL is made up of the domain and path to your <strong>custom ALTCHA-compatible backend</strong>, and optionally an API key (it starts with <code>gk_</code>).', 'openporte'),
         // Example URL, deliberately not translatable.
         "placeholder" => 'https://your-backend.com/api/v1/challenge?apiKey=gk_959c...',
         "type" => "url"
@@ -283,7 +283,7 @@ if (is_admin()) {
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_delay,
-        "hint" => __('Add a delay of 1.5 seconds to verification.', 'openporte'),
+        "hint" => __('When checked, add a delay of 1.5 seconds to verification.', 'openporte'),
       )
     );
 
@@ -403,7 +403,7 @@ if (is_admin()) {
       ),
       OpenPortePlugin::$option_integration_formidable => array(
         'label' => __('Formidable Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on Formidable Forms.', 'openporte'),
+        'hint' => __('Enable OpenPorte on Formidable Forms forms.', 'openporte'),
         'requires' => 'formidable',
       ),
       OpenPortePlugin::$option_integration_forminator => array(
@@ -413,12 +413,12 @@ if (is_admin()) {
       ),
       OpenPortePlugin::$option_integration_gravityforms => array(
         'label' => __('Gravity Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on Gravity Forms.', 'openporte'),
+        'hint' => __('Enable OpenPorte on Gravity Forms forms.', 'openporte'),
         'requires' => 'gravityforms',
       ),
       OpenPortePlugin::$option_integration_html_forms => array(
         'label' => __('HTML Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on HTML Forms.', 'openporte'),
+        'hint' => __('Enable OpenPorte on HTML Forms forms.', 'openporte'),
         'requires' => 'html-forms',
       ),
       OpenPortePlugin::$option_integration_wpdiscuz => array(
