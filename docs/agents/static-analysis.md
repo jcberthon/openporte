@@ -14,24 +14,24 @@ If syntax is invalid, fix it. Do not proceed with a broken file.
 modified files and report findings in a condensed, organised summary. Do not
 block on these results — report only, let the maintainer decide.
 
-- PHP coding standards: `npm run lint:phpcs` (ruleset: `phpcs.xml.dist`)
-- PHP mess detection: `npm run lint:phpmd` (ruleset: `phpmd.xml.dist`)
+- PHP: `npm run lint:phpcs` and `npm run lint:phpmd`
 - Shell: `shellcheck <file>`
 
-Both PHP analysers are composer dev dependencies, so `composer install` is a
-prerequisite. Each has a GitHub Actions counterpart running the *same* entry
-point (`.github/workflows/phpcs.yml`, `.github/workflows/phpmd.yml`) — if a
-finding appears locally it will appear in CI, and vice versa. PHPCS gates the
-build; PHPMD is advisory and uploads SARIF to the Security tab.
+The two PHP analysers — what they cover, which one gates a PR, why PHPMD exits
+`2`, and the standing backlog of pre-existing findings — are documented once,
+for humans and agents alike, under "Code quality checks" in
+[`CONTRIBUTING.md`](../../CONTRIBUTING.md). Read it before reporting results;
+do not restate it here.
 
-PHPMD exits 2 when it reports violations; that is not a failure of the run.
-The codebase has a standing set of pre-existing findings (long
-`openporte_settings_init()`, the deprecated `openporte_settings_field_callback()`,
-the size of the `OpenPortePlugin` singleton) — when reporting, distinguish
-findings your change introduced from that background.
+Agent-specific additions to that:
 
-`phpstan` is **not** currently installed and there is no `phpstan.neon`; do not
-report its absence as a problem.
+- **Report the delta, not the backlog.** Separate findings your change
+  introduced from the pre-existing ones. Reporting the standing backlog as if
+  it were new is noise.
+- **Never "fix" a pre-existing finding in passing** — that violates the
+  touch-scoped rule in [`coding-style.md`](coding-style.md). Raise it instead.
+- `phpstan` is **not** installed and there is no `phpstan.neon`. Do not report
+  its absence as a problem, and do not add it without asking.
 
 **WordPress Plugin Check (MANUAL — tester only):** The WordPress
 [Plugin Check](https://wordpress.org/plugins/plugin-check/) tool is run by a
