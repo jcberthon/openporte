@@ -5,7 +5,7 @@
         "wp-content/plugins/openporte": "."
     },
 	"phpVersion": "8.3",
-	"core": "WordPress/WordPress#6.8",
+	"core": "WordPress/WordPress#7.0.2",
 	"port": 8888,
 	"testsEnvironment": false,
     "config": {
