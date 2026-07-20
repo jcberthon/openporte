@@ -210,6 +210,9 @@ if [[ "$IS_START" == "true" ]]; then
   # shellcheck disable=SC2029
   rsync -az --delete --include="wp-env.sh" --include=".wp*" \
       --include="tests/" --include="tests/bin/" --include="tests/bin/wp-init.sh" \
+      --include="tests/e2e/package.json" --include="tests/e2e/package-lock.json" \
+      --exclude="tests/e2e/node_modules" \
+      --exclude="tests/e2e/playwright-report" --exclude="tests/e2e/test-results" \
       --exclude-from=./.distignore \
       -e "ssh -i \"${REMOTE_RSYNC_KEY}\" -o IdentitiesOnly=yes" \
       . ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}/
