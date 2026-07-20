@@ -166,11 +166,11 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Expiration is now a preset list (5/30/60 minutes) plus a Custom input accepting 0-14400 seconds; new installs default to 5 minutes.
 * Retuned the Low/Medium/High proof-of-work complexity for modern hardware; developers can adjust the ranges via the new `openporte_complexity_matrix` filter.
 * The settings page now health-checks a custom Challenge URL and warns about misconfiguration (unreachable backend, algorithm or secret mismatch) before visitors are impacted.
-* Settings screen refresh: per-field hints throughout, a Show/Hide toggle on the secret field (now called "Shared secret"), and clearer API-mode wording.
+* Settings screen refresh: per-field hints throughout, a Show/Hide toggle on the secret field (now called "Shared secret"), and clearer API-mode wording. The "Floating UI" checkbox is now a "Display Mode" switch reading Inline or Floating; the setting itself is unchanged, so sites keep their current behaviour.
 * Fix: a form submitted while the widget was still verifying lost the click silently; the submission is now held and replayed once the challenge is solved.
-* Fix: WooCommerce login and registration silently failed with auto-verification "On form submit" or the Floating UI enabled (the widget's replayed submission dropped the submit button's name, which WooCommerce requires).
+* Fix: WooCommerce login and registration silently failed with auto-verification "On form submit" or Display Mode set to Floating (the widget's replayed submission dropped the submit button's name, which WooCommerce requires).
 * Fix: wpDiscuz comments could be posted before the challenge was solved; the submission is now held until verification completes.
-* Tested on WordPress 7.0.2. The browser E2E suite (tests/e2e, not shipped) covers WordPress comments, Contact Form 7, wpDiscuz, WPForms and WooCommerce login/registration across every auto-verification and Floating UI combination, with negative controls (missing, forged and expired tokens).
+* Tested on WordPress 7.0.2. The browser E2E suite (tests/e2e, not shipped) covers WordPress comments, Contact Form 7, wpDiscuz, WPForms and WooCommerce login/registration across every auto-verification and display-mode combination, with negative controls (missing, forged and expired tokens).
 
 = 1.27.3 =
 This is a small bug-fix release.

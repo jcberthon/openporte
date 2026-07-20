@@ -72,7 +72,9 @@ directly tested.
 
 ## Floating UI
 
-The plugin supports the [Floating UI](https://altcha.org/docs/v2/floating-ui/) but with known limitations:
+The plugin supports the [Floating UI](https://altcha.org/docs/v2/floating-ui/),
+enabled by setting **Display Mode** to *Floating* under Widget Customisation,
+but with known limitations:
 
 Currently the Floating UI does not work with:
 
