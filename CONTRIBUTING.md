@@ -100,6 +100,47 @@ These serve as the living release plan. An issue gets a release milestone once i
 scope and target version are decided; issues still under discussion stay on
 `future` (or unmilestoned).
 
+## Code quality checks
+
+Two PHP analysers run in CI, and both can be run locally — same ruleset, same
+scope, same versions. Install the dev tooling once per clone:
+
+```bash
+composer install
+```
+
+That is the only prerequisite; the `npm run` wrappers below are thin shell
+scripts and need no `npm install`.
+
+| Command | What it checks | CI workflow | Blocking? |
+|---|---|---|---|
+| `npm run lint:phpcs` | WordPress security/correctness sniffs and PHP cross-version compatibility, per [`phpcs.xml.dist`](phpcs.xml.dist) | `.github/workflows/phpcs.yml` | **Yes** — a finding fails the PR |
+| `npm run lint:phpmd` | Complexity, dead code and design smells, per [`phpmd.xml.dist`](phpmd.xml.dist) | `.github/workflows/phpmd.yml` | No — advisory, uploaded to the repo's Security tab |
+
+Both workflows invoke exactly what you run locally (PHPMD via
+[`bin/lint/phpmd.sh`](bin/lint/phpmd.sh)), and both analysers are pinned by
+`composer.lock`, so a finding on your machine is a finding in CI and vice
+versa. Don't run `phpmd` directly — the ruleset file cannot carry path
+exclusions, so a bare `phpmd .` also walks `vendor/` and produces hundreds of
+findings CI never sees.
+
+Two things to know before reading PHPMD output:
+
+- **It exits `2` when it reports violations.** That is normal, not a crash.
+- **There is a standing backlog of pre-existing findings** — the long
+  `openporte_settings_init()`, the deprecated `openporte_settings_field_callback()`,
+  the size of the `OpenPortePlugin` singleton. When reviewing your own change,
+  compare against `main` rather than expecting a clean run. Complexity findings
+  are judgement calls: the maintainer decides what gets refactored and what is
+  justified, which is why this one is advisory.
+
+`phpcs` also ships a fixer for the mechanical subset: `vendor/bin/phpcbf`.
+Note that the ruleset is deliberately scoped to security and correctness, not
+whole-file formatting — see the rationale at the top of `phpcs.xml.dist`, and
+the touch-scoped style policy in
+[`docs/agents/coding-style.md`](docs/agents/coding-style.md) before reformatting
+anything you aren't otherwise changing.
+
 ## Commits and pull requests
 
 Commit messages follow [`docs/agents/commit-conventions.md`](docs/agents/commit-conventions.md):
@@ -108,10 +149,11 @@ an imperative, capitalized verb prefix (`Add`, `Fix`, `Update`, `Remove`,
 period. Reference issues in the body footer — `Fixes #123` to auto-close on merge,
 `Refs #123` for context.
 
-Before opening a PR, run the verification protocol in [`AGENTS.md`](AGENTS.md):
-there is **no automated test suite**, so changes are validated by hand on the
-`wp-env` bench (`php -l` on changed PHP, a clean `wp-env logs`, and the relevant
-acceptance steps under [`docs/acceptance/`](docs/acceptance/)).
+Before opening a PR, run the checks above and the verification protocol in
+[`AGENTS.md`](AGENTS.md): there is **no automated test suite**, so changes are
+validated by hand on the `wp-env` bench (`php -l` on changed PHP, a clean
+`wp-env logs`, and the relevant acceptance steps under
+[`docs/acceptance/`](docs/acceptance/)).
 
 The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) asks for two things every
 PR must settle **at review time**, not deferred to release prep: a "Docs
