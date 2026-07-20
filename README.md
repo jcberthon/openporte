@@ -63,7 +63,7 @@ directly tested.
 * Forminator
 * GravityForms
 * HTML Forms
-* WPDiscuz
+* wpDiscuz
 * WPForms
 * WordPress Login, Register, Password reset
 * WordPress Comments
