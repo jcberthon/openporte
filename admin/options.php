@@ -254,9 +254,54 @@ function openporte_settings_password_callback(array $args)
 }
 
 /**
- * Renderer for checkbox input settings fields.
- * 
+ * Renders the `input` element of a checkbox settings field.
+ *
+ * Shared by both renderings of openporte_settings_checkbox_callback() — plain
+ * checkbox and toggle switch — so the two cannot drift apart. The toggle is a
+ * CSS skin over this very element (see public/admin.css), never a `button`
+ * substitute, so it keeps the native keyboard and screen-reader behaviour.
+ *
  * @since 1.28.0
+ *
+ * @param string $name       Option name, used as both the `name` and `id` attribute.
+ * @param mixed  $setting    Current option value; the box is checked when it equals 1.
+ * @param bool   $disabled   Whether to render the input disabled.
+ * @param string $aria_label Accessible name for the control. Optional — only needed
+ *                           when no visible `label` is tied to the input.
+ */
+function openporte_render_checkbox_input($name, $setting, $disabled, $aria_label = null)
+{
+?>
+  <input autocomplete="off"
+    type="checkbox"
+    name="<?php echo esc_attr($name); ?>"
+    id="<?php echo esc_attr($name); ?>"
+    value="1"
+    <?php echo is_null($aria_label) ? '' : ' aria-label="' . esc_attr($aria_label) . '"'; ?>
+    <?php checked(1, $setting, true); ?>
+    <?php echo $disabled === true ? ' disabled' : ''; ?>>
+<?php
+}
+
+/**
+ * Renderer for checkbox input settings fields.
+ *
+ * Renders a plain checkbox by default. When the `toggle_labels` arg is present
+ * the same checkbox is instead wrapped in a toggle switch flanked by the two
+ * state names — for fields that express a choice between two named states
+ * rather than enabling an option. The stored value is `1`/empty either way.
+ *
+ * @since 1.28.0
+ *
+ * @param array $args {
+ *     @type string $name          Option name. Required.
+ *     @type string $description   Label rendered above the control. Optional.
+ *     @type string $hint          Explanatory text rendered below it. Optional.
+ *     @type bool   $disabled      Render the input disabled. Optional.
+ *     @type array  $toggle_labels Toggle state names, keyed `off` and `on`.
+ *                                 Presence of this arg selects the toggle
+ *                                 rendering. Optional.
+ * }
  */
 function openporte_settings_checkbox_callback(array $args)
 {
@@ -264,18 +309,29 @@ function openporte_settings_checkbox_callback(array $args)
   $hint = isset($args['hint']) ? $args['hint'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
+  $toggle_labels = isset($args['toggle_labels']) ? $args['toggle_labels'] : null;
   $setting = get_option($name);
 ?>
-  <div><label class="description" for="<?php echo esc_attr($name); ?>">
-    <?php echo esc_html($description); ?>
-  </label></div>
-  <input autocomplete="off"
-    type="checkbox"
-    name="<?php echo esc_attr($name); ?>"
-    id="<?php echo esc_attr($name); ?>"
-    value="1"
-    <?php checked(1, $setting, true); ?>
-    <?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <?php if ($description) { ?>
+    <div><label class="description" for="<?php echo esc_attr($name); ?>">
+      <?php echo esc_html($description); ?>
+    </label></div>
+  <?php } ?>
+  <?php if ($toggle_labels) { ?>
+    <div class="openporte-toggle">
+      <span class="openporte-toggle-off"><?php echo esc_html($toggle_labels['off']); ?></span>
+      <?php
+      // The flanking state names are plain spans, not labels: two `label`
+      // elements for one input would concatenate into a contradictory
+      // accessible name. The "on" state name is what checking the box turns
+      // on, so it names the control.
+      openporte_render_checkbox_input($name, $setting, $disabled, $toggle_labels['on']);
+      ?>
+      <span class="openporte-toggle-on"><?php echo esc_html($toggle_labels['on']); ?></span>
+    </div>
+  <?php } else { ?>
+    <?php openporte_render_checkbox_input($name, $setting, $disabled); ?>
+  <?php } ?>
   <?php if ($hint) { ?>
     <div class="openporte-hint">
       <?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?>
