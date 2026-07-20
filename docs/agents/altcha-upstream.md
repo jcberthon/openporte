@@ -29,6 +29,23 @@ Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
    on every future upgrade.
 
 
+## The version string inside the bundle is not authoritative
+
+Upstream commits `dist/` to the repo and injects the version at build time
+(`vite.config.ts` → `ALTCHA_VERSION: process.env.npm_package_version`), with no
+`prepublishOnly`/`prepack` step. A release that does not rebuild `dist/`
+therefore ships artifacts stamped with an older version.
+
+That is the case for **2.3.0**, which vendors a bundle reporting **2.2.4**:
+`git diff v2.2.4 v2.3.0 -- dist/` is empty (last commit touching `dist/` is
+`5c5aa3f "2.2.4"`), and the only source change in the range is a new *empty*
+`src/plugins/index.ts`. Nothing is missing and no changed code is stale.
+
+Use `package.json` / the lockfile — and `OPENPORTE_WIDGET_VERSION` — as the
+source of truth for the vendored version. Do not treat a mismatched embedded
+string as a failed re-vendor; verify with the SHA-256 in the provenance ledger
+instead.
+
 ## Licensing-risk contingency
 
 If `altcha-org` relicenses to a non-OSS license (as happened with the original
@@ -54,4 +71,11 @@ Last verified MIT upstream (including altcha.umd.cjs SHA-256 sum):
     unchanged, and `refetchonexpire` re-fetches at expiry. The upstream
     `spamfilter`/`blockspam` deprecation is documentation-only — no runtime
     warning, attributes still accepted (keep-vs-drop decision: #6).
+  - 2.3.0 is pure repackaging for CVE-2025-65849 (disputed, but flagged by
+    `npm audit`): the obfuscation/analytics/upload plugins moved out of `altcha`
+    into a new `@altcha/plugins` package. OpenPorte uses none of them, so the
+    only breaking change (`altcha/obfuscation` → `@altcha/plugins/obfuscation`)
+    does not apply — the upgrade is functionally a no-op. The shipped bundle
+    still reports `2.2.4`; see "The version string inside the bundle is not
+    authoritative" above.
 - `v2.2.2` (81e92af) on 2025-09-09 - dca232f0f5ae3d5e32c63aaf66a6aa9ae33543993d8397c011ea6ccc4650c8c6

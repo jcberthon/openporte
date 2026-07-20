@@ -160,7 +160,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 = 1.28.0 (unreleased) =
 
-* ALTCHA Widget 2.3.0
+* ALTCHA Widget 2.3.0. Note: the bundled widget file still reports "2.2.4" — upstream 2.3.0 only repackaged optional plugins OpenPorte does not use and did not rebuild its distributed file, which is byte-identical to 2.2.4. Nothing is missing.
 * Removed the remaining spam-filter plumbing from the paid-SaaS classifier; verification relies on the proof-of-work challenge alone.
 * New Algorithm setting (SHA-256/384/512). New installs are seeded with SHA-512; upgraded sites keep SHA-256, so existing custom ALTCHA-compatible backends continue to verify.
 * Expiration is now a preset list (5/30/60 minutes) plus a Custom input accepting 0-14400 seconds; new installs default to 5 minutes.
