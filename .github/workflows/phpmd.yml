@@ -1,17 +1,10 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# PHPMD is a spin-off project of PHP Depend and
-# aims to be a PHP equivalent of the well known Java tool PMD.
-# What PHPMD does is: It takes a given PHP source code base
-# and look for several potential problems within that source.
-# These problems can be things like:
-#   Possible bugs
-#   Suboptimal code
-#   Overcomplicated expressions
-#   Unused parameters, methods, properties
-# More details at https://phpmd.org/
+# Runs PHPMD (https://phpmd.org/) — complexity, dead code and design smells, as
+# configured in phpmd.xml.dist. Findings are advisory: they are uploaded as SARIF
+# to the Security tab for the maintainer to judge, and do not fail the build.
+# See docs/agents/static-analysis.md.
+#
+# The scan itself is delegated to bin/lint/phpmd.sh, the same entry point
+# developers use via `npm run lint:phpmd`, so local and CI results match.
 
 name: PHPMD
 
@@ -40,15 +33,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # Same PHP version as phpcs.yml, so both analysers see the same language
+      # semantics. PHPMD itself comes from composer.lock rather than setup-php's
+      # `tools:`, so CI and developers run an identical version.
       - name: Setup PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: '8.4'
           coverage: none
-          tools: phpmd
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
       - name: Run PHPMD
-        run: phpmd . sarif codesize --reportfile phpmd-results.sarif
+        run: bash bin/lint/phpmd.sh sarif phpmd-results.sarif
         continue-on-error: true
 
       - name: Upload analysis results to GitHub

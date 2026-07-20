@@ -17,7 +17,7 @@ This repo uses the [Agent Skills Specification](https://agentskills.io/specifica
 Community reconstruction of the retired official ALTCHA WordPress plugin. The upstream GPL project has been removed from GitHub by its original author — there is no live upstream to reference or merge from. **We are the canonical source.** Style and structure decisions are ours alone. License: GPLv2 or later.
 
 Pure PHP WordPress plugin at runtime — no build step is required to run it, and there's no
-automated test suite. Composer (dev-only: `phpcs`/`phpstan`) and npm (`bin/release/*.sh`
+automated test suite. Composer (dev-only: `phpcs`/`phpmd`) and npm (`bin/release/*.sh`
 release-prep scripts, see `docs/release-preparation.md`) are dev tooling, not shipped —
 both are excluded via `.distignore`.
 
