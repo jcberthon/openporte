@@ -14,8 +14,24 @@ If syntax is invalid, fix it. Do not proceed with a broken file.
 modified files and report findings in a condensed, organised summary. Do not
 block on these results — report only, let the maintainer decide.
 
-- PHP: `phpstan analyse <file>` (requires `phpstan.neon` at repo root)
+- PHP coding standards: `npm run lint:phpcs` (ruleset: `phpcs.xml.dist`)
+- PHP mess detection: `npm run lint:phpmd` (ruleset: `phpmd.xml.dist`)
 - Shell: `shellcheck <file>`
+
+Both PHP analysers are composer dev dependencies, so `composer install` is a
+prerequisite. Each has a GitHub Actions counterpart running the *same* entry
+point (`.github/workflows/phpcs.yml`, `.github/workflows/phpmd.yml`) — if a
+finding appears locally it will appear in CI, and vice versa. PHPCS gates the
+build; PHPMD is advisory and uploads SARIF to the Security tab.
+
+PHPMD exits 2 when it reports violations; that is not a failure of the run.
+The codebase has a standing set of pre-existing findings (long
+`openporte_settings_init()`, the deprecated `openporte_settings_field_callback()`,
+the size of the `OpenPortePlugin` singleton) — when reporting, distinguish
+findings your change introduced from that background.
+
+`phpstan` is **not** currently installed and there is no `phpstan.neon`; do not
+report its absence as a problem.
 
 **WordPress Plugin Check (MANUAL — tester only):** The WordPress
 [Plugin Check](https://wordpress.org/plugins/plugin-check/) tool is run by a

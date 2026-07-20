@@ -3,6 +3,8 @@
   "private": true,
   "description": "Release-preparation scripts for the OpenPorte WordPress plugin. See docs/release-preparation.md.",
   "scripts": {
+    "lint:phpcs": "vendor/bin/phpcs -q --report=full",
+    "lint:phpmd": "bash bin/lint/phpmd.sh",
     "release:version": "bash bin/release/version.sh",
     "release:i18n": "bash bin/release/i18n.sh",
     "release:assets": "bash bin/release/sync-wordpress-org-assets.sh",

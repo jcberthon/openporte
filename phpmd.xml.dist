@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset name="OpenPorte"
+	xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+	<description>
+		OpenPorte mess-detection rules: complexity, dead code and design smells.
+		Advisory only — findings are reported for the maintainer to judge, they do
+		not gate a build (see docs/agents/static-analysis.md).
+
+		NOTE: PHPMD accepts path exclusions only as a CLI flag, so this file cannot
+		say what gets scanned the way phpcs.xml.dist does. That lives in
+		bin/lint/phpmd.sh, which both developers and .github/workflows/phpmd.yml
+		call so the two cannot drift.
+	</description>
+
+	<!-- Complexity and size. Stock thresholds (CyclomaticComplexity > 10,
+	     NPathComplexity > 200); no reason to loosen them for this codebase. -->
+	<rule ref="rulesets/codesize.xml"/>
+
+	<!-- Dead code. UnusedFormalParameter is excluded: nearly every function here
+	     is a WordPress hook callback, whose signature is fixed by the filter or
+	     action it is registered against — trailing parameters are frequently
+	     unused by design and cannot be removed. The remaining rules
+	     (UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod) have no
+	     such false-positive mode. -->
+	<rule ref="rulesets/unusedcode.xml">
+		<exclude name="UnusedFormalParameter"/>
+	</rule>
+
+	<!-- Design smells: coupling, inheritance depth, eval/goto, empty catch
+	     blocks, leftover var_dump/print_r. Currently reports nothing — it is here
+	     to catch regressions, at no ongoing noise cost. -->
+	<rule ref="rulesets/design.xml"/>
+
+	<!-- Deliberately NOT enabled: cleancode and controversial. Both fight
+	     WordPress conventions this project mandates — StaticAccess would flag
+	     every OpenPortePlugin::$option_* reference, which AGENTS.md requires, and
+	     CamelCaseFunctionName would flag the entire snake_case API. -->
+
+</ruleset>
