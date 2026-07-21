@@ -557,10 +557,25 @@ class OpenPortePlugin
    * the difficulty ranges. The widget brute-forces 0..maxnumber, so 'max'
    * bounds the worst case and the min..max window sets the average work.
    *
-   * On a 2024 mid-range laptop (SHA-256):
-   *  60000 is ~0.2s – 100000 is ~0.4s – 150000 is ~0.8s.
-   * On a 2016 mid-range laptop (SHA-256):
-   *  60000 is ~1.4s – 100000 is ~2.4s – 150000 is ~3.4s.
+   * Worst-case solve times measured on real devices (SHA-512, worker pool,
+   * top of each band) — see local/benchmarks/pow-benchmarks-2026-07.md:
+   *
+   *                                       Low        Medium     High
+   *   desktop/laptop, 2019 or newer       0.1–0.8s   0.2–1.2s   0.3–1.7s
+   *   phone/tablet, current, Low Power    1.0s       1.6s       2.3s
+   *   phone, ~10 years old                1.6s       2.5s       3.7s
+   *
+   * Device age dominates, not the browser engine — the spread across engines
+   * on one machine is far smaller than the spread across device age. The
+   * widget sizes its worker pool from navigator.hardwareConcurrency, which is
+   * commonly capped for fingerprinting resistance: WebKit returns a fixed 4 on
+   * iOS and 8 on macOS whatever the SoC, while Firefox and Brave clamp it
+   * under user-adjustable privacy settings. The times above are therefore the
+   * capped case — the conservative one, and the one privacy-conscious visitors
+   * actually get.
+   *
+   * Sized for hardware back to ~2016; pre-2015 devices still work but are
+   * deliberately not sized for (they land near 2.6 / 4.1 / 5.9s).
    *
    * Filterable so a site can tune difficulty without forking the plugin:
    * add_filter('openporte_complexity_matrix', ...). A 'low' entry must always
