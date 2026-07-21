@@ -304,25 +304,36 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_hidelogo_field',
-      __('Hide logo', 'openporte'),
+      __('Branding', 'openporte'),
       'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_hidelogo,
-        "hint" => __('When checked, hide the ALTCHA logo inside the widget.', 'openporte'),
+        "hint" => __('Hides the small ALTCHA logo shown inside the widget. ALTCHA is free, open-source software — we would appreciate you keeping it visible, but the choice is yours.', 'openporte'),
+        "toggle_labels" => array(
+          "off" => __('Show', 'openporte'),
+          "on" => __('Hide Logo', 'openporte'),
+        ),
       )
     );
 
     add_settings_field(
       'openporte_settings_hidefooter_field',
-      __('Hide footer', 'openporte'),
+      // Deliberately empty, and deliberately not translatable: this row is the
+      // second half of the "Branding" group above, so WordPress renders it with
+      // an empty `th` and the two toggles read as one block. Nothing is missing.
+      '',
       'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_hidefooter,
-        "hint" => __('When checked, hide the "Protected by ALTCHA" text inside the widget.', 'openporte'),
+        "hint" => __('Hides the "Protected by ALTCHA" text shown inside the widget. Same as the logo: keeping it visible helps credit the project this plugin is built on, but it has no effect on how OpenPorte works.', 'openporte'),
+        "toggle_labels" => array(
+          "off" => __('Show', 'openporte'),
+          "on" => __('Hide Footer', 'openporte'),
+        ),
       )
     );
 

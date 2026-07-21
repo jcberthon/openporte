@@ -84,6 +84,11 @@
 .openporte-toggle-off {
   font-weight: 600;
 }
+/* The "on" name is a real label tied to the checkbox, so it is clickable —
+   say so. The "off" name is a decorative span and deliberately is not. */
+.openporte-toggle-on {
+  cursor: pointer;
+}
 .openporte-toggle:has(input[type="checkbox"]:checked) .openporte-toggle-off {
   font-weight: 400;
 }
