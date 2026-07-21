@@ -263,13 +263,11 @@ function openporte_settings_password_callback(array $args)
  *
  * @since 1.28.0
  *
- * @param string $name       Option name, used as both the `name` and `id` attribute.
- * @param mixed  $setting    Current option value; the box is checked when it equals 1.
- * @param bool   $disabled   Whether to render the input disabled.
- * @param string $aria_label Accessible name for the control. Optional — only needed
- *                           when no visible `label` is tied to the input.
+ * @param string $name     Option name, used as both the `name` and `id` attribute.
+ * @param mixed  $setting  Current option value; the box is checked when it equals 1.
+ * @param bool   $disabled Whether to render the input disabled.
  */
-function openporte_render_checkbox_input($name, $setting, $disabled, $aria_label = null)
+function openporte_render_checkbox_input($name, $setting, $disabled)
 {
 ?>
   <input autocomplete="off"
@@ -277,7 +275,6 @@ function openporte_render_checkbox_input($name, $setting, $disabled, $aria_label
     name="<?php echo esc_attr($name); ?>"
     id="<?php echo esc_attr($name); ?>"
     value="1"
-    <?php echo is_null($aria_label) ? '' : ' aria-label="' . esc_attr($aria_label) . '"'; ?>
     <?php checked(1, $setting, true); ?>
     <?php echo $disabled === true ? ' disabled' : ''; ?>>
 <?php
@@ -288,14 +285,16 @@ function openporte_render_checkbox_input($name, $setting, $disabled, $aria_label
  *
  * Renders a plain checkbox by default. When the `toggle_labels` arg is present
  * the same checkbox is instead wrapped in a toggle switch flanked by the two
- * state names — for fields that express a choice between two named states
- * rather than enabling an option. The stored value is `1`/empty either way.
+ * state names, the `on` one being the control's accessible name. The stored
+ * value is `1`/empty either way.
  *
  * @since 1.28.0
  *
  * @param array $args {
  *     @type string $name          Option name. Required.
- *     @type string $description   Label rendered above the control. Optional.
+ *     @type string $description   Label rendered above the control. Optional, and
+ *                                 not to be combined with `toggle_labels` — it
+ *                                 would compete with the toggle's own label.
  *     @type string $hint          Explanatory text rendered below it. Optional.
  *     @type bool   $disabled      Render the input disabled. Optional.
  *     @type array  $toggle_labels Toggle state names, keyed `off` and `on`.
@@ -320,14 +319,17 @@ function openporte_settings_checkbox_callback(array $args)
   <?php if ($toggle_labels) { ?>
     <div class="openporte-toggle">
       <span class="openporte-toggle-off"><?php echo esc_html($toggle_labels['off']); ?></span>
+      <?php openporte_render_checkbox_input($name, $setting, $disabled); ?>
       <?php
-      // The flanking state names are plain spans, not labels: two `label`
-      // elements for one input would concatenate into a contradictory
-      // accessible name. The "on" state name is what checking the box turns
-      // on, so it names the control.
-      openporte_render_checkbox_input($name, $setting, $disabled, $toggle_labels['on']);
+      // Only the "on" side is a real `label`: it is what checking the box turns
+      // on, so it names the control (and makes that text clickable). The "off"
+      // side stays a `span` — two `label` elements pointing at one input would
+      // concatenate into a contradictory accessible name, and the row title in
+      // the `th` is not tied to the input either (no `label_for`), deliberately.
       ?>
-      <span class="openporte-toggle-on"><?php echo esc_html($toggle_labels['on']); ?></span>
+      <label class="openporte-toggle-on" for="<?php echo esc_attr($name); ?>">
+        <?php echo esc_html($toggle_labels['on']); ?>
+      </label>
     </div>
   <?php } else { ?>
     <?php openporte_render_checkbox_input($name, $setting, $disabled); ?>
