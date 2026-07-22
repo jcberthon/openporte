@@ -474,12 +474,19 @@ if (is_admin()) {
         'label' => __('Protect the WooCommerce login page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
+      // Deprecated (#62), removal in the next major release. The toggle stays
+      // functional through the deprecation window so affected sites can
+      // re-enable it while they migrate to the shortcode.
       OpenPortePlugin::$option_integration_custom => array(
         'title' => __('Custom HTML', 'openporte'),
-        'label' => __('Activate custom JS when using the shortcode.', 'openporte'),
+        'label' => __('Configure hand-written widget tags.', 'openporte'),
+        'class' => 'openporte-deprecated',
         'hint' => sprintf(
-          /* translators: the placeholder will be replaced with the shortcode */
-          __('The %s shortcode can be used anywhere in your HTML.', 'openporte'), '<code>[openporte]</code>',
+          /* translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode */
+          __('%1$sDeprecated%2$s, and scheduled for removal in the next major release — place the %3$s shortcode in your content instead.', 'openporte'),
+          '<strong>',
+          '</strong>',
+          '<code>[openporte]</code>',
         ),
       ),
     );
@@ -512,6 +519,10 @@ if (is_admin()) {
             "on" => $openporte_integration['label'],
           ),
           "hint" => $openporte_hint,
+          // WP core copies this onto the row's <tr> (empty = no attribute), so
+          // deprecated entries get their warning styling with no logic in the
+          // field callback — see tr.openporte-deprecated in public/admin.css.
+          "class" => $openporte_integration['class'] ?? '',
         )
       );
     }

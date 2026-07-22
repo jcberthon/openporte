@@ -151,7 +151,12 @@ $openporte_shortcode = function ($attrs) {
   $plugin = OpenPortePlugin::$instance;
   $default = array(
     'language' => null,
-    'mode' => $plugin->get_integration_custom(),
+    // `mode` is a vestige of the pre-1.28 mode-string era: render_widget()
+    // never branches on it, it is only passed through to the widget filters.
+    // Read the option directly — get_integration_custom() is deprecated (#62)
+    // and would log a notice on every shortcode render. The whole `mode`
+    // plumbing is slated for cleanup in the next major release.
+    'mode' => get_option(OpenPortePlugin::$option_integration_custom),
   );
   $a = shortcode_atts($default, $attrs);
   return wp_kses($plugin->render_widget($a['mode'], true, $a['language']), OpenPortePlugin::$html_espace_allowed_tags);
@@ -184,7 +189,9 @@ function openporte_activate()
   // SHA-256 in get_algorithm(), preserving pre-1.28 verification behavior.
   add_option(OpenPortePlugin::$option_algorithm, 'SHA-512');
   add_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
-  add_option(OpenPortePlugin::$option_integration_custom, 1);
+  // openporte_integration_custom is deliberately no longer seeded to 1 here:
+  // the Custom HTML integration is deprecated (#62), so new installs get the
+  // register_setting() default of 0.
 }
 
 /**
@@ -196,7 +203,8 @@ function openporte_activate()
  */
 function openporte_upgrade()
 {
-  if (get_option(OpenPortePlugin::$option_version) === OPENPORTE_VERSION) {
+  $stored_version = get_option(OpenPortePlugin::$option_version);
+  if ($stored_version === OPENPORTE_VERSION) {
     return;
   }
   openporte_normalize_integration_options();
@@ -204,6 +212,17 @@ function openporte_upgrade()
   // is hardcoded on purpose — its static property was removed with the feature
   // (same convention as the legacy altcha_* keys in the migration map).
   delete_option('openporte_blockspam');
+  // Custom HTML is deprecated (#62): switch it off once when crossing 1.28.0.
+  // Most enabled values were never a user choice — upstream force-enabled the
+  // option on every activation since 1.9.2 — and it costs the widget scripts
+  // on every front-end page. Gated on the PRE-update stored version so that a
+  // deliberate re-enable through the still-functional settings toggle survives
+  // later upgrades. A missing stored version also passes the gate: releases
+  // before this option existed must be treated as "upgrading from old", and on
+  // a fresh 1.28.0 install writing 0 just materialises the default.
+  if (!is_string($stored_version) || version_compare($stored_version, '1.28.0', '<')) {
+    update_option(OpenPortePlugin::$option_integration_custom, 0);
+  }
   update_option(OpenPortePlugin::$option_version, OPENPORTE_VERSION);
 }
 add_action('plugins_loaded', 'openporte_upgrade');
@@ -219,6 +238,10 @@ add_action('plugins_loaded', 'openporte_upgrade');
  * preserves the exact legacy behavior. (Contact Form 7's 'shortcode' maps to
  * 1: verification must stay enforced, at the cost of the widget now also being
  * auto-injected.)
+ *
+ * Second exception: Custom HTML always maps to 0. The integration is
+ * deprecated (#62), and a legacy truthy value was rarely a user choice anyway:
+ * upstream force-enabled it on every activation since 1.9.2.
  */
 function openporte_normalize_integration_options()
 {
@@ -251,7 +274,8 @@ function openporte_normalize_integration_options()
       continue;
     }
     $disable = ($value === 'spamfilter')
-      || ($key === OpenPortePlugin::$option_integration_html_forms && $value === 'shortcode');
+      || ($key === OpenPortePlugin::$option_integration_html_forms && $value === 'shortcode')
+      || ($key === OpenPortePlugin::$option_integration_custom);
     update_option($key, $disable ? 0 : 1);
   }
 }

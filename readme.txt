@@ -54,6 +54,18 @@ what they map to.
 
 == Upgrade Notice ==
 
+= 1.28.0 =
+The "Custom HTML" integration is deprecated and switched off by this upgrade.
+Most sites are unaffected: forms protected through the Integrations settings
+and widgets placed with the `[openporte]` or `[altcha]` shortcodes keep working,
+and every page stops loading now-unneeded widget scripts. Only sites that hand-
+wrote bare `<altcha-widget>` tags (in theme templates or Custom HTML blocks) are
+concerned: re-enable the "Custom HTML" toggle under Settings → OpenPorte →
+Integrations, then replace those tags with the `[openporte]` shortcode before
+the next major release removes the feature.
+Note: the `[altcha]` shortcode still works but is itself a deprecated alias —
+prefer `[openporte]` when placing new widgets (see Deprecations).
+
 = 1.27.3 =
 Extended the activation conflict guard: sites auto-upgraded to ALTCHA v2+ can
 now activate OpenPorte cleanly. Your v1 settings still migrate automatically;
@@ -83,6 +95,8 @@ compatibility and are scheduled for removal in a future release:
   constants — use `OpenPortePlugin` and the `OPENPORTE_*` constants.
 * Integrations targeting paid-only third-party plugins; affected users should
   migrate to the official ALTCHA v2/v3 plugin.
+* The "Custom HTML" integration (auto-configuration of hand-written
+  `<altcha-widget>` tags) — place the `[openporte]` shortcode instead.
 
 == Privacy ==
 
@@ -139,7 +153,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML and many other plugins (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
+* Many other plugins and your own content (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
 
 == Source Code ==
 
@@ -169,6 +183,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Settings screen refresh: per-field hints throughout, a Show/Hide toggle on the secret field (now called "Shared secret"), and clearer API-mode wording. The "Floating UI" checkbox is now a "Display Mode" switch reading Inline or Floating; the setting itself is unchanged, so sites keep their current behaviour.
 * "Hide logo" and "Hide footer" are now grouped as "Branding", each a Show/Hide toggle. Both remain independent settings, still off by default, so nothing changes for existing sites — the hints simply explain that the ALTCHA logo and "Protected by ALTCHA" text credit the open-source project OpenPorte is built on, and that hiding them affects nothing else.
 * "Delay" is now "Verification Delay", and the pause it adds drops from 1.5 seconds to 0.5. This setting only ever changed how the check is *perceived* — it never made spam-blocking stronger, and the hint now says so and points at Complexity, which does.
+* Deprecated: the "Custom HTML" integration (auto-configuring hand-written `<altcha-widget>` tags by loading the widget scripts on every front-end page) is deprecated and will be removed in the next major release — use the `[openporte]` shortcode instead. The setting is switched off on upgrade and no longer enabled on new installs; if your site relies on hand-written widget tags, re-enable the toggle under Integrations while you migrate. See **Upgrade Notice**.
 * Fix: a form submitted while the widget was still verifying lost the click silently; the submission is now held and replayed once the challenge is solved.
 * Fix: WooCommerce login and registration silently failed with auto-verification "On form submit" or Display Mode set to Floating (the widget's replayed submission dropped the submit button's name, which WooCommerce requires).
 * Fix: wpDiscuz comments could be posted before the challenge was solved; the submission is now held until verification completes.
