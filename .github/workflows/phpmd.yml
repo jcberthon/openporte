@@ -38,11 +38,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@aa1fe473f9c687b6fb896056d771232c0bc41161
+        uses: shivammathur/setup-php@a4e22b60bbb9c1021113f2860347b0759f66fe5d # 2.30.0
         with:
+          php-version: '8.4'
           coverage: none
           tools: phpmd
 
@@ -51,7 +52,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@e0647621c2984b5ed2f768cb892365bf2a616ad1 # v4
         with:
           sarif_file: phpmd-results.sarif
           wait-for-processing: true
