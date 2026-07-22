@@ -77,20 +77,10 @@
   opacity: 0.5;
   cursor: default;
 }
-/* Bold whichever state name is currently active. The "on" name follows the
-   input, so the sibling combinator reaches it from :checked. The "off" name
-   precedes it and CSS has no previous-sibling combinator, so it is bolded by
-   default and un-bolded via :has() on the wrapper when the box is checked. */
-.openporte-toggle-off {
-  font-weight: 600;
-}
-/* The "on" name is a real label tied to the checkbox, so it is clickable —
-   say so. The "off" name is a decorative span and deliberately is not. */
+/* Bold the label when the toggle is "on".
+   The "on" name is a real label tied to the checkbox, so it is clickable. */
 .openporte-toggle-on {
   cursor: pointer;
-}
-.openporte-toggle:has(input[type="checkbox"]:checked) .openporte-toggle-off {
-  font-weight: 400;
 }
 .openporte-toggle input[type="checkbox"]:checked ~ .openporte-toggle-on {
   font-weight: 600;
