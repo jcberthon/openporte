@@ -133,7 +133,7 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_api_field',
-      __('API Mode', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_api . '">' . __('API Mode', 'openporte') . '</label>',
       'openporte_settings_select_callback',
       'openporte_admin',
       'openporte_general_settings_section',
@@ -151,7 +151,7 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_challenge_url_field',
-      __('Challenge URL', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_api_custom_url . '">' . __('Challenge URL', 'openporte') . '</label>',
       'openporte_settings_text_callback',
       'openporte_admin',
       'openporte_general_settings_section',
@@ -168,13 +168,13 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_secret_field',
-      __('Shared secret', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_secret . '">' . __('Shared secret', 'openporte') . '</label>',
       'openporte_settings_password_callback',
       'openporte_admin',
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_secret,
-        "description" => __('A secret key used to sign and verify challenges.', 'openporte'),
+        "tooltip" => __('A secret key used to sign and verify challenges.', 'openporte'),
         "hint" => __('OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API Mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend.', 'openporte'),
         "display_toggle" => true
       )
@@ -183,13 +183,13 @@ if (is_admin()) {
     $openporte_algorithms = OpenPortePlugin::get_allowed_algorithms();
     add_settings_field(
       'openporte_settings_algorithm_field',
-      __('Algorithm', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_algorithm . '" title="' . __('Hash algorithm for the challenges.', 'openporte') . '">' . __('Algorithm', 'openporte') . '</label>',
       'openporte_settings_select_callback',
       'openporte_admin',
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_algorithm,
-        "description" => __('Hash algorithm for the challenges.', 'openporte'),
+        "tooltip" => __('Hash algorithm for the challenges.', 'openporte'),
         "hint" => __('In Self-hosted API Mode this is the algorithm used to generate and verify the proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256.', 'openporte'),
         // Algorithm identifiers are proper nouns — not translatable.
         "options" => array_combine($openporte_algorithms, $openporte_algorithms),
@@ -212,7 +212,7 @@ if (is_admin()) {
     }
     add_settings_field(
       'openporte_settings_complexity_field',
-      __('Complexity', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_complexity . '">' . __('Complexity', 'openporte') . '</label>',
       'openporte_settings_select_callback',
       'openporte_admin',
       'openporte_general_settings_section',
@@ -225,7 +225,7 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_expires_field',
-      __('Expiration', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_expires . '">' . __('Expiration', 'openporte') . '</label>',
       'openporte_settings_expires_callback',
       'openporte_admin',
       'openporte_general_settings_section',
@@ -247,7 +247,7 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_auto_field',
-      __('Auto verification', 'openporte'),
+      '<label for="' . OpenPortePlugin::$option_auto . '">' . __('Auto verification', 'openporte') . '</label>',
       'openporte_settings_select_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
@@ -265,16 +265,16 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_floating_field',
-      __('Display Mode', 'openporte'),
-      'openporte_settings_checkbox_callback',
+      '<label for="' . OpenPortePlugin::$option_floating . '">' . __('Display Mode', 'openporte') . '</label>',
+      'openporte_settings_select_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_floating,
         "hint" => __('Choose whether the widget sits inline in the page or floats near the submit button.', 'openporte'),
-        "toggle_labels" => array(
-          "off" => __('Inline', 'openporte'),
-          "on" => __('Floating', 'openporte'),
+        "options" => array(
+          "" => __('Inline', 'openporte'),
+          "1" => __('Floating', 'openporte'),
         ),
       )
     );
@@ -290,14 +290,11 @@ if (is_admin()) {
         // The duration comes from OpenPortePlugin::$delay_ms so the hint cannot
         // drift from what the widget actually does; seconds, not milliseconds,
         // because this is read by site owners rather than developers.
-        "hint" => sprintf(
+        "hint" => __('Some visitors perceive a slower check as more trustworthy, and that is this pause\'s only effect. It does not make spam-blocking any stronger; to raise the bar for bots, increase Complexity instead.', 'openporte'),
+        "toggle_label" => sprintf(
           /* translators: %s is the added delay in seconds, e.g. "0.5" */
-          __('Some visitors perceive a slower check as more trustworthy, and this adds about %s seconds for that reason alone. It does not make spam-blocking any stronger — to raise the bar for bots, increase Complexity instead.', 'openporte'),
+          __('Add %s second delay', 'openporte'),
           number_format_i18n(OpenPortePlugin::$delay_ms / 1000, 1)
-        ),
-        "toggle_labels" => array(
-          "off" => __('Instant', 'openporte'),
-          "on" => __('Delayed', 'openporte'),
         ),
       )
     );
@@ -310,11 +307,8 @@ if (is_admin()) {
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_hidelogo,
-        "hint" => __('Hides the small ALTCHA logo shown inside the widget. ALTCHA is free, open-source software — we would appreciate you keeping it visible, but the choice is yours.', 'openporte'),
-        "toggle_labels" => array(
-          "off" => __('Show', 'openporte'),
-          "on" => __('Hide Logo', 'openporte'),
-        ),
+        "hint" => __('This applies to the small ALTCHA logo shown inside the widget. ALTCHA is free, open-source software — we would appreciate you keeping it visible, but the choice is yours.', 'openporte'),
+        "toggle_label" => __('Hide the ALTCHA logo', 'openporte'),
       )
     );
 
@@ -329,11 +323,8 @@ if (is_admin()) {
       'openporte_widget_settings_section',
       array(
         "name" => OpenPortePlugin::$option_hidefooter,
-        "hint" => __('Hides the "Protected by ALTCHA" text shown inside the widget. Same as the logo: keeping it visible helps credit the project this plugin is built on, but it has no effect on how OpenPorte works.', 'openporte'),
-        "toggle_labels" => array(
-          "off" => __('Show', 'openporte'),
-          "on" => __('Hide Footer', 'openporte'),
-        ),
+        "hint" => __('This applies to the text shown inside the widget. Same as the logo: keeping it visible helps credit the project this plugin is built on, but it has no effect on how OpenPorte works.', 'openporte'),
+        "toggle_label" => __('Hide the "Protected by ALTCHA" footer', 'openporte'),
       )
     );
 
@@ -381,9 +372,7 @@ if (is_admin()) {
         'openporte_wordpress_settings_section',
         array(
           "name" => $openporte_option_name,
-          "toggle_labels" => array(
-            "on" => $openporte_label['label'],
-          ),
+          "toggle_label" => $openporte_label['label'],
         )
       );
     }
@@ -515,9 +504,7 @@ if (is_admin()) {
         array(
           "name" => $openporte_option_name,
           "disabled" => !$openporte_available,
-          "toggle_labels" => array(
-            "on" => $openporte_integration['label'],
-          ),
+          "toggle_label" => $openporte_integration['label'],
           "hint" => $openporte_hint,
           // WP core copies this onto the row's <tr> (empty = no attribute), so
           // deprecated entries get their warning styling with no logic in the

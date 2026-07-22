@@ -190,19 +190,23 @@ function openporte_settings_text_callback(array $args)
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $custom = isset($args['custom']) ? $args['custom'] : '';
   $description = isset($args['description']) ? $args['description'] : null;
+  $tooltip = isset($args['tooltip']) ? $args['tooltip'] : '';
   $class = 'regular-text';
   $autocomplete = 'off';
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
-  <div><label class="description" for="<?php echo esc_attr($name); ?>">
-    <?php echo esc_html($description); ?>
-  </label></div>
+  <?php if ($description) { ?>
+    <div><label class="description" for="<?php echo esc_attr($name); ?>">
+      <?php echo esc_html($description); ?>
+    </label></div>
+  <?php } ?>
   <input autocomplete="<?php echo esc_attr($autocomplete); ?>"
     <?php echo $custom === true ? ' data-custom-api' : ''; ?>
     type="<?php echo esc_attr($type); ?>"
     name="<?php echo esc_attr($name); ?>"
     id="<?php echo esc_attr($name); ?>"
+    title="<?php echo esc_attr($tooltip); ?>"
     <?php echo is_null($inputmode) ? '' : ' inputmode="' . esc_attr($inputmode) . '"'; ?>
     <?php echo is_null($class) ? '' : ' class="' . esc_attr($class) . '"'; ?>
     <?php echo is_null($placeholder) ? '' : ' placeholder="' . esc_attr($placeholder) . '"'; ?>
@@ -230,19 +234,23 @@ function openporte_settings_password_callback(array $args)
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $display_toggle = isset($args['display_toggle']) ? $args['display_toggle'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
+  $tooltip = isset($args['tooltip']) ? $args['tooltip'] : '';
   $class = 'openporte-large-text';
   $autocomplete = 'new-password';
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
-  <div><label class="description" for="<?php echo esc_attr($name); ?>">
-    <?php echo esc_html($description); ?>
-  </label></div>
+  <?php if ($description) { ?>
+    <div><label class="description" for="<?php echo esc_attr($name); ?>">
+      <?php echo esc_html($description); ?>
+    </label></div>
+  <?php } ?>
   <input autocomplete="<?php echo esc_attr($autocomplete); ?>"
     type="password"
     name="<?php echo esc_attr($name); ?>"
     id="<?php echo esc_attr($name); ?>"
     class="<?php echo esc_attr($class); ?>"
+    title="<?php echo esc_attr($tooltip); ?>"
     <?php echo is_null($placeholder) ? '' : ' placeholder="' . esc_attr($placeholder) . '"'; ?>
     value="<?php echo esc_attr($value); ?>"
     <?php echo $disabled === true ? ' disabled' : ''; ?>>
@@ -292,25 +300,21 @@ function openporte_render_checkbox_input($name, $setting, $disabled)
 /**
  * Renderer for checkbox input settings fields.
  *
- * Renders a plain checkbox by default. When the `toggle_labels` arg is present
- * the same checkbox is instead wrapped in a toggle switch flanked by the two
- * state names, the `on` one being the control's accessible name. The stored
- * value is `1`/empty either way.
+ * Renders a plain checkbox by default. When the `toggle_label` arg is present
+ * the same checkbox is instead wrapped in a toggle switch with the `toggle_label`
+ * as the label for the toggle switch. The stored value is `1`/empty either way.
  *
  * @since 1.28.0
  *
  * @param array $args {
  *     @type string $name          Option name. Required.
  *     @type string $description   Label rendered above the control. Optional, and
- *                                 not to be combined with `toggle_labels` — it
+ *                                 not to be combined with `toggle_label` — it
  *                                 would compete with the toggle's own label.
  *     @type string $hint          Explanatory text rendered below it. Optional.
  *     @type bool   $disabled      Render the input disabled. Optional.
- *     @type array  $toggle_labels Toggle state names, keyed `off` and `on`.
- *                                 Presence of this arg selects the toggle
- *                                 rendering. If use, `on` must be defined,
- *                                 `off` is optional. Arg Optional.
- * }
+ *     @type string $toggle_label  Label for the toggle switch. Optional.
+ *   }
  */
 function openporte_settings_checkbox_callback(array $args)
 {
@@ -318,7 +322,7 @@ function openporte_settings_checkbox_callback(array $args)
   $hint = isset($args['hint']) ? $args['hint'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
-  $toggle_labels = isset($args['toggle_labels']) ? $args['toggle_labels'] : null;
+  $toggle_label = isset($args['toggle_label']) ? $args['toggle_label'] : null;
   $setting = get_option($name);
 ?>
   <?php if ($description) { ?>
@@ -326,21 +330,11 @@ function openporte_settings_checkbox_callback(array $args)
       <?php echo esc_html($description); ?>
     </label></div>
   <?php } ?>
-  <?php if ($toggle_labels) { ?>
+  <?php if ($toggle_label) { ?>
     <div class="openporte-toggle">
-      <?php if (isset($toggle_labels['off'])) { ?>
-        <span class="openporte-toggle-off"><?php echo esc_html($toggle_labels['off']); ?></span>
-      <?php } ?>
       <?php openporte_render_checkbox_input($name, $setting, $disabled); ?>
-      <?php
-      // Only the "on" side is a real `label`: it is what checking the box turns
-      // on, so it names the control (and makes that text clickable). The "off"
-      // side stays a `span` — two `label` elements pointing at one input would
-      // concatenate into a contradictory accessible name, and the row title in
-      // the `th` is not tied to the input either (no `label_for`), deliberately.
-      ?>
       <label class="openporte-toggle-on" for="<?php echo esc_attr($name); ?>">
-        <?php echo esc_html($toggle_labels['on']); ?>
+        <?php echo esc_html($toggle_label); ?>
       </label>
     </div>
   <?php } else { ?>
@@ -397,9 +391,11 @@ function openporte_settings_field_callback(array $args)
     $value = 1;
   }
 ?>
-  <div><label class="description" for="<?php echo esc_attr($name); ?>">
-    <?php echo esc_html($description); ?>
-  </label></div>
+  <?php if ($description) { ?>
+    <div><label class="description" for="<?php echo esc_attr($name); ?>">
+      <?php echo esc_html($description); ?>
+    </label></div>
+  <?php } ?>
   <input autocomplete="<?php echo esc_attr($autocomplete); ?>"
     <?php echo $custom === true ? ' data-custom-api' : ''; ?>
     type="<?php echo esc_attr($type); ?>"
@@ -438,11 +434,12 @@ function openporte_settings_select_callback(array $args)
   $hint = isset($args['hint']) ? $args['hint'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
+  $tooltip = isset($args['tooltip']) ? $args['tooltip'] : '';
   $options = isset($args['options']) ? $args['options'] : array();
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
 ?>
-  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" <?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" <?php echo $disabled === true ? ' disabled' : ''; ?> title="<?php echo esc_attr($tooltip); ?>">
     <?php
       foreach ( $options as $opt_key => $opt_value ) {
         echo '<option value="' . esc_attr( $opt_key ) . '" '
@@ -451,9 +448,11 @@ function openporte_settings_select_callback(array $args)
       }
     ?>
   </select>
-  <label class="description" for="<?php echo esc_attr($name); ?>">
-    <?php echo esc_html($description) ?>
-  </label>
+  <?php if ($description) { ?>
+    <label class="description" for="<?php echo esc_attr($name); ?>">
+      <?php echo esc_html($description); ?>
+    </label>
+  <?php } ?>
   <?php if ($hint) { ?>
     <div class="openporte-hint"><?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?></div>
   <?php } ?>
