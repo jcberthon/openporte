@@ -101,3 +101,35 @@
     transition: none;
   }
 }
+/* Deprecated-setting rows. WordPress core copies add_settings_field()'s
+   'class' arg onto the row's <tr>, so this styling needs no logic in the
+   field callbacks. Colour and icon only reinforce the hint text, which
+   must itself lead with the word "Deprecated" — never colour alone. */
+tr.openporte-deprecated .openporte-hint {
+  color: #996800;
+  /* The base hint opacity would wash the amber below AA contrast. */
+  opacity: 1;
+}
+/* The "caution" icon from the WordPress Icon Library (@wordpress/icons,
+   GPL-2.0-or-later), vendored as a data URI so it adds no runtime
+   dependency. Painted via mask with currentColor, so it always matches
+   the hint's amber. Empty `content` keeps it out of the accessibility
+   tree; the @supports guard means browsers without mask support show no
+   icon rather than a solid square. */
+@supports ((mask-image: none) or (-webkit-mask-image: none)) {
+  tr.openporte-deprecated .openporte-hint::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+    margin-right: 2px;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M5.5 12a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0ZM12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm-.75 12v-1.5h1.5V16h-1.5Zm0-8v5h1.5V8h-1.5Z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M5.5 12a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0ZM12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm-.75 12v-1.5h1.5V16h-1.5Zm0-8v5h1.5V8h-1.5Z'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+}

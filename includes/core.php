@@ -206,8 +206,17 @@ class OpenPortePlugin
     return get_option(OpenPortePlugin::$option_integration_contact_form_7);
   }
 
+  /**
+   * Returns the "Custom HTML" integration option value.
+   *
+   * @since 1.28.0 Deprecated — the Custom HTML integration is scheduled for
+   *               removal in the next major release; place the [openporte]
+   *               shortcode instead.
+   * @deprecated 1.28.0
+   */
   public function get_integration_custom()
   {
+    _deprecated_function(__METHOD__, '1.28.0', 'the [openporte] shortcode');
     return get_option(OpenPortePlugin::$option_integration_custom);
   }
 
@@ -335,11 +344,25 @@ class OpenPortePlugin
     return $translations;
   }
 
+  /**
+   * Collects every integration option value into one list.
+   *
+   * Existed solely to feed has_active_integrations(); dead code together with
+   * it since upstream 1.21.0 removed the global script-enqueue gate (see #62).
+   * The openporte_integrations filter inside only ever fired through this
+   * method, so it goes with it.
+   *
+   * @since 1.28.0 Deprecated, no replacement — removal in the next major release.
+   * @deprecated 1.28.0
+   */
   public function get_integrations()
   {
+    _deprecated_function(__METHOD__, '1.28.0');
     $integrations = array(
       $this->get_integration_contact_form_7(),
-      $this->get_integration_custom(),
+      // Reads the option directly: the deprecated getter would log a second,
+      // misleading "use the shortcode" notice for callers of this method.
+      get_option(OpenPortePlugin::$option_integration_custom),
       $this->get_integration_elementor(),
       $this->get_integration_enfold_theme(),
       $this->get_integration_forminator(),
@@ -360,8 +383,18 @@ class OpenPortePlugin
     return apply_filters_deprecated('altcha_integrations', array($integrations), '1.27.0', 'openporte_integrations');
   }
 
+  /**
+   * Whether at least one integration option is enabled.
+   *
+   * Dead code since upstream 1.21.0: its only caller was the global
+   * script-enqueue gate removed in that release (see #62).
+   *
+   * @since 1.28.0 Deprecated, no replacement — removal in the next major release.
+   * @deprecated 1.28.0
+   */
   public function has_active_integrations()
   {
+    _deprecated_function(__METHOD__, '1.28.0');
     $integrations = $this->get_integrations();
 
     // Checkbox era: any truthy option value means the integration is enabled

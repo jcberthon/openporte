@@ -430,7 +430,9 @@ The first clean run surfaced and fixed three low-risk correctness items (none a
 vulnerability):
 
 - **Loose `in_array()`** in `has_active_integrations()` and the settings select
-  callback → now strict (`in_array( …, true )`).
+  callback → now strict (`in_array( …, true )`). (The method has since been
+  rewritten to use `array_filter()` during the spam-filter removal, and
+  deprecated in 1.28.0 — see #62.)
 - **File-scope globals `$plugin` / `$mode`** in `integrations/elementor.php` (and
   the equivalent hook-closure locals in `integrations/wpmembers.php`) shadowed
   WordPress's admin globals of the same name → renamed to `$openporte_plugin` /

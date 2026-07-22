@@ -145,8 +145,8 @@ For upgrades and licensing-risk contingency (only load on a need-basis):
 **`integrations/coblocks.php` — intentional reCAPTCHA spoof.**
 CoBlocks has no extension API, so the integration fakes a reCAPTCHA token and intercepts the outbound HTTP verification call via `pre_http_request`. This is deliberate. The intercept matches on `CoBlocks_Form::GCAPTCHA_VERIFY_URL` — if that constant changes in a CoBlocks update, all CoBlocks forms silently break.
 
-**`has_active_integrations()` blind spots.**
-`get_integrations()` in `core.php` omits Enfold Theme and WP-Members. Their hooks load and fire unconditionally regardless of the "only enqueue scripts on pages with active integrations" logic.
+**`has_active_integrations()` / `get_integrations()` are deprecated dead code.**
+Both deprecated in 1.28.0, removal at the next major (#62). The "only enqueue scripts on pages with active integrations" gate they served was removed upstream in 1.21.0, so they have had no caller since. Do not wire new code to them, and do not "fix" their incomplete integration list (Enfold Theme and WP-Members are missing) — it is frozen with the deprecation. The "Custom HTML" integration (`integrations/custom.php`, `get_integration_custom()`) is deprecated on the same schedule.
 
 **Fix on sight when touching adjacent code (call out in commit message):**
 

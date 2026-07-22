@@ -68,7 +68,7 @@ directly tested.
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Custom HTML and many other plugins (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
+* Many other plugins and your own content (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
 
 ## Floating UI
 

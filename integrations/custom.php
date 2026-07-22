@@ -1,4 +1,14 @@
 <?php
+/**
+ * "Custom HTML" integration: configures hand-written <altcha-widget> tags by
+ * loading the widget scripts and a global attrs object on every front-end page.
+ *
+ * Deprecated since 1.28.0, removal in the next major release (see #62): the
+ * [openporte] shortcode covers the use cases without the every-page script
+ * cost, and nothing verifies a hand-placed form's submissions server-side.
+ * Behaviour is kept intact for the deprecation window so affected sites can
+ * re-enable the toggle while they migrate to the shortcode.
+ */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -6,8 +16,15 @@ add_action(
   'wp_enqueue_scripts',
   function () {
     $plugin = OpenPortePlugin::$instance;
-    $active = $plugin->get_integration_custom();
+    // Read the option directly — through the deprecated getter, merely loading
+    // a page would log a deprecation notice even with the feature turned off.
+    $active = get_option(OpenPortePlugin::$option_integration_custom);
     if ($active) {
+      // With WP_DEBUG on, this logs on every front-end page load — the
+      // intended signal that this site still depends on a deprecated feature.
+      // WP renders this as: Function OpenPorte's "Custom HTML" integration is
+      // deprecated since version 1.28.0! Use the [openporte] shortcode instead.
+      _deprecated_function('OpenPorte\'s "Custom HTML" integration', '1.28.0', 'the [openporte] shortcode');
       // Register the base widget script first
       openporte_enqueue_scripts();
 
