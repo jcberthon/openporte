@@ -106,17 +106,26 @@ function openporte_general_section_callback()
 {
   ?>
     <p><?php
+      echo esc_html__('Choose the mode of operation for OpenPorte:', 'openporte');
+    ?></p>
+    <p><?php
       echo sprintf(
         /* translators: the placeholders are opening and closing tags for bold */
-        esc_html__(
-          'Both modes run without any external paid service. %1$sSelf-hosted%2$s generates challenges via the WordPress REST API. %3$sCustom%4$s lets you point to your own ALTCHA-compatible backend.',
-          'openporte',
-        ),
-        '<br/><strong>',
-        '</strong>',
-        '<br/><strong>',
-        '</strong>',
+        esc_html__('%1$sSelf-hosted%2$s generates challenges via the WordPress REST API.', 'openporte'),
+        '<strong>',
+        '</strong>'
       );
+    ?></p>
+    <p><?php
+      echo sprintf(
+        /* translators: the placeholders are opening and closing tags for bold */
+        esc_html__('%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend.', 'openporte'),
+        '<strong>',
+        '</strong>'
+      );
+    ?></p>
+    <p><?php
+      echo esc_html__('Both modes run without any external paid service.', 'openporte');
     ?></p>
   <?php
 }
@@ -126,21 +135,7 @@ function openporte_widget_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Customize the widget to fit your needs.', 'openporte'); ?></p>
-
-  <?php
-}
-
-function openporte_integrations_section_callback()
-{
-  ?>
-
-    <p><?php echo esc_html__('Activate OpenPorte for these integrations:', 'openporte'); ?></p>
-    <p><?php echo sprintf(
-          /* translators: the placeholder will be replaced with the shortcode */
-          esc_html__('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '<code>[openporte]</code>',
-        );
-      ?></p>
+    <p><?php echo esc_html__('Customise the widget look and feel to fit your needs.', 'openporte'); ?></p>
 
   <?php
 }
@@ -149,10 +144,24 @@ function openporte_wordpress_section_callback()
 {
   ?>
 
-    <p><?php echo esc_html__('Activate OpenPorte for the core WordPress functionality:', 'openporte'); ?></p>
+    <p><?php echo esc_html__('Activate OpenPorte for the core WordPress functionalities.', 'openporte'); ?></p>
     <p><?php echo sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
           esc_html__('Use %s shortcode anywhere in your HTML, Post, or Page content.', 'openporte'), '<code>[openporte]</code>',
+        );
+      ?></p>
+
+  <?php
+}
+
+function openporte_integrations_section_callback()
+{
+  ?>
+
+    <p><?php echo esc_html__('Activate OpenPorte for these integrations.', 'openporte'); ?></p>
+    <p><?php echo sprintf(
+          /* translators: the placeholder will be replaced with the shortcode */
+          esc_html__('Use %s shortcode anywhere in your integrated plugins content.', 'openporte'), '<code>[openporte]</code>',
         );
       ?></p>
 
@@ -299,7 +308,8 @@ function openporte_render_checkbox_input($name, $setting, $disabled)
  *     @type bool   $disabled      Render the input disabled. Optional.
  *     @type array  $toggle_labels Toggle state names, keyed `off` and `on`.
  *                                 Presence of this arg selects the toggle
- *                                 rendering. Optional.
+ *                                 rendering. If use, `on` must be defined,
+ *                                 `off` is optional. Arg Optional.
  * }
  */
 function openporte_settings_checkbox_callback(array $args)
@@ -318,7 +328,9 @@ function openporte_settings_checkbox_callback(array $args)
   <?php } ?>
   <?php if ($toggle_labels) { ?>
     <div class="openporte-toggle">
-      <span class="openporte-toggle-off"><?php echo esc_html($toggle_labels['off']); ?></span>
+      <?php if (isset($toggle_labels['off'])) { ?>
+        <span class="openporte-toggle-off"><?php echo esc_html($toggle_labels['off']); ?></span>
+      <?php } ?>
       <?php openporte_render_checkbox_input($name, $setting, $disabled); ?>
       <?php
       // Only the "on" side is a real `label`: it is what checking the box turns
