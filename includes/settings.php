@@ -351,20 +351,20 @@ if (is_admin()) {
     // single loop (see the Integrations section below for the pattern source).
     $openporte_wordpress_integrations = array(
       OpenPortePlugin::$option_integration_wordpress_register => array(
-        'label' => __('Register page', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WordPress registration page.', 'openporte'),
+        'title' => __('Register page', 'openporte'),
+        'label' => __('Protect WordPress registration page.', 'openporte'),
       ),
       OpenPortePlugin::$option_integration_wordpress_reset_password => array(
-        'label' => __('Reset password page', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WordPress password reset page.', 'openporte'),
+        'title' => __('Reset password page', 'openporte'),
+        'label' => __('Protect WordPress password reset page.', 'openporte'),
       ),
       OpenPortePlugin::$option_integration_wordpress_login => array(
-        'label' => __('Login page', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WordPress login page.', 'openporte'),
+        'title' => __('Login page', 'openporte'),
+        'label' => __('Protect WordPress login page.', 'openporte'),
       ),
       OpenPortePlugin::$option_integration_wordpress_comments => array(
-        'label' => __('Comments', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WordPress comments section.', 'openporte'),
+        'title' => __('Comments', 'openporte'),
+        'label' => __('Protect WordPress comments section.', 'openporte'),
       ),
     );
     foreach ($openporte_wordpress_integrations as $openporte_option_name => $openporte_label) {
@@ -375,13 +375,15 @@ if (is_admin()) {
       );
       add_settings_field(
         $openporte_option_name . '_field',
-        $openporte_label['label'],
+        $openporte_label['title'],
         'openporte_settings_checkbox_callback',
         'openporte_admin',
         'openporte_wordpress_settings_section',
         array(
           "name" => $openporte_option_name,
-          "hint" => $openporte_label['hint'],
+          "toggle_labels" => array(
+            "on" => $openporte_label['label'],
+          ),
         )
       );
     }
@@ -407,76 +409,77 @@ if (is_admin()) {
      */
     $openporte_integrations = array(
       OpenPortePlugin::$option_integration_coblocks => array(
-        'label' => __('CoBlocks', 'openporte'),
-        'hint' => __('Enable OpenPorte on CoBlocks forms.', 'openporte'),
+        'title' => __('CoBlocks', 'openporte'),
+        'label' => __('Protect CoBlocks forms.', 'openporte'),
         'requires' => 'coblocks',
       ),
       OpenPortePlugin::$option_integration_contact_form_7 => array(
-        'label' => __('Contact Form 7', 'openporte'),
-        'hint' => __('Enable OpenPorte on Contact Form 7 forms.', 'openporte'),
+        'title' => __('Contact Form 7', 'openporte'),
+        'label' => __('Protect Contact Form 7 forms.', 'openporte'),
         'requires' => 'contact-form-7',
       ),
       OpenPortePlugin::$option_integration_elementor => array(
-        'label' => __('Elementor Pro Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on Elementor Pro forms.', 'openporte'),
+        'title' => __('Elementor Pro Forms', 'openporte'),
+        'label' => __('Protect Elementor Pro forms.', 'openporte'),
         'requires' => 'elementor',
       ),
       OpenPortePlugin::$option_integration_enfold_theme => array(
-        'label' => __('Enfold Theme', 'openporte'),
-        'hint' => __('Enable OpenPorte on Enfold theme forms.', 'openporte'),
+        'title' => __('Enfold Theme', 'openporte'),
+        'label' => __('Protect Enfold theme forms.', 'openporte'),
         'requires' => 'enfold-theme',
         'inactive_hint' => __('Theme not active.', 'openporte'),
       ),
       OpenPortePlugin::$option_integration_formidable => array(
-        'label' => __('Formidable Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on Formidable Forms forms.', 'openporte'),
+        'title' => __('Formidable Forms', 'openporte'),
+        'label' => __('Protect Formidable Forms submissions.', 'openporte'),
         'requires' => 'formidable',
       ),
       OpenPortePlugin::$option_integration_forminator => array(
-        'label' => __('Forminator', 'openporte'),
-        'hint' => __('Enable OpenPorte on Forminator forms.', 'openporte'),
+        'title' => __('Forminator', 'openporte'),
+        'label' => __('Protect Forminator forms.', 'openporte'),
         'requires' => 'forminator',
       ),
       OpenPortePlugin::$option_integration_gravityforms => array(
-        'label' => __('Gravity Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on Gravity Forms forms.', 'openporte'),
+        'title' => __('Gravity Forms', 'openporte'),
+        'label' => __('Protect Gravity Forms submissions.', 'openporte'),
         'requires' => 'gravityforms',
       ),
       OpenPortePlugin::$option_integration_html_forms => array(
-        'label' => __('HTML Forms', 'openporte'),
-        'hint' => __('Enable OpenPorte on HTML Forms forms.', 'openporte'),
+        'title' => __('HTML Forms', 'openporte'),
+        'label' => __('Protect HTML Forms submissions.', 'openporte'),
         'requires' => 'html-forms',
       ),
       OpenPortePlugin::$option_integration_wpdiscuz => array(
-        'label' => __('wpDiscuz', 'openporte'),
-        'hint' => __('Enable OpenPorte on wpDiscuz comment forms.', 'openporte'),
+        'title' => __('wpDiscuz', 'openporte'),
+        'label' => __('Protect wpDiscuz comments section.', 'openporte'),
         'requires' => 'wpdiscuz',
       ),
       OpenPortePlugin::$option_integration_wpforms => array(
-        'label' => __('WPForms', 'openporte'),
-        'hint' => __('Enable OpenPorte on WPForms forms.', 'openporte'),
+        'title' => __('WPForms', 'openporte'),
+        'label' => __('Protect WPForms submissions.', 'openporte'),
         'requires' => 'wpforms',
       ),
       OpenPortePlugin::$option_integration_woocommerce_register => array(
-        'label' => __('WooCommerce register page', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WooCommerce register page.', 'openporte'),
+        'title' => __('WooCommerce register page', 'openporte'),
+        'label' => __('Protect the WooCommerce register page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
       OpenPortePlugin::$option_integration_woocommerce_reset_password => array(
-        'label' => __('WooCommerce reset password page', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WooCommerce reset password page.', 'openporte'),
+        'title' => __('WooCommerce reset password page', 'openporte'),
+        'label' => __('Protect the WooCommerce reset password page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
       OpenPortePlugin::$option_integration_woocommerce_login => array(
-        'label' => __('WooCommerce login page', 'openporte'),
-        'hint' => __('Enable OpenPorte on the WooCommerce login page.', 'openporte'),
+        'title' => __('WooCommerce login page', 'openporte'),
+        'label' => __('Protect the WooCommerce login page.', 'openporte'),
         'requires' => 'woocommerce',
       ),
       OpenPortePlugin::$option_integration_custom => array(
-        'label' => __('Custom HTML', 'openporte'),
+        'title' => __('Custom HTML', 'openporte'),
+        'label' => __('Activate custom JS when using the shortcode.', 'openporte'),
         'hint' => sprintf(
           /* translators: the placeholder will be replaced with the shortcode */
-          __('Or use the %s shortcode anywhere in your HTML.', 'openporte'), '<code>[openporte]</code>',
+          __('The %s shortcode can be used anywhere in your HTML.', 'openporte'), '<code>[openporte]</code>',
         ),
       ),
     );
@@ -498,13 +501,16 @@ if (is_admin()) {
       }
       add_settings_field(
         $openporte_option_name . '_field',
-        $openporte_integration['label'],
+        $openporte_integration['title'],
         'openporte_settings_checkbox_callback',
         'openporte_admin',
         'openporte_integrations_settings_section',
         array(
           "name" => $openporte_option_name,
           "disabled" => !$openporte_available,
+          "toggle_labels" => array(
+            "on" => $openporte_integration['label'],
+          ),
           "hint" => $openporte_hint,
         )
       );
