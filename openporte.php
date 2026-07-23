@@ -28,6 +28,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) || defined( 'ALTCHA_PLUGIN_VERSION' ) || class_exists( 'AltchaPlugin' ) ) {
 
+	/**
+	 * Builds the ALTCHA-conflict explanation shown to administrators.
+	 *
+	 * Shared by the activation blocker and the admin notice below so the two
+	 * cannot drift apart. Returns HTML (the message embeds a link); callers are
+	 * responsible for escaping via wp_kses_post().
+	 *
+	 * @since 1.27.0
+	 *
+	 * @return string Translated message with an embedded link, unescaped.
+	 */
 	function openporte_conflict_message() {
 		return sprintf(
 			/* translators: %s: link to the OpenPorte plugin page. */
@@ -36,12 +47,35 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ||
 		);
 	}
 
-	// Block activation with a readable message instead of a fatal error.
+	/**
+	 * Blocks activation with a readable message instead of a fatal error.
+	 *
+	 * Registered only in the conflict branch: the file returns right after
+	 * this block, so the real activation hook (openporte_activate, further
+	 * down) is never registered. Activating while ALTCHA is active therefore
+	 * lands here and dies with the explanation, leaving the plugin inactive.
+	 *
+	 * @since 1.27.0
+	 * @since 1.28.0 The die screen links to the Plugins page instead of a
+	 *               browser history back link, which broke when activating
+	 *               straight from the plugin uploader (see #65).
+	 */
 	register_activation_hook( __FILE__, function () {
 		wp_die(
 			wp_kses_post( openporte_conflict_message() ),
 			esc_html__( 'OpenPorte cannot be activated', 'openporte' ),
-			array( 'back_link' => true )
+			array(
+				// A fixed destination, not `back_link`: that renders
+				// javascript:history.back(), which breaks when activating from
+				// the plugin uploader — the previous history entry is the
+				// upload POST's result, and re-navigating to it makes WordPress
+				// reject the re-submitted nonce as expired. The Plugins page is
+				// also where the requested action (deactivating ALTCHA) happens.
+				// self_admin_url() so a network-admin activation attempt lands
+				// on network/plugins.php on multisite.
+				'link_url'  => self_admin_url( 'plugins.php' ),
+				'link_text' => esc_html__( 'Go to the Plugins page', 'openporte' ),
+			)
 		);
 	} );
 
