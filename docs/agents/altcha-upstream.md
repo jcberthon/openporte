@@ -28,7 +28,6 @@ Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
    `docs/agents/altcha-upstream.md`, so the shipped build is independently verifiable
    on every future upgrade.
 
-
 ## The version string inside the bundle is not authoritative
 
 Upstream commits `dist/` to the repo and injects the version at build time
@@ -63,6 +62,7 @@ WP plugin):
 ## Upstream provenance ledger
 
 Last verified MIT upstream (including altcha.umd.cjs SHA-256 sum):
+
 - `v2.3.0` (8b87cf5) on 2025-12-18 - 0f557a9f535a15acbe0fc7abb4fe896502a6d4c27de1c4145cfa001d0d2be099
   - Integration verified 2026-07-13 on the floor (PHP 8.0 / WP 5.6) and ceiling
     (PHP 8.5 / WP 7.0) benches (#44, #45): all ten emitted attributes are still

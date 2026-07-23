@@ -4,7 +4,7 @@
 
 **Please report security vulnerabilities via GitHub's private security
 advisory:**  
-https://github.com/jcberthon/openporte/security/advisories/new
+<https://github.com/jcberthon/openporte/security/advisories/new>
 
 This is the only channel for security reports. Do not open public issues for
 security vulnerabilities.
@@ -28,7 +28,7 @@ coordinate with the WordPress.org security team before public disclosure.
 **Out of scope:**
 
 - The bundled ALTCHA widget (`public/altcha.min.js`) — report upstream at
-  https://github.com/altcha-org/altcha
+  <https://github.com/altcha-org/altcha>
 - WordPress core and any third-party plugins integrated with OpenPorte
 - Theoretical weaknesses with no realistic exploit path — open a regular
   GitHub issue instead

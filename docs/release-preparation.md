@@ -18,7 +18,7 @@ phases in between (changelog, validation, doc review) have no script — see
 their linked section.
 
 | Command | Purpose |
-|---|---|
+| ------- | ------- |
 | `npm run release:version -- X.Y.Z` | Bump the version in `openporte.php`/`readme.txt` — Phase 1 |
 | `npm run release:i18n -- X.Y.Z` | Regenerate `.pot`/`.po`/`.mo` — Phase 2 (only if strings changed) |
 | `npm run release:assets` | Sync WordPress.org listing icons from `share/branding` — Phase 7 (only if branding changed) |
@@ -59,7 +59,7 @@ ships inconsistently (the WordPress.org "Stable tag" must match the plugin
 header, and `OPENPORTE_VERSION` busts the asset cache):
 
 | File | Field |
-|---|---|
+| ---- | ----- |
 | `openporte.php` | `* Version:` (plugin header) |
 | `openporte.php` | `* Stable tag:` (plugin header) |
 | `openporte.php` | `define('OPENPORTE_VERSION', '…')` |
@@ -88,7 +88,7 @@ glossary, the per-locale fill-in procedure, and the LLM-assisted translation
 prompt, see `docs/agents/i18n.md`.
 
 Please note that we exclude public/altcha.min.js (vendored, not your strings) and
-other directories on purpose. 
+other directories on purpose.
 
 Run as one step with `npm run release:i18n -- X.Y.Z`, or manually:
 
@@ -115,6 +115,7 @@ for po in languages/openporte-*.po; do
 done
 ```
 
+> [!TIP]
 > Replace `X.Y.Z` with the release version. On Linux, drop the `''` argument to
 > `sed -i` (that empty backup suffix is a BSD/macOS requirement). The merge/compile
 > steps use GNU gettext (`msgmerge`/`msgfmt`) rather than `wp i18n update-po`/`make-mo`:
