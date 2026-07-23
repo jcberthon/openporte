@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-22T00:39:56+00:00\n"
+"POT-Creation-Date: 2026-07-23T11:23:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: openporte\n"
@@ -590,11 +590,15 @@ msgid "Registration failed. Please try again later."
 msgstr ""
 
 #. translators: %s: link to the OpenPorte plugin page.
-#: openporte.php:34
+#: openporte.php:45
 #, php-format
 msgid "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the original ALTCHA plugin is active — the two share internal code. Please deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the %s for details."
 msgstr ""
 
-#: openporte.php:43
+#: openporte.php:66
 msgid "OpenPorte cannot be activated"
+msgstr ""
+
+#: openporte.php:77
+msgid "Go to the Plugins page"
 msgstr ""
