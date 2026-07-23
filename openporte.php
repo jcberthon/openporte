@@ -73,7 +73,7 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ||
 				// also where the requested action (deactivating ALTCHA) happens.
 				// self_admin_url() so a network-admin activation attempt lands
 				// on network/plugins.php on multisite.
-				'link_url'  => self_admin_url( 'plugins.php' ),
+				'link_url'  => esc_url( self_admin_url( 'plugins.php' ) ),
 				'link_text' => esc_html__( 'Go to the Plugins page', 'openporte' ),
 			)
 		);
