@@ -172,6 +172,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Fix: a form submitted while the widget was still verifying lost the click silently; the submission is now held and replayed once the challenge is solved.
 * Fix: WooCommerce login and registration silently failed with auto-verification "On form submit" or Display Mode set to Floating (the widget's replayed submission dropped the submit button's name, which WooCommerce requires).
 * Fix: wpDiscuz comments could be posted before the challenge was solved; the submission is now held until verification completes.
+* Fix: the "OpenPorte cannot be activated" conflict screen now links to the Plugins page instead of a browser Back link, which failed with "the page has expired" when activating right from the plugin uploader.
 * Tested on WordPress 7.0.2. The browser E2E suite (tests/e2e, not shipped) covers WordPress comments, Contact Form 7, wpDiscuz, WPForms and WooCommerce login/registration across every auto-verification and display-mode combination, with negative controls (missing, forged and expired tokens).
 
 = 1.27.3 =
