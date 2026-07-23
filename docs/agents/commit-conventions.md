@@ -1,16 +1,19 @@
 # Commit conventions
 
 **Subject line:**
+
 - Imperative verb, capitalized: `Add`, `Fix`, `Update`, `Remove`, `Refactor`,
   `Docs`, `Bump`, `Deprecate`, `Revert`
 - One short sentence in English, no trailing period
 - ≤50 chars preferred, 72 hard limit
 
 **Body** (optional, for non-trivial changes):
+
 - Two newlines after the subject, then prose wrapped at ~72 chars
 - Explain *why*, not *what* — the diff shows what
 
 **Issue references** (in the body footer when applicable):
+
 - `Fixes #123` / `Closes #123` auto-closes the issue on merge to default branch
 - `Refs #123` for context without closing
 

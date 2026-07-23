@@ -50,7 +50,7 @@ issues were found. The substantive weaknesses are in the **challenge-verificatio
 logic**; the rest are low-severity hardening items.
 
 | # | Title | Type | Location | Risk | Status |
-|---|-------|------|----------|------|--------|
+| - | ----- | ---- | -------- | ---- | ------ |
 | 1 | Solved tokens are not single-use (replay) | Replay | `verify()` / `verify_solution()` | Medium | Accepted (documented) |
 | 2 | Server-signature path skips `expire` / `verified` | Replay / weak verification | `verify_server_signature()` | Medium | **Fixed** |
 | 3 | Decoded payload not validated before use | Input validation / robustness | `verify()` + sub-methods | Low | **Fixed** |
@@ -450,7 +450,7 @@ applies the auto-fixable subset.
 Mapped against <https://developer.wordpress.org/plugins/security/>.
 
 | Guideline | Status | Evidence |
-|---|---|---|
+| --------- | ------ | -------- |
 | Sanitize inputs | Pass | `sanitize_text_field( wp_unslash( … ) )` on every `$_POST` read; no `$_GET`/`$_REQUEST`/`$_COOKIE`/`$_SERVER` reads (grep-confirmed) |
 | Validate data | Pass (hardened) | Token validation added in finding #3; every `register_setting` has a `sanitize_callback` |
 | Escape output | Pass | `esc_html()`/`esc_attr()` on admin pages; `wp_kses()` with the `$html_espace_allowed_tags` whitelist for all widget HTML |
@@ -468,7 +468,7 @@ Mapped against <https://developer.wordpress.org/plugins/security/>.
 OWASP Top 10 (2021):
 
 | Category | Status | Notes |
-|---|---|---|
+| -------- | ------ | ----- |
 | A01 Broken Access Control | Pass | Admin gated by `manage_options`; the only public surface (challenge REST) is intentional and exposes no secret |
 | A02 Cryptographic Failures | Pass (note) | `random_bytes`/`random_int` CSPRNG, HMAC-SHA256, constant-time `hash_equals`; key length is finding #9 |
 | A03 Injection | Pass | SQL prepared; no command/code injection sinks; output escaped; autoloader note in finding #10 |

@@ -1,22 +1,29 @@
+# OpenPorte
+
 <div align="center">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="share/branding/png/openporte-grayscale-dark-256px.png">
-      <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="share/branding/png/openporte-grayscale-light-256px.png" width="128">
+      <img alt="Shows an illustrated sun in light color mode and a moon with
+      stars in dark color mode."
+      src="share/branding/png/openporte-grayscale-light-256px.png" width="128">
     </picture>
-  <h1>OpenPorte</h1>
 </div>
 
 **OpenPorte is a community-maintained fork of the retired ALTCHA Spam
 Protection plugin for WordPress (v1)** - a free, open source, self-hostable,
 privacy-friendly CAPTCHA alternative.
 
-Website: https://github.com/jcberthon/openporte
+Website: <https://github.com/jcberthon/openporte>
 
-WordPress Plugin Directory: https://wordpress.org/plugins/openporte/
+WordPress Plugin Directory: <https://wordpress.org/plugins/openporte/>
 
 > [!TIP]
-> Need help? See <a href="SUPPORT.md" title="Support Information" alt="Link to Support Information">SUPPORT.md</a>.
+> Need help? See <a href="SUPPORT.md" title="Support Information"
+alt="Link to Support Information">SUPPORT.md</a>.
 
+Disclosure: This project is (using AI)[^1].
+
+[^1]: About the use of AI
 > [!NOTE]
 > **AI-assisted project.** Architecture, security decisions, and final review
 > are mine; AI tools (Claude, Mistral, and others) help with drafting code,
@@ -51,7 +58,7 @@ OpenPorte supports Custom API Mode. This mode has been verified against
 server protocol and an alternative to the proprietary ALTCHA Sentinel. Sites
 using a Sentinel-compatible backend are expected to work as well, since both
 implement the same server-signature verification, though this has not been
-directly tested. 
+directly tested.
 
 ## Supported Integrations
 
@@ -68,7 +75,8 @@ directly tested.
 * WordPress Login, Register, Password reset
 * WordPress Comments
 * WooCommerce
-* Many other plugins and your own content (via the `[openporte]` shortcode, or the deprecated `[altcha]` alias)
+* Many other plugins and your own content (via the `[openporte]`
+  shortcode, or the deprecated `[altcha]` alias)
 
 ## Floating UI
 
@@ -78,7 +86,7 @@ but with known limitations:
 
 Currently the Floating UI does not work with:
 
-- Forminator with multi-step forms
+* Forminator with multi-step forms
 
 ## Installation
 
@@ -98,7 +106,8 @@ You can also download the GitHub release and install it via the WordPress
 admin UI.
 
 1. Download the `.zip` from the [Releases](https://github.com/jcberthon/openporte/releases).
-2. Under Plugins → Add Plugin, click **Upload Plugin** and select the downloaded `.zip` file.
+2. Under Plugins → Add Plugin, click **Upload Plugin** and select the downloaded
+   `.zip` file.
 3. Activate the plugin through the 'Plugins' menu in WordPress  
 4. Review the settings and enable your integrations
 
@@ -107,10 +116,10 @@ admin UI.
 OpenPorte verifies submissions in one of two modes, selected in the settings
 (API Mode):
 
-- **Self-hosted** (default) — a proof-of-work challenge is issued and verified by
+* **Self-hosted** (default) — a proof-of-work challenge is issued and verified by
   your own WordPress site via the REST API. Fully self-contained, no external
   service, no account.
-- **Custom** — point the Challenge URL at your own ALTCHA-compatible backend
+* **Custom** — point the Challenge URL at your own ALTCHA-compatible backend
   (e.g. a self-hosted ALTCHA Sentinel, or [GateCHA](https://gatecha.org));
   submissions are verified with your site's shared secret. The Algorithm
   setting must match the hash algorithm your backend uses (most
@@ -130,7 +139,7 @@ never verified. A consequence: backend-side features that live in the verify
 call (replay tracking, verification statistics) are not used.
 
 | Setting | Self-hosted | Custom |
-|---|---|---|
+| ------- | ----------- | ------ |
 | Challenge URL | ignored (the built-in REST endpoint is used) | fetched by the widget — include any required query parameters (e.g. an `apiKey`) |
 | Shared secret | signs and verifies challenges | must **equal the backend's HMAC secret**; used to verify locally |
 | Algorithm | generates and verifies challenges | must **match the backend's algorithm**; used at verification only |
@@ -148,7 +157,9 @@ from WordPress itself.
 
 ### REST API
 
-This plugin requires the WordPress REST API. If you are using any "Disable REST API" plugins, ensure that the endpoint `/altcha/v1/challenge` (now deprecated) and `/openporte/v1/challenge` is allowed.
+This plugin requires the WordPress REST API. If you are using any "Disable
+REST API" plugins, ensure that the endpoint `/altcha/v1/challenge` (now
+deprecated) and `/openporte/v1/challenge` is allowed.
 
 ### Hooks
 

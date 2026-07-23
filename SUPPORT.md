@@ -10,6 +10,7 @@ See [SECURITY.md](SECURITY.md) for details.
 
 Ask on the **[WordPress.org support forum](https://wordpress.org/support/plugin/openporte/)**.
 This is the right place for:
+
 - "How do I configure X?"
 - "I'm not sure if this is working as expected"
 - General usage questions

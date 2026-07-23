@@ -51,7 +51,7 @@ history — there is no standing parallel branch.
 ## Versioning — semantic versioning
 
 | Bump | When |
-|---|---|
+| ---- | ---- |
 | **patch** `x.y.Z` | bug/security fix, **no** user-visible behaviour change |
 | **minor** `x.Y.0` | new integration or opt-in feature (backward compatible); also additive translations and a backward-compatible widget re-vendor |
 | **major** `X.0.0` | breaking change: dropping a PHP/WP floor, or **removing a public hook/integration past its deprecation window** |
@@ -113,7 +113,7 @@ That is the only prerequisite; the `npm run` wrappers below are thin shell
 scripts and need no `npm install`.
 
 | Command | What it checks | CI workflow | Blocking? |
-|---|---|---|---|
+| ------- | -------------- | ----------- | --------- |
 | `npm run lint:phpcs` | WordPress security/correctness sniffs and PHP cross-version compatibility, per [`phpcs.xml.dist`](phpcs.xml.dist) | `.github/workflows/phpcs.yml` | **Yes** — a finding fails the PR |
 | `npm run lint:phpmd` | Complexity, dead code and design smells, per [`phpmd.xml.dist`](phpmd.xml.dist) | `.github/workflows/phpmd.yml` | No — advisory, uploaded to the repo's Security tab |
 
