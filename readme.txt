@@ -82,6 +82,15 @@ first activation; the original ALTCHA settings are left untouched, so you can
 roll back to ALTCHA v1 without losing anything. Do not run both plugins at the
 same time.
 
+= From ALTCHA v2/v3 =
+
+If your site was already moved to ALTCHA v2/v3 (for example by the automatic
+3.0.0 update), your original v1 settings are normally still in the database:
+the v2/v3 upgrade neither migrates nor removes them. Deactivate ALTCHA, then
+install and activate OpenPorte — it finds and imports the v1 settings, even
+when the v1 plugin itself has long been deleted. Settings made in v2/v3 are
+not read.
+
 == Deprecations ==
 
 The following ALTCHA-era identifiers are kept as aliases for backward
