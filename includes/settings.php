@@ -301,7 +301,7 @@ if (is_admin()) {
 
     add_settings_field(
       'openporte_settings_hidelogo_field',
-      __('Branding', 'openporte'),
+      __('Acknowledgement', 'openporte'),
       'openporte_settings_checkbox_callback',
       'openporte_admin',
       'openporte_widget_settings_section',
@@ -315,7 +315,7 @@ if (is_admin()) {
     add_settings_field(
       'openporte_settings_hidefooter_field',
       // Deliberately empty, and deliberately not translatable: this row is the
-      // second half of the "Branding" group above, so WordPress renders it with
+      // second half of the "Acknowledgement" group above, so WordPress renders it with
       // an empty `th` and the two toggles read as one block. Nothing is missing.
       '',
       'openporte_settings_checkbox_callback',

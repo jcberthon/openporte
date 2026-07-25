@@ -1,5 +1,5 @@
 === OpenPorte Spam Protection ===
-Tags: captcha, spam, anti-spam, anti-bot, gdpr
+Tags: captcha, spam, anti-spam, anti-bot, altcha
 Stable tag: 1.28.0
 Requires at least: 5.6
 Requires PHP: 8.0
@@ -195,7 +195,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Retuned the Low/Medium/High proof-of-work complexity for modern hardware; developers can adjust the ranges via the new `openporte_complexity_matrix` filter.
 * The settings page now health-checks a custom Challenge URL and warns about misconfiguration (unreachable backend, algorithm or secret mismatch) before visitors are impacted.
 * Settings screen refresh: per-field hints throughout, a Show/Hide toggle on the secret field (now called "Shared secret"), and clearer API-mode wording. The "Floating UI" checkbox is now a "Display Mode" dropdown menu for Inline or Floating; the setting itself is unchanged, so sites keep their current behaviour.
-* "Hide logo" and "Hide footer" are now grouped as "Branding", each a Show/Hide toggle. Both remain independent settings, still off by default, so nothing changes for existing sites — the hints simply explain that the ALTCHA logo and "Protected by ALTCHA" text credit the open-source project OpenPorte is built on, and that hiding them affects nothing else.
+* "Hide logo" and "Hide footer" are now grouped as "Acknowledgement", each a Show/Hide toggle. Both remain independent settings, still off by default, so nothing changes for existing sites — the hints simply explain that the ALTCHA logo and "Protected by ALTCHA" text credit the open-source project OpenPorte is built on, and that hiding them affects nothing else.
 * "Delay" is now "Verification Delay", and the pause it adds drops from 1.5 seconds to 0.5. This setting only ever changed how the check is *perceived* — it never made spam-blocking stronger, and the hint now says so and points at Complexity, which does.
 * Deprecated: the "Custom HTML" integration (auto-configuring hand-written `<altcha-widget>` tags by loading the widget scripts on every front-end page) is deprecated and will be removed in the next major release — use the `[openporte]` shortcode instead. The setting is switched off on upgrade and no longer enabled on new installs; if your site relies on hand-written widget tags, re-enable the toggle under Integrations while you migrate. See **Upgrade Notice**.
 * For developers and third-party integrators: the spam-filter API is removed — the `OpenPortePlugin::$spamfilter_result` property, the `get_blockspam()` method, the `$option_blockspam` option and the `blockspam` / `spamfilter` widget attributes are gone, and `verify_server_signature()` no longer parses classification data. The integration-listing methods `get_integrations()` and `has_active_integrations()` are deprecated with no replacement (they lost their only caller in 1.21.0) and will be removed in the next major release.
