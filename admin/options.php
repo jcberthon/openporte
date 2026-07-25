@@ -12,6 +12,13 @@ function openporte_options_page_html()
     OPENPORTE_VERSION,
     true
   );
+  wp_localize_script(
+    'altcha-admin-js',
+    'openporteAdmin',
+    array(
+      'nonce' => wp_create_nonce('openporte-admin-nonce'),
+    )
+  );
   wp_enqueue_style(
     'altcha-admin-styles',
     OpenPortePlugin::$admin_css_src,
@@ -261,6 +268,17 @@ function openporte_settings_password_callback(array $args)
       data-label-hide="<?php echo esc_attr__('Hide', 'openporte'); ?>">
       <?php echo esc_html__('Show', 'openporte'); ?>
     </button>
+    <button type="button" class="button button-secondary openporte-copy-password"
+      data-target="<?php echo esc_attr($name); ?>"
+      title="<?php echo esc_attr__('Copy to clipboard', 'openporte'); ?>">
+      <?php echo esc_html__('Copy', 'openporte'); ?>
+    </button>
+    <button type="button" class="button button-secondary openporte-regenerate-password"
+      data-target="<?php echo esc_attr($name); ?>"
+      data-option-name="<?php echo esc_attr($name); ?>"
+      title="<?php echo esc_attr__('Regenerate', 'openporte'); ?>">
+      <?php echo esc_html__('Regenerate', 'openporte'); ?>
+    </button>
   <?php endif; ?>
   <?php if ($hint) { ?>
     <div class="openporte-hint">
@@ -498,3 +516,48 @@ function openporte_settings_expires_callback(array $args)
   <?php } ?>
 <?php
 }
+
+/**
+ * AJAX handler for regenerating the shared secret.
+ * 
+ * @since 1.28.0
+ */
+function openporte_ajax_regenerate_secret() {
+  // Verify nonce
+  check_ajax_referer('openporte-admin-nonce', 'nonce');
+  
+  // Verify capabilities
+  if (!current_user_can('manage_options')) {
+    wp_send_json_error(array('message' => __('You do not have permission to perform this action.', 'openporte')));
+  }
+  
+  // Get the option name and new secret from the request
+  $option_name = isset($_POST['option_name']) ? sanitize_text_field($_POST['option_name']) : '';
+  $new_secret = isset($_POST['new_secret']) ? sanitize_text_field($_POST['new_secret']) : '';
+  
+  // Validate inputs
+  if (empty($option_name) || empty($new_secret)) {
+    wp_send_json_error(array('message' => __('Invalid request parameters.', 'openporte')));
+  }
+  
+  // Validate that the option name is one of our known secret options
+  $valid_options = array(OpenPortePlugin::$option_secret);
+  if (!in_array($option_name, $valid_options, true)) {
+    wp_send_json_error(array('message' => __('Invalid option name.', 'openporte')));
+  }
+  
+  // Validate the new secret format (should be a hex string of 64 characters for 32 bytes)
+  if (!preg_match('/^[a-f0-9]{64}$/', $new_secret)) {
+    wp_send_json_error(array('message' => __('Invalid secret format.', 'openporte')));
+  }
+  
+  // Update the option
+  $result = update_option($option_name, $new_secret);
+  
+  if ($result) {
+    wp_send_json_success(array('message' => __('Secret regenerated successfully.', 'openporte')));
+  } else {
+    wp_send_json_error(array('message' => __('Failed to update secret.', 'openporte')));
+  }
+}
+add_action('wp_ajax_openporte_regenerate_secret', 'openporte_ajax_regenerate_secret');
