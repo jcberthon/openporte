@@ -235,9 +235,16 @@ add_action('plugins_loaded', 'openporte_upgrade');
  * and/or verified the captcha, so they map to 1. Exception: HTML Forms'
  * 'shortcode' maps to 0 — that mode never auto-injected the widget, and
  * hf_validate_form still verifies a shortcode-placed widget on its own, so 0
- * preserves the exact legacy behavior. (Contact Form 7's 'shortcode' maps to
- * 1: verification must stay enforced, at the cost of the widget now also being
- * auto-injected.)
+ * preserves the exact legacy behavior.
+ *
+ * Contact Form 7's 'shortcode' maps to 1, not 0. Pre-1.28 that mode skipped
+ * auto-injection but still enforced verification: the wpcf7_spam filter listed
+ * 'shortcode' alongside 'captcha'. Mapping it to 0 would leave the shortcode
+ * still rendering a widget while silently accepting every submission — a form
+ * that looks protected and is not. Mapping to 1 keeps verification, and the
+ * shortcode guard in integrations/contact-form-7.php suppresses the injection
+ * when the form already renders its own widget, so these sites keep exactly
+ * their legacy behavior: one widget, still verified.
  *
  * Second exception: Custom HTML always maps to 0. The integration is
  * deprecated (#62), and a legacy truthy value was rarely a user choice anyway:
