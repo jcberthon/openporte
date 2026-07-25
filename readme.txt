@@ -55,22 +55,11 @@ what they map to.
 == Upgrade Notice ==
 
 = 1.28.0 =
-The "Custom HTML" integration is deprecated and switched off by this upgrade.
-Most sites are unaffected: forms protected through the Integrations settings
-and widgets placed with the `[openporte]` or `[altcha]` shortcodes keep working,
-and every page stops loading now-unneeded widget scripts. Only sites that hand-
-wrote bare `<altcha-widget>` tags (in theme templates or Custom HTML blocks) are
-concerned: re-enable the "Custom HTML" toggle under Settings → OpenPorte →
-Integrations, then replace those tags with the `[openporte]` shortcode before
-the next major release removes the feature.
-Note: the `[altcha]` shortcode still works but is itself a deprecated alias —
-prefer `[openporte]` when placing new widgets (see Deprecations).
-
-= 1.27.3 =
-Extended the activation conflict guard: sites auto-upgraded to ALTCHA v2+ can
-now activate OpenPorte cleanly. Your v1 settings still migrate automatically;
-v2+ settings are not read. Nothing to do — see section **Upgrading**.
-
+"Custom HTML" is deprecated and switched off by this upgrade. Sites using the
+`<altcha-widget>` tags (in theme templates or custom HTML) are concerned. If
+affected, re-enable the setting, or replace those tags with the `[openporte]`
+shortcode.
+The Sentinel spam filter is removed.
 
 == Upgrading ==
 
@@ -105,7 +94,8 @@ compatibility and are scheduled for removal in a future release:
 * Integrations targeting paid-only third-party plugins; affected users should
   migrate to the official ALTCHA v2/v3 plugin.
 * The "Custom HTML" integration (auto-configuration of hand-written
-  `<altcha-widget>` tags) — place the `[openporte]` shortcode instead.
+  `<altcha-widget>` tags) — place the `[openporte]` shortcode instead. You can
+  re-enable it for now under Settings → OpenPorte → Integrations.
 
 == Privacy ==
 
