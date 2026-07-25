@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Gemma 4 + Crush 0.87.0 - signed-off by J-C Berthon\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -31,14 +31,14 @@ msgstr ""
 "ALTCHA Spam Protection-plugin (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "OpenPorte Bijdragers"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -46,7 +46,9 @@ msgstr "OpenPorte endpoint-controle:"
 
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
-msgstr "De API-modus staat op Aangepast, maar er is geen Challenge-URL geconfigureerd."
+msgstr ""
+"De API-modus staat op Aangepast, maar er is geen Challenge-URL "
+"geconfigureerd."
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
@@ -62,9 +64,9 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
-"De Challenge-URL reageerde met HTTP %d in plaats van een challenge. Controleer "
-"de URL (inclusief eventuele apiKey-parameter) en de domein-/herkomstbeperkingen "
-"van de backend."
+"De Challenge-URL reageerde met HTTP %d in plaats van een challenge. "
+"Controleer de URL (inclusief eventuele apiKey-parameter) en de domein-/"
+"herkomstbeperkingen van de backend."
 
 #: admin/healthcheck.php:124
 msgid ""
@@ -78,7 +80,8 @@ msgstr ""
 #: admin/healthcheck.php:133
 #, php-format
 msgid "The backend issues challenges with the unsupported algorithm \"%s\"."
-msgstr "De backend geeft challenges uit met het niet-ondersteunde algoritme \"%s\"."
+msgstr ""
+"De backend geeft challenges uit met het niet-ondersteunde algoritme \"%s\"."
 
 #: admin/healthcheck.php:149
 msgid ""
@@ -86,9 +89,9 @@ msgid ""
 "submission would fail verification. Copy the backend's HMAC secret into the "
 "Signing secret field."
 msgstr ""
-"Het gedeelde geheim komt niet overeen met het HMAC-geheim van de backend — elke "
-"formulierverzending zal de verificatie niet doorstaan. Kopieer het HMAC-geheim "
-"van de backend naar het veld 'Signing secret'."
+"Het gedeelde geheim komt niet overeen met het HMAC-geheim van de backend — "
+"elke formulierverzending zal de verificatie niet doorstaan. Kopieer het HMAC-"
+"geheim van de backend naar het veld 'Signing secret'."
 
 #. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
@@ -108,8 +111,12 @@ msgid ""
 "The Challenge URL responds with a valid %s challenge and the shared secret "
 "matches."
 msgstr ""
-"De Challenge-URL reageert met een geldige %s-challenge en het gedeelde geheim "
-"komt overeen."
+"De Challenge-URL reageert met een geldige %s-challenge en het gedeelde "
+"geheim komt overeen."
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -164,7 +171,8 @@ msgstr "%1$sZelf gehost%2$s genereert challenges via de WordPress REST API."
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sAangepast%2$s laat u wijzen naar uw eigen ALTCHA-compatibele backend."
+msgstr ""
+"%1$sAangepast%2$s laat u wijzen naar uw eigen ALTCHA-compatibele backend."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
@@ -192,7 +200,8 @@ msgstr "Activeer OpenPorte voor deze integraties."
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "Gebruik de %s shortcode overal in de inhoud van uw geïntegreerde plug-ins."
+msgstr ""
+"Gebruik de %s shortcode overal in de inhoud van uw geïntegreerde plug-ins."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -288,9 +297,10 @@ msgid ""
 "domain and path to your <strong>custom ALTCHA-compatible backend</strong>, "
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
-"Alleen beschikbaar wanneer de API-modus op Aangepast staat.<br/>De URL bestaat "
-"uit het domein en het pad naar uw <strong>aangepaste ALTCHA-compatibele backend</strong>, "
-"en optioneel een API-sleutel (begint met <code>gk_</code>)."
+"Alleen beschikbaar wanneer de API-modus op Aangepast staat.<br/>De URL "
+"bestaat uit het domein en het pad naar uw <strong>aangepaste ALTCHA-"
+"compatibele backend</strong>, en optioneel een API-sleutel (begint met "
+"<code>gk_</code>)."
 
 #: includes/settings.php:171
 msgid "Shared secret"
@@ -298,7 +308,9 @@ msgstr "Gedeeld geheim"
 
 #: includes/settings.php:177
 msgid "A secret key used to sign and verify challenges."
-msgstr "Een geheime sleutel die wordt gebruikt om challenges te ondertekenen en te verifiëren."
+msgstr ""
+"Een geheime sleutel die wordt gebruikt om challenges te ondertekenen en te "
+"verifiëren."
 
 #: includes/settings.php:178
 msgid ""
@@ -307,10 +319,11 @@ msgid ""
 "<strong>must exactly match</strong> the shared secret (sometimes called the "
 "HMAC secret) configured in your backend."
 msgstr ""
-"OpenPorte genereert automatisch een willekeurig geheim. Wijzig dit alleen als een "
-"andere applicatie hetzelfde geheim moet gebruiken.<br/>In de Aangepaste API-modus "
-"moet deze waarde <strong>exact overeenkomen</strong> met het gedeelde geheim "
-"(soms het HMAC-geheim genoemd) dat in uw backend is geconfigureerd."
+"OpenPorte genereert automatisch een willekeurig geheim. Wijzig dit alleen "
+"als een andere applicatie hetzelfde geheim moet gebruiken.<br/>In de "
+"Aangepaste API-modus moet deze waarde <strong>exact overeenkomen</strong> "
+"met het gedeelde geheim (soms het HMAC-geheim genoemd) dat in uw backend is "
+"geconfigureerd."
 
 #: includes/settings.php:186 includes/settings.php:192
 msgid "Hash algorithm for the challenges."
@@ -356,10 +369,10 @@ msgid ""
 "can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
 "Selecteer de PoW-complexiteit voor de widget: hoe hoger de complexiteit, hoe "
-"langer bezoekers (en bots) moeten werken om de challenge op te lossen.<br/>"
-"Zelfs 'Hoog' wordt meestal in minder dan een seconde opgelost op een recente "
-"computer; op oudere telefoons kan dit een paar seconden duren. 'Hoog' is "
-"ongeveer 2–3× het werk van 'Laag'."
+"langer bezoekers (en bots) moeten werken om de challenge op te lossen.<br/"
+">Zelfs 'Hoog' wordt meestal in minder dan een seconde opgelost op een "
+"recente computer; op oudere telefoons kan dit een paar seconden duren. "
+"'Hoog' is ongeveer 2–3× het werk van 'Laag'."
 
 #: includes/settings.php:228
 msgid "Expiration"
@@ -370,8 +383,8 @@ msgid ""
 "Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means "
 "no expiry (None) and 14400 is 4 hours."
 msgstr ""
-"Levensduur van een challenge. Aangepast accepteert 0 tot 14400 seconden, waarbij "
-"0 geen vervaldatum betekent (Geen) en 14400 gelijk is aan 4 uur."
+"Levensduur van een challenge. Aangepast accepteert 0 tot 14400 seconden, "
+"waarbij 0 geen vervaldatum betekent (Geen) en 14400 gelijk is aan 4 uur."
 
 #: includes/settings.php:243
 msgid "Widget Customisation"
@@ -453,8 +466,8 @@ msgid ""
 "the choice is yours."
 msgstr ""
 "Dit is van toepassing op het kleine ALTCHA-logo dat in de widget wordt "
-"getoond. ALTCHA is gratis open-source software — we zouden het waarderen "
-"als u dit zichtbaar houdt, maar de keuze is aan u."
+"getoond. ALTCHA is gratis open-source software — we zouden het waarderen als "
+"u dit zichtbaar houdt, maar de keuze is aan u."
 
 #: includes/settings.php:311
 msgid "Hide the ALTCHA logo"
@@ -466,9 +479,10 @@ msgid ""
 "it visible helps credit the project this plugin is built on, but it has no "
 "effect on how OpenPorte works."
 msgstr ""
-"Dit is van toepassing op de tekst die in de widget wordt getoond. Net als bij "
-"het logo: het zichtbaar houden helpt om het project waarop deze plug-in is "
-"gebouwd te vermelden, maar het heeft geen invloed op de werking van OpenPorte."
+"Dit is van toepassing op de tekst die in de widget wordt getoond. Net als "
+"bij het logo: het zichtbaar houden helpt om het project waarop deze plug-in "
+"is gebouwd te vermelden, maar het heeft geen invloed op de werking van "
+"OpenPorte."
 
 #: includes/settings.php:327
 msgid "Hide the \"Protected by ALTCHA\" footer"
@@ -637,8 +651,8 @@ msgid ""
 "%1$sDeprecated%2$s, and scheduled for removal in the next major release — "
 "place the %3$s shortcode in your content instead."
 msgstr ""
-"%1$sVerouderd%2$s, en gepland voor verwijdering in de volgende grote release — "
-"plaats in plaats daarvan de %3$s shortcode in uw inhoud."
+"%1$sVerouderd%2$s, en gepland voor verwijdering in de volgende grote release "
+"— plaats in plaats daarvan de %3$s shortcode in uw inhoud."
 
 #: includes/settings.php:496
 msgid "Plugin not active."

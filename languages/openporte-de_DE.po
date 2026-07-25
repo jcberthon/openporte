@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-24 00:00+0000\n"
 "Last-Translator: Qwen 3.6 + Crush 0.86.0 - signed-off by J-C Berthon\n"
 "Language-Team: German <de@li.org>\n"
@@ -31,14 +31,14 @@ msgstr ""
 "Schutz-Plugins (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "OpenPorte-Mitwirkende"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -47,8 +47,8 @@ msgstr "OpenPorte-Endpunktprüfung:"
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
 msgstr ""
-"Der API-Modus ist auf Benutzerdefiniert gesetzt, aber keine "
-"Aufforderungs-URL ist konfiguriert."
+"Der API-Modus ist auf Benutzerdefiniert gesetzt, aber keine Aufforderungs-"
+"URL ist konfiguriert."
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
@@ -64,17 +64,17 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
-"Die Aufforderungs-URL antwortete mit HTTP %d statt mit eine "
-"Aufgabe (engl. challenge). Überprüfen Sie die URL (einschließlich eines apiKey-"
-"Parameters) und die Domain-/Origin-Einschränkungen des Backends."
+"Die Aufforderungs-URL antwortete mit HTTP %d statt mit eine Aufgabe (engl. "
+"challenge). Überprüfen Sie die URL (einschließlich eines apiKey-Parameters) "
+"und die Domain-/Origin-Einschränkungen des Backends."
 
 #: admin/healthcheck.php:124
 msgid ""
 "The Challenge URL did not return an ALTCHA challenge (JSON with algorithm, "
 "challenge, salt and signature fields expected)."
 msgstr ""
-"Die Aufforderungs-URL hat keine ALTCHA-Aufforderung zurückgegeben "
-"(JSON mit den Feldern algorithm, challenge, salt und signature erwartet)."
+"Die Aufforderungs-URL hat keine ALTCHA-Aufforderung zurückgegeben (JSON mit "
+"den Feldern algorithm, challenge, salt und signature erwartet)."
 
 #. translators: %s is the algorithm name reported by the backend
 #: admin/healthcheck.php:133
@@ -113,8 +113,12 @@ msgid ""
 "The Challenge URL responds with a valid %s challenge and the shared secret "
 "matches."
 msgstr ""
-"Die Aufforderungs-URL antwortet mit einer gültigen %s-Aufforderung, "
-"und das gemeinsam genutzte Geheimnis stimmt überein."
+"Die Aufforderungs-URL antwortet mit einer gültigen %s-Aufforderung, und das "
+"gemeinsam genutzte Geheimnis stimmt überein."
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -163,8 +167,7 @@ msgstr "Wählen Sie den Betriebsmodus für OpenPorte:"
 #, php-format
 msgid "%1$sSelf-hosted%2$s generates challenges via the WordPress REST API."
 msgstr ""
-"%1$sSelbst gehostet%2$s generiert Aufforderungen über die WordPress-"
-"REST-API."
+"%1$sSelbst gehostet%2$s generiert Aufforderungen über die WordPress-REST-API."
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:122
@@ -202,7 +205,9 @@ msgstr "OpenPorte für diese Integrationen aktivieren."
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "Verwenden Sie den %s-Shortcode überall in den Inhalten Ihrer integrierten Plugins."
+msgstr ""
+"Verwenden Sie den %s-Shortcode überall in den Inhalten Ihrer integrierten "
+"Plugins."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -320,10 +325,10 @@ msgid ""
 "HMAC secret) configured in your backend."
 msgstr ""
 "OpenPorte generiert automatisch ein zufälliges Geheimnis. Ändern Sie es nur, "
-"wenn eine andere Anwendung dasselbe Geheimnis verwenden muss.<br/>Im "
-"API-Modus Benutzerdefiniert <strong>muss dieser Wert genau übereinstimmen</strong> "
-"mit dem gemeinsam genutzten Geheimnis (manchmal HMAC-Geheimnis genannt), das "
-"in Ihrem Backend konfiguriert ist."
+"wenn eine andere Anwendung dasselbe Geheimnis verwenden muss.<br/>Im API-"
+"Modus Benutzerdefiniert <strong>muss dieser Wert genau übereinstimmen</"
+"strong> mit dem gemeinsam genutzten Geheimnis (manchmal HMAC-Geheimnis "
+"genannt), das in Ihrem Backend konfiguriert ist."
 
 #: includes/settings.php:186 includes/settings.php:192
 msgid "Hash algorithm for the challenges."
@@ -340,11 +345,11 @@ msgid ""
 "algorithm your backend uses — most ALTCHA-compatible backends default to "
 "SHA-256."
 msgstr ""
-"Im API-Modus Selbst gehostet ist dies der Algorithmus, der zum Generieren und "
-"Überprüfen der Proof-of-Work-Aufforderungen verwendet wird.<br/>Im API-"
+"Im API-Modus Selbst gehostet ist dies der Algorithmus, der zum Generieren "
+"und Überprüfen der Proof-of-Work-Aufforderungen verwendet wird.<br/>Im API-"
 "Modus Benutzerdefiniert muss er mit dem Algorithmus Ihres Backends "
-"übereinstimmen — die meisten ALTCHA-kompatiblen Backends verwenden standardmäßig "
-"SHA-256."
+"übereinstimmen — die meisten ALTCHA-kompatiblen Backends verwenden "
+"standardmäßig SHA-256."
 
 #: includes/settings.php:203
 msgid "Low"
@@ -369,8 +374,8 @@ msgid ""
 "usually solved in under a second on a recent computer; on older phones it "
 "can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
-"Wählen Sie die PoW-Komplexität für das Widget: Je höher die Komplexität, desto "
-"länger müssen Besucher (und Bots) arbeiten, um die Aufforderung zu "
+"Wählen Sie die PoW-Komplexität für das Widget: Je höher die Komplexität, "
+"desto länger müssen Besucher (und Bots) arbeiten, um die Aufforderung zu "
 "lösen.<br/>Selbst Hoch wird normalerweise in unter einer Sekunde auf einem "
 "neuen Computer gelöst; auf älteren Telefonen kann es einige Sekunden dauern. "
 "Hoch entspricht ungefähr dem 2- bis 3-fachen Aufwand von Niedrig."
@@ -445,10 +450,10 @@ msgid ""
 "pause's only effect. It does not make spam-blocking any stronger; to raise "
 "the bar for bots, increase Complexity instead."
 msgstr ""
-"Einige Besucher empfinden eine langsamere Überprüfung als vertrauenswürdiger, "
-"und das ist die einzige Wirkung dieser Pause. Sie macht die Spam-Blockierung "
-"nicht stärker; um die Hürde für Bots zu erhöhen, steigern Sie stattdessen die "
-"Komplexität."
+"Einige Besucher empfinden eine langsamere Überprüfung als "
+"vertrauenswürdiger, und das ist die einzige Wirkung dieser Pause. Sie macht "
+"die Spam-Blockierung nicht stärker; um die Hürde für Bots zu erhöhen, "
+"steigern Sie stattdessen die Komplexität."
 
 #. translators: %s is the added delay in seconds, e.g. "0.5"
 #: includes/settings.php:296
@@ -696,8 +701,8 @@ msgid ""
 msgstr ""
 "OpenPorte ist ein Fork von ALTCHA Spam Protection und kann nicht ausgeführt "
 "werden, während das ursprüngliche ALTCHA-Plugin aktiv ist — beide teilen "
-"sich internen Code. Bitte deaktivieren Sie zuerst \"ALTCHA Spam Protection\", "
-"dann aktivieren Sie OpenPorte. Siehe %s für Details."
+"sich internen Code. Bitte deaktivieren Sie zuerst \"ALTCHA Spam "
+"Protection\", dann aktivieren Sie OpenPorte. Siehe %s für Details."
 
 #: openporte.php:66
 msgid "OpenPorte cannot be activated"
@@ -785,4 +790,3 @@ msgstr "Zur Plugin-Seite gehen"
 
 #~ msgid "Shortcode"
 #~ msgstr "Shortcode"
-

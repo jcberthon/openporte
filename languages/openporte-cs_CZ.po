@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Czech\n"
@@ -32,14 +32,14 @@ msgstr ""
 "ALTCHA Spam Protection (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "Přispěvatelé OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -90,8 +90,7 @@ msgstr ""
 "odeslání formuláře by selhalo při ověřování. Zkopírujte HMAC tajný klíč "
 "backendu do pole Tajný klíč podpisu."
 
-#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm
-#. configured in OpenPorte
+#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
 #, php-format
 msgid ""
@@ -110,6 +109,10 @@ msgid ""
 msgstr ""
 "Adresa URL výzvy odpovídá platnou výzvou %s a sdílený tajný klíč se shoduje."
 
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
+
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr "Alternativa k CAPTCHA respektující soukromí."
@@ -122,8 +125,7 @@ msgstr "Líbí se vám OpenPorte?"
 msgid "Review it!"
 msgstr "Ohodnoťte plugin!"
 
-#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget
-#. version
+#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
 msgid ""
@@ -133,15 +135,13 @@ msgstr ""
 "OpenPorte Spam Protection pro WordPress, verze pluginu %1$s, verze widgetu "
 "ALTCHA %2$s"
 
-#. translators: the placeholders are opening and closing tags for a link (<a>
-#. tag)
+#. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
 "Prosíme, ohodnoťte OpenPorte na WordPress.org a pomozte nám s propagací."
 
-#. translators: %1$s and %2$s are the opening and closing tags of a link to the
-#. ALTCHA project.
+#. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
@@ -160,13 +160,15 @@ msgstr "Vyberte režim provozu pro OpenPorte:"
 #: admin/options.php:114
 #, php-format
 msgid "%1$sSelf-hosted%2$s generates challenges via the WordPress REST API."
-msgstr "%1$sSelf-hosted%2$s generuje výzvy prostřednictvím REST API WordPressu."
+msgstr ""
+"%1$sSelf-hosted%2$s generuje výzvy prostřednictvím REST API WordPressu."
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sCustom%2$s umožňuje ukázat na vlastní backend kompatibilní s ALTCHA."
+msgstr ""
+"%1$sCustom%2$s umožňuje ukázat na vlastní backend kompatibilní s ALTCHA."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
@@ -184,7 +186,8 @@ msgstr "Aktivujte OpenPorte pro základní funkce WordPressu."
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr "Použijte shortcode %s kdekoli ve svém HTML, příspěvku nebo obsahu stránky."
+msgstr ""
+"Použijte shortcode %s kdekoli ve svém HTML, příspěvku nebo obsahu stránky."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -233,8 +236,7 @@ msgstr "Nastavení"
 msgid "Verification failed. Try again later."
 msgstr "Verifikace se nezdařila. Zkuste to později znovu."
 
-#. translators: %1$s and %2$s are the opening and closing tags for a link (<a>
-#. tag)
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
 #: includes/core.php:326
 #, php-format
 msgid "Protected by %1$sALTCHA%2$s"
@@ -256,8 +258,7 @@ msgstr "Probíhá ověřování..."
 msgid "Verifying... please wait."
 msgstr "Probíhá ověřování... prosím, čekejte."
 
-#. translators: Displayed inside a <noscript> block when the visitor's browser
-#. has JavaScript disabled; the ALTCHA widget cannot function without it.
+#. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:680
 msgid "This form requires JavaScript!"
 msgstr "Tento formulář vyžaduje JavaScript!"
@@ -326,14 +327,15 @@ msgstr "Algoritmus"
 
 #: includes/settings.php:193
 msgid ""
-"In Self-hosted API Mode this is the algorithm used to generate and verify the"
-" proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm"
-" your backend uses — most ALTCHA-compatible backends default to SHA-256."
+"In Self-hosted API Mode this is the algorithm used to generate and verify "
+"the proof-of-work challenges.<br/>In Custom API Mode it must match the "
+"algorithm your backend uses — most ALTCHA-compatible backends default to "
+"SHA-256."
 msgstr ""
-"V režimu Self-hosted API je to algoritmus používaný k generování a ověřování"
-" výzev proof-of-work.<br/>V režimu Vlastní API musí odpovídat algoritmu"
-" používanému vaším backendem — většina backendů kompatibilních s ALTCHA "
-"má jako výchozí SHA-256."
+"V režimu Self-hosted API je to algoritmus používaný k generování a ověřování "
+"výzev proof-of-work.<br/>V režimu Vlastní API musí odpovídat algoritmu "
+"používanému vaším backendem — většina backendů kompatibilních s ALTCHA má "
+"jako výchozí SHA-256."
 
 #: includes/settings.php:203
 msgid "Low"
@@ -355,8 +357,8 @@ msgstr "Složitost"
 msgid ""
 "Select the PoW complexity for the widget: the higher the complexity, the "
 "longer visitors (and bots) work to solve the challenge.<br/>Even High is "
-"usually solved in under a second on a recent computer; on older phones it can"
-" take a few seconds. High is roughly 2–3× the work of Low."
+"usually solved in under a second on a recent computer; on older phones it "
+"can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
 "Vyberte složitost PoW pro widget: čím vyšší složitost, tím déle návštěvníci "
 "(a boti) pracují na řešení výzvy.<br/>I Vysoká je obvykle vyřešena pod "
@@ -369,8 +371,8 @@ msgstr "Vypršení platnosti"
 
 #: includes/settings.php:234
 msgid ""
-"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no"
-" expiry (None) and 14400 is 4 hours."
+"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means "
+"no expiry (None) and 14400 is 4 hours."
 msgstr ""
 "Životnost výzvy. Vlastní přijímá 0 až 14400 sekund, kde 0 znamená žádné "
 "vypršení (Žádné) a 14400 je 4 hodiny."
@@ -631,8 +633,7 @@ msgstr "Custom HTML"
 msgid "Configure hand-written widget tags."
 msgstr "Konfigurujte ručně psané značky widgetu."
 
-#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be
-#. replaced with the shortcode
+#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode
 #: includes/settings.php:475
 #, php-format
 msgid ""
@@ -679,8 +680,8 @@ msgstr "Registrace se nezdařila. Zkuste to prosím později znovu."
 msgid ""
 "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the "
 "original ALTCHA plugin is active — the two share internal code. Please "
-"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the"
-" %s for details."
+"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
+"the %s for details."
 msgstr ""
 "OpenPorte je fork ALTCHA Spam Protection a nemůže běžet, když je původní "
 "plugin ALTCHA aktivní — oba sdílejí interní kód. Nejprve prosím deaktivujte "

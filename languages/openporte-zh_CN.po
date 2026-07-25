@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Crush-qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Chinese (simplified)\n"
@@ -30,14 +30,14 @@ msgstr ""
 "Protection 插件 (v1) 的社区维护分支。"
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "OpenPorte 贡献者"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -61,8 +61,8 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
-"Challenge URL 返回了 HTTP %d 而非 challenge。请检查该 URL（包括任何 apiKey "
-"参数）以及后端的域名/来源限制。"
+"Challenge URL 返回了 HTTP %d 而非 challenge。请检查该 URL（包括任何 apiKey 参"
+"数）以及后端的域名/来源限制。"
 
 #: admin/healthcheck.php:124
 msgid ""
@@ -104,6 +104,10 @@ msgid ""
 "The Challenge URL responds with a valid %s challenge and the shared secret "
 "matches."
 msgstr "Challenge URL 返回了有效的 %s challenge，且共享密钥匹配。"
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -280,9 +284,9 @@ msgid ""
 "domain and path to your <strong>custom ALTCHA-compatible backend</strong>, "
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
-"仅在 API 模式设置为自定义时可用。<br/>该 URL 由您<strong>自定义的 ALTCHA 兼"
-"容后端</strong>的域名和路径组成，还可选地包含 API 密钥（以 <code>gk_</code> "
-"开头）。"
+"仅在 API 模式设置为自定义时可用。<br/>该 URL 由您<strong>自定义的 ALTCHA 兼容"
+"后端</strong>的域名和路径组成，还可选地包含 API 密钥（以 <code>gk_</code> 开"
+"头）。"
 
 #: includes/settings.php:171
 msgid "Shared secret"
@@ -299,9 +303,9 @@ msgid ""
 "<strong>must exactly match</strong> the shared secret (sometimes called the "
 "HMAC secret) configured in your backend."
 msgstr ""
-"OpenPorte 会自动生成随机密钥。仅在其他应用程序需要使用相同密钥时才更改它。<br"
-"/>在自定义 API 模式下，此值必须<strong>完全匹配</strong>您在后端中配置的共享"
-"密钥（有时称为 HMAC 密钥）。"
+"OpenPorte 会自动生成随机密钥。仅在其他应用程序需要使用相同密钥时才更改它。"
+"<br/>在自定义 API 模式下，此值必须<strong>完全匹配</strong>您在后端中配置的共"
+"享密钥（有时称为 HMAC 密钥）。"
 
 #: includes/settings.php:186 includes/settings.php:192
 msgid "Hash algorithm for the challenges."
@@ -319,7 +323,8 @@ msgid ""
 "SHA-256."
 msgstr ""
 "在自托管 API 模式下，这是用于生成和验证 PoW challenge 的算法。<br/>在自定义 "
-"API 模式下，它必须与后端使用的算法匹配——大多数 ALTCHA 兼容后端默认为 SHA-256。"
+"API 模式下，它必须与后端使用的算法匹配——大多数 ALTCHA 兼容后端默认为 "
+"SHA-256。"
 
 #: includes/settings.php:203
 msgid "Low"
@@ -435,8 +440,8 @@ msgid ""
 "free, open-source software — we would appreciate you keeping it visible, but "
 "the choice is yours."
 msgstr ""
-"这适用于 widget 内显示的小型 ALTCHA logo。ALTCHA 是免费、开源的软件——我们希"
-"望您保留它的可见性，但选择权在您。"
+"这适用于 widget 内显示的小型 ALTCHA logo。ALTCHA 是免费、开源的软件——我们希望"
+"您保留它的可见性，但选择权在您。"
 
 #: includes/settings.php:311
 msgid "Hide the ALTCHA logo"
@@ -618,8 +623,8 @@ msgid ""
 "%1$sDeprecated%2$s, and scheduled for removal in the next major release — "
 "place the %3$s shortcode in your content instead."
 msgstr ""
-"已%1$s弃用%2$s，并计划在下个大版本中移除——请在内容中使用 %3$s shortcode 来"
-"替代。"
+"已%1$s弃用%2$s，并计划在下个大版本中移除——请在内容中使用 %3$s shortcode 来替"
+"代。"
 
 #: includes/settings.php:496
 msgid "Plugin not active."
@@ -679,8 +684,8 @@ msgstr "前往插件页面"
 #~ "generates challenges via the WordPress REST API. %3$sCustom%4$s lets you "
 #~ "point to your own ALTCHA-compatible backend."
 #~ msgstr ""
-#~ "两种模式都无需任何外部付费服务。%1$s自托管%2$s 通过 WordPress REST "
-#~ "API 生成 challenge。%3$s自定义%4$s 允许您指向自己的 ALTCHA 兼容后端。"
+#~ "两种模式都无需任何外部付费服务。%1$s自托管%2$s 通过 WordPress REST API 生"
+#~ "成 challenge。%3$s自定义%4$s 允许您指向自己的 ALTCHA 兼容后端。"
 
 #, php-format
 #~ msgid ""
@@ -688,8 +693,8 @@ msgstr "前往插件页面"
 #~ "backend. It has no effect in %3$sSelf-hosted%4$s mode, which uses proof-"
 #~ "of-work only."
 #~ msgstr ""
-#~ "垃圾邮件过滤器根据 %1$s自定义%2$s 后端返回的分类进行操作。在 %3$s自托管%4"
-#~ "$s 模式下无效，该模式仅使用 PoW。"
+#~ "垃圾邮件过滤器根据 %1$s自定义%2$s 后端返回的分类进行操作。在 %3$s自托"
+#~ "管%4$s 模式下无效，该模式仅使用 PoW。"
 
 #~ msgid "Configure your custom Challenge URL."
 #~ msgstr "配置您的自定义 Challenge URL。"

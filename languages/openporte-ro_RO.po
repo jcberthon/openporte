@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-23 00:00+0000\n"
 "Last-Translator: Mistral Vibe <vibe@mistral.ai> - signed-off by J-C Berthon\n"
 "Language-Team: Romanian\n"
@@ -27,19 +27,19 @@ msgid ""
 "(v1)."
 msgstr ""
 "OpenPorte este o alternativă gratuită, open-source la CAPTCHA, care oferă o "
-"protecție robustă împotriva spam-ului și a bot-urilor fără a folosi cookie-uri, "
-"asigurând conformitatea completă cu GDPR prin design. Un fork menținut de "
-"comunitate al plugin-ului ALTCHA Spam Protection (v1)."
+"protecție robustă împotriva spam-ului și a bot-urilor fără a folosi cookie-"
+"uri, asigurând conformitatea completă cu GDPR prin design. Un fork menținut "
+"de comunitate al plugin-ului ALTCHA Spam Protection (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "Contribuitori OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -47,7 +47,8 @@ msgstr "Verificare punct final OpenPorte:"
 
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
-msgstr "Modul API este Personalizat, dar niciun URL de provocare nu este configurat."
+msgstr ""
+"Modul API este Personalizat, dar niciun URL de provocare nu este configurat."
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
@@ -88,11 +89,10 @@ msgid ""
 "Signing secret field."
 msgstr ""
 "Secretul partajat nu corespunde cu secretul HMAC al backend-ului: orice "
-"trimitere de formular va eșua verificarea. Copiați secretul HMAC al "
-"backend-ului în câmpul Secret de semnare."
+"trimitere de formular va eșua verificarea. Copiați secretul HMAC al backend-"
+"ului în câmpul Secret de semnare."
 
-#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm
-#. configured in OpenPorte
+#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
 #, php-format
 msgid ""
@@ -109,8 +109,12 @@ msgid ""
 "The Challenge URL responds with a valid %s challenge and the shared secret "
 "matches."
 msgstr ""
-"URL-ul de provocare răspunde cu o provocare %s validă, și secretul "
-"partajat corespunde."
+"URL-ul de provocare răspunde cu o provocare %s validă, și secretul partajat "
+"corespunde."
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -124,29 +128,29 @@ msgstr "Vă place OpenPorte?"
 msgid "Review it!"
 msgstr "Evaluează-l!"
 
-#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget
-#. version
+#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
 msgid ""
 "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget "
 "version %2$s"
 msgstr ""
-"OpenPorte Spam Protection pentru WordPress, versiunea plugin %1$s, "
-"versiunea widget ALTCHA %2$s"
+"OpenPorte Spam Protection pentru WordPress, versiunea plugin %1$s, versiunea "
+"widget ALTCHA %2$s"
 
-#. translators: the placeholders are opening and closing tags for a link (<a>
-#. tag)
+#. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
-msgstr "Vă rugăm să evaluați OpenPorte pe WordPress.org pentru a ne ajuta să ne facem cunoscut."
+msgstr ""
+"Vă rugăm să evaluați OpenPorte pe WordPress.org pentru a ne ajuta să ne "
+"facem cunoscut."
 
-#. translators: %1$s and %2$s are the opening and closing tags of a link to the
-#. ALTCHA project.
+#. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
-msgstr "Alimentat de proiectul %1$sALTCHA%2$s open-source bazat pe dovada de muncă."
+msgstr ""
+"Alimentat de proiectul %1$sALTCHA%2$s open-source bazat pe dovada de muncă."
 
 #: admin/options.php:97
 msgid "Star OpenPorte on GitHub!"
@@ -166,7 +170,9 @@ msgstr "%1$sAuto-găzduit%2$s generează provocări prin API REST WordPress."
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sPersonalizat%2$s vă permite să indicați propriul backend compatibil ALTCHA."
+msgstr ""
+"%1$sPersonalizat%2$s vă permite să indicați propriul backend compatibil "
+"ALTCHA."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
@@ -174,7 +180,8 @@ msgstr "Ambele moduri rulează fără niciun serviciu extern plătit."
 
 #: admin/options.php:138
 msgid "Customise the widget look and feel to fit your needs."
-msgstr "Personalizați aspectul și simțul widget-ului în funcție de nevoile dvs."
+msgstr ""
+"Personalizați aspectul și simțul widget-ului în funcție de nevoile dvs."
 
 #: admin/options.php:147
 msgid "Activate OpenPorte for the core WordPress functionalities."
@@ -184,7 +191,8 @@ msgstr "Activează OpenPorte pentru funcționalitățile principale WordPress."
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr "Utilizați shortcode-ul %s oriunde în conținutul HTML, Articol sau Pagină."
+msgstr ""
+"Utilizați shortcode-ul %s oriunde în conținutul HTML, Articol sau Pagină."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -194,7 +202,8 @@ msgstr "Activează OpenPorte pentru aceste integrare."
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "Utilizați shortcode-ul %s oriunde în conținutul plugin-urilor integrate."
+msgstr ""
+"Utilizați shortcode-ul %s oriunde în conținutul plugin-urilor integrate."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -233,8 +242,7 @@ msgstr "Setări"
 msgid "Verification failed. Try again later."
 msgstr "Verificarea a eșuat. Încercați din nou mai târziu."
 
-#. translators: %1$s and %2$s are the opening and closing tags for a link (<a>
-#. tag)
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
 #: includes/core.php:326
 #, php-format
 msgid "Protected by %1$sALTCHA%2$s"
@@ -256,8 +264,7 @@ msgstr "Se verifică..."
 msgid "Verifying... please wait."
 msgstr "Se verifică... vă rugăm să așteptați."
 
-#. translators: Displayed inside a <noscript> block when the visitor's browser
-#. has JavaScript disabled; the ALTCHA widget cannot function without it.
+#. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:680
 msgid "This form requires JavaScript!"
 msgstr "Acest formular necesită JavaScript!"
@@ -275,8 +282,9 @@ msgid ""
 "Select the API Mode. Use Self-hosted for the built-in WordPress REST API, or "
 "Custom to point to your own ALTCHA-compatible backend."
 msgstr ""
-"Selectați Modul API. Utilizați Auto-găzduit pentru API REST integrat WordPress, "
-"sau Personalizat pentru a indica propriul backend compatibil ALTCHA."
+"Selectați Modul API. Utilizați Auto-găzduit pentru API REST integrat "
+"WordPress, sau Personalizat pentru a indica propriul backend compatibil "
+"ALTCHA."
 
 #: includes/settings.php:144
 msgid "Self-hosted"
@@ -311,10 +319,10 @@ msgid ""
 "<strong>must exactly match</strong> the shared secret (sometimes called the "
 "HMAC secret) configured in your backend."
 msgstr ""
-"OpenPorte generează automat un secret aleatoriu. Schimbați-l numai dacă "
-"o altă aplicație trebuie să folosească același secret.<br/>În Modul API "
-"Personalizat, această valoare <strong>trebuie să corespundă exact</strong> cu "
-"secretul partajat (uneori numit secret HMAC) configurat în backend."
+"OpenPorte generează automat un secret aleatoriu. Schimbați-l numai dacă o "
+"altă aplicație trebuie să folosească același secret.<br/>În Modul API "
+"Personalizat, această valoare <strong>trebuie să corespundă exact</strong> "
+"cu secretul partajat (uneori numit secret HMAC) configurat în backend."
 
 #: includes/settings.php:186 includes/settings.php:192
 msgid "Hash algorithm for the challenges."
@@ -327,12 +335,13 @@ msgstr "Algoritm"
 #: includes/settings.php:193
 msgid ""
 "In Self-hosted API Mode this is the algorithm used to generate and verify "
-"the proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm" 
-"your backend uses — most ALTCHA-compatible backends default to SHA-256."
+"the proof-of-work challenges.<br/>In Custom API Mode it must match the "
+"algorithm your backend uses — most ALTCHA-compatible backends default to "
+"SHA-256."
 msgstr ""
 "În Modul API Auto-găzduit, acesta este algoritmul folosit pentru a genera și "
-"a verifica provocările proof-of-work.<br/>În Modul API Personalizat, "
-"trebuie să corespundă cu algoritmul pe care backend-ul dvs. îl folosește: "
+"a verifica provocările proof-of-work.<br/>În Modul API Personalizat, trebuie "
+"să corespundă cu algoritmul pe care backend-ul dvs. îl folosește: "
 "majoritatea backend-urilor compatibile ALTCHA folosesc SHA-256 implicit."
 
 #: includes/settings.php:203
@@ -355,14 +364,14 @@ msgstr "Complexitate"
 msgid ""
 "Select the PoW complexity for the widget: the higher the complexity, the "
 "longer visitors (and bots) work to solve the challenge.<br/>Even High is "
-"usually solved in under a second on a recent computer; on older phones it can" 
-"take a few seconds. High is roughly 2–3× the work of Low."
+"usually solved in under a second on a recent computer; on older phones it "
+"can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
 "Selectați complexitatea PoW pentru widget: cu cât complexitatea este mai "
 "mare, cu atât vizitatorii (și bot-urile) lucrează mai mult pentru a rezolva "
 "provocarea.<br/>Chiar și Ridicată se rezolvă de obicei în mai puțin de o "
-"secundă pe un computer recent; pe telefoanele vechi poate dura câteva secunde. "
-"Ridicată este aproximativ de 2-3 ori munca lui Scăzută."
+"secundă pe un computer recent; pe telefoanele vechi poate dura câteva "
+"secunde. Ridicată este aproximativ de 2-3 ori munca lui Scăzută."
 
 #: includes/settings.php:228
 msgid "Expiration"
@@ -370,8 +379,8 @@ msgstr "Expirare"
 
 #: includes/settings.php:234
 msgid ""
-"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no" 
-"expiry (None) and 14400 is 4 hours."
+"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means "
+"no expiry (None) and 14400 is 4 hours."
 msgstr ""
 "Durata de viață a unei provocări. Personalizat acceptă de la 0 la 14400 de "
 "secunde, unde 0 înseamnă fără expirare (Niciuna) și 14400 sunt 4 ore."
@@ -413,8 +422,8 @@ msgid ""
 "Choose whether the widget sits inline in the page or floats near the submit "
 "button."
 msgstr ""
-"Alegeți dacă widget-ul este încorporat în pagină sau plutește lângă "
-"butonul de trimitere."
+"Alegeți dacă widget-ul este încorporat în pagină sau plutește lângă butonul "
+"de trimitere."
 
 #: includes/settings.php:276
 msgid "Inline"
@@ -456,8 +465,8 @@ msgid ""
 "the choice is yours."
 msgstr ""
 "Acesta se aplică la micul logos ALTCHA afișat în widget. ALTCHA este un "
-"software gratuit, open-source: v-am ruga să îl păstrați vizibil, dar "
-"decizia vă aparține."
+"software gratuit, open-source: v-am ruga să îl păstrați vizibil, dar decizia "
+"vă aparține."
 
 #: includes/settings.php:311
 msgid "Hide the ALTCHA logo"
@@ -469,9 +478,9 @@ msgid ""
 "it visible helps credit the project this plugin is built on, but it has no "
 "effect on how OpenPorte works."
 msgstr ""
-"Acesta se aplică la textul afișat în widget. La fel ca logo-ul: a-l "
-"păstra vizibil ajută la creditat proiectul pe care se baza acest plugin, "
-"dar nu are niciun efect asupra modului în care funcționează OpenPorte."
+"Acesta se aplică la textul afișat în widget. La fel ca logo-ul: a-l păstra "
+"vizibil ajută la creditat proiectul pe care se baza acest plugin, dar nu are "
+"niciun efect asupra modului în care funcționează OpenPorte."
 
 #: includes/settings.php:327
 msgid "Hide the \"Protected by ALTCHA\" footer"
@@ -633,8 +642,7 @@ msgstr "Custom HTML"
 msgid "Configure hand-written widget tags."
 msgstr "Configurare etichete widget scrise manual."
 
-#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be
-#. replaced with the shortcode
+#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode
 #: includes/settings.php:475
 #, php-format
 msgid ""
@@ -681,8 +689,8 @@ msgstr "Înregistrarea a eșuat. Vă rugăm încercați din nou mai târziu."
 msgid ""
 "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the "
 "original ALTCHA plugin is active — the two share internal code. Please "
-"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the"
-" %s for details."
+"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
+"the %s for details."
 msgstr ""
 "OpenPorte este un fork al ALTCHA Spam Protection și nu poate rula cât timp "
 "plugin-ul original ALTCHA este activ: amândouă împărtășesc cod intern. "
