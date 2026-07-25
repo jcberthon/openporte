@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
 "POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-07-25 00:00+0000\n"
+"Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: openporte.php includes/admin.php:16
 msgid "OpenPorte Spam Protection"
-msgstr ""
+msgstr "OpenPorte Spam Protection"
 
 #. Description of the plugin
 #: openporte.php
@@ -26,30 +26,34 @@ msgid ""
 "design. A community-maintained fork of the ALTCHA Spam Protection plugin "
 "(v1)."
 msgstr ""
+"OpenPorte je bezplatná open-source alternativa k CAPTCHA, která nabízí "
+"spolehlivou ochranu proti spamu a botům bez používání cookies a zajišťuje "
+"plnou souladnost s GDPR již od návrhu. Fork spravovaný komunitou pluginu "
+"ALTCHA Spam Protection (v1)."
 
 #. Author of the plugin
 #: openporte.php admin/options.php:35 integrations/elementor/field.php:18
 msgid "OpenPorte"
-msgstr ""
+msgstr "OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
 msgid "https://github.com/jcberthon/openporte"
-msgstr ""
+msgstr "https://github.com/jcberthon/openporte"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
-msgstr ""
+msgstr "Kontrola koncového bodu OpenPorte:"
 
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
-msgstr ""
+msgstr "Režim API je Vlastní, ale není nakonfigurována adresa URL výzvy."
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
 #, php-format
 msgid "The Challenge URL is unreachable: %s"
-msgstr ""
+msgstr "Adresa URL výzvy je nedostupná: %s"
 
 #. translators: %d is the HTTP status code returned by the backend
 #: admin/healthcheck.php:114
@@ -59,18 +63,22 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
+"Adresa URL výzvy odpověděla HTTP %d místo výzvy. Zkontrolujte adresu URL "
+"(včetně parametru apiKey) a omezení domény/původu backendu."
 
 #: admin/healthcheck.php:124
 msgid ""
 "The Challenge URL did not return an ALTCHA challenge (JSON with algorithm, "
 "challenge, salt and signature fields expected)."
 msgstr ""
+"Adresa URL výzvy nevrátila výzvu ALTCHA (očekával se JSON s poli algorithm, "
+"challenge, salt a signature)."
 
 #. translators: %s is the algorithm name reported by the backend
 #: admin/healthcheck.php:133
 #, php-format
 msgid "The backend issues challenges with the unsupported algorithm \"%s\"."
-msgstr ""
+msgstr "Backend vydává výzvy s nepodporovaným algoritmem \"%s\"."
 
 #: admin/healthcheck.php:149
 msgid ""
@@ -78,6 +86,9 @@ msgid ""
 "submission would fail verification. Copy the backend's HMAC secret into the "
 "Signing secret field."
 msgstr ""
+"Sdílené tajné klíče se neshoduje s HMAC tajným klíčem backendu — každé "
+"odeslání formuláře by selhalo při ověřování. Zkopírujte HMAC tajný klíč "
+"backendu do pole Tajný klíč podpisu."
 
 #. translators: %1$s is the algorithm used by the backend, %2$s the algorithm
 #. configured in OpenPorte
@@ -87,6 +98,8 @@ msgid ""
 "The backend issues %1$s challenges but the Algorithm setting is %2$s — form "
 "submissions would fail verification. Set Algorithm to %1$s."
 msgstr ""
+"Backend vydává výzvy %1$s, ale nastavení Algoritmu je %2$s — odeslání "
+"formulářů by selhala při ověřování. Nastavte Algoritmus na %1$s."
 
 #. translators: %s is the algorithm confirmed with the backend
 #: admin/healthcheck.php:167
@@ -95,18 +108,19 @@ msgid ""
 "The Challenge URL responds with a valid %s challenge and the shared secret "
 "matches."
 msgstr ""
+"Adresa URL výzvy odpovídá platnou výzvou %s a sdílený tajný klíč se shoduje."
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
-msgstr ""
+msgstr "Alternativa k CAPTCHA respektující soukromí."
 
 #: admin/options.php:40
 msgid "Do you like OpenPorte?"
-msgstr ""
+msgstr "Líbí se vám OpenPorte?"
 
 #: admin/options.php:43
 msgid "Review it!"
-msgstr ""
+msgstr "Ohodnoťte plugin!"
 
 #. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget
 #. version
@@ -116,12 +130,15 @@ msgid ""
 "OpenPorte Spam Protection for WordPress, plugin version %1$s, ALTCHA widget "
 "version %2$s"
 msgstr ""
+"OpenPorte Spam Protection pro WordPress, verze pluginu %1$s, verze widgetu "
+"ALTCHA %2$s"
 
 #. translators: the placeholders are opening and closing tags for a link (<a>
 #. tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
+"Prosíme, ohodnoťte OpenPorte na WordPress.org a pomozte nám s propagací."
 
 #. translators: %1$s and %2$s are the opening and closing tags of a link to the
 #. ALTCHA project.
@@ -129,87 +146,88 @@ msgstr ""
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
 msgstr ""
+"Poháněno open-source projektem %1$sALTCHA%2$s založeným na proof-of-work."
 
 #: admin/options.php:97
 msgid "Star OpenPorte on GitHub!"
-msgstr ""
+msgstr "Přidejte hvězdičku OpenPorte na GitHubu!"
 
 #: admin/options.php:109
 msgid "Choose the mode of operation for OpenPorte:"
-msgstr ""
+msgstr "Vyberte režim provozu pro OpenPorte:"
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:114
 #, php-format
 msgid "%1$sSelf-hosted%2$s generates challenges via the WordPress REST API."
-msgstr ""
+msgstr "%1$sSelf-hosted%2$s generuje výzvy prostřednictvím REST API WordPressu."
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr ""
+msgstr "%1$sCustom%2$s umožňuje ukázat na vlastní backend kompatibilní s ALTCHA."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
-msgstr ""
+msgstr "Oba režimy běží bez jakékoli externí placené služby."
 
 #: admin/options.php:138
 msgid "Customise the widget look and feel to fit your needs."
-msgstr ""
+msgstr "Přizpůsobte vzhled a chování widgetu svým potřebám."
 
 #: admin/options.php:147
 msgid "Activate OpenPorte for the core WordPress functionalities."
-msgstr ""
+msgstr "Aktivujte OpenPorte pro základní funkce WordPressu."
 
 #. translators: the placeholder will be replaced with the shortcode
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr ""
+msgstr "Použijte shortcode %s kdekoli ve svém HTML, příspěvku nebo obsahu stránky."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
-msgstr ""
+msgstr "Aktivujte OpenPorte pro tyto integrace."
 
 #. translators: the placeholder will be replaced with the shortcode
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr ""
+msgstr "Použijte shortcode %s kdekoli v obsahu integrovaných pluginů."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
 msgid "Show"
-msgstr ""
+msgstr "Zobrazit"
 
 #: admin/options.php:261 admin/options.php:414
 msgid "Hide"
-msgstr ""
+msgstr "Skrýt"
 
 #: admin/options.php:477
 msgid "5 minutes"
-msgstr ""
+msgstr "5 minut"
 
 #: admin/options.php:478
 msgid "30 minutes"
-msgstr ""
+msgstr "30 minut"
 
 #: admin/options.php:479
 msgid "1 hour"
-msgstr ""
+msgstr "1 hodina"
 
 #: admin/options.php:493 includes/settings.php:145
 msgid "Custom"
-msgstr ""
+msgstr "Vlastní"
 
 #: includes/admin.php:17
 msgid "OpenPorte Anti-spam"
-msgstr ""
+msgstr "OpenPorte Anti-spam"
 
 #: includes/admin.php:36
 msgid "Settings"
-msgstr ""
+msgstr "Nastavení"
 
 #: includes/core.php:323 integrations/enfold-theme.php:58
 msgid "Verification failed. Try again later."
@@ -242,29 +260,31 @@ msgstr "Probíhá ověřování... prosím, čekejte."
 #. has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:680
 msgid "This form requires JavaScript!"
-msgstr ""
+msgstr "Tento formulář vyžaduje JavaScript!"
 
 #: includes/settings.php:129
 msgid "General"
-msgstr ""
+msgstr "Obecné"
 
 #: includes/settings.php:136
 msgid "API Mode"
-msgstr ""
+msgstr "Režim API"
 
 #: includes/settings.php:142
 msgid ""
 "Select the API Mode. Use Self-hosted for the built-in WordPress REST API, or "
 "Custom to point to your own ALTCHA-compatible backend."
 msgstr ""
+"Vyberte režim API. Použijte Self-hosted pro vestavěné REST API WordPressu "
+"nebo Vlastní pro vlastní backend kompatibilní s ALTCHA."
 
 #: includes/settings.php:144
 msgid "Self-hosted"
-msgstr ""
+msgstr "Self-hosted"
 
 #: includes/settings.php:154
 msgid "Challenge URL"
-msgstr ""
+msgstr "Adresa URL výzvy"
 
 #: includes/settings.php:162
 msgid ""
@@ -272,14 +292,17 @@ msgid ""
 "domain and path to your <strong>custom ALTCHA-compatible backend</strong>, "
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
+"Dostupné pouze při režimu API Vlastní.<br/>Adresa URL se skládá z domény a "
+"cesty k vašemu <strong>vlastnímu backendu kompatibilnímu s ALTCHA</strong>, "
+"a volitelně klíči API (začíná <code>gk_</code>)."
 
 #: includes/settings.php:171
 msgid "Shared secret"
-msgstr ""
+msgstr "Sdílený tajný klíč"
 
 #: includes/settings.php:177
 msgid "A secret key used to sign and verify challenges."
-msgstr ""
+msgstr "Tajný klíč používaný k podpisu a ověřování výzev."
 
 #: includes/settings.php:178
 msgid ""
@@ -288,14 +311,18 @@ msgid ""
 "<strong>must exactly match</strong> the shared secret (sometimes called the "
 "HMAC secret) configured in your backend."
 msgstr ""
+"OpenPorte automaticky generuje náhodný tajný klíč. Změňte jej pouze, pokud "
+"jiná aplikace potřebuje použít stejný klíč.<br/>V režimu Vlastní API tato "
+"hodnota <strong>musí přesně odpovídat</strong> sdílenému tajnému klíči "
+"(někdy nazývanému HMAC tajný klíč) nakonfigurovanému ve vašem backendu."
 
 #: includes/settings.php:186 includes/settings.php:192
 msgid "Hash algorithm for the challenges."
-msgstr ""
+msgstr "Algoritmus hash pro výzvy."
 
 #: includes/settings.php:186
 msgid "Algorithm"
-msgstr ""
+msgstr "Algoritmus"
 
 #: includes/settings.php:193
 msgid ""
@@ -303,22 +330,26 @@ msgid ""
 " proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm"
 " your backend uses — most ALTCHA-compatible backends default to SHA-256."
 msgstr ""
+"V režimu Self-hosted API je to algoritmus používaný k generování a ověřování"
+" výzev proof-of-work.<br/>V režimu Vlastní API musí odpovídat algoritmu"
+" používanému vaším backendem — většina backendů kompatibilních s ALTCHA "
+"má jako výchozí SHA-256."
 
 #: includes/settings.php:203
 msgid "Low"
-msgstr ""
+msgstr "Nízká"
 
 #: includes/settings.php:204
 msgid "Medium"
-msgstr ""
+msgstr "Střední"
 
 #: includes/settings.php:205
 msgid "High"
-msgstr ""
+msgstr "Vysoká"
 
 #: includes/settings.php:215
 msgid "Complexity"
-msgstr ""
+msgstr "Složitost"
 
 #: includes/settings.php:221
 msgid ""
@@ -327,66 +358,74 @@ msgid ""
 "usually solved in under a second on a recent computer; on older phones it can"
 " take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
+"Vyberte složitost PoW pro widget: čím vyšší složitost, tím déle návštěvníci "
+"(a boti) pracují na řešení výzvy.<br/>I Vysoká je obvykle vyřešena pod "
+"jednou vteřinou na novém počítači; na starších telefonech to může trvat "
+"několik sekund. Vysoká představuje přibližně 2–3× práci Nízké."
 
 #: includes/settings.php:228
 msgid "Expiration"
-msgstr ""
+msgstr "Vypršení platnosti"
 
 #: includes/settings.php:234
 msgid ""
 "Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no"
 " expiry (None) and 14400 is 4 hours."
 msgstr ""
+"Životnost výzvy. Vlastní přijímá 0 až 14400 sekund, kde 0 znamená žádné "
+"vypršení (Žádné) a 14400 je 4 hodiny."
 
 #: includes/settings.php:243
 msgid "Widget Customisation"
-msgstr ""
+msgstr "Přizpůsobení widgetu"
 
 #: includes/settings.php:250
 msgid "Auto verification"
-msgstr ""
+msgstr "Automatické ověřování"
 
 #: includes/settings.php:256
 msgid "Select auto-verification behaviour."
-msgstr ""
+msgstr "Vyberte chování automatického ověřování."
 
 #: includes/settings.php:258
 msgid "Disabled"
-msgstr ""
+msgstr "Vypnuto"
 
 #: includes/settings.php:259
 msgid "On page load"
-msgstr ""
+msgstr "Při načtení stránky"
 
 #: includes/settings.php:260
 msgid "On form focus"
-msgstr ""
+msgstr "Při zaměření na formulář"
 
 #: includes/settings.php:261
 msgid "On form submit"
-msgstr ""
+msgstr "Při odeslání formuláře"
 
 #: includes/settings.php:268
 msgid "Display Mode"
-msgstr ""
+msgstr "Režim zobrazení"
 
 #: includes/settings.php:274
 msgid ""
 "Choose whether the widget sits inline in the page or floats near the submit "
 "button."
 msgstr ""
+"Vyberte, zda se widget zobrazí inline na stránce nebo plovoucí poblíž "
+"tlačítka odeslání."
 
 #: includes/settings.php:276
 msgid "Inline"
-msgstr ""
+msgstr "Inline"
 
 #: includes/settings.php:277
 msgid "Floating"
-msgstr ""
+msgstr "Plovoucí"
 
 #: includes/settings.php:284
 msgid "Verification Delay"
-msgstr ""
+msgstr "Zpoždění ověřování"
 
 #: includes/settings.php:293
 msgid ""
@@ -394,16 +433,19 @@ msgid ""
 "pause's only effect. It does not make spam-blocking any stronger; to raise "
 "the bar for bots, increase Complexity instead."
 msgstr ""
+"Někteří návštěvníci vnímají pomalejší kontrolu jako důvěryhodnější a to je "
+"jediný efekt této pauzy. Nezvyšuje účinnost blokování spamu; pokud chcete "
+"zvýšit nároky na boty, místo toho zvýšte Složitost."
 
 #. translators: %s is the added delay in seconds, e.g. "0.5"
 #: includes/settings.php:296
 #, php-format
 msgid "Add %s second delay"
-msgstr ""
+msgstr "Přidat zpoždění o %s sekundy"
 
 #: includes/settings.php:304
-msgid "Branding"
-msgstr ""
+msgid "Acknowledgement"
+msgstr "Poděkování"
 
 #: includes/settings.php:310
 msgid ""
@@ -411,10 +453,13 @@ msgid ""
 "free, open-source software — we would appreciate you keeping it visible, but "
 "the choice is yours."
 msgstr ""
+"Toto se týká malého loga ALTCHA zobrazeného ve widgetu. ALTCHA je bezplatný "
+"open-source software — ocenili bychom, kdybyste jej nechal viditelný, ale "
+"volba je na vás."
 
 #: includes/settings.php:311
 msgid "Hide the ALTCHA logo"
-msgstr ""
+msgstr "Skrýt logo ALTCHA"
 
 #: includes/settings.php:326
 msgid ""
@@ -422,166 +467,169 @@ msgid ""
 "it visible helps credit the project this plugin is built on, but it has no "
 "effect on how OpenPorte works."
 msgstr ""
+"Toto se týká textu zobrazeného ve widgetu. Stejně jako u loga: ponechání "
+"viditelného pomáhá ocenit projekt, na kterém je tento plugin postaven, ale "
+"nemá žádný vliv na fungování OpenPorte."
 
 #: includes/settings.php:327
 msgid "Hide the \"Protected by ALTCHA\" footer"
-msgstr ""
+msgstr "Skrýt zápatí \"Chráněno pomocí ALTCHA\""
 
 #: includes/settings.php:336
 msgid "WordPress"
-msgstr ""
+msgstr "WordPress"
 
 #: includes/settings.php:345
 msgid "Register page"
-msgstr ""
+msgstr "Stránka registrace"
 
 #: includes/settings.php:346
 msgid "Protect WordPress registration page."
-msgstr ""
+msgstr "Chraňte registrační stránku WordPressu."
 
 #: includes/settings.php:349
 msgid "Reset password page"
-msgstr ""
+msgstr "Stránka resetování hesla"
 
 #: includes/settings.php:350
 msgid "Protect WordPress password reset page."
-msgstr ""
+msgstr "Chraňte stránku resetování hesla WordPressu."
 
 #: includes/settings.php:353
 msgid "Login page"
-msgstr ""
+msgstr "Přihlašovací stránka"
 
 #: includes/settings.php:354
 msgid "Protect WordPress login page."
-msgstr ""
+msgstr "Chraňte přihlašovací stránku WordPressu."
 
 #: includes/settings.php:357
 msgid "Comments"
-msgstr ""
+msgstr "Komentáře"
 
 #: includes/settings.php:358
 msgid "Protect WordPress comments section."
-msgstr ""
+msgstr "Chraňte sekci komentářů WordPressu."
 
 #: includes/settings.php:385
 msgid "Integrations"
-msgstr ""
+msgstr "Integrace"
 
 #: includes/settings.php:401
 msgid "CoBlocks"
-msgstr ""
+msgstr "CoBlocks"
 
 #: includes/settings.php:402
 msgid "Protect CoBlocks forms."
-msgstr ""
+msgstr "Chraňte formuláře CoBlocks."
 
 #: includes/settings.php:406
 msgid "Contact Form 7"
-msgstr ""
+msgstr "Contact Form 7"
 
 #: includes/settings.php:407
 msgid "Protect Contact Form 7 forms."
-msgstr ""
+msgstr "Chraňte formuláře Contact Form 7."
 
 #: includes/settings.php:411
 msgid "Elementor Pro Forms"
-msgstr ""
+msgstr "Elementor Pro Forms"
 
 #: includes/settings.php:412
 msgid "Protect Elementor Pro forms."
-msgstr ""
+msgstr "Chraňte formuláře Elementor Pro."
 
 #: includes/settings.php:416
 msgid "Enfold Theme"
-msgstr ""
+msgstr "Enfold Theme"
 
 #: includes/settings.php:417
 msgid "Protect Enfold theme forms."
-msgstr ""
+msgstr "Chraňte formuláře motivu Enfold."
 
 #: includes/settings.php:419
 msgid "Theme not active."
-msgstr ""
+msgstr "Motiv není aktivní."
 
 #: includes/settings.php:422
 msgid "Formidable Forms"
-msgstr ""
+msgstr "Formidable Forms"
 
 #: includes/settings.php:423
 msgid "Protect Formidable Forms submissions."
-msgstr ""
+msgstr "Chraňte formuláře Formidable Forms."
 
 #: includes/settings.php:427
 msgid "Forminator"
-msgstr ""
+msgstr "Forminator"
 
 #: includes/settings.php:428
 msgid "Protect Forminator forms."
-msgstr ""
+msgstr "Chraňte formuláře Forminator."
 
 #: includes/settings.php:432
 msgid "Gravity Forms"
-msgstr ""
+msgstr "Gravity Forms"
 
 #: includes/settings.php:433
 msgid "Protect Gravity Forms submissions."
-msgstr ""
+msgstr "Chraňte formuláře Gravity Forms."
 
 #: includes/settings.php:437
 msgid "HTML Forms"
-msgstr ""
+msgstr "HTML Forms"
 
 #: includes/settings.php:438
 msgid "Protect HTML Forms submissions."
-msgstr ""
+msgstr "Chraňte formuláře HTML Forms."
 
 #: includes/settings.php:442
 msgid "wpDiscuz"
-msgstr ""
+msgstr "wpDiscuz"
 
 #: includes/settings.php:443
 msgid "Protect wpDiscuz comments section."
-msgstr ""
+msgstr "Chraňte sekci komentářů wpDiscuz."
 
 #: includes/settings.php:447
 msgid "WPForms"
-msgstr ""
+msgstr "WPForms"
 
 #: includes/settings.php:448
 msgid "Protect WPForms submissions."
-msgstr ""
+msgstr "Chraňte formuláře WPForms."
 
 #: includes/settings.php:452
 msgid "WooCommerce register page"
-msgstr ""
+msgstr "Registrační stránka WooCommerce"
 
 #: includes/settings.php:453
 msgid "Protect the WooCommerce register page."
-msgstr ""
+msgstr "Chraňte registrační stránku WooCommerce."
 
 #: includes/settings.php:457
 msgid "WooCommerce reset password page"
-msgstr ""
+msgstr "Stránka resetování hesla WooCommerce"
 
 #: includes/settings.php:458
 msgid "Protect the WooCommerce reset password page."
-msgstr ""
+msgstr "Chraňte stránku resetování hesla WooCommerce."
 
 #: includes/settings.php:462
 msgid "WooCommerce login page"
-msgstr ""
+msgstr "Přihlašovací stránka WooCommerce"
 
 #: includes/settings.php:463
 msgid "Protect the WooCommerce login page."
-msgstr ""
+msgstr "Chraňte přihlašovací stránku WooCommerce."
 
 #: includes/settings.php:470
 msgid "Custom HTML"
-msgstr ""
+msgstr "Custom HTML"
 
 #: includes/settings.php:471
 msgid "Configure hand-written widget tags."
-msgstr ""
+msgstr "Konfigurujte ručně psané značky widgetu."
 
 #. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be
 #. replaced with the shortcode
@@ -591,15 +639,17 @@ msgid ""
 "%1$sDeprecated%2$s, and scheduled for removal in the next major release — "
 "place the %3$s shortcode in your content instead."
 msgstr ""
+"%1$sZastaralé%2$s, plánováno k odstranění v další hlavní verzi — místo toho "
+"umístěte shortcode %3$s do svého obsahu."
 
 #: includes/settings.php:496
 msgid "Plugin not active."
-msgstr ""
+msgstr "Plugin není aktivní."
 
 #: integrations/elementor/field.php:71
 #: integrations/formidable/OpenPorteFieldType.php:54
 msgid "Verification failed."
-msgstr ""
+msgstr "Ověření se nezdařilo."
 
 #: integrations/forminator.php:34 integrations/gravityforms/field.php:78
 #: integrations/html-forms.php:48 integrations/woocommerce.php:28
@@ -608,20 +658,20 @@ msgstr ""
 #: integrations/wordpress.php:111 integrations/wordpress.php:163
 #: integrations/wpforms.php:27
 msgid "Could not verify you are not a robot."
-msgstr ""
+msgstr "Nelze ověřit, že nejste robot."
 
 #: integrations/gravityforms/field.php:53
 msgid "OpenPorte placeholder"
-msgstr ""
+msgstr "OpenPorte placeholder"
 
 #: integrations/wordpress.php:28 integrations/wordpress.php:72
 #: integrations/wordpress.php:111 integrations/wordpress.php:163
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 #: integrations/wpmembers.php:17
 msgid "Registration failed. Please try again later."
-msgstr ""
+msgstr "Registrace se nezdařila. Zkuste to prosím později znovu."
 
 #. translators: %s: link to the OpenPorte plugin page.
 #: openporte.php:45
@@ -632,11 +682,15 @@ msgid ""
 "deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the"
 " %s for details."
 msgstr ""
+"OpenPorte je fork ALTCHA Spam Protection a nemůže běžet, když je původní "
+"plugin ALTCHA aktivní — oba sdílejí interní kód. Nejprve prosím deaktivujte "
+"\"ALTCHA Spam Protection\", poté aktivujte OpenPorte. Podívejte se na %s pro "
+"podrobnosti."
 
 #: openporte.php:66
 msgid "OpenPorte cannot be activated"
-msgstr ""
+msgstr "OpenPorte nelze aktivovat"
 
 #: openporte.php:77
 msgid "Go to the Plugins page"
-msgstr ""
+msgstr "Přejít na stránku Pluginů"
