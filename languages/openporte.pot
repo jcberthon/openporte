@@ -365,7 +365,7 @@ msgid "Add %s second delay"
 msgstr ""
 
 #: includes/settings.php:304
-msgid "Branding"
+msgid "Acknowledgement"
 msgstr ""
 
 #: includes/settings.php:310
