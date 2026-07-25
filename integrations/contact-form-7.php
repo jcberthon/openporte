@@ -10,7 +10,15 @@ if (openporte_plugin_active('contact-form-7')) {
     function ($elements) {
       $plugin = OpenPortePlugin::$instance;
       $active = $plugin->get_integration_contact_form_7();
-      if ($active) {
+      // Skip auto-injection when the form already renders a widget of its own.
+      // 'do_shortcode' runs on this same filter at the default priority, so by
+      // the time this callback fires at 100 an [openporte]/[altcha] shortcode
+      // in the form has already expanded to <altcha-widget>. Injecting a second
+      // one puts two widgets — two required checkboxes, two challenge fetches,
+      // two inputs named "altcha" of which PHP keeps only the last — in a
+      // single form. Verification is unaffected either way: the wpcf7_spam
+      // filter below keys on the option, not on who rendered the widget.
+      if ($active && strpos($elements, '<altcha-widget') === false) {
         $input = '<input class="wpcf7-form-control wpcf7-submit ';
         $button = '<button class="wpcf7-form-control wpcf7-submit ';
         $widget = wp_kses($plugin->render_widget($active, true, OpenPortePlugin::$language), OpenPortePlugin::$html_espace_allowed_tags);
