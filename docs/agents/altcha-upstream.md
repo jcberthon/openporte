@@ -10,12 +10,15 @@ Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
    section (`docs/agents/altcha-upstream.md#Upstream-provenance-ledger`).
 2. Replace `public/altcha.min.js` from the upstream release, use
    `npm run altcha:update -- X.Y.Z`.
-3. Bump `OPENPORTE_WIDGET_VERSION` (`openporte.php:57`) — the `ALTCHA_WIDGET_VERSION`
-   alias at `openporte.php:69` derives from it (no separate edit). This moves
-   independently of `OPENPORTE_VERSION` (`docs/release-preparation.md#Phase 0-—-Pre-flight`).
-4. Add a changelog entry in `readme.txt` (WP.org `= X.Y.Z =` format, newest first;
-   prior convention e.g. `readme.txt:214` `* ALTCHA Widget 2.2.2`).
-5. Update the vendored-version reference in `docs/security-audit.md:475`.
+3. Bump the `OPENPORTE_WIDGET_VERSION` define in `openporte.php` — the
+   `ALTCHA_WIDGET_VERSION` alias in the same file derives from it (no separate
+   edit). This moves independently of `OPENPORTE_VERSION`
+   (`docs/release-preparation.md#Phase 0-—-Pre-flight`).
+4. Add a changelog entry in `readme.txt` under `== Changelog ==` (WP.org
+   `= X.Y.Z =` format, newest first; prior convention e.g. the `= 1.26.0 =`
+   entry's `* ALTCHA Widget 2.2.2` bullet).
+5. Update the vendored-version reference in the "A06 Vulnerable & Outdated
+   Components" row of the OWASP table in `docs/security-audit.md`.
 6. Run the integration test checklist (widget renders; self-hosted challenge
    fetch + solve; PHP `verify()` accepts a valid token; tampered token rejected;
    `script.js` de-dup still works; attribute-API compatibility).
