@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Turkish\n"
@@ -27,19 +27,19 @@ msgid ""
 "(v1)."
 msgstr ""
 "OpenPorte, çerez kullanmadan güçlü spam ve bot koruması sunan ücretsiz ve "
-"açık kaynaklı bir CAPTCHA alternatifi olup tasarım olarak tam GDPR uyumluluğu "
-"sağlar. ALTCHA Spam Protection eklentisinin (v1) topluluk tarafından "
-"bakımı yapılan bir forkudur."
+"açık kaynaklı bir CAPTCHA alternatifi olup tasarım olarak tam GDPR "
+"uyumluluğu sağlar. ALTCHA Spam Protection eklentisinin (v1) topluluk "
+"tarafından bakımı yapılan bir forkudur."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "OpenPorte Katkıda Bulunanlar"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -47,7 +47,8 @@ msgstr "OpenPorte uç nokta denetimi:"
 
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
-msgstr "API modu Özel olarak ayarlandı ancak bir Challenge URL yapılandırılmadı."
+msgstr ""
+"API modu Özel olarak ayarlandı ancak bir Challenge URL yapılandırılmadı."
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
@@ -91,8 +92,7 @@ msgstr ""
 "form gönderimi doğrulamada başarısız olacak. Backend'in HMAC gizli "
 "anahtarını İmzalama sırrı alanına kopyalayın."
 
-#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm
-#. configured in OpenPorte
+#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
 #, php-format
 msgid ""
@@ -113,6 +113,10 @@ msgstr ""
 "Challenge URL geçerli bir %s challenge ile yanıt veriyor ve paylaşılan gizli "
 "anahtar eşleşiyor."
 
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
+
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr "Gizlilik Dostu Bir Captcha Alternatifi."
@@ -125,8 +129,7 @@ msgstr "OpenPorte'ü beğendiniz mi?"
 msgid "Review it!"
 msgstr "İnceleme yazın!"
 
-#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget
-#. version
+#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
 msgid ""
@@ -136,20 +139,20 @@ msgstr ""
 "WordPress için OpenPorte Spam Protection, eklenti sürümü %1$s, ALTCHA widget "
 "sürümü %2$s"
 
-#. translators: the placeholders are opening and closing tags for a link (<a>
-#. tag)
+#. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
 "Bizi tanıtmamıza yardımcı olmak için lütfen OpenPorte'ü WordPress.org'da "
 "değerlendirin."
 
-#. translators: %1$s and %2$s are the opening and closing tags of a link to the
-#. ALTCHA project.
+#. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
-msgstr "%1$sALTCHA%2$s açık kaynaklı iş-kanıtlama projesi tarafından desteklenmektedir."
+msgstr ""
+"%1$sALTCHA%2$s açık kaynaklı iş-kanıtlama projesi tarafından "
+"desteklenmektedir."
 
 #: admin/options.php:97
 msgid "Star OpenPorte on GitHub!"
@@ -163,13 +166,16 @@ msgstr "OpenPorte için çalışma modunu seçin:"
 #: admin/options.php:114
 #, php-format
 msgid "%1$sSelf-hosted%2$s generates challenges via the WordPress REST API."
-msgstr "%1$sKendi Sunucunuzda%2$s, challenge'ları WordPress REST API üzerinden üretir."
+msgstr ""
+"%1$sKendi Sunucunuzda%2$s, challenge'ları WordPress REST API üzerinden "
+"üretir."
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sÖzel%2$s, kendi ALTCHA uyumlu backend'inize yönlendirmenize olanak tanır."
+msgstr ""
+"%1$sÖzel%2$s, kendi ALTCHA uyumlu backend'inize yönlendirmenize olanak tanır."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
@@ -187,7 +193,9 @@ msgstr "Temel WordPress işlevleri için OpenPorte'ü etkinleştirin."
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr "%s shortcode'unu HTML, Yazı veya Sayfa içeriğinizin herhangi bir yerinde kullanın."
+msgstr ""
+"%s shortcode'unu HTML, Yazı veya Sayfa içeriğinizin herhangi bir yerinde "
+"kullanın."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -197,7 +205,9 @@ msgstr "Bu entegrasyonlar için OpenPorte'ü etkinleştirin."
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "%s shortcode'unu entegre edilmiş eklentilerinizin içeriğinin herhangi bir yerinde kullanın."
+msgstr ""
+"%s shortcode'unu entegre edilmiş eklentilerinizin içeriğinin herhangi bir "
+"yerinde kullanın."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -236,8 +246,7 @@ msgstr "Ayarlar"
 msgid "Verification failed. Try again later."
 msgstr "Doğrulama başarısız oldu. Daha sonra tekrar deneyin."
 
-#. translators: %1$s and %2$s are the opening and closing tags for a link (<a>
-#. tag)
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
 #: includes/core.php:326
 #, php-format
 msgid "Protected by %1$sALTCHA%2$s"
@@ -259,8 +268,7 @@ msgstr "Doğrulanıyor..."
 msgid "Verifying... please wait."
 msgstr "Doğrulanıyor... lütfen bekleyin."
 
-#. translators: Displayed inside a <noscript> block when the visitor's browser
-#. has JavaScript disabled; the ALTCHA widget cannot function without it.
+#. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:680
 msgid "This form requires JavaScript!"
 msgstr "Bu form JavaScript gerektiriyor!"
@@ -297,7 +305,8 @@ msgid ""
 msgstr ""
 "Sadece API Modu Özel olarak ayarlandığında kullanılabilir.<br/>URL, "
 "<strong>özel ALTCHA uyumlu backend'inizin</strong> alan adı ve yolundan ve "
-"isteğe bağlı olarak bir API anahtarından (<code>gk_</code> ile başlar) oluşur."
+"isteğe bağlı olarak bir API anahtarından (<code>gk_</code> ile başlar) "
+"oluşur."
 
 #: includes/settings.php:171
 msgid "Shared secret"
@@ -305,7 +314,8 @@ msgstr "Paylaşılan gizli anahtar"
 
 #: includes/settings.php:177
 msgid "A secret key used to sign and verify challenges."
-msgstr "Challenge'ları imzalamak ve doğrulamak için kullanılan gizli bir anahtar."
+msgstr ""
+"Challenge'ları imzalamak ve doğrulamak için kullanılan gizli bir anahtar."
 
 #: includes/settings.php:178
 msgid ""
@@ -315,8 +325,8 @@ msgid ""
 "HMAC secret) configured in your backend."
 msgstr ""
 "OpenPorte otomatik olarak rastgele bir gizli anahtar oluşturur. Sadece başka "
-"bir uygulamanın aynı gizli anahtarı kullanması gerektiğinde değiştirin.<br/>"
-"Özel API Modunda bu değer backend'inizde yapılandırılan paylaşılan gizli "
+"bir uygulamanın aynı gizli anahtarı kullanması gerektiğinde değiştirin.<br/"
+">Özel API Modunda bu değer backend'inizde yapılandırılan paylaşılan gizli "
 "anahtarla (bazen HMAC gizli anahtarı olarak adlandırılır) <strong>kesinlikle "
 "eşleşmelidir</strong>."
 
@@ -330,14 +340,15 @@ msgstr "Algoritma"
 
 #: includes/settings.php:193
 msgid ""
-"In Self-hosted API Mode this is the algorithm used to generate and verify the"
-" proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm"
-" your backend uses — most ALTCHA-compatible backends default to SHA-256."
+"In Self-hosted API Mode this is the algorithm used to generate and verify "
+"the proof-of-work challenges.<br/>In Custom API Mode it must match the "
+"algorithm your backend uses — most ALTCHA-compatible backends default to "
+"SHA-256."
 msgstr ""
 "Kendi Sunucunuzda API Modunda bu, iş-kanıtlama challenge'larını üretmek ve "
 "doğrulamak için kullanılan algoritmadır.<br/>Özel API Modunda backend'inizin "
-"kullandığı algoritma ile eşleşmelidir — çoğu ALTCHA uyumlu backend varsayılan "
-"olarak SHA-256 kullanır."
+"kullandığı algoritma ile eşleşmelidir — çoğu ALTCHA uyumlu backend "
+"varsayılan olarak SHA-256 kullanır."
 
 #: includes/settings.php:203
 msgid "Low"
@@ -359,12 +370,12 @@ msgstr "Karmaşıklık"
 msgid ""
 "Select the PoW complexity for the widget: the higher the complexity, the "
 "longer visitors (and bots) work to solve the challenge.<br/>Even High is "
-"usually solved in under a second on a recent computer; on older phones it can"
-" take a few seconds. High is roughly 2–3× the work of Düşük."
+"usually solved in under a second on a recent computer; on older phones it "
+"can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
 "Widget için PoW karmaşıklığını seçin: karmaşıklık ne kadar yüksekse, "
-"ziyaretçiler (ve botlar) challenge'ı çözmek için o kadar uzun çalışır.<br/>"
-"Yüksek bile yeni bir bilgisayarda genellikle bir saniyenin altında çözülür; "
+"ziyaretçiler (ve botlar) challenge'ı çözmek için o kadar uzun çalışır.<br/"
+">Yüksek bile yeni bir bilgisayarda genellikle bir saniyenin altında çözülür; "
 "eski telefonlarda birkaç saniye sürebilir. Yüksek, Düşük'e göre yaklaşık 2-3 "
 "kat daha fazla iş demektir."
 
@@ -374,8 +385,8 @@ msgstr "Süre"
 
 #: includes/settings.php:234
 msgid ""
-"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no"
-" expiry (None) and 14400 is 4 hours."
+"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means "
+"no expiry (None) and 14400 is 4 hours."
 msgstr ""
 "Bir challenge'ın ömrü. Özel, 0 ile 14400 saniye arasında değer kabul eder; 0 "
 "süre yok (Hiçbiri) anlamına gelir, 14400 ise 4 saattir."
@@ -458,9 +469,9 @@ msgid ""
 "free, open-source software — we would appreciate you keeping it visible, but "
 "the choice is yours."
 msgstr ""
-"Bu, widget içinde gösterilen küçük ALTCHA logosuna uygulanır. ALTCHA ücretsiz "
-"ve açık kaynaklı bir yazılımdır — görünür tutmanızı takdir ederiz, ancak "
-"seçim size kalmış."
+"Bu, widget içinde gösterilen küçük ALTCHA logosuna uygulanır. ALTCHA "
+"ücretsiz ve açık kaynaklı bir yazılımdır — görünür tutmanızı takdir ederiz, "
+"ancak seçim size kalmış."
 
 #: includes/settings.php:311
 msgid "Hide the ALTCHA logo"
@@ -636,8 +647,7 @@ msgstr "Custom HTML"
 msgid "Configure hand-written widget tags."
 msgstr "Elle yazılmış widget etiketlerini yapılandırın."
 
-#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be
-#. replaced with the shortcode
+#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode
 #: includes/settings.php:475
 #, php-format
 msgid ""
@@ -684,13 +694,13 @@ msgstr "Kayıt başarısız oldu. Lütfen daha sonra tekrar deneyin."
 msgid ""
 "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the "
 "original ALTCHA plugin is active — the two share internal code. Please "
-"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the"
-" %s for details."
+"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
+"the %s for details."
 msgstr ""
-"OpenPorte, ALTCHA Spam Protection'ın bir forkudur ve orijinal ALTCHA eklentisi "
-"etkinken çalışamaz — ikisi iç kodları paylaşır. Lütfen önce \"ALTCHA Spam "
-"Protection\" eklentisini devre dışı bırakın, ardından OpenPorte'ü etkinleştirin. "
-"Ayrıntılar için %s sayfasına bakın."
+"OpenPorte, ALTCHA Spam Protection'ın bir forkudur ve orijinal ALTCHA "
+"eklentisi etkinken çalışamaz — ikisi iç kodları paylaşır. Lütfen önce "
+"\"ALTCHA Spam Protection\" eklentisini devre dışı bırakın, ardından "
+"OpenPorte'ü etkinleştirin. Ayrıntılar için %s sayfasına bakın."
 
 #: openporte.php:66
 msgid "OpenPorte cannot be activated"

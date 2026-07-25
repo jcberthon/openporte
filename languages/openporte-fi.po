@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
@@ -28,13 +28,13 @@ msgid ""
 msgstr ""
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
 msgstr ""
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
 msgstr ""
 
 #: admin/healthcheck.php:48
@@ -79,8 +79,7 @@ msgid ""
 "Signing secret field."
 msgstr ""
 
-#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm
-#. configured in OpenPorte
+#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
 #, php-format
 msgid ""
@@ -96,6 +95,10 @@ msgid ""
 "matches."
 msgstr ""
 
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr ""
+
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr ""
@@ -108,8 +111,7 @@ msgstr ""
 msgid "Review it!"
 msgstr ""
 
-#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget
-#. version
+#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
 msgid ""
@@ -117,14 +119,12 @@ msgid ""
 "version %2$s"
 msgstr ""
 
-#. translators: the placeholders are opening and closing tags for a link (<a>
-#. tag)
+#. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
 
-#. translators: %1$s and %2$s are the opening and closing tags of a link to the
-#. ALTCHA project.
+#. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
@@ -215,8 +215,7 @@ msgstr ""
 msgid "Verification failed. Try again later."
 msgstr "Varmennus epäonnistui. Yritä myöhemmin uudelleen."
 
-#. translators: %1$s and %2$s are the opening and closing tags for a link (<a>
-#. tag)
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
 #: includes/core.php:326
 #, php-format
 msgid "Protected by %1$sALTCHA%2$s"
@@ -238,8 +237,7 @@ msgstr "Varmennetaan..."
 msgid "Verifying... please wait."
 msgstr "Varmennetaan... odota hetki."
 
-#. translators: Displayed inside a <noscript> block when the visitor's browser
-#. has JavaScript disabled; the ALTCHA widget cannot function without it.
+#. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:680
 msgid "This form requires JavaScript!"
 msgstr ""
@@ -299,9 +297,10 @@ msgstr ""
 
 #: includes/settings.php:193
 msgid ""
-"In Self-hosted API Mode this is the algorithm used to generate and verify the"
-" proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm"
-" your backend uses — most ALTCHA-compatible backends default to SHA-256."
+"In Self-hosted API Mode this is the algorithm used to generate and verify "
+"the proof-of-work challenges.<br/>In Custom API Mode it must match the "
+"algorithm your backend uses — most ALTCHA-compatible backends default to "
+"SHA-256."
 msgstr ""
 
 #: includes/settings.php:203
@@ -324,8 +323,8 @@ msgstr ""
 msgid ""
 "Select the PoW complexity for the widget: the higher the complexity, the "
 "longer visitors (and bots) work to solve the challenge.<br/>Even High is "
-"usually solved in under a second on a recent computer; on older phones it can"
-" take a few seconds. High is roughly 2–3× the work of Low."
+"usually solved in under a second on a recent computer; on older phones it "
+"can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
 
 #: includes/settings.php:228
@@ -334,8 +333,8 @@ msgstr ""
 
 #: includes/settings.php:234
 msgid ""
-"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no"
-" expiry (None) and 14400 is 4 hours."
+"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means "
+"no expiry (None) and 14400 is 4 hours."
 msgstr ""
 
 #: includes/settings.php:243
@@ -583,8 +582,7 @@ msgstr ""
 msgid "Configure hand-written widget tags."
 msgstr ""
 
-#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be
-#. replaced with the shortcode
+#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode
 #: includes/settings.php:475
 #, php-format
 msgid ""
@@ -629,8 +627,8 @@ msgstr ""
 msgid ""
 "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the "
 "original ALTCHA plugin is active — the two share internal code. Please "
-"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the"
-" %s for details."
+"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
+"the %s for details."
 msgstr ""
 
 #: openporte.php:66

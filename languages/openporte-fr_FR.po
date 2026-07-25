@@ -2,9 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-23 00:00+0000\n"
-"Last-Translator: Crush-0.86.0:qwen3.6 & J-C Berthon - signed-off by J-C Berthon\n"
+"Last-Translator: Crush-0.86.0:qwen3.6 & J-C Berthon - signed-off by J-C "
+"Berthon\n"
 "Language-Team: French <fr@li.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -31,14 +32,14 @@ msgstr ""
 "fork maintenu par la communauté du plugin ALTCHA Spam Protection (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "Contributeurs OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -62,8 +63,8 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
-"L'URL du défi a répondu par HTTP %d au lieu d'un défi. Vérifiez l'URL "
-"(y compris le paramètre apiKey) ainsi que les restrictions de domaine ou "
+"L'URL du défi a répondu par HTTP %d au lieu d'un défi. Vérifiez l'URL (y "
+"compris le paramètre apiKey) ainsi que les restrictions de domaine ou "
 "d'origine du backend."
 
 #: admin/healthcheck.php:124
@@ -87,8 +88,8 @@ msgid ""
 "Signing secret field."
 msgstr ""
 "Le secret partagé ne correspond pas au secret HMAC du backend — chaque "
-"soumission de formulaire échouerait lors de la vérification. Copiez le secret "
-"HMAC du backend dans le champ Secret de signature."
+"soumission de formulaire échouerait lors de la vérification. Copiez le "
+"secret HMAC du backend dans le champ Secret de signature."
 
 #. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
@@ -109,6 +110,10 @@ msgid ""
 "matches."
 msgstr ""
 "L'URL du défi répond par un défi %s valide et le secret partagé correspond."
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -165,7 +170,9 @@ msgstr "%1$sSelf-hosted%2$s génère des défis via l'API REST WordPress."
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sCustom%2$s vous permet de pointer vers votre propre backend compatible ALTCHA."
+msgstr ""
+"%1$sCustom%2$s vous permet de pointer vers votre propre backend compatible "
+"ALTCHA."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
@@ -182,11 +189,10 @@ msgstr "Activer OpenPorte pour les fonctionnalités principales de WordPress"
 #. translators: the placeholder will be replaced with the shortcode
 #: admin/options.php:150
 #, php-format
-#| msgid "Use %s shortcode anywhere in your HTML."
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
 msgstr ""
-"Utilisez le shortcode %s n'importe où dans votre code HTML, le contenu de vos"
-"articles ou pages."
+"Utilisez le shortcode %s n'importe où dans votre code HTML, le contenu de "
+"vosarticles ou pages."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -196,7 +202,9 @@ msgstr "Activer OpenPorte pour ces intégrations."
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "Utilisez le shortcode %s n'importe où dans le contenu de vos plugins intégrés."
+msgstr ""
+"Utilisez le shortcode %s n'importe où dans le contenu de vos plugins "
+"intégrés."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -293,8 +301,8 @@ msgid ""
 "domain and path to your <strong>custom ALTCHA-compatible backend</strong>, "
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
-"Uniquement disponible lorsque le Mode API est défini sur Personnalisé.<br/>"
-"L'URL est composée du domaine et du chemin vers votre <strong>backend "
+"Uniquement disponible lorsque le Mode API est défini sur Personnalisé.<br/"
+">L'URL est composée du domaine et du chemin vers votre <strong>backend "
 "compatible ALTCHA personnalisé</strong>, et éventuellement d'une clé API "
 "(elle commence par <code>gk_</code>)."
 
@@ -333,10 +341,10 @@ msgid ""
 "algorithm your backend uses — most ALTCHA-compatible backends default to "
 "SHA-256."
 msgstr ""
-"En mode API Auto-hébergé, c'est l'algorithme utilisé pour générer et vérifier "
-"les défis de type preuve de travail.<br/>En mode API Personnalisé, il doit "
-"correspondre à l'algorithme utilisé par votre backend — la plupart des "
-"backends compatibles ALTCHA utilisent SHA-256 par défaut."
+"En mode API Auto-hébergé, c'est l'algorithme utilisé pour générer et "
+"vérifier les défis de type preuve de travail.<br/>En mode API Personnalisé, "
+"il doit correspondre à l'algorithme utilisé par votre backend — la plupart "
+"des backends compatibles ALTCHA utilisent SHA-256 par défaut."
 
 #: includes/settings.php:203
 msgid "Low"
@@ -365,8 +373,8 @@ msgstr ""
 "complexité est élevée, plus les visiteurs (et les robots) doivent travailler "
 "pour résoudre le défi.<br/>Même le niveau Élevé est généralement résolu en "
 "moins d'une seconde sur un ordinateur récent ; sur un téléphone plus ancien, "
-"cela peut prendre quelques secondes. Le niveau Élevé représente "
-"environ 2 à 3 fois le travail du niveau Faible."
+"cela peut prendre quelques secondes. Le niveau Élevé représente environ 2 à "
+"3 fois le travail du niveau Faible."
 
 #: includes/settings.php:228
 msgid "Expiration"
@@ -438,10 +446,10 @@ msgid ""
 "pause's only effect. It does not make spam-blocking any stronger; to raise "
 "the bar for bots, increase Complexity instead."
 msgstr ""
-"Certains visiteurs perçoivent une vérification plus lente comme plus "
-"fiable, et c'est le seul effet de cette pause. Elle ne renforce pas le "
-"blocage du spam ; pour augmenter la barrière pour les robots, augmentez "
-"plutôt la Complexité."
+"Certains visiteurs perçoivent une vérification plus lente comme plus fiable, "
+"et c'est le seul effet de cette pause. Elle ne renforce pas le blocage du "
+"spam ; pour augmenter la barrière pour les robots, augmentez plutôt la "
+"Complexité."
 
 #. translators: %s is the added delay in seconds, e.g. "0.5"
 #: includes/settings.php:296
@@ -474,8 +482,8 @@ msgid ""
 "effect on how OpenPorte works."
 msgstr ""
 "Ceci concerne le texte affiché dans le widget. Comme pour le logo : le "
-"laisser visible permet de reconnaître le projet sur lequel ce plugin est basé, "
-"mais cela n'a aucun effet sur le fonctionnement d'OpenPorte."
+"laisser visible permet de reconnaître le projet sur lequel ce plugin est "
+"basé, mais cela n'a aucun effet sur le fonctionnement d'OpenPorte."
 
 #: includes/settings.php:327
 msgid "Hide the \"Protected by ALTCHA\" footer"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Crush - signed-off by J-C Berthon\n"
 "Language-Team: Xhosa\n"
@@ -26,20 +26,20 @@ msgid ""
 "design. A community-maintained fork of the ALTCHA Spam Protection plugin "
 "(v1)."
 msgstr ""
-"I-OpenPorte yindlela yasimahla, evulekileyo yokutshintsha i-CAPTCHA "
-"enika ukhuseleko olomeleleyo lwe-spam kunye ne-bot ngaphandle "
-"kokusebenzisa ii-cookies, iqinisekisa ukulungiselela i-GDPR ngokwenkcazo. Le "
-"yifork yomphakathi ye-ALTCHA Spam Protection plugin (v1)."
+"I-OpenPorte yindlela yasimahla, evulekileyo yokutshintsha i-CAPTCHA enika "
+"ukhuseleko olomeleleyo lwe-spam kunye ne-bot ngaphandle kokusebenzisa ii-"
+"cookies, iqinisekisa ukulungiselela i-GDPR ngokwenkcazo. Le yifork "
+"yomphakathi ye-ALTCHA Spam Protection plugin (v1)."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "Abanikazi be-OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -63,9 +63,9 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
-"I-URL yombuzo iphendule nge-HTTP %d endaweni yombuzo. Hlola i-URL "
-"(kuquka nayiphi na i-parameter ye-apiKey) kunye nemingcele ye-domain/origin "
-"ye-backend."
+"I-URL yombuzo iphendule nge-HTTP %d endaweni yombuzo. Hlola i-URL (kuquka "
+"nayiphi na i-parameter ye-apiKey) kunye nemingcele ye-domain/origin ye-"
+"backend."
 
 #: admin/healthcheck.php:124
 msgid ""
@@ -88,8 +88,8 @@ msgid ""
 "Signing secret field."
 msgstr ""
 "Isimfihlo esabelwana asihambelani nesimfihlo se-HMAC se-backend — zonke "
-"izicelo zeefomu ziya kungahambi kakuhle ekubukeni. Kopa isimfihlo se-HMAC "
-"se-backend kwi-field ye-Signing secret."
+"izicelo zeefomu ziya kungahambi kakuhle ekubukeni. Kopa isimfihlo se-HMAC se-"
+"backend kwi-field ye-Signing secret."
 
 #. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
@@ -110,6 +110,10 @@ msgid ""
 msgstr ""
 "I-URL yombuzo iphendula ngombuzo we-%s osebenzayo kwaye isimfihlo esabelwana "
 "siyahambelana."
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -144,8 +148,7 @@ msgstr ""
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
-msgstr ""
-"Isenzelwe yiprojekthi evulekileyo ye-%1$sALTCHA%2$s proof-of-work."
+msgstr "Isenzelwe yiprojekthi evulekileyo ye-%1$sALTCHA%2$s proof-of-work."
 
 #: admin/options.php:97
 msgid "Star OpenPorte on GitHub!"
@@ -165,11 +168,14 @@ msgstr "%1$sSelf-hosted%2$s ikhiqiza imibuzo nge-WordPress REST API."
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sCustom%2$s ikuvumela ukuba uxhase kwi-backend yakho ehambelanayo ne-ALTCHA."
+msgstr ""
+"%1$sCustom%2$s ikuvumela ukuba uxhase kwi-backend yakho ehambelanayo ne-"
+"ALTCHA."
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
-msgstr "Zombini iindlela zisebenza ngaphandle kweenkonzo ezihlawulwayo zangaphandle."
+msgstr ""
+"Zombini iindlela zisebenza ngaphandle kweenkonzo ezihlawulwayo zangaphandle."
 
 #: admin/options.php:138
 msgid "Customise the widget look and feel to fit your needs."
@@ -183,7 +189,8 @@ msgstr "Vula i-OpenPorte kwiinkqubo eziphambili ze-WordPress."
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr "Sebenzisa i-shortcode ye-%s kuyo yonke i-HTML yakho, i-Post, okanye i-Page."
+msgstr ""
+"Sebenzisa i-shortcode ye-%s kuyo yonke i-HTML yakho, i-Post, okanye i-Page."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -193,7 +200,9 @@ msgstr "Vula i-OpenPorte koluquzelelo."
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "Sebenzisa i-shortcode ye-%s kuyo yonke i-content ye-plugins zakho eququzelelweyo."
+msgstr ""
+"Sebenzisa i-shortcode ye-%s kuyo yonke i-content ye-plugins zakho "
+"eququzelelweyo."
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -272,9 +281,9 @@ msgid ""
 "Select the API Mode. Use Self-hosted for the built-in WordPress REST API, or "
 "Custom to point to your own ALTCHA-compatible backend."
 msgstr ""
-"Khetha imo ye-API. Sebenzisa i-Self-hosted ukuze usebenzise i-WordPress "
-"REST API ekhoyo, okanye i-Custom ukuze ukhokelele kwi-backend yakho "
-"ehambelanayo ne-ALTCHA."
+"Khetha imo ye-API. Sebenzisa i-Self-hosted ukuze usebenzise i-WordPress REST "
+"API ekhoyo, okanye i-Custom ukuze ukhokelele kwi-backend yakho ehambelanayo "
+"ne-ALTCHA."
 
 #: includes/settings.php:144
 msgid "Self-hosted"
@@ -291,8 +300,8 @@ msgid ""
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
 "Iyafumaneka kuphela xa imo ye-API isetingwe kwi-Custom.<br/>I-URL yakhiwe "
-"nge-domain kunye ne-path ye-<strong>backend yakho ehambelanayo ne-ALTCHA</strong>, "
-"kwaye ngokukhetha i-API key (iqala nge-<code>gk_</code>)."
+"nge-domain kunye ne-path ye-<strong>backend yakho ehambelanayo ne-ALTCHA</"
+"strong>, kwaye ngokukhetha i-API key (iqala nge-<code>gk_</code>)."
 
 #: includes/settings.php:171
 msgid "Shared secret"
@@ -310,8 +319,8 @@ msgid ""
 "HMAC secret) configured in your backend."
 msgstr ""
 "I-OpenPorte ikhiqiza isimfihlo esingaqikeleleki ngokuzenzekelayo. Sishintshe "
-"kuphela ukuba enye i-application idinga ukusebenzisa isimfihlo esifanayo.<br/>"
-"Kwi-Custom API Mode, eli xabiso <strong>kufuneka lihambelane ngqo</strong> "
+"kuphela ukuba enye i-application idinga ukusebenzisa isimfihlo esifanayo.<br/"
+">Kwi-Custom API Mode, eli xabiso <strong>kufuneka lihambelane ngqo</strong> "
 "nesimfihlo esabelwana (ngamanye amaxesha sibizwa ngokuba sisimfihlo se-HMAC) "
 "esicwangcisiweyo kwi-backend yakho."
 
@@ -330,10 +339,10 @@ msgid ""
 "algorithm your backend uses — most ALTCHA-compatible backends default to "
 "SHA-256."
 msgstr ""
-"Kwi-Self-hosted API Mode le yi-algorithm esetyenziswa ukukhiqiza nokuqinisekisa "
-"imibuzo ye-proof-of-work.<br/>Kwi-Custom API Mode kufuneka ihambelane ne-"
-"algorithm e-backend yakho esiyisebenzisayo — i-backends ezininzi ehambelanayo "
-"ne-ALTCHA zisebenzisa i-SHA-256 ngokwemveli."
+"Kwi-Self-hosted API Mode le yi-algorithm esetyenziswa ukukhiqiza "
+"nokuqinisekisa imibuzo ye-proof-of-work.<br/>Kwi-Custom API Mode kufuneka "
+"ihambelane ne-algorithm e-backend yakho esiyisebenzisayo — i-backends "
+"ezininzi ehambelanayo ne-ALTCHA zisebenzisa i-SHA-256 ngokwemveli."
 
 #: includes/settings.php:203
 msgid "Low"
@@ -361,8 +370,8 @@ msgstr ""
 "Khetha ubunzima be-PoW be-widget: ngokuba ubunzima buyanda, kuthatha ixesha "
 "elide abavakasheli (kunye neebots) ukusombulula umbuzo.<br/>Nokuba i-High "
 "idla ngokusombululwa ngaphantsi kweyure enye kwi-computer entsha; kwiifoni "
-"ezindala kungathatha iisekondi ezimbalwa. I-High yimalunga ne-2–3× yomsebenzi "
-"we-Low."
+"ezindala kungathatha iisekondi ezimbalwa. I-High yimalunga ne-2–3× "
+"yomsebenzi we-Low."
 
 #: includes/settings.php:228
 msgid "Expiration"
@@ -414,8 +423,8 @@ msgid ""
 "Choose whether the widget sits inline in the page or floats near the submit "
 "button."
 msgstr ""
-"Khetha ukuba i-widget ihlala i-inline kwi-page okanye i-float kufuphi ne-button "
-"yokuthuma."
+"Khetha ukuba i-widget ihlala i-inline kwi-page okanye i-float kufuphi ne-"
+"button yokuthuma."
 
 #: includes/settings.php:276
 msgid "Inline"
@@ -437,8 +446,8 @@ msgid ""
 msgstr ""
 "Abanye abavakasheli babona ukuqinisekisa okucothayo njengokunokuthenjwa "
 "ngakumbi, kwaye loo nto yiyo kuphela isiphumo sokumisa oku. Ayikwenzi "
-"ukuvalela i-spam kube namandla; ukuze uphakamise imingcele yeebots, "
-"yandisa uBunzima endaweni yoko."
+"ukuvalela i-spam kube namandla; ukuze uphakamise imingcele yeebots, yandisa "
+"uBunzima endaweni yoko."
 
 #. translators: %s is the added delay in seconds, e.g. "0.5"
 #: includes/settings.php:296
@@ -456,8 +465,8 @@ msgid ""
 "free, open-source software — we would appreciate you keeping it visible, but "
 "the choice is yours."
 msgstr ""
-"Oku kusebenza kwi-logo encinci ye-ALTCHA ebonakala ngaphakathi kwe-widget. "
-"I-ALTCHA yisoftware yasimahla, evulekileyo — singakuvuyela ukuba uyigcina "
+"Oku kusebenza kwi-logo encinci ye-ALTCHA ebonakala ngaphakathi kwe-widget. I-"
+"ALTCHA yisoftware yasimahla, evulekileyo — singakuvuyela ukuba uyigcina "
 "ibonakala, kodwa isigqibo sisezandleni zakho."
 
 #: includes/settings.php:311
@@ -641,8 +650,8 @@ msgid ""
 "%1$sDeprecated%2$s, and scheduled for removal in the next major release — "
 "place the %3$s shortcode in your content instead."
 msgstr ""
-"%1$sEgwetshiweyo%2$s, kwaye kucwangciselwe ukususwa kwi-release elandelayo ekhulu — "
-"beka i-shortcode ye-%3$s kwi-content yakho endaweni yoko."
+"%1$sEgwetshiweyo%2$s, kwaye kucwangciselwe ukususwa kwi-release elandelayo "
+"ekhulu — beka i-shortcode ye-%3$s kwi-content yakho endaweni yoko."
 
 #: includes/settings.php:496
 msgid "Plugin not active."
@@ -684,11 +693,10 @@ msgid ""
 "deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
 "the %s for details."
 msgstr ""
-"I-OpenPorte yifork ye-ALTCHA Spam Protection kwaye "
-"ayinakusebenza ngexesha i-plugin yoqalo ye-ALTCHA isebenza — zombini "
-"zabelana ngekhowudi yangaphakathi. Nceda vala i-\"ALTCHA Spam "
-"Protection\" kuqala, emva koko uvule i-OpenPorte. Jonga i-%s ukuze ufumane "
-"iinkcukacha."
+"I-OpenPorte yifork ye-ALTCHA Spam Protection kwaye ayinakusebenza ngexesha i-"
+"plugin yoqalo ye-ALTCHA isebenza — zombini zabelana ngekhowudi "
+"yangaphakathi. Nceda vala i-\"ALTCHA Spam Protection\" kuqala, emva koko "
+"uvule i-OpenPorte. Jonga i-%s ukuze ufumane iinkcukacha."
 
 #: openporte.php:66
 msgid "OpenPorte cannot be activated"
@@ -706,8 +714,8 @@ msgstr "Yiya kwi-page ye-Plugins"
 #~ msgstr ""
 #~ "Zombini iindlela zisebenza ngaphandle kweenkonzo ezihlawulwayo "
 #~ "zangaphandle. %1$sSelf-hosted%2$s ikhiqiza imibuzo nge-WordPress REST "
-#~ "API. %3$sCustom%4$s ikuvumela ukuba uxhase kwi-backend yakho "
-#~ "ehambelanayo ne-ALTCHA."
+#~ "API. %3$sCustom%4$s ikuvumela ukuba uxhase kwi-backend yakho ehambelanayo "
+#~ "ne-ALTCHA."
 
 #, php-format
 #~ msgid ""
@@ -716,8 +724,8 @@ msgstr "Yiya kwi-page ye-Plugins"
 #~ "of-work only."
 #~ msgstr ""
 #~ "I-Spam Filter isebenza kwisigqibo esibuyiselwe yi-backend ye-"
-#~ "%1$sCustom%2$s. Ayinanto kwi-mo ye-%3$sSelf-hosted%4$s, esisebenzisa "
-#~ "i-proof-of-work kuphela."
+#~ "%1$sCustom%2$s. Ayinanto kwi-mo ye-%3$sSelf-hosted%4$s, esisebenzisa i-"
+#~ "proof-of-work kuphela."
 
 #~ msgid "Configure your custom Challenge URL."
 #~ msgstr "Lungisa i-URL yakho yombuzo."
@@ -775,4 +783,3 @@ msgstr "Yiya kwi-page ye-Plugins"
 
 #~ msgid "Shortcode"
 #~ msgstr "Shortcode"
-

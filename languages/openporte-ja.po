@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Japanese\n"
@@ -31,14 +31,14 @@ msgstr ""
 "す。"
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "OpenPorte 貢献者"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -46,7 +46,9 @@ msgstr "OpenPorte エンドポイントの確認:"
 
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
-msgstr "API モードがカスタムに設定されていますが、Challenge URL が設定されていません。"
+msgstr ""
+"API モードがカスタムに設定されていますが、Challenge URL が設定されていませ"
+"ん。"
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
@@ -62,22 +64,24 @@ msgid ""
 "URL (including any apiKey parameter) and the backend's domain/origin "
 "restrictions."
 msgstr ""
-"Challenge URL が challenge ではなく HTTP %d で応答しました。URL（apiKey パラメ"
-"ータを含む）およびバックエンドのドメイン/オリジン制限を確認してください。"
+"Challenge URL が challenge ではなく HTTP %d で応答しました。URL（apiKey パラ"
+"メータを含む）およびバックエンドのドメイン/オリジン制限を確認してください。"
 
 #: admin/healthcheck.php:124
 msgid ""
 "The Challenge URL did not return an ALTCHA challenge (JSON with algorithm, "
 "challenge, salt and signature fields expected)."
 msgstr ""
-"Challenge URL が ALTCHA challenge を返していません（algorithm、challenge、salt、"
-"signature フィールドを含む JSON が期待されます）。"
+"Challenge URL が ALTCHA challenge を返していません（algorithm、challenge、"
+"salt、signature フィールドを含む JSON が期待されます）。"
 
 #. translators: %s is the algorithm name reported by the backend
 #: admin/healthcheck.php:133
 #, php-format
 msgid "The backend issues challenges with the unsupported algorithm \"%s\"."
-msgstr "バックエンドがサポートされていないアルゴリズム \"%s\" で challenge を発行しています。"
+msgstr ""
+"バックエンドがサポートされていないアルゴリズム \"%s\" で challenge を発行して"
+"います。"
 
 #: admin/healthcheck.php:149
 msgid ""
@@ -85,9 +89,9 @@ msgid ""
 "submission would fail verification. Copy the backend's HMAC secret into the "
 "Signing secret field."
 msgstr ""
-"共有シークレットがバックエンドの HMAC シークレットと一致しません——すべてのフォ"
-"ーム送信で検証に失敗します。バックエンドの HMAC シークレットを署名シークレット"
-"フィールドにコピーしてください。"
+"共有シークレットがバックエンドの HMAC シークレットと一致しません——すべての"
+"フォーム送信で検証に失敗します。バックエンドの HMAC シークレットを署名シーク"
+"レットフィールドにコピーしてください。"
 
 #. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
@@ -96,8 +100,8 @@ msgid ""
 "The backend issues %1$s challenges but the Algorithm setting is %2$s — form "
 "submissions would fail verification. Set Algorithm to %1$s."
 msgstr ""
-"バックエンドが %1$s challenge を発行していますが、アルゴリズム設定が %2$s です"
-"——フォーム送信で検証に失敗します。アルゴリズムを %1$s に設定してください。"
+"バックエンドが %1$s challenge を発行していますが、アルゴリズム設定が %2$s で"
+"す——フォーム送信で検証に失敗します。アルゴリズムを %1$s に設定してください。"
 
 #. translators: %s is the algorithm confirmed with the backend
 #: admin/healthcheck.php:167
@@ -105,7 +109,13 @@ msgstr ""
 msgid ""
 "The Challenge URL responds with a valid %s challenge and the shared secret "
 "matches."
-msgstr "Challenge URL が有効な %s challenge で応答し、共有シークレットが一致しています。"
+msgstr ""
+"Challenge URL が有効な %s challenge で応答し、共有シークレットが一致していま"
+"す。"
+
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
 
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
@@ -154,13 +164,15 @@ msgstr "OpenPorte の動作モードを選択してください："
 #: admin/options.php:114
 #, php-format
 msgid "%1$sSelf-hosted%2$s generates challenges via the WordPress REST API."
-msgstr "%1$sSelf-hosted%2$s は WordPress REST API を介して challenge を生成します。"
+msgstr ""
+"%1$sSelf-hosted%2$s は WordPress REST API を介して challenge を生成します。"
 
 #. translators: the placeholders are opening and closing tags for bold
 #: admin/options.php:122
 #, php-format
 msgid "%1$sCustom%2$s lets you point to your own ALTCHA-compatible backend."
-msgstr "%1$sCustom%2$s を使用すると、独自の ALTCHA 対応バックエンドに接続できます。"
+msgstr ""
+"%1$sCustom%2$s を使用すると、独自の ALTCHA 対応バックエンドに接続できます。"
 
 #: admin/options.php:128
 msgid "Both modes run without any external paid service."
@@ -178,7 +190,8 @@ msgstr "コアの WordPress 機能で OpenPorte を有効にする："
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr "HTML、投稿、またはページの内容のどこでも %s ショートコードを使用できます。"
+msgstr ""
+"HTML、投稿、またはページの内容のどこでも %s ショートコードを使用できます。"
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -188,7 +201,9 @@ msgstr "以下のインテグレーションで OpenPorte を有効にする："
 #: admin/options.php:164
 #, php-format
 msgid "Use %s shortcode anywhere in your integrated plugins content."
-msgstr "インテグレーションされたプラグインの内容のどこでも %s ショートコードを使用できます。"
+msgstr ""
+"インテグレーションされたプラグインの内容のどこでも %s ショートコードを使用で"
+"きます。"
 
 #: admin/options.php:260 admin/options.php:262 admin/options.php:413
 #: admin/options.php:415
@@ -285,9 +300,10 @@ msgid ""
 "domain and path to your <strong>custom ALTCHA-compatible backend</strong>, "
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
-"API モードがカスタムに設定されている場合にのみ利用可能です。<br/>URL は、<st"
-"rong>カスタムの ALTCHA 対応バックエンド</strong>のドメインとパスで構成され"
-"、オプションで API キー（<code>gk_</code> で始まる）を含めることができます。"
+"API モードがカスタムに設定されている場合にのみ利用可能です。<br/>URL は、"
+"<strong>カスタムの ALTCHA 対応バックエンド</strong>のドメインとパスで構成さ"
+"れ、オプションで API キー（<code>gk_</code> で始まる）を含めることができま"
+"す。"
 
 #: includes/settings.php:171
 msgid "Shared secret"
@@ -305,9 +321,10 @@ msgid ""
 "HMAC secret) configured in your backend."
 msgstr ""
 "OpenPorte は自動的にランダムなシークレットを生成します。他のアプリケーション"
-"が同じシークレットを使用する必要がある場合のみ変更してください。<br/>カスタム "
-"API モードでは、この値はバックエンドで設定された共有シークレット（HMAC シーク"
-"レットとも呼ばれます）と<strong>完全に一致している必要があります</strong>。"
+"が同じシークレットを使用する必要がある場合のみ変更してください。<br/>カスタ"
+"ム API モードでは、この値はバックエンドで設定された共有シークレット（HMAC "
+"シークレットとも呼ばれます）と<strong>完全に一致している必要があります</"
+"strong>。"
 
 #: includes/settings.php:186 includes/settings.php:192
 msgid "Hash algorithm for the challenges."
@@ -405,8 +422,9 @@ msgstr "表示モード"
 msgid ""
 "Choose whether the widget sits inline in the page or floats near the submit "
 "button."
-msgstr "ウィジェットをページ内にインラインで配置するか、送信ボタンの近くに浮"
-"動表示するかを選択します。"
+msgstr ""
+"ウィジェットをページ内にインラインで配置するか、送信ボタンの近くに浮動表示す"
+"るかを選択します。"
 
 #: includes/settings.php:276
 msgid "Inline"
@@ -446,9 +464,9 @@ msgid ""
 "free, open-source software — we would appreciate you keeping it visible, but "
 "the choice is yours."
 msgstr ""
-"これはウィジェット内に表示される小さな ALTCHA ロゴに適用されます。ALTCHA は"
-"無料のオープンソース ソフトウェアです——表示されたままにしておくことを感謝しま"
-"すが、選択はあなた次第です。"
+"これはウィジェット内に表示される小さな ALTCHA ロゴに適用されます。ALTCHA は無"
+"料のオープンソース ソフトウェアです——表示されたままにしておくことを感謝します"
+"が、選択はあなた次第です。"
 
 #: includes/settings.php:311
 msgid "Hide the ALTCHA logo"
@@ -461,8 +479,8 @@ msgid ""
 "effect on how OpenPorte works."
 msgstr ""
 "これはウィジェット内に表示されるテキストに適用されます。ロゴと同様に：表示さ"
-"れたままにしておくことで、このプラグインが構築されているプロジェクトにクレジット"
-"できますが、OpenPorte の動作には影響しません。"
+"れたままにしておくことで、このプラグインが構築されているプロジェクトにクレ"
+"ジットできますが、OpenPorte の動作には影響しません。"
 
 #: includes/settings.php:327
 msgid "Hide the \"Protected by ALTCHA\" footer"

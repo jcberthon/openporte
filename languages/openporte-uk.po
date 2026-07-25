@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-23T14:21:39+00:00\n"
+"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
 "PO-Revision-Date: 2026-07-25 00:00+0000\n"
 "Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Ukrainian\n"
@@ -31,14 +31,14 @@ msgstr ""
 "Protection (v1), який підтримується спільнотою."
 
 #. Author of the plugin
-#: openporte.php admin/options.php:35 integrations/elementor/field.php:18
-msgid "OpenPorte"
-msgstr "OpenPorte"
+#: openporte.php
+msgid "OpenPorte Contributors"
+msgstr "Учасники OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte"
-msgstr "https://github.com/jcberthon/openporte"
+msgid "https://github.com/jcberthon/openporte/graphs/contributors"
+msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -46,7 +46,8 @@ msgstr "Перевірка кінцевої точки OpenPorte:"
 
 #: admin/healthcheck.php:67
 msgid "API mode is Custom but no Challenge URL is configured."
-msgstr "Режим API встановлено на Custom, але не налаштовано адресу URL виклику."
+msgstr ""
+"Режим API встановлено на Custom, але не налаштовано адресу URL виклику."
 
 #. translators: %s is the connection error message
 #: admin/healthcheck.php:103
@@ -89,8 +90,7 @@ msgstr ""
 "форми не пройде перевірку. Скопіюйте HMAC-секрет бекенду у поле Секрет "
 "підпису."
 
-#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm
-#. configured in OpenPorte
+#. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
 #: admin/healthcheck.php:157
 #, php-format
 msgid ""
@@ -110,6 +110,10 @@ msgstr ""
 "Адреса URL виклику відповідає дійсним викликом %s, а спільний секрет "
 "збігається."
 
+#: admin/options.php:35 integrations/elementor/field.php:18
+msgid "OpenPorte"
+msgstr "OpenPorte"
+
 #: admin/options.php:36
 msgid "A Privacy-Friendly Captcha Alternative."
 msgstr "Альтернатива CAPTCHA, що дбає про приватність."
@@ -122,8 +126,7 @@ msgstr "Вам подобається OpenPorte?"
 msgid "Review it!"
 msgstr "Залиште відгук!"
 
-#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget
-#. version
+#. translators: %1$s is the plugin version, and %2$s is the ALTCHA widget version
 #: admin/options.php:66
 #, php-format
 msgid ""
@@ -133,16 +136,14 @@ msgstr ""
 "OpenPorte Spam Protection для WordPress, версія плагіна %1$s, версія віджета "
 "ALTCHA %2$s"
 
-#. translators: the placeholders are opening and closing tags for a link (<a>
-#. tag)
+#. translators: the placeholders are opening and closing tags for a link (<a> tag)
 #: admin/options.php:77
 msgid "Please rate OpenPorte on WordPress.org to help us get the word out."
 msgstr ""
 "Будь ласка, оцініть OpenPorte на WordPress.org, щоб допомогти нам стати "
 "популярнішими."
 
-#. translators: %1$s and %2$s are the opening and closing tags of a link to the
-#. ALTCHA project.
+#. translators: %1$s and %2$s are the opening and closing tags of a link to the ALTCHA project.
 #: admin/options.php:90
 #, php-format
 msgid "Powered by the %1$sALTCHA%2$s proof-of-work open-source project."
@@ -184,7 +185,8 @@ msgstr "Активувати OpenPorte для основних функцій Wo
 #: admin/options.php:150
 #, php-format
 msgid "Use %s shortcode anywhere in your HTML, Post, or Page content."
-msgstr "Використовуйте шорткод %s будь-де у вашому HTML, записі або на сторінці."
+msgstr ""
+"Використовуйте шорткод %s будь-де у вашому HTML, записі або на сторінці."
 
 #: admin/options.php:161
 msgid "Activate OpenPorte for these integrations."
@@ -233,8 +235,7 @@ msgstr "Налаштування"
 msgid "Verification failed. Try again later."
 msgstr "Перевірка не вдалася. Спробуйте ще раз пізніше."
 
-#. translators: %1$s and %2$s are the opening and closing tags for a link (<a>
-#. tag)
+#. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
 #: includes/core.php:326
 #, php-format
 msgid "Protected by %1$sALTCHA%2$s"
@@ -256,8 +257,7 @@ msgstr "Перевірка..."
 msgid "Verifying... please wait."
 msgstr "Перевірка... будь ласка, зачекайте."
 
-#. translators: Displayed inside a <noscript> block when the visitor's browser
-#. has JavaScript disabled; the ALTCHA widget cannot function without it.
+#. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
 #: includes/core.php:680
 msgid "This form requires JavaScript!"
 msgstr "Цій формі потрібен JavaScript!"
@@ -292,9 +292,10 @@ msgid ""
 "domain and path to your <strong>custom ALTCHA-compatible backend</strong>, "
 "and optionally an API key (it starts with <code>gk_</code>)."
 msgstr ""
-"Доступно лише коли режим API встановлено на Custom.<br/>Адреса URL складається "
-"з домену та шляху до вашого <strong>власного бекенду, сумісного з ALTCHA</"
-"strong>, а також необов'язково ключа API (починається з <code>gk_</code>)."
+"Доступно лише коли режим API встановлено на Custom.<br/>Адреса URL "
+"складається з домену та шляху до вашого <strong>власного бекенду, сумісного "
+"з ALTCHA</strong>, а також необов'язково ключа API (починається з <code>gk_</"
+"code>)."
 
 #: includes/settings.php:171
 msgid "Shared secret"
@@ -312,8 +313,8 @@ msgid ""
 "HMAC secret) configured in your backend."
 msgstr ""
 "OpenPorte автоматично генерує випадковий секрет. Змінюйте його лише якщо "
-"іншій програмі потрібно використовувати той самий секрет.<br/>У режимі Custom "
-"API це значення <strong>повинно точно збігатися</strong> зі спільним "
+"іншій програмі потрібно використовувати той самий секрет.<br/>У режимі "
+"Custom API це значення <strong>повинно точно збігатися</strong> зі спільним "
 "секретом (іноді називається HMAC-секретом), налаштованим у вашому бекенді."
 
 #: includes/settings.php:186 includes/settings.php:192
@@ -326,9 +327,10 @@ msgstr "Алгоритм"
 
 #: includes/settings.php:193
 msgid ""
-"In Self-hosted API Mode this is the algorithm used to generate and verify the"
-" proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm"
-" your backend uses — most ALTCHA-compatible backends default to SHA-256."
+"In Self-hosted API Mode this is the algorithm used to generate and verify "
+"the proof-of-work challenges.<br/>In Custom API Mode it must match the "
+"algorithm your backend uses — most ALTCHA-compatible backends default to "
+"SHA-256."
 msgstr ""
 "У режимі Self-hosted API це алгоритм, що використовується для генерації та "
 "перевірки викликів proof-of-work.<br/>У режимі Custom API він повинен "
@@ -355,8 +357,8 @@ msgstr "Складність"
 msgid ""
 "Select the PoW complexity for the widget: the higher the complexity, the "
 "longer visitors (and bots) work to solve the challenge.<br/>Even High is "
-"usually solved in under a second on a recent computer; on older phones it can"
-" take a few seconds. High is roughly 2–3× the work of Low."
+"usually solved in under a second on a recent computer; on older phones it "
+"can take a few seconds. High is roughly 2–3× the work of Low."
 msgstr ""
 "Виберіть складність PoW для віджета: чим вища складність, тим довше "
 "відвідувачі (та боти) працюють над розв'язанням виклику.<br/>Навіть Висока "
@@ -370,8 +372,8 @@ msgstr "Термін дії"
 
 #: includes/settings.php:234
 msgid ""
-"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no"
-" expiry (None) and 14400 is 4 hours."
+"Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means "
+"no expiry (None) and 14400 is 4 hours."
 msgstr ""
 "Термін дії виклику. Custom приймає значення від 0 до 14400 секунд, де 0 "
 "означає безстроковий (Немає), а 14400 — 4 години."
@@ -413,8 +415,8 @@ msgid ""
 "Choose whether the widget sits inline in the page or floats near the submit "
 "button."
 msgstr ""
-"Виберіть, чи відображати віджет inline на сторінці, чи плаваючим біля "
-"кнопки відправки."
+"Виберіть, чи відображати віджет inline на сторінці, чи плаваючим біля кнопки "
+"відправки."
 
 #: includes/settings.php:276
 msgid "Inline"
@@ -468,9 +470,9 @@ msgid ""
 "it visible helps credit the project this plugin is built on, but it has no "
 "effect on how OpenPorte works."
 msgstr ""
-"Це стосується тексту, що відображається у віджеті. Те саме, що й з логотипом: "
-"залишення його видимим допомагає віддати шану проєкту, на якому побудовано "
-"цей плагін, але не впливає на роботу OpenPorte."
+"Це стосується тексту, що відображається у віджеті. Те саме, що й з "
+"логотипом: залишення його видимим допомагає віддати шану проєкту, на якому "
+"побудовано цей плагін, але не впливає на роботу OpenPorte."
 
 #: includes/settings.php:327
 msgid "Hide the \"Protected by ALTCHA\" footer"
@@ -632,8 +634,7 @@ msgstr "Custom HTML"
 msgid "Configure hand-written widget tags."
 msgstr "Налаштуйте вручну написані теги віджета."
 
-#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be
-#. replaced with the shortcode
+#. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode
 #: includes/settings.php:475
 #, php-format
 msgid ""
@@ -680,8 +681,8 @@ msgstr "Реєстрація не вдалася. Спробуйте ще раз
 msgid ""
 "OpenPorte is a fork of ALTCHA Spam Protection and cannot run while the "
 "original ALTCHA plugin is active — the two share internal code. Please "
-"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See the"
-" %s for details."
+"deactivate \"ALTCHA Spam Protection\" first, then activate OpenPorte. See "
+"the %s for details."
 msgstr ""
 "OpenPorte — це форк ALTCHA Spam Protection і не може працювати, поки "
 "активний оригінальний плагін ALTCHA — вони мають спільний внутрішній код. "
