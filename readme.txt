@@ -185,7 +185,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 == Changelog ==
 
-= 1.28.0 (unreleased) =
+= 1.28.0 =
 
 * ALTCHA Widget 2.3.0. Note: the bundled widget file still reports "2.2.4" — upstream 2.3.0 only repackaged optional plugins OpenPorte does not use and did not rebuild its distributed file, which is byte-identical to 2.2.4. Nothing is missing.
 * Removed the remaining spam-filter plumbing from the paid-SaaS classifier; verification relies on the proof-of-work challenge alone.
@@ -205,6 +205,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 * Fix: wpDiscuz comments could be posted before the challenge was solved; the submission is now held until verification completes.
 * Fix: the "OpenPorte cannot be activated" conflict screen now links to the Plugins page instead of a browser Back link, which failed with "the page has expired" when activating right from the plugin uploader.
 * Tested on WordPress 7.0.2. The browser E2E suite (tests/e2e, not shipped) covers WordPress comments, Contact Form 7, wpDiscuz, WPForms and WooCommerce login/registration across every auto-verification and display-mode combination, with negative controls (missing, forged and expired tokens).
+* 4 new translations. OpenPorte has been localised in 4 new languages: Czech, Polish, Romanian and Turkish.
 
 = 1.27.3 =
 This is a small bug-fix release.
