@@ -74,6 +74,10 @@ Last verified MIT upstream (including altcha.umd.cjs SHA-256 sum):
     unchanged, and `refetchonexpire` re-fetches at expiry. The upstream
     `spamfilter`/`blockspam` deprecation is documentation-only — no runtime
     warning, attributes still accepted (keep-vs-drop decision: #6).
+    *(Record kept as verified. #6 later resolved to remove them, so 1.28.0
+    emits **eight** attributes — `spamfilter` and `blockspam` are gone from
+    `get_widget_attrs()` and the `wp_kses` whitelist. The next re-vendor should
+    check eight, not ten.)*
   - 2.3.0 is pure repackaging for CVE-2025-65849 (disputed, but flagged by
     `npm audit`): the obfuscation/analytics/upload plugins moved out of `altcha`
     into a new `@altcha/plugins` package. OpenPorte uses none of them, so the
