@@ -33,6 +33,38 @@ The mode is selected via the `altcha_api` option. In `get_challengeurl()`,
 any other value — including legacy `"eu"` / `"us"` values left in the database
 by old installs — falls back to the local REST endpoint.
 
+### Challenge tuning (1.28.0)
+
+Three properties of the proof-of-work challenge became configurable in 1.28.0.
+All three are read through accessors on the singleton, so a caller never touches
+the option directly:
+
+- **Algorithm** — `get_algorithm()`, validated against
+  `get_allowed_algorithms()` (`SHA-256`, `SHA-384`, `SHA-512`; the ALTCHA spec's
+  permitted set, mirrored server-side because the widget's own copy is a
+  module-scope constant unreachable from PHP). It falls back to **SHA-256** when
+  unset or invalid: every release before 1.28 hardcoded it, so upgraded sites
+  keep verifying challenges already in flight and minimal custom backends keep
+  working. New installs are seeded with **SHA-512** at activation.
+  `hash_ident()` maps the label to the PHP `hash()` identifier.
+- **Expiration** — `get_expires()`. Presets plus a custom value, clamped to
+  0–14400 seconds, where `0` means no expiry and 14400 (4 hours) is the
+  historical maximum.
+- **Complexity** — `get_complexity()` selects a low/medium/high band from
+  `get_complexity_matrix()`, which is filterable via
+  **`openporte_complexity_matrix`** so a site can retune the ranges. A `low`
+  entry must always exist.
+
+When API mode is `custom`, `admin/healthcheck.php` fetches one challenge from
+the configured Challenge URL as the settings page loads and reports the outcome
+as an admin notice — unreachable endpoint, non-ALTCHA response, unsupported
+algorithm, signing-secret mismatch, or a backend algorithm differing from the
+configured one. One request validates all three settings, because an ALTCHA
+challenge declares its own algorithm and `hmac(algorithm, challenge, secret)`
+must equal the served signature. The result is cached in a short transient keyed
+on (url, secret, algorithm), so the check re-runs right after a save but does
+not hammer the backend on every page load.
+
 ## Code map
 
 Files are listed in roughly the order `openporte.php` requires them. Each
