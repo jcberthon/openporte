@@ -247,7 +247,7 @@ code:
 
 - **`custom` mode is not the paid SaaS.** Do not remove it. It is the legitimate
   self-hostable backend path and is load-bearing for real users (e.g. operators
-  running their own ALTCHA-compatible challenge server such as GateCHA).
+  running their own ALTCHA-compatible challenge server such as [GateCHA](https://gatecha.org/)).
 - **The verification dispatch keys on payload shape, not on the API mode.** Any
   change to mode handling must not alter how a valid or invalid challenge is
   verified — breaking this breaks every protected form.
