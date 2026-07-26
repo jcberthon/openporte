@@ -39,6 +39,9 @@
 #   # Mixed with wp-env arguments
 #   ./wp-env.sh start --php-version 8.1 --no-cache
 #
+#   # Run plugin check on the remote
+#   ./wp-env.sh plugin-check openporte
+#
 # CONFIGURATION:
 #   Create a .wp-env.conf file with:
 #     REMOTE_USER=your-ssh-username
@@ -138,6 +141,25 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${REMAINING_ARGS[@]}"
 
+# Detect plugin-check subcommand and rewrite args accordingly
+PLUGIN_CHECK_SLUG=""
+if [[ ${#REMAINING_ARGS[@]} -ge 2 ]] && [[ "${REMAINING_ARGS[0]}" == "plugin-check" ]]; then
+  PLUGIN_CHECK_SLUG="${REMAINING_ARGS[1]}"
+  REMAINING_ARGS=(
+    "run" "cli" "--" "wp" "plugin" "check" "${PLUGIN_CHECK_SLUG}" \
+    "--include-experimental" \
+    "--exclude-directories=tests" \
+    "--exclude-files=.wp-env.conf,.wpenvrc,.wp-env.json,wp-env.sh"
+  )
+fi
+
+# Build the remote command string from REMAINING_ARGS
+REMOTE_CMD=""
+for arg in "${REMAINING_ARGS[@]}"; do
+  REMOTE_CMD+="${arg} "
+done
+REMOTE_CMD="${REMOTE_CMD% }"  # trim trailing space
+
 # Function to print environment information after successful start
 print_environment_info() {
   echo ""
@@ -195,9 +217,10 @@ print_environment_info() {
   echo ""
 }
 
-# Sync the working tree to the remote only for the `start` command. For other
-# commands (logs, stop, destroy, run, status, …) an `rsync --delete` can race
-# with in-progress local edits and interfere with the command, so skip it.
+# Sync the working tree to the remote only for the `start` and `plugin-check`
+# commands. For other commands (logs, stop, destroy, run, status, …) an
+# `rsync --delete` can race with in-progress local edits and interfere with the
+# command, so skip it.
 IS_START=false
 for arg in "${REMAINING_ARGS[@]}"; do
   if [[ "$arg" == "start" ]]; then
@@ -206,7 +229,7 @@ for arg in "${REMAINING_ARGS[@]}"; do
   fi
 done
 
-if [[ "$IS_START" == "true" ]]; then
+if [[ "$IS_START" == "true" ]] || [[ -n "$PLUGIN_CHECK_SLUG" ]]; then
   # shellcheck disable=SC2029
   rsync -az --delete --include="wp-env.sh" --include=".wp*" \
       --include="tests/" --include="tests/bin/" --include="tests/bin/wp-init.sh" \
@@ -224,7 +247,7 @@ ssh -i "${REMOTE_RPC_KEY}" -o IdentitiesOnly=yes ${REMOTE_USER}@${REMOTE_HOST} \
      source ./.wpenvrc && \
      ${PHP_VERSION_OVERRIDE:+WP_ENV_PHP_VERSION=$PHP_VERSION_OVERRIDE} \
      ${WP_VERSION_OVERRIDE:+WP_ENV_CORE=$WP_VERSION_OVERRIDE} \
-     wp-env $*"
+     wp-env ${REMOTE_CMD}"
 
 # Display environment info in verbose mode after a start.
 if [[ "${VERBOSE_MODE}" == "true" ]] && [[ "$IS_START" == "true" ]]; then
