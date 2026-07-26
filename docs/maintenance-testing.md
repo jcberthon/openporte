@@ -41,13 +41,13 @@ section in sync with it.
 
 | Plugin         | Version          | Notes             |
 | -------------- | ---------------- | ----------------- |
-| contact-form-7 | 5.4.2            |                   |
-| formidable     | 6.25.1           |                   |
-| forminator     | 1.33.0           |                   |
-| html-forms     | latest (1.6.4)   |                   |
-| woocommerce    | 6.2.3            |                   |
-| wpdiscuz       | 7.6.54           |                   |
-| wpforms-lite   | latest (2.0.0.2) |                   |
+| contact-form-7 | 5.4.2            | Verified, all tests passed |
+| formidable     | 6.25.1           | Not tested but load alright with OpenPorte activated |
+| forminator     | 1.33.0           | Not tested but load alright with OpenPorte activated |
+| html-forms     | latest (1.6.4)   | Not tested but load alright with OpenPorte activated |
+| woocommerce    | 6.2.3            | Verified, all tests passed |
+| wpdiscuz       | none             | Tried several candidate, none work. Not testable with our minimum requirements #80 |
+| wpforms-lite   | latest (2.0.0.2) | Verified, all tests passed |
 
 
 ## Testing
