@@ -52,10 +52,22 @@ echo "wp-init: installing 3rd party plugins…"
 # Full test suite of plugins installation - tweak the list to your needs.
 # Some plugins are not testable (requires paid license) or not found.
 # 
+# For our oldest supported WordPress version (5.6) w/ PHP 8.0, the
+# following plugins can be tested:
+#   | Plugin         | Version          | Notes             |
+#   | -------------- | ---------------- | ----------------- |
+#   | contact-form-7 | 5.4.2            | Verified, all tests passed |
+#   | formidable     | 6.25.1           | Not tested but load alright with OpenPorte activated |
+#   | forminator     | 1.33.0           | Not tested but load alright with OpenPorte activated |
+#   | html-forms     | latest (1.6.4)   | Not tested but load alright with OpenPorte activated |
+#   | woocommerce    | 6.2.3            | Verified, all tests passed |
+#   | wpdiscuz       | none             | Tried several candidate, none work. Not testable with our minimum requirements #80 |
+#   | wpforms-lite   | latest (2.0.0.2) | Verified, all tests passed |
+# 
 # List of plugins not found: gravityforms
 # List of plugins not testable (requires paid license): elementor
 # List of themes not found: enfold
-# Excluded for now: coblocks
+# Excluded for now: coblocks wpdiscuz
 #
 # Columns: <slug> <version>. "latest" installs only when the plugin is absent
 # and never upgrades — do a cleanup + start for a fresh bench. An exact version
@@ -67,7 +79,6 @@ PLUGINS_SUITE=(
   "forminator latest"
   "html-forms latest"
   "woocommerce latest"
-  "wpdiscuz latest"
   "wpforms-lite latest"
 )
 for entry in "${PLUGINS_SUITE[@]}"; do
@@ -85,7 +96,7 @@ for entry in "${PLUGINS_SUITE[@]}"; do
 done
 
 echo "wp-init: installing Plugin Check (a WordPress plugin test suite)…"
-wpcli plugin install plugin-check --force
+#wpcli plugin install plugin-check --force
 
 echo "wp-init: creating fixture pages…"
 existing_slugs="$(wpcli post list --post_type=page --post_status=publish --field=post_name 2>/dev/null || true)"
