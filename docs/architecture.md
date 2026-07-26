@@ -82,14 +82,17 @@ includes/
                            challenge generation, HMAC verification, widget HTML
                            rendering, the wp_kses attribute whitelist.
   helpers.php              Enqueue helpers + openporte_plugin_active() detection.
-  admin.php                Admin menu (Settings → OpenPorte Anti-spam).
+  admin.php                Admin menu (Settings → OpenPorte Anti-spam); requires
+                           admin/healthcheck.php.
   settings.php             Settings API: option registration + sanitize callbacks,
                            sections and fields.
   index.php                Silence-is-golden guard.
 admin/
   options.php              Settings-page HTML + the field/select render callbacks.
+  healthcheck.php          Custom-mode Challenge URL probe surfaced as an admin
+                           notice (transient-cached). See "Challenge tuning".
   index.php                Silence-is-golden guard.
-integrations/              14 integration files (each self-registers its hooks):
+integrations/              15 integration files (each self-registers its hooks):
   wordpress.php            WP login / register / comments / reset-password.
   woocommerce.php          WooCommerce login / register / reset-password.
   contact-form-7.php       Contact Form 7 (wpcf7_spam).
@@ -109,10 +112,14 @@ integrations/              14 integration files (each self-registers its hooks):
 public/
   altcha.min.js            Vendored upstream ALTCHA web component (DO NOT EDIT; version =
                            OPENPORTE_WIDGET_VERSION). See "The vendored widget".
+  altcha.min.js.sha256     Body-only SHA-256 of the vendored bundle, written by
+                           `npm run altcha:update` and checked offline by
+                           `npm run altcha:verify`. Excluded from the shipped zip.
   altcha.js                Comment-only companion (no executable code).
   altcha.css               Widget wrapper styles.
   script.js                Front-end: fixes the checkbox name attr; removes duplicate
-                           widgets via a MutationObserver.
+                           widgets via a MutationObserver; holds and replays submit
+                           clicks that race an in-flight proof-of-work solve.
   custom.js                Configures the widget from window.OPENPORTE_WIDGET_ATTRS.
   admin.js                 Settings-page toggle (enables Challenge URL in custom mode).
   admin.css                Settings-page styles.
@@ -120,9 +127,20 @@ public/
   index.php                Silence-is-golden guard.
 languages/                 29 locales (.po/.mo) + openporte.pot. Workflow: docs/agents/i18n.md.
 docs/                      Maintainer docs: architecture.md, security-audit.md,
-                           maintenance-testing.md, release-preparation.md, agents/.
-tests/                     Manual wp-env bench (README + bin/wp-init.sh); no automated suite.
-.github/workflows/         publish.yml (tag → WordPress.org SVN) + phpmd.yml (PHPMD → code scanning).
+                           maintenance-testing.md, release-preparation.md, agents/,
+                           acceptance/.
+bin/release/               Release tooling (npm run release:*): version, check, dist,
+                           tag, i18n, WordPress.org asset sync, plus altcha-update.sh /
+                           altcha-verify.sh for re-vendoring the widget.
+tests/
+  bin/                     Manual wp-env bench helpers (wp-init.sh and friends).
+  e2e/                     Playwright settings-matrix suite (not shipped) — see
+                           docs/maintenance-testing.md.
+.github/workflows/         publish.yml (tag → WordPress.org SVN) + phpcs.yml, phpmd.yml,
+                           phpstan.yml (static analysis → code scanning).
+phpcs.xml.dist             WordPress Coding Standards config.
+phpmd.xml.dist             PHPMD ruleset.
+phpstan.neon.dist          PHPStan config.
 .wordpress-org/            WordPress.org banner / icon / screenshot assets.
 ```
 
