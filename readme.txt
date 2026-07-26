@@ -59,7 +59,7 @@ what they map to.
 `<altcha-widget>` tags (in theme templates or custom HTML) are concerned. If
 affected, re-enable the setting, or replace those tags with the `[openporte]`
 shortcode.
-The Sentinel spam filter is removed.
+The paid spam-filter classifier is removed.
 
 == Upgrading ==
 
