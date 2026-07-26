@@ -254,6 +254,24 @@ requirements and will abort the `afterStart` hook unless adjusted:
 On a minimum-version bench, run the **fresh-install verification only** — skip
 the ALTCHA → OpenPorte upgrade scenario.
 
+##### Why the bench hides PHP notices
+
+`.wp-env.json` sets `WP_DEBUG_DISPLAY: false` and `WP_DEBUG_LOG: true` — notices
+are recorded, never printed into the response. This is load-bearing, not tidiness.
+
+With `WP_DEBUG` on and display enabled, a single notice from *any* third-party
+plugin is echoed before headers go out, so the next `wp_redirect()` fails with
+"Cannot modify header information — headers already sent" and the request dies
+part-rendered. Every page on the site becomes an ~800-byte error stub, so every
+E2E locator times out at 120 s and the suite looks like a mass OpenPorte
+regression.
+
+Observed on the WP 5.6 / PHP 8.0 bench: wpDiscuz 7.6.54 registers a block type
+without a namespace prefix, which WP 5.6 rejects via `_doing_it_wrong()`. That
+one notice took out 20 of the 21 failures across three drivers — wpDiscuz,
+WPForms and both WooCommerce surfaces — none of which had anything wrong with
+them. Read notices from `wp-content/debug.log` (or `./wp-env.sh logs`) instead.
+
 #### Troubleshooting
 
 **"Environment variables not applied"**

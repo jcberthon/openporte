@@ -11,7 +11,9 @@
     "config": {
 		"WP_TESTS_DOMAIN": "localhost",
 		"WP_SITEURL": "http://localhost:8888",
-        "WP_HOME": "http://localhost:8888"
+        "WP_HOME": "http://localhost:8888",
+		"WP_DEBUG_DISPLAY": false,
+		"WP_DEBUG_LOG": true
 	},
 	"lifecycleScripts": {
         "afterStart": "bash ./tests/bin/wp-init.sh"
