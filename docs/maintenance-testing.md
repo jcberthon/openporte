@@ -37,6 +37,17 @@ section in sync with it.
 - WordPress 5.6 is the oldest core that ships with PHP 8.0 support.
 - WordPress 7.0 no longer supports PHP 7.2 / 7.3.
 - PHP 8.2 has limited remaining upstream security support; prefer 8.3–8.5.
+- The latest integration plugins compatible with WP 5.6 & PHP 8.0 are:
+
+| Plugin         | Version          | Notes             |
+| -------------- | ---------------- | ----------------- |
+| contact-form-7 | 5.4.2            |                   |
+| formidable     | 6.25.1           |                   |
+| forminator     | 1.33.0           |                   |
+| html-forms     | latest (1.6.4)   |                   |
+| woocommerce    | 6.2.3            |                   |
+| wpdiscuz       | 7.6.54           |                   |
+| wpforms-lite   | latest (2.0.0.2) |                   |
 
 
 ## Testing
