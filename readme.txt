@@ -134,6 +134,20 @@ Alternatively, install the plugin manually:
 3. Activate the plugin through the 'Plugins' menu in WordPress  
 4. Review the settings and enable your integrations
 
+== Frequently Asked Questions ==
+
+= Is placing the `[openporte]` shortcode enough to protect a form? =
+
+Not on its own. The shortcode displays the widget; the verification that
+rejects unsolved submissions is performed by the integration for that form
+plugin. For a supported plugin, enable its toggle under Settings → OpenPorte →
+Integrations as well.
+
+In a form plugin OpenPorte has no integration for, the shortcode still shows
+the widget and visitors still have to tick it, but nothing checks the result on
+the server — a bot posting directly to the form's endpoint is not stopped. See
+**Supported Integrations** for the list.
+
 == REST API ==
 
 This plugin requires the WordPress REST API. If you are using any "Disable REST API" plugins, ensure that the endpoint `/altcha/v1/challenge` (marked for deprecation) and `/openporte/v1/challenge` are allowed.
