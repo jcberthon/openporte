@@ -147,10 +147,11 @@ Per `AGENTS.md` → `docs/agents/static-analysis.md`:
 
 - **Blocking:** `php -l` on every changed PHP file; `bash -n` on changed shell
   scripts. Fix any syntax error before continuing.
-- **Informative:** if installed, run `phpstan analyse` and `phpcs` (the repo
-  carries `wp-coding-standards/wpcs` as a dev dependency) and review the output.
-  These do not block the release, but unexplained new findings should be
-  understood or suppressed with a documented `phpcs:ignore`.
+- **Informative:** `phpcs` and `phpstan` (both dev dependencies — run
+  `composer install`) and review the output. These do not block the release, but
+  unexplained new findings should be understood or suppressed with a documented
+  `phpcs:ignore`. PHPStan's list is short enough to expect zero new findings —
+  see "Code quality checks" in `CONTRIBUTING.md`.
 
 Run all of the above with `npm run release:check`.
 

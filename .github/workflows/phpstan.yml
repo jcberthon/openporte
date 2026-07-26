@@ -1,0 +1,52 @@
+# Runs PHPStan (https://phpstan.org/) — type correctness: wrong argument types,
+# impossible conditions and unknown symbols, as configured in phpstan.neon.dist.
+# Findings are advisory: they are surfaced as inline annotations on the pull
+# request diff and do not fail the build. See docs/agents/static-analysis.md.
+#
+# The analysis itself is delegated to bin/lint/phpstan.sh, the same entry point
+# developers use via `npm run lint:phpstan`, so local and CI results match — in
+# particular the raised memory limit, without which PHPStan dies parsing the
+# WordPress stubs with a misleading "Child process error (exit code 255)".
+
+name: PHPStan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  phpstan:
+    name: Static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Same PHP version as phpcs.yml and phpmd.yml, so all three analysers see
+      # the same language semantics. PHPStan itself comes from composer.lock
+      # rather than setup-php's `tools:`, so CI and developers run an identical
+      # version — and `composer install` is what puts the WordPress stubs in
+      # place, which phpstan.neon.dist reads directly.
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      # The `github` error format emits workflow annotations, so each finding
+      # lands on the offending line of the PR diff. Advisory, hence
+      # continue-on-error: the known findings are tracked in an issue rather
+      # than gating every PR.
+      - name: Run PHPStan
+        run: bash bin/lint/phpstan.sh --no-progress --error-format=github
+        continue-on-error: true

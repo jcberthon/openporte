@@ -26,18 +26,18 @@ else
   echo "phpcs not installed (composer install), skipping — informative only."
 fi
 
-if [[ -x vendor/bin/phpstan ]]; then
-  PHPSTAN=vendor/bin/phpstan
-elif command -v phpstan >/dev/null 2>&1; then
-  PHPSTAN=phpstan
+# Delegated to bin/lint/phpstan.sh (same entry point as `npm run lint:phpstan`)
+# because the invocation needs a raised memory limit — see that script's header.
+if [[ -x vendor/bin/phpstan ]] || command -v phpstan >/dev/null 2>&1; then
+  PHPSTAN_FOUND=1
 else
-  PHPSTAN=""
+  PHPSTAN_FOUND=0
 fi
-if [[ -n "$PHPSTAN" && -f phpstan.neon ]]; then
+if [[ "$PHPSTAN_FOUND" == 1 ]] && [[ -f phpstan.neon || -f phpstan.neon.dist ]]; then
   echo "== phpstan (informative) =="
-  "$PHPSTAN" analyse || true
+  bash bin/lint/phpstan.sh --no-progress || true
 else
-  echo "phpstan/phpstan.neon not found, skipping — informative only."
+  echo "phpstan/phpstan.neon.dist not found, skipping — informative only."
 fi
 
 echo "Static analysis complete."

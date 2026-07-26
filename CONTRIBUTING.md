@@ -102,8 +102,9 @@ scope and target version are decided; issues still under discussion stay on
 
 ## Code quality checks
 
-Two PHP analysers run in CI, and both can be run locally — same ruleset, same
-scope, same versions. Install the dev tooling once per clone:
+Three PHP analysers cover the plugin. Two of them run in CI and all three run
+locally — same ruleset, same scope, same versions. Install the dev tooling once
+per clone:
 
 ```bash
 composer install
@@ -116,13 +117,31 @@ scripts and need no `npm install`.
 | ------- | -------------- | ----------- | --------- |
 | `npm run lint:phpcs` | WordPress security/correctness sniffs and PHP cross-version compatibility, per [`phpcs.xml.dist`](phpcs.xml.dist) | `.github/workflows/phpcs.yml` | **Yes** — a finding fails the PR |
 | `npm run lint:phpmd` | Complexity, dead code and design smells, per [`phpmd.xml.dist`](phpmd.xml.dist) | `.github/workflows/phpmd.yml` | No — advisory, uploaded to the repo's Security tab |
+| `npm run lint:phpstan` | Type correctness — wrong argument types, impossible conditions, unknown symbols — per [`phpstan.neon.dist`](phpstan.neon.dist) | `.github/workflows/phpstan.yml` | No — advisory, annotated inline on the PR diff |
 
-Both workflows invoke exactly what you run locally (PHPMD via
-[`bin/lint/phpmd.sh`](bin/lint/phpmd.sh)), and both analysers are pinned by
+All three workflows invoke exactly what you run locally (PHPMD via
+[`bin/lint/phpmd.sh`](bin/lint/phpmd.sh), PHPStan via
+[`bin/lint/phpstan.sh`](bin/lint/phpstan.sh)), and all three analysers are pinned by
 `composer.lock`, so a finding on your machine is a finding in CI and vice
-versa. Don't run `phpmd` directly — the ruleset file cannot carry path
-exclusions, so a bare `phpmd .` also walks `vendor/` and produces hundreds of
-findings CI never sees.
+versa. Don't run `phpmd` or `phpstan` directly — neither config file can carry
+what its invocation needs. A bare `phpmd .` also walks `vendor/` (the ruleset
+cannot express path exclusions) and produces hundreds of findings CI never sees;
+a bare `phpstan analyse` runs out of memory parsing the WordPress stubs and dies
+with a misleading "Child process error (exit code 255)". The wrapper scripts
+under [`bin/lint/`](bin/lint/) are the single source of truth for both.
+
+PHPStan sees WordPress core through `php-stubs/wordpress-stubs`, wired in via
+`scanFiles` in `phpstan.neon.dist`. It is deliberately *not* using the usual
+`szepeviktor/phpstan-wordpress` extension: that package's current release caps
+the stubs at `^6.6.2` while this project tracks `^7.0`, so Composer cannot
+resolve the two together. Worth revisiting when it tags a stubs-7 release.
+
+PHPStan runs at level 5 and reports four genuine pre-existing findings, deferred
+to the `future` milestone and tracked in
+[#77](https://github.com/jcberthon/openporte/issues/77). Unlike the PHPMD
+backlog below, that list is short enough to hold the line on: understand a new
+finding before you land it, rather than adding an `ignoreErrors` entry or a
+baseline.
 
 Two things to know before reading PHPMD output:
 
