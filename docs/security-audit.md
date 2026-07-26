@@ -182,6 +182,16 @@ public function verify_server_signature($payload, $hmac_key = null)
 }
 ```
 
+**Since 1.28.0.** The remediation above is still in force — the `expire` and
+`verified` checks, which are what this finding is about, are unchanged. The
+snippet itself shows the 1.27.2 code and has since drifted in two ways, neither
+of which weakens the fix: the digest is no longer hardcoded (`get_algorithm()`
+and `hash_ident()` now supply it, so a site can run SHA-384/512), and the
+spam-filter plumbing is gone (#6) — `$this->spamfilter_result` is a local
+`$verification` array and the trailing `classification !== 'BAD'` return became
+a plain `return true`. `verify_server_signature()` in `includes/core.php` is the
+current reference.
+
 ---
 
 ### 3. Decoded payload not validated before use — Low — Fixed
