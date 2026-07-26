@@ -1,7 +1,12 @@
 # Runs PHPStan (https://phpstan.org/) — type correctness: wrong argument types,
 # impossible conditions and unknown symbols, as configured in phpstan.neon.dist.
-# Findings are advisory: they are surfaced as inline annotations on the pull
-# request diff and do not fail the build. See docs/agents/static-analysis.md.
+#
+# This check BLOCKS: a finding fails the build. What keeps that workable is
+# phpstan-baseline.neon, which holds the findings that predate PHPStan's
+# introduction (issue #77), so only *new* findings turn the check red. Handle one
+# by fixing it, or — if it is a genuine false positive — with a justified
+# `ignoreErrors` entry in phpstan.neon.dist. Do not regenerate the baseline to
+# get back to green. See docs/agents/static-analysis.md.
 #
 # The analysis itself is delegated to bin/lint/phpstan.sh, the same entry point
 # developers use via `npm run lint:phpstan`, so local and CI results match — in
@@ -43,10 +48,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      # The `github` error format emits workflow annotations, so each finding
-      # lands on the offending line of the PR diff. Advisory, hence
-      # continue-on-error: the known findings are tracked in an issue rather
-      # than gating every PR.
+      # The `github` error format emits workflow annotations, so a finding lands
+      # on the offending line of the PR diff as well as failing the step. No
+      # continue-on-error: PHPStan's exit 1 is meant to fail this job.
       - name: Run PHPStan
         run: bash bin/lint/phpstan.sh --no-progress --error-format=github
-        continue-on-error: true

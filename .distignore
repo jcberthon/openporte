@@ -28,6 +28,7 @@ package.json
 package-lock.json
 phpcs.xml.dist
 phpmd.xml.dist
+phpstan-baseline.neon
 phpstan.neon.dist
 public/altcha.min.js.sha256
 README.md
