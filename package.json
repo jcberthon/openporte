@@ -5,6 +5,7 @@
   "scripts": {
     "lint:phpcs": "vendor/bin/phpcs -q --report=full",
     "lint:phpmd": "bash bin/lint/phpmd.sh",
+    "lint:phpstan": "bash bin/lint/phpstan.sh",
     "release:version": "bash bin/release/version.sh",
     "release:i18n": "bash bin/release/i18n.sh",
     "release:assets": "bash bin/release/sync-wordpress-org-assets.sh",

@@ -1,0 +1,77 @@
+# PHPStan configuration for OpenPorte.
+#
+# Scoped to the plugin source, with WordPress core symbols supplied by
+# php-stubs/wordpress-stubs (a dev dependency, pinned in composer.lock). Run it
+# through bin/lint/phpstan.sh — `npm run lint:phpstan` — never `phpstan` bare:
+# the analysis needs a raised memory limit that this file cannot carry.
+#
+# Level 5 is a deliberate starting point, not a ceiling: it catches wrong
+# argument types and impossible conditions without demanding the full array
+# shape and PHPDoc coverage that levels 6+ want from a code base that inherits
+# ALTCHA's largely untyped style. Raising it is a separate, intentional piece of
+# work. Findings are advisory — see "Code quality checks" in CONTRIBUTING.md.
+#
+# Deliberately NOT using szepeviktor/phpstan-wordpress (the usual WordPress
+# extension): its current release caps php-stubs/wordpress-stubs at ^6.6.2 and
+# this project tracks ^7.0, so Composer cannot resolve the two together. Only
+# its untagged 2.x-dev branch relaxes that constraint, which is not something to
+# pin a release toolchain to. Wiring the stubs in by hand (below) covers what
+# this plugin needs and works with any phpstan binary, vendored or global.
+parameters:
+	level: 5
+
+	# Plugin source only. Mirrors the scope of phpcs.xml.dist: vendor/, tests/,
+	# local/, bin/ and node_modules/ are not plugin code, and listing paths
+	# explicitly (rather than excluding from `.`) keeps agent worktrees under
+	# .claude/ out of the analysis for free.
+	paths:
+		- openporte.php
+		- uninstall.php
+		- admin
+		- includes
+		- integrations
+		- public
+
+	# WordPress core functions, classes and their PHPDoc. Parsing this 5.8 MB
+	# file is what makes the raised memory limit in bin/lint/phpstan.sh
+	# necessary. The companion .stub adds the handful of constants the stubs
+	# cannot carry — see its header.
+	scanFiles:
+		- vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+		- bin/lint/phpstan-constants.stub
+
+	# Three files subclass a base class that belongs to an optional third-party
+	# plugin (Formidable's FrmFieldType, Gravity Forms' GFAddOn and GF_Field).
+	# With the parent unresolvable, PHPStan cannot check them at all — every
+	# `parent::` call and every inherited property or method reads as undefined —
+	# and it refuses to let "extends unknown class" be silenced through
+	# ignoreErrors, pointing here instead.
+	#
+	# `analyse:` rather than `analyseAndScan:` deliberately: the files are not
+	# checked, but the classes they declare stay visible, so the registration
+	# calls in integrations/gravityforms.php and integrations/formidable.php are
+	# still resolved. Stubbing the three upstream base classes would buy real
+	# coverage of these files, at the cost of tracking someone else's API by
+	# hand — a deliberate piece of work, not a default.
+	excludePaths:
+		analyse:
+			- integrations/formidable/OpenPorteFieldType.php
+			- integrations/gravityforms/addon.php
+			- integrations/gravityforms/field.php
+
+	ignoreErrors:
+		# --- Optional third-party integrations --------------------------------
+		# CoBlocks, Elementor Pro, the Enfold theme, Gravity Forms and WPForms
+		# are *optional*: each integration no-ops when its plugin is absent, so
+		# they are deliberately not Composer dependencies and no stub packages
+		# exist for them. PHPStan therefore cannot see their symbols.
+		#
+		# Matched by symbol name rather than by path or identifier, so a typo in
+		# one of *our* class names inside integrations/ is still reported, and a
+		# newly integrated plugin has to be added here deliberately.
+		-
+			message: '#unknown class (CoBlocks_Form|ElementorPro\\Plugin|avia_form|avia_sc_mailchimp|GFAddOn)#'
+			path: integrations
+		-
+			message: '#^Function wpforms not found\.$#'
+			path: integrations/wpforms.php

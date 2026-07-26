@@ -1,0 +1,31 @@
+<?php
+/**
+ * Constant declarations PHPStan cannot discover on its own.
+ *
+ * Not executed and not shipped (`/bin` is in .distignore). The `.stub`
+ * extension deliberately keeps it out of `php -l`, phpcs and PHPMD, all of
+ * which scan `*.php` only — the WordPress constants below are unprefixed and
+ * would otherwise trip WordPress.NamingConventions.PrefixAllGlobals.
+ *
+ * Referenced from phpstan.neon.dist via `scanFiles`. Values are irrelevant to
+ * the analysis; only the declaration and its type matter.
+ */
+
+// WordPress defines its time constants at runtime inside
+// wp_initial_constants(), so php-stubs/wordpress-stubs — which carries
+// declarations only — does not have them. Constants WordPress sets in a plain
+// top-level `define()` (ABSPATH, WPINC, …) need no help: every plugin file
+// opens with a `defined('ABSPATH') || exit` guard, which PHPStan reads as proof
+// the constant exists.
+define('MINUTE_IN_SECONDS', 60);
+define('HOUR_IN_SECONDS', 3600);
+define('DAY_IN_SECONDS', 86400);
+define('WEEK_IN_SECONDS', 604800);
+define('MONTH_IN_SECONDS', 2592000);
+define('YEAR_IN_SECONDS', 31536000);
+
+// Defined in openporte.php behind a `! defined()` guard, which makes it
+// conditional as far as PHPStan is concerned — so it is reported as missing
+// wherever another file uses it. The guard is deliberate (it lets a site
+// override the base name), hence a declaration here rather than a code change.
+define('OPENPORTE_PLUGIN_BASE', 'openporte/openporte.php');

@@ -14,10 +14,10 @@ If syntax is invalid, fix it. Do not proceed with a broken file.
 modified files and report findings in a condensed, organised summary. Do not
 block on these results — report only, let the maintainer decide.
 
-- PHP: `npm run lint:phpcs` and `npm run lint:phpmd`
+- PHP: `npm run lint:phpcs`, `npm run lint:phpmd` and `npm run lint:phpstan`
 - Shell: `shellcheck <file>`
 
-The two PHP analysers — what they cover, which one gates a PR, why PHPMD exits
+The three PHP analysers — what they cover, which one gates a PR, why PHPMD exits
 `2`, and the standing backlog of pre-existing findings — are documented once,
 for humans and agents alike, under "Code quality checks" in
 [`CONTRIBUTING.md`](../../CONTRIBUTING.md). Read it before reporting results;
@@ -30,8 +30,17 @@ Agent-specific additions to that:
   it were new is noise.
 - **Never "fix" a pre-existing finding in passing** — that violates the
   touch-scoped rule in [`coding-style.md`](coding-style.md). Raise it instead.
-- `phpstan` is **not** installed and there is no `phpstan.neon`. Do not report
-  its absence as a problem, and do not add it without asking.
+- **Run PHPStan through `npm run lint:phpstan`**, never `phpstan analyse` bare:
+  the analysis needs a raised memory limit to parse the WordPress stubs, and
+  without it PHPStan dies with a misleading "Child process error (exit code
+  255)" instead of a report. See [`bin/lint/phpstan.sh`](../../bin/lint/phpstan.sh).
+- PHPStan runs at **level 5** and is clean apart from a short list of genuine
+  findings. Unlike the PHPMD backlog, treat a *new* PHPStan finding as something
+  to explain before it lands. Do not silence one by adding an `ignoreErrors`
+  entry, a `@phpstan-ignore` comment or a baseline — raise it instead. The
+  entries already in [`phpstan.neon.dist`](../../phpstan.neon.dist) cover
+  symbols from optional third-party plugins that are deliberately not
+  dependencies; adding to that list needs the maintainer's agreement.
 
 **WordPress Plugin Check (MANUAL — tester only):** The WordPress
 [Plugin Check](https://wordpress.org/plugins/plugin-check/) tool is run by a

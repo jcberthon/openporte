@@ -3,7 +3,8 @@
         "php-stubs/wordpress-stubs": "^7.0",
         "wp-coding-standards/wpcs": "^3.3",
         "phpcompatibility/phpcompatibility-wp": "^2.1",
-        "phpmd/phpmd": "^2.15"
+        "phpmd/phpmd": "^2.15",
+        "phpstan/phpstan": "^2.2"
     },
     "config": {
         "allow-plugins": {
