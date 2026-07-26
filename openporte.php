@@ -178,6 +178,14 @@ function openporte_activate()
   // select-mode strings that the checkbox settings cannot represent.
   openporte_normalize_integration_options();
 
+  // Is this a genuinely new site, or one that already has a configuration?
+  // Captured here — after the migration, before anything below is seeded — and
+  // keyed on the signing secret, which is the one option every configured site
+  // has: seeded by an earlier activation, or just imported from altcha_secret.
+  // A version-gated check would not do: openporte_version postdates the
+  // releases this has to recognise, and legacy ALTCHA never stored one.
+  $is_fresh_install = get_option(OpenPortePlugin::$option_secret, null) === null;
+
   // Seed defaults only when the option is absent (add_option is a no-op when it
   // already exists), so a freshly migrated or a pre-existing configuration is
   // preserved across (re)activation. In particular the signing secret must not
@@ -185,9 +193,16 @@ function openporte_activate()
   add_option(OpenPortePlugin::$option_api, 'selfhosted');
   add_option(OpenPortePlugin::$option_api_custom_url, '');
   add_option(OpenPortePlugin::$option_expires, '300');
-  // New installs get SHA-512; upgraded sites without this option fall back to
-  // SHA-256 in get_algorithm(), preserving pre-1.28 verification behavior.
-  add_option(OpenPortePlugin::$option_algorithm, 'SHA-512');
+  // Only a new install gets SHA-512. Any site that arrives here with a
+  // configuration is an upgrade and keeps SHA-256: every release before 1.28
+  // hardcoded it, and an external ALTCHA-compatible backend still serves it, so
+  // seeding SHA-512 would silently break verification in Custom API mode. This
+  // must be decided explicitly rather than left to get_algorithm()'s SHA-256
+  // fallback, because add_option() would materialise the row first and the
+  // fallback would never be reached. The two upgrade routes therefore agree:
+  // this one pins SHA-256, and a plugin update — which never runs the
+  // activation hook — leaves the option absent and falls back to it.
+  add_option(OpenPortePlugin::$option_algorithm, $is_fresh_install ? 'SHA-512' : 'SHA-256');
   add_option(OpenPortePlugin::$option_secret, OpenPortePlugin::$instance->random_secret());
   // openporte_integration_custom is deliberately no longer seeded to 1 here:
   // the Custom HTML integration is deprecated (#62), so new installs get the

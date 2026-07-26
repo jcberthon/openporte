@@ -54,8 +54,19 @@ Tests **(a)**, **(b)** and **(c)** are our regression tests.
        `eu.altcha.org`. This is the graceful degradation scenario, the easiest to break.
 2. [ ] ALTCHA → OpenPorte migration on a bench with ALTCHA v1 previously configured (see
        `tests/README.md`): settings carried over, forms keep verifying
-3. [ ] Algorithm default on upgrade: a bench upgraded from pre-1.28 (no algorithm option
-       stored) keeps **SHA-256**; a fresh activation is seeded with **SHA-512**
+3. [ ] Algorithm default on upgrade — all four routes, since only a fresh install may
+       end up on SHA-512 (`wp option get openporte_algorithm`, and confirm the served
+       challenge's `algorithm` field agrees):
+       - [ ] Fresh activation on a clean bench → seeded **SHA-512**
+       - [ ] Plugin update from pre-1.28 OpenPorte (activation hook does not run, so no
+             option is stored) → `get_algorithm()` falls back to **SHA-256**
+       - [ ] ALTCHA v1 → OpenPorte install + activate (the activation hook *does* run,
+             right after the legacy migration) → **SHA-256**
+       - [ ] Deactivate + reactivate a pre-1.28 OpenPorte bench → still **SHA-256**,
+             i.e. a plugin toggle must not change the algorithm
+       The last two regressed before release: the activation hook seeded SHA-512
+       unconditionally, which in Custom API mode would break verification against a
+       backend still serving SHA-256.
 4. [ ] A bench upgraded from a version with spam-filter options set shows no notice and
        silently ignores the leftover options
 
