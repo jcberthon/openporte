@@ -77,8 +77,13 @@ const BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8888';
  * (see the wpDiscuz driver), and the first test then loads a page rendered as
  * if the plugin were off. Warm up before the first navigation instead of
  * letting one combo fail for a reason that has nothing to do with OpenPorte.
+ *
+ * The default MUST stay below playwright.config.js' `timeout` (which also caps
+ * beforeAll hooks). At parity, Playwright kills the hook on the same tick this
+ * would have thrown, so you get a bare "beforeAll hook timeout exceeded" and
+ * never the message below naming the needle that never showed up.
  */
-async function waitForFrontEnd(path, needle, timeout = 120000) {
+async function waitForFrontEnd(path, needle, timeout = 90000) {
   const deadline = Date.now() + timeout;
   let last = '';
   for (;;) {
@@ -172,6 +177,7 @@ async function removeWidgets(page) {
 }
 
 module.exports = {
+  BASE_URL,
   wp,
   wpSetOption,
   waitForFrontEnd,
