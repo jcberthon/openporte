@@ -165,4 +165,17 @@ if ! grep -qxF "test-page" <<<"$existing_slugs"; then
     --post_content=$'[altcha]\n[openporte]'
 fi
 
+# Drain the first-run cron backlog here rather than letting the first E2E run
+# pay for it. A freshly provisioned bench has every scheduled event due at once
+# — wp_version_check, wp_update_plugins, wp_update_themes, WooCommerce's
+# wc_regenerate_images and Action Scheduler's initial queue. WordPress spawns
+# cron as a loopback request from an ordinary front-end hit, so that backlog
+# lands on whichever test happens to trigger it and stalls that one request
+# (observed: a single woocommerce-register combo taking 108 s against a 120 s
+# timeout, while its seven siblings ran in ~11 s). Running it now makes the
+# first run's timings look like every subsequent run's.
+echo "wp-init: draining the initial WP-Cron backlog…"
+wpcli cron event run --due-now >/dev/null 2>&1 || \
+  echo "wp-init: WARNING — could not drain the cron backlog; the first E2E run may see a slow combo." >&2
+
 echo "wp-init: done."

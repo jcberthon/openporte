@@ -1,5 +1,53 @@
-const { expect } = require('@playwright/test');
-const { wp, waitForFrontEnd, ensureCommentsPost, purgeComments } = require('../helpers');
+const { expect, request } = require('@playwright/test');
+const {
+  BASE_URL,
+  wp,
+  waitForFrontEnd,
+  ensureCommentsPost,
+  purgeComments,
+} = require('../helpers');
+
+// wp-env's default administrator.
+const ADMIN_USER = process.env.WP_ADMIN_USER || 'admin';
+const ADMIN_PASS = process.env.WP_ADMIN_PASS || 'password';
+
+/**
+ * Make wpDiscuz build its "Default Form", without which it renders *nothing*.
+ *
+ * wpDiscuz creates that form only in pluginNewVersion(), which is hooked on
+ * `admin_init` and gated on the plugin file's version being greater than the
+ * stored `wc_plugin_version` option. A bench provisioned by wp-cli and driven
+ * through the front end never fires `admin_init`, so neither the form nor the
+ * `wpdiscuz_form_content_type_rel` option that binds it to the "post" type is
+ * ever created — wpDiscuz stays silent and the theme falls back to core's
+ * comment form, so #wpdcom never appears and every combo here times out.
+ *
+ * Worse, the gate is one-shot: once `wc_plugin_version` reaches the current
+ * version the form can never be regenerated, so a bench that half-created it
+ * stays broken until the option is rolled back. Reset the gate, then issue one
+ * authenticated wp-admin request to let wpDiscuz build the form itself (rather
+ * than hand-rolling its meta, which would rot against upstream's schema).
+ */
+async function primeDefaultForm() {
+  try {
+    if (wp('option get wpdiscuz_form_content_type_rel')) {
+      return; // Already bound — nothing to do.
+    }
+  } catch (e) {
+    // Option absent (wp-cli exits non-zero) — fall through and build the form.
+  }
+  wp('option update wc_plugin_version 1.0.0');
+  const ctx = await request.newContext({ baseURL: BASE_URL });
+  try {
+    // newContext keeps the login cookie for the follow-up admin request.
+    await ctx.post('/wp-login.php', {
+      form: { log: ADMIN_USER, pwd: ADMIN_PASS, 'wp-submit': 'Log In' },
+    });
+    await ctx.get('/wp-admin/');
+  } finally {
+    await ctx.dispose();
+  }
+}
 
 /**
  * wpDiscuz (jQuery click-delegated AJAX; never fires a native form submit —
@@ -25,12 +73,11 @@ module.exports = {
       wp('plugin install wpdiscuz');
     }
     wp('plugin activate wpdiscuz');
+    await primeDefaultForm();
     const postId = ensureCommentsPost();
     const path = `/?p=${postId}`;
-    // On a first-ever activation wpDiscuz has no "Default Form" yet, and until
-    // some deferred first-run routine creates it (observed ~100 s later on the
-    // bench) it renders nothing: the theme falls back to core's comment form
-    // and #wpdcom never appears. Wait for the real thing before test one.
+    // Belt and braces: primeDefaultForm() has already bound the form, but the
+    // first render still has to come up. Wait for it before test one.
     await waitForFrontEnd(path, 'wpdcom');
     return { path, postId };
   },
