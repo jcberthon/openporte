@@ -2,8 +2,9 @@
 
 > Maintainer / contributor reference. User-facing essentials (how to choose a
 > mode, the privacy stance) live in `readme.txt`; coding conventions live in
-> `AGENTS.md`. This document reflects the codebase after the paid-SaaS removal
-> and the OpenPorte rebrand (1.27.0).
+> `AGENTS.md`. This document reflects the codebase as of **1.28.0** — after the
+> paid-SaaS removal and the OpenPorte rebrand (1.27.0), and after the
+> spam-filter removal and the configurable challenge settings (1.28.0).
 >
 > Naming note: the plugin class (`OpenPortePlugin`), the DB option keys, the
 > public hooks, the REST namespace and the text domain were moved to the
@@ -105,12 +106,13 @@ PHP warnings. A valid object carrying a `verificationData` field is routed to
 Each method re-checks that the fields it needs are present before using them.
 
 `verify_server_signature()` checks the HMAC signature against the site secret
-(`get_secret()`), then parses `verificationData` into `$spamfilter_result`. It
-returns `true` only when the signature is valid, the payload is unexpired
-(`expire`, when present) and explicitly verified (`verified`, when present), and
-the `classification` is not `BAD`. The `expire`/`verified` checks mirror the
-ALTCHA reference implementation and are applied defensively — only when the
-backend actually supplies the field — so minimal custom backends keep working.
+(`get_secret()`), then parses `verificationData`. It returns `true` only when the
+signature is valid, the payload is unexpired (`expire`, when present) and
+explicitly verified (`verified`, when present). The `expire`/`verified` checks
+mirror the ALTCHA reference implementation and are applied defensively — only
+when the backend actually supplies the field — so minimal custom backends keep
+working. It no longer inspects a `classification` field: the spam-filter
+plumbing was removed in 1.28.0 (see below).
 
 `verify_solution()` performs proof-of-work verification: it validates the
 challenge hash, its signature, and expiration, returning `true` only if all
@@ -144,25 +146,31 @@ None of these symbols exist in the current codebase. The verification dispatch
 pass only *added* checks (`expire`/`verified`, strict payload decoding) without
 changing how a valid or invalid challenge is routed.
 
-## Spam filter — status and limits
+**1.28.0** finished the job by removing the consumer-side spam-filter plumbing
+that outlived the SaaS it was built for — see "Spam filter — removed in 1.28.0"
+below. The same release deprecated (but kept) the "Custom HTML" integration and
+the integration-listing helpers `get_integrations()` /
+`has_active_integrations()`, which lost their only caller in 1.21.0; both are
+slated for removal at the next major.
 
-**The plugin provides no spam classifier.** The classification engine was a
-hosted ALTCHA service (commercial successor: Sentinel) and was never
+## Spam filter — removed in 1.28.0
+
+**The plugin has never provided a spam classifier.** The classification engine
+was a hosted ALTCHA service (commercial successor: Sentinel) and was never
 open-source.
 
-What remains is consumer-side plumbing that acts on classification data only if
-a `custom` backend supplies it:
+Until 1.28.0 the codebase still carried consumer-side plumbing that acted on
+classification data if a `custom` backend supplied it. It had no effect in
+`selfhosted` proof-of-work mode — no classification is produced there — so it
+was dead weight for every supported configuration, and it was removed in 1.28.0
+(#6). Verification now rests on the proof-of-work challenge and the HMAC
+signature alone.
 
-- `verify_server_signature()` reads a classification out of the signed
-  `verificationData` payload.
-- `get_blockspam()` and the widget attribute `blockspam='1'` enable the
-  blocking behavior.
-- The Gravity Forms integration acts on `$spamfilter_result`, using its
-  `classification`, `score`, and `reasons` fields.
-
-This plumbing has **no effect** in `selfhosted` proof-of-work mode (no
-classification is produced there), and the plugin ships with no classifier of
-its own. It is not a feature offered out of the box.
+Gone, and not to be reintroduced without a classifier to justify them:
+`$spamfilter_result`, `get_blockspam()`, `$option_blockspam`, the
+`blockspam` / `spamfilter` widget attributes (also dropped from the `wp_kses`
+whitelist), the classification branch in `verify_server_signature()`, and the
+Gravity Forms branch that read `classification` / `score` / `reasons`.
 
 ## Privacy stance
 
@@ -189,7 +197,7 @@ code:
 
 - **`custom` mode is not the paid SaaS.** Do not remove it. It is the legitimate
   self-hostable backend path and is load-bearing for real users (e.g. operators
-  running their own classifying backend).
+  running their own ALTCHA-compatible challenge server such as GateCHA).
 - **The verification dispatch keys on payload shape, not on the API mode.** Any
   change to mode handling must not alter how a valid or invalid challenge is
   verified — breaking this breaks every protected form.
