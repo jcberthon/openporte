@@ -117,7 +117,7 @@ scripts and need no `npm install`.
 | ------- | -------------- | ----------- | --------- |
 | `npm run lint:phpcs` | WordPress security/correctness sniffs and PHP cross-version compatibility, per [`phpcs.xml.dist`](phpcs.xml.dist) | `.github/workflows/phpcs.yml` | **Yes** — a finding fails the PR |
 | `npm run lint:phpmd` | Complexity, dead code and design smells, per [`phpmd.xml.dist`](phpmd.xml.dist) | `.github/workflows/phpmd.yml` | No — advisory, uploaded to the repo's Security tab |
-| `npm run lint:phpstan` | Type correctness — wrong argument types, impossible conditions, unknown symbols — per [`phpstan.neon.dist`](phpstan.neon.dist) | `.github/workflows/phpstan.yml` | No — advisory, annotated inline on the PR diff |
+| `npm run lint:phpstan` | Type correctness — wrong argument types, impossible conditions, unknown symbols — per [`phpstan.neon.dist`](phpstan.neon.dist) | `.github/workflows/phpstan.yml` | **Yes** — a *new* finding fails the PR |
 
 All three workflows invoke exactly what you run locally (PHPMD via
 [`bin/lint/phpmd.sh`](bin/lint/phpmd.sh), PHPStan via
@@ -136,12 +136,29 @@ PHPStan sees WordPress core through `php-stubs/wordpress-stubs`, wired in via
 the stubs at `^6.6.2` while this project tracks `^7.0`, so Composer cannot
 resolve the two together. Worth revisiting when it tags a stubs-7 release.
 
-PHPStan runs at level 5 and reports four genuine pre-existing findings, deferred
-to the `future` milestone and tracked in
-[#77](https://github.com/jcberthon/openporte/issues/77). Unlike the PHPMD
-backlog below, that list is short enough to hold the line on: understand a new
-finding before you land it, rather than adding an `ignoreErrors` entry or a
-baseline.
+PHPStan runs at level 5 and **gates the PR**, which works because
+[`phpstan-baseline.neon`](phpstan-baseline.neon) absorbs the four findings that
+predate its introduction (deferred to the `future` milestone, tracked in
+[#77](https://github.com/jcberthon/openporte/issues/77)). Only a *new* finding
+turns the check red. Unlike the PHPMD backlog below, the list is short enough to
+hold at zero-new.
+
+When the check goes red, there are exactly two right moves — the same choice a
+`phpcs` finding gives you:
+
+1. **Fix it.** The default. PHPStan findings are usually a real type error.
+2. **Justify it**, if it is a genuine false positive: add an `ignoreErrors` entry
+   to `phpstan.neon.dist` with a comment saying why, as narrowly scoped as you
+   can manage (by `identifier` and `path`, not a bare message match). This is the
+   same convention as a documented `phpcs:ignore`, and it is reviewable — the
+   justification sits next to the suppression in the diff.
+
+What is *not* a right move is regenerating the baseline. That silently promotes a
+new finding to permanent debt, with no note of what it was or why it was
+accepted. The baseline is a one-off record of where the analyser started, not an
+inbox; it shrinks as #77 is worked through and disappears with the last finding.
+If a finding is real but genuinely not for now, file an issue and fix it there —
+don't bury it.
 
 Two things to know before reading PHPMD output:
 

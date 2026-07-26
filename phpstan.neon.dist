@@ -17,6 +17,22 @@
 # its untagged 2.x-dev branch relaxes that constraint, which is not something to
 # pin a release toolchain to. Wiring the stubs in by hand (below) covers what
 # this plugin needs and works with any phpstan binary, vendored or global.
+
+# The four findings that existed when PHPStan was introduced, so the analyser
+# can gate on *new* ones from day one instead of being permanently red. They are
+# deferred, not accepted — tracked in issue #77, and the file goes away when they
+# are fixed.
+#
+# The baseline is generated, never hand-edited:
+#     bash bin/lint/phpstan.sh --generate-baseline
+# It is NOT the place to park a new finding. A finding that appears after this
+# point gets fixed, or — if it is a genuine false positive — an `ignoreErrors`
+# entry below with a comment justifying it, the same convention as a documented
+# `phpcs:ignore`. Regenerating the baseline to make CI green again silently
+# converts a real finding into permanent debt.
+includes:
+	- phpstan-baseline.neon
+
 parameters:
 	level: 5
 
