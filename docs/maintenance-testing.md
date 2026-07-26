@@ -22,7 +22,8 @@ section in sync with it.
 
 **✅ Latest tested**
 
-- WordPress: 7.0
+- WordPress: 7.0.2 (the `Tested up to` header stays `7.0` — major.minor only,
+  a Plugin Check requirement)
 - PHP: 8.5
 
 #### Compatibility Notes
@@ -288,13 +289,39 @@ ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ~/path/to/remote/directory"
 
 ---
 
+### Automated E2E suite (`tests/e2e`)
+
+A Playwright **settings-matrix** suite drives a real browser against a running
+wp-env bench, looping integrations × auto-verification mode × Floating UI — the
+combinations too numerous to click through by hand. It solves the proof-of-work
+for real (no mocks), so it also catches timing regressions such as the wpDiscuz
+`auto="onsubmit"` race that prompted it.
+
+```bash
+./wp-env.sh start          # from the repo root — provisions the bench first
+cd tests/e2e && npm install && npm test
+```
+
+Per driver: 8 acceptance combos (auto ∈ {disabled, onload, onfocus, onsubmit} ×
+floating ∈ {off, on}) plus two negative controls the server must reject —
+**missing token** (widget stripped from the DOM, which also proves verification
+is actually wired up) and **forged token** (real solve, then the payload's HMAC
+corrupted). One suite-wide extra on the core-comments driver covers **expired
+token replay**.
+
+Drivers: WordPress core comments, Contact Form 7, wpDiscuz, WPForms Lite,
+WooCommerce login and registration. The suite is **not shipped** (`tests/` is
+excluded by `.distignore`). Full details, prerequisites and the rationale for
+what is *not* driven are in [`tests/e2e/README.md`](../tests/e2e/README.md).
+
 ### Regression focus after verification changes
 
 The security-hardening pass changed the token-verification path in
-`includes/core.php` (see `docs/security-audit.md`). Because there is no
-automated test for it, the following must be checked by hand whenever
-`verify()`, `verify_solution()`, `verify_server_signature()` or
-`decode_payload()` are touched:
+`includes/core.php` (see `docs/security-audit.md`). The E2E suite above covers
+the happy path and the missing/forged/expired-token negatives; the following
+still need a manual pass whenever `verify()`, `verify_solution()`,
+`verify_server_signature()` or `decode_payload()` are touched, since they cover
+cases the bench cannot drive:
 
 - **Happy path unchanged:** a normally solved widget submission still verifies
   in self-hosted (proof-of-work) mode — acceptance test **(a)**.
@@ -302,7 +329,7 @@ automated test for it, the following must be checked by hand whenever
   missing or set to a non-base64 / non-JSON value. It must be rejected **and**
   produce **no** PHP warnings in `wp-env logs` (the point of the `decode_payload`
   hardening — previously these emitted "Attempt to read property on null").
-- **Custom / spam-filter mode** (`custom` API mode with a signed
+- **Custom mode** (`custom` API mode with a signed
   `verificationData` backend): an **expired** (`expire` in the past) or
   not-**verified** payload is rejected; a normal unexpired/verified one is
   accepted; a **minimal** backend payload that omits `expire`/`verified`
@@ -344,20 +371,23 @@ at least on the floor (PHP 8.0 / WP 5.6) and ceiling (PHP 8.5 / WP 7.0) benches:
 5. The companion `public/script.js` behaviour still holds — no duplicate widgets
    (the `MutationObserver`), and the checkbox `name` fix still applies — since it
    manipulates the widget DOM and is sensitive to upstream markup changes.
-6. **Attribute-API compatibility (the main upgrade risk):** the attributes we
-   emit in `get_widget_attrs()` (`challengeurl`, `strings`, `auto`, `floating`,
-   `delay`, `hidelogo`, `hidefooter`, `blockspam`, `spamfilter`, `name`) are
-   still honoured by the new widget. If upstream renames or drops one, update
-   **both** `get_widget_attrs()` and the `wp_kses` whitelist
+6. **Attribute-API compatibility (the main upgrade risk):** the eight attributes
+   we emit in `get_widget_attrs()` (`challengeurl`, `strings`, `auto`,
+   `floating`, `delay`, `hidelogo`, `hidefooter`, `name`) are still honoured by
+   the new widget. If upstream renames or drops one, update **both**
+   `get_widget_attrs()` and the `wp_kses` whitelist
    `OpenPortePlugin::$html_espace_allowed_tags`, or the attribute will be
-   silently stripped on render.
+   silently stripped on render. (The whitelist also permits `debug`, which the
+   plugin never emits.)
 7. The browser console is clean and `wp-env logs` shows no PHP notices.
 
 New in widget 2.3.0, accepted but **unused** by OpenPorte (for the next
 attribute audit): `disablerefetchonexpire`, `sentinel`, `plugins`,
 `credentials`, `customfetch`, `overlay`/`overlaycontent`, `disableautofocus`,
-`floatingpersist`, `language`. The `spamfilter`/`blockspam` deprecation in
-2.3.0 is documentation-only — no runtime warning in the bundle.
+`floatingpersist`, `language`. Upstream also deprecated `spamfilter` and
+`blockspam` in 2.3.0 (documentation-only — no runtime warning in the bundle);
+OpenPorte stopped emitting both in 1.28.0 when the spam-filter plumbing was
+removed (#6), so that deprecation no longer concerns us.
 
 **Don't trust the version string in the bundle.** Upstream commits a prebuilt
 `dist/` and stamps the version at build time, so a release that doesn't rebuild
