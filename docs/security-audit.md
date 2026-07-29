@@ -12,7 +12,9 @@
 > `public/altcha.min.js` is treated as a third-party dependency and was not
 > audited line by line.
 >
-> Audited version: 1.27.1. A prior review of the pre-fork v1.26.3 lives in
+> Audited version: 1.27.1, with Appendix D (external advisory cross-check) and
+> the Appendix B SSRF row re-checked against 1.28.0.
+> A prior review of the pre-fork v1.26.3 lives in
 > `local/Security_Analysis.md`; several of its findings are now obsolete
 > (`get_ip_address()` and the paid-SaaS challenge URL it flagged were removed in
 > the 1.27.0 paid-SaaS removal, and the widget-attribute escaping it flagged is
@@ -488,17 +490,74 @@ OWASP Top 10 (2021):
 | A07 Identification & Auth Failures | Pass | Delegates to WP/WooCommerce auth; adds an anti-automation layer, does not weaken auth |
 | A08 Software & Data Integrity Failures | Pass | Uses `json_decode` (not `unserialize`); submitted tokens are HMAC-signed and verified |
 | A09 Security Logging & Monitoring | Note | No built-in logging; operators can hook the `openporte_verify_result` action |
-| A10 SSRF | Pass | No server-side `wp_remote_*`/`file_get_contents`/cURL of operator- or visitor-supplied URLs (grep-confirmed) |
+| A10 SSRF | Pass (note) | One server-side fetch, added in 1.28.0: the custom-endpoint health check `wp_remote_get()`s the configured Challenge URL (`admin/healthcheck.php`). Operator-supplied (`manage_options`), never visitor-supplied, and only on OpenPorte's own settings screen. Deliberately **not** `wp_safe_remote_get()` — private-network backends (a LAN host or NAS running e.g. GateCHA) are a primary use case that the "safe" variant blocks. No other `wp_remote_*`/`file_get_contents`/cURL of an external URL (grep-confirmed) |
 
 OWASP PHP cheat-sheet spot checks:
 
 - **Type juggling:** security-critical comparisons use strict `===` (algorithm,
   challenge) and `hash_equals` (signatures); the `verified` check uses
-  `in_array( …, true )`. No loose `==` in a security decision.
+  `in_array( …, true )`. No loose `==` in a security decision. The challenge
+  digest moves to `hash_equals` in v1.29.0 for uniformity — see Appendix D and
+  [#84](https://github.com/jcberthon/openporte/issues/84).
 - **Error handling / info leak:** finding #3 removes the PHP warnings that junk
   tokens used to emit, reducing noise/leak in logs.
 - **File uploads / sessions:** none — the plugin handles no uploads and sets no
   cookies/sessions.
+
+---
+
+## Appendix D — External advisory cross-check: SecuPress, ALTCHA v2 ≤ 2.2 (2025-12-03)
+
+On 2025-12-03 SecuPress published nine findings against **Altcha GDPR Compliant
+Captcha and Bot Protection ≤ 2.2**
+(<https://secupress.me/blog/altcha-2-2-multiple-vulnerabilities/>).
+
+**Scope note, and the reason most rows below read "N/A":** that advisory targets
+the **closed-source v2** product from altcha-org, which is a different code line
+from the open-source v1.x plugin OpenPorte forked. Seven of the nine findings
+describe subsystems v2 added and v1 never had — a license check, an "under
+attack" mode, IP bypass lists, cookie exceptions, `get_edk()`, `rate_limit()`,
+and the `includes/admin/actions.php` admin-AJAX surface. "N/A" here means *this
+code does not exist in OpenPorte*, not *we looked and it was fine*. Only findings
+5 and 6 touch logic the two lines share by ancestry; both were already fixed
+independently in this audit before the advisory was read.
+
+| # | SecuPress finding (v2 ≤ 2.2) | OpenPorte | Evidence |
+| - | --------------------------- | --------- | -------- |
+| 1 | IDOR — no nonce in `includes/admin/actions.php` | N/A | No `wp_ajax_*`/`admin_post_*` handler exists (grep-confirmed). Admin writes go through the Settings API — `settings_fields( 'openporte_options' )` in `admin/options.php` supplies the `options.php` nonce, and the page is registered with `manage_options` in `includes/admin.php` |
+| 2–4 | 3× CSRF on the "set" functions | N/A | Same absent surface. The settings involved (license, IP bypass, cookie exceptions, under-attack) do not exist here |
+| 5 | Timing side-channel — `===` instead of `hash_equals()` | **Fixed** | `hash_equals` guards every HMAC comparison: `verify_server_signature()` and `verify_solution()` in `includes/core.php`, plus the health check in `admin/healthcheck.php`. See the note below on the remaining non-secret `===` |
+| 6 | Insufficient entropy #1 — 12-byte (96-bit) secret | **Fixed** — finding #9 | `random_secret()` is `bin2hex( random_bytes( 32 ) )`. Independently found and fixed here before the advisory was read. Residual for upgraded installs: see the closing note |
+| 7 | Insufficient entropy #2 — `get_edk()` predictable IP/UA hash | N/A | No such function, and no IP- or UA-derived identifier anywhere: the plugin reads no `$_SERVER` at all |
+| 8 | Race condition — non-atomic transient `rate_limit()` | N/A | No rate limiter exists to race. See the note below on the adjacent live item |
+| 9 | IP spoofing via `X-Forwarded-For` | N/A | `get_ip_address()` was removed in the 1.27.0 paid-SaaS removal; no `$_SERVER`, `REMOTE_ADDR` or `HTTP_X_FORWARDED_FOR` read remains (grep-confirmed, Appendix A) |
+
+Two points recorded so a future reader does not re-open them from the table
+alone:
+
+- **The remaining `===` is not finding 5.** `verify_solution()` still compares
+  the challenge digest with `===` (`$data->challenge === $calculated_challenge`),
+  as does the `$data->algorithm` label check. Neither operand is secret — both
+  are recomputable by the submitter from the `salt` and `number` carried in
+  their own token — so nothing leaks through the comparison's timing. The
+  digest comparison is nonetheless moving to `hash_equals` for uniformity in
+  v1.29.0, tracked in
+  [#84](https://github.com/jcberthon/openporte/issues/84); the algorithm label
+  stays `===`, being a public identifier rather than a digest.
+- **Finding 8's impact does not transfer.** OpenPorte's unauthenticated
+  challenge endpoint is a DoS/abuse surface (finding #5, accepted), not a
+  verification bypass: there is no rate limit for a parallel request to defeat,
+  and issuing extra challenges grants nothing — each still has to be solved and
+  its HMAC verified. Per-IP throttling remains rejected on privacy grounds.
+
+**Residual on finding 6.** The 256-bit key seeds *new* installs only:
+`add_option()` is a no-op once the row exists, so a site upgraded from ALTCHA
+1.x or early OpenPorte still holds its original 96-bit secret. That is
+deliberate — silently rotating would fail every challenge issued in the
+preceding expiry window. The remedy is a manual one, tracked in
+[#70](https://github.com/jcberthon/openporte/issues/70) (Copy/Regenerate actions
+on the Shared Secret field, v1.29.0). 96 bits is not practically
+brute-forceable, so this is hardening rather than exposure.
 
 ---
 
@@ -509,3 +568,11 @@ OWASP PHP cheat-sheet spot checks:
 - **Finding 5 (REST rate limiting):** documented as accepted risk; per-IP
   throttling rejected because it conflicts with the no-visitor-IP privacy
   promise. Handle upstream if needed.
+- **SecuPress ALTCHA v2 advisory (reviewed 2026-07-28):** cross-checked in
+  Appendix D. No plugin code change required — the two applicable findings were
+  already fixed, the other seven target v2-only code. The legacy 96-bit secret
+  on upgraded installs is not auto-rotated; admins get a manual Regenerate
+  action instead ([#70](https://github.com/jcberthon/openporte/issues/70)). The
+  non-secret challenge `===` is tracked separately as uniformity work
+  ([#84](https://github.com/jcberthon/openporte/issues/84)), not as a security
+  fix.
