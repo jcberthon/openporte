@@ -1,10 +1,11 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.28.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
-"PO-Revision-Date: 2026-07-23 00:00+0000\n"
-"Last-Translator: Mistral Vibe <vibe@mistral.ai> - signed-off by J-C Berthon\n"
+"POT-Creation-Date: 2026-07-30T08:00:15+00:00\n"
+"PO-Revision-Date: 2026-07-30 00:00+0000\n"
+"Last-Translator: Mistral Vibe-3.5:mistral-medium - signed-off by J-C "
+"Berthon\n"
 "Language-Team: Spanish <es@li.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -20,15 +21,11 @@ msgstr "OpenPorte Spam Protection"
 #. Description of the plugin
 #: openporte.php
 msgid ""
-"OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam "
-"and bot protection without using cookies, ensuring full GDPR compliance by "
-"design. A community-maintained fork of the ALTCHA Spam Protection plugin "
-"(v1)."
+"Stop spam without CAPTCHAs. Proof-of-Work protection for your site. Open-"
+"source, self-hosted, privacy-first."
 msgstr ""
-"OpenPorte es una alternativa gratuita y de código abierto a CAPTCHA que "
-"ofrece robusta protección contra spam y bots sin usar cookies, garantizando "
-"el cumplimiento total del GDPR por diseño. Un fork mantenido por la "
-"comunidad del plugin ALTCHA Spam Protection (v1)."
+"Detén el spam sin CAPTCHAs. Protección Proof-of-Work. Open-source, "
+"autoalojado, privacidad primero."
 
 #. Author of the plugin
 #: openporte.php
@@ -37,8 +34,8 @@ msgstr "Colaboradores de OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte/graphs/contributors"
-msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
+msgid "https://github.com/openporte/openporte/graphs/contributors"
+msgstr "https://github.com/openporte/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -706,6 +703,24 @@ msgstr "OpenPorte no puede activarse"
 #: openporte.php:77
 msgid "Go to the Plugins page"
 msgstr "Ir a la página de plugins"
+
+#~ msgid ""
+#~ "OpenPorte is an open-source anti-spam plugin that protects sites from "
+#~ "bots using a lightweight Proof-of-Work challenge instead of CAPTCHAs."
+#~ msgstr ""
+#~ "OpenPorte es un plugin antispam open-source que protege los sitios usando "
+#~ "PoW en lugar de CAPTCHAs."
+
+#~ msgid ""
+#~ "OpenPorte is a free, open-source CAPTCHA alternative that offers robust "
+#~ "spam and bot protection without using cookies, ensuring full GDPR "
+#~ "compliance by design. A community-maintained fork of the ALTCHA Spam "
+#~ "Protection plugin (v1)."
+#~ msgstr ""
+#~ "OpenPorte es una alternativa gratuita y de código abierto a CAPTCHA que "
+#~ "ofrece robusta protección contra spam y bots sin usar cookies, "
+#~ "garantizando el cumplimiento total del GDPR por diseño. Un fork mantenido "
+#~ "por la comunidad del plugin ALTCHA Spam Protection (v1)."
 
 #, php-format
 #~ msgid ""

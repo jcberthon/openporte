@@ -4,11 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
  * Plugin Name: OpenPorte Spam Protection
- * Description: OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam and bot protection without using cookies, ensuring full GDPR compliance by design. A community-maintained fork of the ALTCHA Spam Protection plugin (v1).
+ * Description: Stop spam without CAPTCHAs. Proof-of-Work protection for your site. Open-source, self-hosted, privacy-first.
  * Author: OpenPorte Contributors
- * Author URI: https://github.com/jcberthon/openporte/graphs/contributors
- * Version: 1.28.0
- * Stable tag: 1.28.0
+ * Author URI: https://github.com/openporte/openporte/graphs/contributors
+ * Version: 1.28.1
+ * Stable tag: 1.28.1
  * Requires at least: 5.6
  * Requires PHP: 8.0
  * Tested up to: 7.0
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 
 /*
- * OpenPorte is a fork of ALTCHA Spam Protection. For backward compatibility it
+ * OpenPorte started as a fork of ALTCHA Spam Protection. For backward compatibility it
  * still defines the ALTCHA_* constant aliases and the AltchaPlugin class alias,
  * and registers the [altcha] shortcode and altcha/v1 REST route. If the original
  * ALTCHA plugin is also active these collide (PHP "already defined" warnings, a
@@ -87,7 +87,7 @@ if ( defined( 'ALTCHA_VERSION' ) || function_exists( 'altcha_plugin_active' ) ||
 	return;
 }
 
-define('OPENPORTE_VERSION', '1.28.0');
+define('OPENPORTE_VERSION', '1.28.1');
 // Authoritative version of the vendored widget. The string embedded in
 // public/altcha.min.js can lag (2.3.0 ships a bundle reporting 2.2.4 — upstream
 // did not rebuild dist/); see docs/agents/altcha-upstream.md.

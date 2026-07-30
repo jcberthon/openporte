@@ -15,7 +15,7 @@
 # Caveat: this assumes everything shippable is git-tracked (true today —
 # vendor/ is generated but already excluded via .distignore). If the repo
 # ever stops tracking generated-but-shipped files (e.g. languages/*.mo, see
-# https://github.com/jcberthon/openporte/issues/11), this script will need
+# https://github.com/openporte/openporte/issues/11), this script will need
 # an allowlist for those paths.
 #
 # Usage: ./tests/bin/check-dist.sh   (run from the repo root)

@@ -3,7 +3,7 @@
 ## 🔒 Security vulnerability?
 
 Do **not** open an issue or a forum thread. Report it privately via
-[GitHub Security Advisories](https://github.com/jcberthon/openporte/security/advisories/new).
+[GitHub Security Advisories](https://github.com/openporte/openporte/security/advisories/new).
 See [SECURITY.md](SECURITY.md) for details.
 
 ## ❓ Question, installation/configuration help, unclear behavior?
@@ -19,7 +19,7 @@ This is the right place for:
 
 If you've already confirmed it's a reproducible bug (not just unexpected
 behavior you're unsure about) or you have a concrete feature/change
-proposal, open a **[GitHub issue](https://github.com/jcberthon/openporte/issues/new/choose)**.
+proposal, open a **[GitHub issue](https://github.com/openporte/openporte/issues/new/choose)**.
 
 If you're not sure which category your report falls into, start on the
 forum — it's easier to reclassify from there than the other way around.
