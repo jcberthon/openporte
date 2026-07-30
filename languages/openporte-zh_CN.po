@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.28.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
-"PO-Revision-Date: 2026-07-25 00:00+0000\n"
-"Last-Translator: Crush-qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
+"POT-Creation-Date: 2026-07-30T08:00:15+00:00\n"
+"PO-Revision-Date: 2026-07-30 00:00+0000\n"
+"Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Chinese (simplified)\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -20,14 +20,11 @@ msgstr "OpenPorte Spam Protection"
 #. Description of the plugin
 #: openporte.php
 msgid ""
-"OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam "
-"and bot protection without using cookies, ensuring full GDPR compliance by "
-"design. A community-maintained fork of the ALTCHA Spam Protection plugin "
-"(v1)."
+"Stop spam without CAPTCHAs. Proof-of-Work protection for your site. Open-"
+"source, self-hosted, privacy-first."
 msgstr ""
-"OpenPorte 是一个免费、开源的 CAPTCHA 替代方案，提供强大的垃圾邮件和机器人保"
-"护，且无需使用 Cookie，从设计上确保完全符合 GDPR。它是 ALTCHA Spam "
-"Protection 插件 (v1) 的社区维护分支。"
+"无需CAPTCHA即可阻止垃圾信息。Proof-of-Work保护您的网站。开源、自托管、"
+"隐私优先。"
 
 #. Author of the plugin
 #: openporte.php
@@ -36,8 +33,8 @@ msgstr "OpenPorte 贡献者"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte/graphs/contributors"
-msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
+msgid "https://github.com/openporte/openporte/graphs/contributors"
+msgstr "https://github.com/openporte/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -677,6 +674,23 @@ msgstr "无法激活 OpenPorte"
 #: openporte.php:77
 msgid "Go to the Plugins page"
 msgstr "前往插件页面"
+
+#~ msgid ""
+#~ "OpenPorte is an open-source anti-spam plugin that protects sites from "
+#~ "bots using a lightweight Proof-of-Work challenge instead of CAPTCHAs."
+#~ msgstr ""
+#~ "OpenPorte 是一款开源反垃圾邮件插件，使用轻量级 Proof-of-Work 挑战代替 "
+#~ "CAPTCHA 来保护网站免受机器人攻击。"
+
+#~ msgid ""
+#~ "OpenPorte is a free, open-source CAPTCHA alternative that offers robust "
+#~ "spam and bot protection without using cookies, ensuring full GDPR "
+#~ "compliance by design. A community-maintained fork of the ALTCHA Spam "
+#~ "Protection plugin (v1)."
+#~ msgstr ""
+#~ "OpenPorte 是一个免费、开源的 CAPTCHA 替代方案，提供强大的垃圾邮件和机器人"
+#~ "保护，且无需使用 Cookie，从设计上确保完全符合 GDPR。它是 ALTCHA Spam "
+#~ "Protection 插件 (v1) 的社区维护分支。"
 
 #, php-format
 #~ msgid ""

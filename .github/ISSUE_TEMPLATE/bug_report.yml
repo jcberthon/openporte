@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to report a bug!
-        - For a **security vulnerability**, please don't use this form — see [SECURITY.md](https://github.com/jcberthon/openporte/security/policy) instead.
+        - For a **security vulnerability**, please don't use this form — see [SECURITY.md](https://github.com/openporte/openporte/security/policy) instead.
         - If you're **not sure** whether this is a bug or just need help, please ask on the [support forum](https://wordpress.org/support/plugin/openporte/) first.
   - type: textarea
     id: what-happened

@@ -1,10 +1,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.28.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
-"PO-Revision-Date: 2026-07-25 00:00+0000\n"
+"POT-Creation-Date: 2026-07-30T08:00:15+00:00\n"
+"PO-Revision-Date: 2026-07-30 00:00+0000\n"
 "Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -21,15 +21,11 @@ msgstr "OpenPorte Spam Protection"
 #. Description of the plugin
 #: openporte.php
 msgid ""
-"OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam "
-"and bot protection without using cookies, ensuring full GDPR compliance by "
-"design. A community-maintained fork of the ALTCHA Spam Protection plugin "
-"(v1)."
+"Stop spam without CAPTCHAs. Proof-of-Work protection for your site. Open-"
+"source, self-hosted, privacy-first."
 msgstr ""
-"OpenPorte, çerez kullanmadan güçlü spam ve bot koruması sunan ücretsiz ve "
-"açık kaynaklı bir CAPTCHA alternatifi olup tasarım olarak tam GDPR "
-"uyumluluğu sağlar. ALTCHA Spam Protection eklentisinin (v1) topluluk "
-"tarafından bakımı yapılan bir forkudur."
+"CAPTCHA olmadan spam'ı durdurun. Proof-of-Work ile sitenizi koruyun. Açık "
+"kaynak, kendi sunucunuzda, gizlilik odaklı."
 
 #. Author of the plugin
 #: openporte.php
@@ -38,8 +34,8 @@ msgstr "OpenPorte Katkıda Bulunanlar"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte/graphs/contributors"
-msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
+msgid "https://github.com/openporte/openporte/graphs/contributors"
+msgstr "https://github.com/openporte/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -709,3 +705,21 @@ msgstr "OpenPorte etkinleştirilemiyor"
 #: openporte.php:77
 msgid "Go to the Plugins page"
 msgstr "Eklentiler sayfasına gidin"
+
+#~ msgid ""
+#~ "OpenPorte is an open-source anti-spam plugin that protects sites from "
+#~ "bots using a lightweight Proof-of-Work challenge instead of CAPTCHAs."
+#~ msgstr ""
+#~ "OpenPorte, CAPTCHA yerine hafif bir Proof-of-Work zorluğu kullanarak "
+#~ "siteleri botlardan koruyan açık kaynaklı bir anti-spam eklentisidir."
+
+#~ msgid ""
+#~ "OpenPorte is a free, open-source CAPTCHA alternative that offers robust "
+#~ "spam and bot protection without using cookies, ensuring full GDPR "
+#~ "compliance by design. A community-maintained fork of the ALTCHA Spam "
+#~ "Protection plugin (v1)."
+#~ msgstr ""
+#~ "OpenPorte, çerez kullanmadan güçlü spam ve bot koruması sunan ücretsiz ve "
+#~ "açık kaynaklı bir CAPTCHA alternatifi olup tasarım olarak tam GDPR "
+#~ "uyumluluğu sağlar. ALTCHA Spam Protection eklentisinin (v1) topluluk "
+#~ "tarafından bakımı yapılan bir forkudur."

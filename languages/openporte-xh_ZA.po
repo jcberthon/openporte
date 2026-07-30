@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenPorte Spam Protection 1.28.0\n"
+"Project-Id-Version: OpenPorte Spam Protection 1.28.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/openporte\n"
-"POT-Creation-Date: 2026-07-25T22:27:23+00:00\n"
-"PO-Revision-Date: 2026-07-25 00:00+0000\n"
-"Last-Translator: Crush - signed-off by J-C Berthon\n"
+"POT-Creation-Date: 2026-07-30T08:00:15+00:00\n"
+"PO-Revision-Date: 2026-07-30 00:00+0000\n"
+"Last-Translator: Crush-0.87.0:qwen3.6-27b-mtp - signed-off by J-C Berthon\n"
 "Language-Team: Xhosa\n"
 "Language: xh_ZA\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +21,11 @@ msgstr "OpenPorte Spam Protection"
 #. Description of the plugin
 #: openporte.php
 msgid ""
-"OpenPorte is a free, open-source CAPTCHA alternative that offers robust spam "
-"and bot protection without using cookies, ensuring full GDPR compliance by "
-"design. A community-maintained fork of the ALTCHA Spam Protection plugin "
-"(v1)."
+"Stop spam without CAPTCHAs. Proof-of-Work protection for your site. Open-"
+"source, self-hosted, privacy-first."
 msgstr ""
-"I-OpenPorte yindlela yasimahla, evulekileyo yokutshintsha i-CAPTCHA enika "
-"ukhuseleko olomeleleyo lwe-spam kunye ne-bot ngaphandle kokusebenzisa ii-"
-"cookies, iqinisekisa ukulungiselela i-GDPR ngokwenkcazo. Le yifork "
-"yomphakathi ye-ALTCHA Spam Protection plugin (v1)."
+"Yamkela i-spam ngaphandle kwe-CAPTCHA. Ukhuselo lwe-Proof-of-Work "
+"lwewebhusayithi yakho. I-Open-source, self-hosted, privacy-first."
 
 #. Author of the plugin
 #: openporte.php
@@ -38,8 +34,8 @@ msgstr "Abanikazi be-OpenPorte"
 
 #. Author URI of the plugin
 #: openporte.php
-msgid "https://github.com/jcberthon/openporte/graphs/contributors"
-msgstr "https://github.com/jcberthon/openporte/graphs/contributors"
+msgid "https://github.com/openporte/openporte/graphs/contributors"
+msgstr "https://github.com/openporte/openporte/graphs/contributors"
 
 #: admin/healthcheck.php:48
 msgid "OpenPorte endpoint check:"
@@ -705,6 +701,25 @@ msgstr "I-OpenPorte ayinakuvulwa"
 #: openporte.php:77
 msgid "Go to the Plugins page"
 msgstr "Yiya kwi-page ye-Plugins"
+
+#~ msgid ""
+#~ "OpenPorte is an open-source anti-spam plugin that protects sites from "
+#~ "bots using a lightweight Proof-of-Work challenge instead of CAPTCHAs."
+#~ msgstr ""
+#~ "I-OpenPorte yi-plugin ye-anti-spam ene-open-source eziqonda iindawo "
+#~ "ukusuka kwi-bots ngokusebenzisa umngeni we-Proof-of-Work olula endaweni "
+#~ "ye-CAPTCHAs."
+
+#~ msgid ""
+#~ "OpenPorte is a free, open-source CAPTCHA alternative that offers robust "
+#~ "spam and bot protection without using cookies, ensuring full GDPR "
+#~ "compliance by design. A community-maintained fork of the ALTCHA Spam "
+#~ "Protection plugin (v1)."
+#~ msgstr ""
+#~ "I-OpenPorte yindlela yasimahla, evulekileyo yokutshintsha i-CAPTCHA enika "
+#~ "ukhuseleko olomeleleyo lwe-spam kunye ne-bot ngaphandle kokusebenzisa ii-"
+#~ "cookies, iqinisekisa ukulungiselela i-GDPR ngokwenkcazo. Le yifork "
+#~ "yomphakathi ye-ALTCHA Spam Protection plugin (v1)."
 
 #, php-format
 #~ msgid ""

@@ -93,7 +93,7 @@ function openporte_options_page_html()
         ); ?>
       </p>
       <p>
-        <a href="https://github.com/jcberthon/openporte" target="_blank" style="display: inline-flex; gap: 0.3rem;">
+        <a href="https://github.com/openporte/openporte" target="_blank" style="display: inline-flex; gap: 0.3rem;">
           <span><?php echo esc_html__('Star OpenPorte on GitHub!', 'openporte'); ?></span>
         </a>
       </p>

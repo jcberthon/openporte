@@ -9,11 +9,17 @@
     </picture>
 </div>
 
-**OpenPorte is a community-maintained fork of the retired ALTCHA Spam
-Protection plugin for WordPress (v1)** - a free, open source, self-hostable,
-privacy-friendly CAPTCHA alternative.
+**Stop spam without CAPTCHAs. Proof-of-Work protection for your site.
+Open-source, self-hosted, privacy-first.**
 
-Website: <https://github.com/jcberthon/openporte>
+OpenPorte protects WordPress forms, logins, registrations and comments from
+spam and bots using a lightweight Proof-of-Work challenge. The goal is to make
+spam expensive for bots while keeping the experience almost invisible for
+legitimate visitors and respecting their privacy.
+
+No cookies, no tracking, GDPR-friendly by design.
+
+Website: <https://github.com/openporte/openporte>
 
 WordPress Plugin Directory: <https://wordpress.org/plugins/openporte/>
 
@@ -23,19 +29,37 @@ alt="Link to Support Information">SUPPORT.md</a>.
 
 Disclosure: This project is (using AI)[^1].
 
-[^1]: About the use of AI
-> [!NOTE]
-> **AI-assisted project.** Architecture, security decisions, and final review
-> are mine; AI tools (Claude, Mistral, and others) help with drafting code,
-> tests, translations, and documentation — without them, one person couldn't
-> keep this fork alive.
+[^1]: **AI-assisted project.** Architecture, security decisions, and final review
+are mine; AI tools (Claude, Mistral, and others) help with drafting code,
+tests, translations, and documentation — without them, one person couldn't
+keep this fork alive.
 
-## Why this fork?
+## Description
 
-The original ALTCHA WordPress plugin v1 was open source (GPLv2). Its authors
-released a v2/3 that is no longer open source, moved some previously-free
-features behind a paywall, and no longer maintain v1 (they recommend
-migrating to [v2/3](https://altcha.org)).
+OpenPorte is a community-driven open-source project dedicated to making modern
+spam protection accessible, transparent, and under the website owner's control.
+
+For site owners, it is easy to configure and deploy. For site users, it is an
+accessible, transparent and privacy-friendly alternative to CAPTCHAs.
+
+OpenPorte is built around the
+[open-source ALTCHA widget](https://github.com/altcha-org/altcha).
+
+Some highlights:
+
+- CAPTCHA-free spam protection
+- Fully open source (GPL)
+- Self-hosted – no mandatory external service
+- Designed to be accessible and privacy-friendly
+- Compatible with existing ALTCHA integrations
+- Easy migration for users of ALTCHA Spam Protection v1 (≤ 1.26.3)
+
+## Background
+
+The original ALTCHA Spam Protection WordPress plugin (v1) was open source
+(GPLv2). Its authors have since released a version 2/3 which is no longer
+open source. They no longer maintain the open-source project and recommend
+migrating to [v2/3](https://altcha.org).
 
 OpenPorte continues the v1 line as free software (GPLv2 or later), for people
 who want to stay on a fully open-source, self-hosted solution. It is based on
@@ -105,7 +129,7 @@ it directly from the admin UI on your site.
 You can also download the GitHub release and install it via the WordPress
 admin UI.
 
-1. Download the `.zip` from the [Releases](https://github.com/jcberthon/openporte/releases).
+1. Download the `.zip` from the [Releases](https://github.com/openporte/openporte/releases).
 2. Under Plugins → Add Plugin, click **Upload Plugin** and select the downloaded
    `.zip` file.
 3. Activate the plugin through the 'Plugins' menu in WordPress  

@@ -4,7 +4,7 @@
 
 **Please report security vulnerabilities via GitHub's private security
 advisory:**  
-<https://github.com/jcberthon/openporte/security/advisories/new>
+<https://github.com/openporte/openporte/security/advisories/new>
 
 This is the only channel for security reports. Do not open public issues for
 security vulnerabilities.
@@ -43,7 +43,7 @@ coordinate with the WordPress.org security team before public disclosure.
 
 ## Important Context
 
-This is a **one-person maintained open source project** on which I work
+This is a **one-person maintained open-source project** on which I work
 during my personal free time, excluding annual or sick leave.
 
 This project is **AI-assisted**: AI tools help draft code, tests, and
