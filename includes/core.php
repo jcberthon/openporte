@@ -511,6 +511,15 @@ class OpenPortePlugin
     return true;
   }
 
+  /**
+   * Verify a proof-of-work token by recomputing the challenge hash and
+   * validating the HMAC signature.
+   *
+   * @param string $payload  The base64-encoded token from the widget.
+   * @param string|null $hmac_key The HMAC key; falls back to the configured secret.
+   * @return bool True if the token is valid, false otherwise.
+   * @since 1.16.0
+   */
   public function verify_solution($payload, $hmac_key = null)
   {
     if ($hmac_key === null) {
@@ -537,7 +546,9 @@ class OpenPortePlugin
     $hash_ident = OpenPortePlugin::hash_ident($algorithm);
     $alg_ok = ($data->algorithm === $algorithm);
     $calculated_challenge = hash($hash_ident, $data->salt . $data->number);
-    $challenge_ok = ($data->challenge === $calculated_challenge);
+    // hash_equals: constant-time comparison for uniformity across the verification
+    // path — see issue #84.
+    $challenge_ok = hash_equals($data->challenge, $calculated_challenge);
     $calculated_signature = hash_hmac($hash_ident, $data->challenge, $hmac_key);
     // hash_equals: constant-time comparison so the HMAC can't be recovered via timing.
     $signature_ok = hash_equals($calculated_signature, $data->signature);
