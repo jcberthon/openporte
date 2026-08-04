@@ -11,6 +11,7 @@
 /share
 /tests
 /vendor
+.crush.json
 .distignore
 .DS_Store
 .gitattributes

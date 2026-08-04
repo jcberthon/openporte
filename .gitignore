@@ -85,3 +85,4 @@ logs/
 .wp-env.conf
 .shellcheckrc
 .wpenvrc
+.crush.json
