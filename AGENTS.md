@@ -114,7 +114,7 @@ exercise the affected form.
 1. `includes/helpers.php`
 2. `includes/core.php` — instantiates `OpenPortePlugin` singleton immediately on load
 3. `public/widget.php`
-4. All 13 files under `integrations/` — each self-registers its hooks at `require` time
+4. All files under `integrations/` — each self-registers its hooks at `require` time (a new integration must be added to the `require` list in `openporte.php`)
 
 Each integration file registers hooks unconditionally at load; the callbacks themselves
 check `OpenPortePlugin::$instance->get_integration_*()` to decide whether to act.

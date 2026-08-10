@@ -78,6 +78,7 @@ PLUGINS_SUITE=(
   "formidable latest"
   "forminator latest"
   "html-forms latest"
+  "ninja-forms latest"
   "woocommerce latest"
   "wpforms-lite latest"
 )

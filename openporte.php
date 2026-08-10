@@ -127,6 +127,7 @@ require plugin_dir_path( __FILE__ ) . './integrations/formidable.php';
 require plugin_dir_path( __FILE__ ) . './integrations/forminator.php';
 require plugin_dir_path( __FILE__ ) . './integrations/html-forms.php';
 require plugin_dir_path( __FILE__ ) . './integrations/gravityforms.php';
+require plugin_dir_path( __FILE__ ) . './integrations/ninja-forms.php';
 require plugin_dir_path( __FILE__ ) . './integrations/wpdiscuz.php';
 require plugin_dir_path( __FILE__ ) . './integrations/wpforms.php';
 require plugin_dir_path( __FILE__ ) . './integrations/wpmembers.php';
@@ -140,6 +141,7 @@ OpenPortePlugin::$wp_script_src = plugin_dir_url(__FILE__) . "public/script.js";
 OpenPortePlugin::$admin_script_src = plugin_dir_url(__FILE__) . "public/admin.js";
 OpenPortePlugin::$admin_css_src = plugin_dir_url(__FILE__) . "public/admin.css";
 OpenPortePlugin::$custom_script_src = plugin_dir_url(__FILE__) . "public/custom.js";
+OpenPortePlugin::$ninja_forms_script_src = plugin_dir_url(__FILE__) . "public/ninja-forms.js";
 // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 register_activation_hook(__FILE__, 'openporte_activate');

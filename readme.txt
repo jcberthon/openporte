@@ -191,6 +191,7 @@ This plugin requires the WordPress REST API. If you are using any "Disable REST 
 * Forminator
 * GravityForms
 * HTML Forms
+* Ninja Forms
 * wpDiscuz
 * WPForms
 * WordPress Login, Register, Password reset
@@ -217,6 +218,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 = 1.29.0 (unreleased) =
 
+* New integration: Ninja Forms. Enabling the toggle inserts the widget into every Ninja Forms form and verifies submissions server-side. A widget you placed yourself (the `[openporte]`/`[altcha]` shortcode in an HTML field, or a hand-written `<altcha-widget>` tag) is verified even while the toggle is off — previously it was purely decorative and did not stop bots.
 * Security: a solved challenge can no longer be replayed without limit. Until now a valid token was accepted on every submission until it expired — and with Expiration set to "None", forever — so a bot could solve one proof-of-work and reuse it indefinitely. Each solved challenge is now accepted a bounded number of times, counted server-side.
 * New "Replay limit" setting (General), default 5. Presets: Unlimited (pre-1.29 behaviour), Single use (strict), 5 uses (recommended), 10 uses, or a custom value from 0 to 100. It applies in both API Modes.
 * Why 5 and not 1: when a form comes back with an unrelated error — a missing field, a mistyped password — the visitor resubmits the same challenge, and a strict limit would reject them. A small allowance keeps those submissions working. **Known trade-off at Single use (1):** such a resubmission *is* rejected, because only submissions within one request are exempt. Choose it only if your forms rarely bounce back; a future release will let the widget re-solve automatically after a rejection, at which point strict becomes comfortable.

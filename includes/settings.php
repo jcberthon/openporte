@@ -610,6 +610,11 @@ if (is_admin()) {
         'label' => __('Protect HTML Forms submissions.', 'openporte'),
         'requires' => 'html-forms',
       ),
+      OpenPortePlugin::$option_integration_ninja_forms => array(
+        'title' => __('Ninja Forms', 'openporte'),
+        'label' => __('Protect Ninja Forms submissions.', 'openporte'),
+        'requires' => 'ninja-forms',
+      ),
       OpenPortePlugin::$option_integration_wpdiscuz => array(
         'title' => __('wpDiscuz', 'openporte'),
         'label' => __('Protect wpDiscuz comments section.', 'openporte'),

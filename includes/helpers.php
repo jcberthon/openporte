@@ -16,6 +16,8 @@ function openporte_plugin_active($name) {
       return is_plugin_active('gravityforms/gravityforms.php');
     case 'html-forms':
       return is_plugin_active('html-forms/html-forms.php');
+    case 'ninja-forms':
+      return is_plugin_active('ninja-forms/ninja-forms.php');
     case 'contact-form-7':
       return is_plugin_active('contact-form-7/wp-contact-form-7.php');
     case 'woocommerce':

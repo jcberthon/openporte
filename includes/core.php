@@ -11,6 +11,8 @@ class OpenPortePlugin
   public static $admin_script_src = "";
   public static $admin_css_src = "";
   public static $custom_script_src = "";
+  /** @since 1.29.0 */
+  public static $ninja_forms_script_src = "";
   public static $widget_style_src = "";
   public static $version = "0.0.0";
   public static $widget_version = "0.0.0";
@@ -39,6 +41,8 @@ class OpenPortePlugin
   public static $option_integration_woocommerce_register = "openporte_integration_woocommerce_register";
   public static $option_integration_woocommerce_reset_password = "openporte_integration_woocommerce_reset_password";
   public static $option_integration_html_forms = "openporte_integration_html_forms";
+  /** @since 1.29.0 */
+  public static $option_integration_ninja_forms = "openporte_integration_ninja_forms";
   public static $option_integration_wordpress_login = "openporte_integration_wordpress_login";
   public static $option_integration_wordpress_register = "openporte_integration_wordpress_register";
   public static $option_integration_wordpress_reset_password = "openporte_integration_wordpress_reset_password";
@@ -413,6 +417,16 @@ class OpenPortePlugin
   public function get_integration_html_forms()
   {
     return get_option(OpenPortePlugin::$option_integration_html_forms);
+  }
+
+  /**
+   * Returns the Ninja Forms integration option value.
+   *
+   * @since 1.29.0
+   */
+  public function get_integration_ninja_forms()
+  {
+    return get_option(OpenPortePlugin::$option_integration_ninja_forms);
   }
 
   public function get_integration_wordpress_register()
