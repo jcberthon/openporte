@@ -175,8 +175,14 @@ if (is_admin()) {
       array(
         "name" => OpenPortePlugin::$option_secret,
         "tooltip" => __('A secret key used to sign and verify challenges.', 'openporte'),
-        "hint" => __('OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API Mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend.', 'openporte'),
-        "display_toggle" => true
+        // Two concatenated strings so the long-standing first sentence keeps
+        // its existing translations; only the actions sentence is new.
+        "hint" => __('OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API Mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend.', 'openporte')
+          . '<br/>'
+          . __('Copy places the current secret on the clipboard. Regenerate fills in a fresh random secret; it only takes effect when you save changes, and challenges already issued with the old secret then stop verifying.', 'openporte'),
+        "display_toggle" => true,
+        "display_copy" => true,
+        "display_regenerate" => true
       )
     );
 
