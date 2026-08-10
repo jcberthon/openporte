@@ -222,9 +222,14 @@ function openporte_settings_text_callback(array $args)
 
 /**
  * Renderer for password input settings fields. Includes an optional Show/Hide
- * toggle button controlled by the `display_toggle` arg.
- * 
+ * toggle button controlled by the `display_toggle` arg, plus optional Copy and
+ * Regenerate action buttons controlled by `display_copy` / `display_regenerate`
+ * (see public/admin.js for their behaviour). The action buttons are keyed on
+ * class + data-target only — never DOM position — so the planned move from
+ * buttons to in-field icons (#70) is a markup/CSS change with no JS impact.
+ *
  * @since 1.28.0
+ * @since 1.29.0 Added the `display_copy` and `display_regenerate` args.
  */
 function openporte_settings_password_callback(array $args)
 {
@@ -233,6 +238,8 @@ function openporte_settings_password_callback(array $args)
   $placeholder = isset($args['placeholder']) ? $args['placeholder'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $display_toggle = isset($args['display_toggle']) ? $args['display_toggle'] : false;
+  $display_copy = isset($args['display_copy']) ? $args['display_copy'] : false;
+  $display_regenerate = isset($args['display_regenerate']) ? $args['display_regenerate'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
   $tooltip = isset($args['tooltip']) ? $args['tooltip'] : '';
   $class = 'openporte-large-text';
@@ -260,6 +267,21 @@ function openporte_settings_password_callback(array $args)
       data-label-show="<?php echo esc_attr__('Show', 'openporte'); ?>"
       data-label-hide="<?php echo esc_attr__('Hide', 'openporte'); ?>">
       <?php echo esc_html__('Show', 'openporte'); ?>
+    </button>
+  <?php endif; ?>
+  <?php if ($display_copy === true): ?>
+    <button type="button" class="button button-secondary openporte-copy-password"
+      data-target="<?php echo esc_attr($name); ?>"
+      data-label-copy="<?php echo esc_attr__('Copy', 'openporte'); ?>"
+      data-label-copied="<?php echo esc_attr__('Copied!', 'openporte'); ?>"
+      data-label-failed="<?php echo esc_attr__('Copy failed', 'openporte'); ?>">
+      <?php echo esc_html__('Copy', 'openporte'); ?>
+    </button>
+  <?php endif; ?>
+  <?php if ($display_regenerate === true): ?>
+    <button type="button" class="button button-secondary openporte-regenerate-secret"
+      data-target="<?php echo esc_attr($name); ?>">
+      <?php echo esc_html__('Regenerate', 'openporte'); ?>
     </button>
   <?php endif; ?>
   <?php if ($hint) { ?>
