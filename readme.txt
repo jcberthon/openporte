@@ -163,7 +163,9 @@ Alternatively, install the plugin manually:
 Not on its own. The shortcode displays the widget; the verification that
 rejects unsolved submissions is performed by the integration for that form
 plugin. For a supported plugin, enable its toggle under Settings → OpenPorte →
-Integrations as well.
+Integrations as well. Two integrations go further: with Contact Form 7 and
+HTML Forms, a widget you placed in the form yourself (the shortcode or a
+hand-written tag) is verified even while the toggle is off.
 
 In a form plugin OpenPorte has no integration for, the shortcode still shows
 the widget and visitors still have to tick it, but nothing checks the result on
@@ -206,6 +208,10 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 5. Floating UI Captcha
 
 == Changelog ==
+
+= 1.29.0 (unreleased) =
+
+* Behaviour change: Contact Form 7 forms that contain a manually placed widget (the `[openporte]`/`[altcha]` shortcode, or a hand-written `<altcha-widget>` tag) are now verified server-side even when the Contact Form 7 integration toggle is off, matching the long-standing HTML Forms behaviour. Sites that displayed a decorative widget this way will start rejecting submissions that do not solve it — enable the integration toggle, or remove the widget, if that is not what you want.
 
 = 1.28.1 =
 

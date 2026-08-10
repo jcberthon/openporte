@@ -38,19 +38,38 @@ if (openporte_plugin_active('contact-form-7')) {
 
   add_filter(
     'wpcf7_spam',
-    function ($spam) {
+    function ($spam, $submission = null) {
       if ($spam) {
         return $spam;
       }
       $plugin = OpenPortePlugin::$instance;
       $active = $plugin->get_integration_contact_form_7();
-      if ($active) {
-        $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        return $plugin->verify($altcha) === false;
+      if (!$active) {
+        // Even with the integration switched off, a widget placed manually in
+        // the form (the [openporte]/[altcha] shortcode, or a hand-written
+        // <altcha-widget> tag) must still be verified, or the captcha shown
+        // to visitors would be decorative and bots could submit right past
+        // it — the same backstop html-forms.php applies. The check keys off
+        // the server-side form template, never $_POST: a bot simply omits
+        // the field. CF7 passes the submission as the filter's second
+        // argument (verified against CF7 6.1.6); if it is absent, fall back
+        // to the previous behaviour.
+        if (!($submission instanceof WPCF7_Submission)) {
+          return $spam;
+        }
+        $form_template = (string) $submission->get_contact_form()->prop('form');
+        if (
+          strpos($form_template, '[openporte') === false
+          && strpos($form_template, '[altcha') === false
+          && strpos($form_template, '<altcha-widget') === false
+        ) {
+          return $spam;
+        }
       }
-      return $spam;
+      $altcha = isset($_POST['altcha']) ? trim(sanitize_text_field(wp_unslash($_POST['altcha']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+      return $plugin->verify($altcha) === false;
     },
     9,
-    1
+    2
   );
 }

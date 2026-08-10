@@ -91,3 +91,9 @@ parameters:
 		-
 			message: '#^Function wpforms not found\.$#'
 			path: integrations/wpforms.php
+		# Contact Form 7 is likewise optional; the callback only touches the
+		# submission behind an instanceof guard, which is also what trips the
+		# class.notFound report.
+		-
+			message: '#(unknown class|Class) WPCF7_Submission#'
+			path: integrations/contact-form-7.php
