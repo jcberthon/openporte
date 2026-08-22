@@ -211,7 +211,7 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 = 1.29.0 (unreleased) =
 
-* Behaviour change: Contact Form 7 forms that contain a manually placed widget (the `[openporte]`/`[altcha]` shortcode, or a hand-written `<altcha-widget>` tag) are now verified server-side even when the Contact Form 7 integration toggle is off, matching the long-standing HTML Forms behaviour. Sites that displayed a decorative widget this way will start rejecting submissions that do not solve it — enable the integration toggle, or remove the widget, if that is not what you want.
+* Behaviour change: Contact Form 7 forms that contain a manually placed widget (the `[openporte]`/`[altcha]` shortcode, or a hand-written `<altcha-widget>` tag) are now verified server-side even when the Contact Form 7 integration toggle is off, matching the long-standing HTML Forms behaviour. Sites that displayed a decorative widget this way will start rejecting submissions that do not solve it — remove the widget from the form if that is not what you want.
 
 = 1.28.1 =
 
