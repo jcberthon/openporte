@@ -4,14 +4,16 @@
 #
 # Sets up a side-by-side bench so the rebrand/migration can be exercised by hand:
 #   * A suite of 3rd-party form plugins (PLUGINS_SUITE below) — installed;
-#     only Contact Form 7 is activated (its fixture page needs it). The E2E
-#     drivers (tests/e2e) activate the others themselves.
+#     only Contact Form 7 and Ninja Forms are activated (their fixture pages
+#     need them). The E2E drivers (tests/e2e) activate the others themselves.
 #   * ALTCHA Spam Protection v1.26.3 (the upstream plugin OpenPorte forks) and
 #     OpenPorte (this repo, mapped) — both installed; their activation state is
 #     never touched (a fresh bench starts with both deactivated), so a tester
 #     can activate them one at a time and walk the ALTCHA -> OpenPorte upgrade.
-#   * Three pages:
+#   * Four pages:
 #       - "Contact Us": a Contact Form 7 form (its id is discovered, not guessed).
+#       - "Ninja Test": the default "Contact Me" form Ninja Forms seeds on
+#         activation (its id is discovered, not guessed).
 #       - "WPForms Test": a minimal WPForms fixture form (created as a wpforms
 #         CPT post below) rendered via its shortcode.
 #       - "Test Page": both the [altcha] and [openporte] shortcodes.
@@ -140,6 +142,44 @@ if wpcli plugin is-installed contact-form-7; then
       echo "wp-init: WARNING — no Contact Form 7 form found; the 'Contact Us' page will have no form." >&2
       wpcli post create --post_type=page --post_title='Contact Us' --post_status=publish \
         --post_content='No Contact Form 7 form was found when this page was provisioned.'
+    fi
+  fi
+fi
+
+if wpcli plugin is-installed ninja-forms; then
+  if ! grep -qxF "ninja-test" <<<"$existing_slugs"; then
+    # Ninja Forms seeds its default "Contact Me" form (name/email/message,
+    # all required, plus submit) from its activation hook, and its nf3_*
+    # tables only exist once it has been active — so activate it here to
+    # provision. The form's two email actions are harmless on the mailer-less
+    # bench: Ninja Forms surfaces email failures only to administrators,
+    # never to the anonymous visitor the E2E tests submit as.
+    if ! wpcli plugin is-active ninja-forms; then
+      echo "wp-init: activating Ninja Forms…"
+      wpcli plugin activate ninja-forms
+    fi
+    # Discover the form id rather than assuming the seeded form got id 1.
+    # Forms live in custom nf3_* tables, so discovery needs PHP — passed
+    # through a file (wp eval-file) because an inline `wp eval` argument
+    # would be mangled crossing the wp-env -> docker shell boundary (same
+    # trick as the CF7 shortcode above).
+    nf_eval_host="tests/.nf-form-id.php"
+    nf_eval_container="wp-content/plugins/openporte/${nf_eval_host}"
+    cat > "$nf_eval_host" <<'PHP'
+<?php
+$openporte_nf_forms = Ninja_Forms()->form()->get_forms();
+if ( ! empty( $openporte_nf_forms ) ) {
+  echo $openporte_nf_forms[0]->get_id();
+}
+PHP
+    nf_form_id="$(wpcli eval-file "$nf_eval_container" 2>/dev/null | grep -oE '[0-9]+' | head -n1 || true)"
+    rm -f "$nf_eval_host"
+    if [ -n "$nf_form_id" ]; then
+      echo "wp-init: creating the Ninja Forms fixture page (form ${nf_form_id})…"
+      wpcli post create --post_type=page --post_title='Ninja Test' --post_status=publish \
+        --post_content="[ninja_form id=${nf_form_id}]"
+    else
+      echo "wp-init: WARNING — no Ninja Forms form found; skipping its page." >&2
     fi
   fi
 fi
