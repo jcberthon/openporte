@@ -85,4 +85,7 @@ logs/
 .wp-env.conf
 .shellcheckrc
 .wpenvrc
+
+# AI/Agent
 .crush.json
+.agents/memory/
