@@ -14,7 +14,27 @@ commit-conventions.md when committing, not on every turn).
 This repo uses the [Agent Skills Specification](https://agentskills.io/specification).
 Suggest a new skill when a task is recurring, multi-step, domain-specific, or needs
 consistency. Before creating one, verify it's project-specific, reusable, has clear
-inputs/outputs/success criteria, and follows the spec.
+inputs/outputs/success criteria, and follows the spec. Skills live in
+`.agents/skills/`, one directory per skill (see its README).
+
+## Memory
+
+Durable, cross-session facts about how to work with the maintainer live in
+`.agents/memory/`: one self-contained Markdown file per memory, kebab-case
+name. Discover with `glob .agents/memory/*.md`; read them all at session
+start — they are short by design.
+
+Each file: an H1 title, an `Added: YYYY-MM-DD` line, then the rule.
+Write the rule in the imperative — authoritative, concise, unambiguous, no
+room for interpretation. Plain Markdown only: agent- and tool-agnostic.
+
+Scope: how the agent shall interact with the user (preferences, working
+agreements, session decisions that must survive). Project conventions
+(commit style, static analysis, coding rules) belong in `docs/agents/`,
+repository facts in this file — not here.
+
+Add a memory when you learn something about the user that any future session
+will need; do not pad the store with trivia.
 
 ## What this repo is
 
