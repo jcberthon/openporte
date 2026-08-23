@@ -1,3 +1,32 @@
+/**
+ * Front-end glue between the ALTCHA widget and the forms around it.
+ *
+ * The widget is a self-contained web component: it renders a checkbox, solves
+ * a proof-of-work challenge, and writes the solved payload into a hidden
+ * "altcha" input. What it cannot know is how the surrounding page submits the
+ * form it sits in — and every submission path this plugin supports gets that
+ * wrong in its own way. This file reconciles the two:
+ *
+ * - the widget's checkbox is given an explicit (empty) name attribute, which
+ *   sidesteps an input-validation exception;
+ * - a submit that lands while a solve is in flight is held and replayed once
+ *   the solve finishes, instead of being silently dropped;
+ * - a submit *click* is held the same way, in capture phase, for the paths
+ *   where no submit event is ever fired (the browser rejecting the form over
+ *   the not-yet-checked checkbox, wpDiscuz's delegated jQuery handler) or
+ *   where the widget's own replay would lose the button's name and value
+ *   (fatal for WooCommerce login and register);
+ * - widgets that appear after page load — Elementor popups, wpDiscuz, Ninja
+ *   Forms' Backbone-rendered fields — are de-duplicated and picked up by the
+ *   same handling as the rest.
+ *
+ * None of this is enforcement. Verification happens server-side, and a visitor
+ * who defeats every guard here still has the submission rejected. This is what
+ * stands between a plugin that works and one that makes people press Submit
+ * twice.
+ *
+ * @since 1.26.3
+ */
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => {
