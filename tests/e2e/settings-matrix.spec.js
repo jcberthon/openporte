@@ -130,5 +130,37 @@ for (const driver of drivers) {
         }
       });
     }
+
+    if (driver.key === 'ninja-forms') {
+      test('recovers after a rejected submission once corrected', async ({ page }) => {
+        // Ninja Forms bypasses the widget's native required-checkbox
+        // validation entirely — clicking Submit while unverified reaches the
+        // server and is genuinely rejected, not just blocked client-side like
+        // the other drivers' forms. That rejection attaches an error to a
+        // Ninja Forms field (the submit field — see
+        // openporte_ninja_forms_error_field_id() in
+        // integrations/ninja-forms.php), and Ninja Forms itself refuses any
+        // further submission while that field carries an error. Nothing
+        // clears it automatically: the field has no value a visitor can edit
+        // to trigger Ninja Forms' usual revalidate-on-change path. Solving
+        // the widget afterwards did nothing until public/ninja-forms.js
+        // started explicitly clearing this specific error once the widget
+        // reports 'verified' — without that, one rejected attempt silently
+        // wedges the form for the rest of the page's life.
+        applyCombo({ auto: '', floating: 0 });
+        driver.reset?.(ctx);
+        const marker = `e2e ${driver.key} recovers #${++counter} ${Date.now()}`;
+
+        await driver.open(page, ctx);
+        await driver.fill(page, ctx, marker);
+        await driver.submit(page, ctx);
+        await driver.expectRejected(page, ctx);
+
+        await clickWidgetCheckbox(page);
+        await waitForVerified(page);
+        await driver.submit(page, ctx);
+        await driver.expectAccepted(page, ctx, marker);
+      });
+    }
   });
 }
