@@ -17,6 +17,16 @@
 - `Fixes #123` / `Closes #123` auto-closes the issue on merge to default branch
 - `Refs #123` for context without closing
 
+**Agent authorship** (optional, for non-trivial changes):
+
+Do not use `Co-Authored-By: (...)` but `Assisted-By: AgentName-AgentVersion:ModelName`.
+
+Where:
+
+- `AgentName` is the name of the agent tool (e.g. `crush`, `vibe`, `pi`)
+- `AgentVersion` is the agent tool version (e.g. `0.91.0`)
+- `ModelName` is the specific model name used (e.g `qwen3.8-27b`, `lfm2.5-8b-a1b`)
+
 Example:
 
     Fix HMAC comparison to use hash_equals()
