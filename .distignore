@@ -13,6 +13,7 @@
 /tests
 /vendor
 .crush.json
+.crushrc
 .distignore
 .DS_Store
 .gitattributes
