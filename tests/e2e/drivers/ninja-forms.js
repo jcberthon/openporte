@@ -60,7 +60,15 @@ module.exports = {
   },
 
   async expectRejected(page) {
-    await expect(page.locator('.nf-form-cont .nf-error-msg')).toContainText(
+    // Scoped to our own error's class, not the generic .nf-error-msg: Ninja
+    // Forms 3.15 also renders an aggregate "fix the errors before
+    // submitting" banner under that same generic class whenever any field
+    // error is present, and the two together make .nf-error-msg ambiguous.
+    // "openporte_invalid" is the 'slug' this integration attaches its error
+    // with (integrations/ninja-forms.php); Ninja Forms turns a field error's
+    // slug into "nf-error-<slug>" on the rendered message unconditionally, so
+    // this stays exact regardless of which other errors are showing.
+    await expect(page.locator('.nf-form-cont .nf-error-openporte_invalid')).toContainText(
       'Could not verify you are not a robot.'
     );
   },
