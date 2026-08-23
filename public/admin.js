@@ -44,9 +44,16 @@
     // because copying straight from a type=password input is unreliable
     // across browsers.
     [...document.querySelectorAll('.openporte-copy-password')].forEach((btn) => {
+      let timer = null;
       const flash = (label) => {
+        // Clear any pending reset: a new click mid-flash must not let the
+        // older timeout snap the label back to "Copy" early.
+        if (timer !== null) {
+          window.clearTimeout(timer);
+        }
         btn.textContent = label;
-        window.setTimeout(() => {
+        timer = window.setTimeout(() => {
+          timer = null;
           btn.textContent = btn.dataset.labelCopy;
         }, 2000);
       };
@@ -94,7 +101,6 @@
         input.value = [...bytes]
           .map((byte) => byte.toString(16).padStart(2, '0'))
           .join('');
-        input.dispatchEvent(new Event('change', { bubbles: true }));
       });
     });
   });
