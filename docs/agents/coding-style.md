@@ -42,9 +42,26 @@ i18n (see "i18n discipline" in AGENTS.md).
   a touched function's indentation to WPCS's tab convention — match the
   surrounding file's existing style. Everything else in WPCS (naming,
   docblocks, brace placement, etc.) still applies.
-- Scope the refactor to the unit you're changing, not the whole file. If a fix
-  touches one method of a ten-method class, restyle that method, not the
-  other nine.
+- **Scope stops at the unit boundary**, not the whole file. The whole touched
+  function including its header, yes — the other nine methods of the class,
+  no. If a fix touches one method of a ten-method class, restyle that method
+  and its docblock, and leave the other nine alone.
+
+**The unit is the whole function, header comment included** — not the lines
+your diff happens to land on. Change three lines inside a forty-line function
+and the other thirty-seven, *plus* the docblock above it, are in scope: that
+whole function should read as conformant when you are done, with no "the rest
+was already like that" left behind. Same for a method you edit, and for a hook
+callback together with its `add_action`/`add_filter` registration. Before
+calling a modified function done, check across its **entire** body and header:
+
+- the docblock: present, accurate for what the code *now* does, with correct
+  `@param`/`@return`/`@since` (see the two sections below) — a stale header on
+  a function you just edited is a defect, not a leftover;
+- inline comments still describing the current logic — a comment that has
+  quietly become wrong is worse than no comment;
+- naming, brace and control-structure style, spacing, quoting;
+- discouraged functions, escaping/sanitization, and i18n.
 
 ## Inline documentation (docblocks)
 
@@ -56,6 +73,9 @@ i18n (see "i18n discipline" in AGENTS.md).
   makes it stale (new/changed parameter, changed return, changed behavior,
   new deprecation, etc). Bring the docblock current with what the code now
   does.
+- **The header comment travels with the function.** A docblock is reviewed as
+  part of any change to the function it documents, even when no line of it
+  appears in your diff — see "The unit is the whole function" above.
 - **Do not** add or edit docblocks for functions/classes/etc you don't
   otherwise need to touch — same touch-scoped principle as above.
 - Structure: one-line summary, blank line, optional longer description, then

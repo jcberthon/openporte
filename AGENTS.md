@@ -152,11 +152,14 @@ only**: never a drive-by mass reformat of code a task doesn't otherwise
 require touching. When you do touch a function/method/class/hook to
 implement a change or fix, bring that unit into line with WPCS as part of the
 change (behavior-preserving; indentation stays 2-space, matching this repo's
-existing convention). New symbols always get a docblock; symbols you modify
-get one added or updated; symbols you don't touch get left alone. New
-symbols are tagged `@since <in-progress version>`; existing undocumented
-symbols you touch get `@since` backfilled from git history, no further back
-than 1.26.3. Full rules and rationale: @docs/agents/coding-style.md.
+existing convention). **The unit is the whole function including its header
+comment, not just the lines your diff lands on** — a modified function should
+read as conformant end to end, docblock and inline comments included. New
+symbols always get a docblock; symbols you modify get one added or updated;
+symbols you don't touch get left alone. New symbols are tagged `@since
+<in-progress version>`; existing undocumented symbols you touch get `@since`
+backfilled from git history, no further back than 1.26.3. Full rules and
+rationale: @docs/agents/coding-style.md.
 
 ### Comment what you touch
 
