@@ -111,6 +111,11 @@ function applyBaseline() {
   wpSetOption('openporte_complexity', 'low');
   wpSetOption('openporte_expires', '300');
   wpSetOption('openporte_delay', '');
+  // The shipped default. Pinned here because replay-limit.spec.js changes it
+  // and a matrix combo must never inherit a strict limit: a single stray
+  // replaylimit=1 would make every later acceptance test look like a
+  // verification regression.
+  wpSetOption('openporte_replaylimit', '5');
 }
 
 /** Per-combo widget settings. auto: ''|onload|onfocus|onsubmit; floating: 0|1. */
@@ -176,8 +181,68 @@ async function removeWidgets(page) {
   });
 }
 
+// Marks the form a captured token will be replayed into. Survives
+// removeWidgets(), which is the point: the widget goes, the form stays.
+const REPLAY_FORM_TAG = 'openporte-replay-target';
+
+/**
+ * Tag the form owning the page's widget, so injectToken() can find it again
+ * after the widget itself has been detached.
+ */
+async function tagWidgetForm(page) {
+  await page.evaluate((tag) => {
+    const widget = document.querySelector('altcha-widget');
+    const form = widget && widget.closest('form');
+    if (!form) {
+      throw new Error('No widget-bearing form on the page to tag.');
+    }
+    form.dataset.openporteE2e = tag;
+  }, REPLAY_FORM_TAG);
+}
+
+/**
+ * Capture the solved widget's token, the way an attacker sniffing one
+ * submission would. Call only after waitForVerified(): the hidden field is
+ * empty until the solve completes. Tags the owning form as a side effect.
+ */
+async function captureWidgetToken(page) {
+  await tagWidgetForm(page);
+  return page.evaluate(() => {
+    const input = [...document.querySelectorAll('altcha-widget input[type="hidden"]')]
+      .find((el) => el.value);
+    if (!input) {
+      throw new Error('No solved widget token found to capture.');
+    }
+    return { name: input.name, value: input.value };
+  });
+}
+
+/**
+ * Replay a captured token into the tagged form, replacing any token already
+ * there. This is the attack shape the replay counter exists to bound: no
+ * widget, no solve, just the same string posted again.
+ */
+async function injectToken(page, token) {
+  await page.evaluate(({ tag, name, value }) => {
+    const form = document.querySelector(`form[data-openporte-e2e="${tag}"]`);
+    if (!form) {
+      throw new Error('No tagged form to replay the token into — call tagWidgetForm() first.');
+    }
+    form.querySelectorAll(`input[name="${name}"]`).forEach((el) => el.remove());
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  }, { tag: REPLAY_FORM_TAG, ...token });
+}
+
 module.exports = {
   BASE_URL,
+  REPLAY_FORM_TAG,
+  tagWidgetForm,
+  captureWidgetToken,
+  injectToken,
   wp,
   wpSetOption,
   waitForFrontEnd,

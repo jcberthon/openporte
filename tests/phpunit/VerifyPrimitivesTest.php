@@ -1,0 +1,118 @@
+<?php
+/**
+ * The crypto gate and the deprecations: expired, junk, forged and tampered
+ * tokens are refused without writing any state, and the raw primitives warn
+ * third-party callers that bypass verify().
+ *
+ * @package OpenPorte\Tests
+ */
+class VerifyPrimitivesTest extends OpenPorteTestCase
+{
+  public function test_an_expired_token_is_refused()
+  {
+    $this->assertFalse($this->plugin->verify($this->token(time() - 10)));
+  }
+
+  public function test_an_expired_token_writes_no_state()
+  {
+    $this->assertFalse($this->plugin->verify($this->token(time() - 10)));
+
+    $this->assertSame(array(), OpenPorte_Test_Env::replay_rows());
+  }
+
+  public function test_a_junk_token_is_refused_and_writes_no_state()
+  {
+    $this->assertFalse($this->plugin->verify(base64_encode('junk junk junk')));
+
+    $this->assertSame(array(), OpenPorte_Test_Env::replay_rows());
+  }
+
+  public function test_an_empty_payload_is_refused()
+  {
+    $this->assertFalse($this->plugin->verify(''));
+  }
+
+  public function test_a_tampered_signature_is_refused_and_writes_no_state()
+  {
+    $token = $this->token(time() + 600);
+    $payload = $this->decode($token);
+    $payload['signature'] = str_repeat('0', strlen($payload['signature']));
+    $tampered = $this->encode($payload);
+
+    $this->assertFalse($this->plugin->verify($tampered));
+    $this->assertSame(array(), OpenPorte_Test_Env::replay_rows());
+  }
+
+  public function test_a_token_signed_with_the_wrong_algorithm_is_refused()
+  {
+    $this->assertFalse($this->plugin->verify($this->token(time() + 600, 'SHA-512')));
+  }
+
+  public function test_editing_the_salt_expiry_breaks_the_challenge()
+  {
+    // Regression guard for CVE-2025-68113: `expires` lives inside the salt,
+    // the challenge hashes the salt, and the signature covers the challenge —
+    // so a forged future expiry must fail verification, not extend the
+    // token's life.
+    $token = $this->token(time() - 10);
+    $payload = $this->decode($token);
+    $payload['salt'] = preg_replace('/expires=\d+/', 'expires=' . (time() + 3600), $payload['salt']);
+    $forged = $this->encode($payload);
+
+    $this->assertFalse($this->plugin->verify($forged));
+  }
+
+  public function test_appending_a_parameter_to_the_salt_breaks_the_challenge()
+  {
+    // Pins the trailing '&' delimiter: without it a crafted number could
+    // splice an extra parameter (like a new `expires`) onto the salt.
+    $token = $this->token(time() + 600);
+    $payload = $this->decode($token);
+    $payload['salt'] .= 'expires=' . (time() + 9999);
+    $forged = $this->encode($payload);
+
+    $this->assertFalse($this->plugin->verify($forged));
+  }
+
+  public function test_verify_emits_no_deprecation()
+  {
+    $this->assertTrue($this->plugin->verify($this->token(time() + 600)));
+
+    $this->assertSame(array(), OpenPorte_Test_Env::$deprecations);
+  }
+
+  public function test_calling_verify_solution_directly_emits_a_deprecation()
+  {
+    $this->plugin->verify_solution($this->token(time() + 600));
+
+    $this->assertContains('OpenPortePlugin::verify_solution', OpenPorte_Test_Env::$deprecations);
+  }
+
+  public function test_calling_verify_server_signature_directly_emits_a_deprecation()
+  {
+    $this->plugin->verify_server_signature($this->server_token(time() + 600));
+
+    $this->assertContains('OpenPortePlugin::verify_server_signature', OpenPorte_Test_Env::$deprecations);
+  }
+
+  public function test_the_server_signature_path_refuses_an_expired_payload()
+  {
+    $this->assertFalse($this->plugin->verify($this->server_token(time() - 10)));
+  }
+
+  public function test_the_server_signature_path_accepts_a_payload_with_no_expiry()
+  {
+    $this->assertTrue($this->plugin->verify($this->server_token(null)));
+  }
+
+  public function test_salt_expires_reads_the_embedded_expiry()
+  {
+    $this->assertSame(1234567890, OpenPortePlugin::salt_expires('abc?expires=1234567890&'));
+  }
+
+  public function test_salt_expires_returns_zero_without_one()
+  {
+    $this->assertSame(0, OpenPortePlugin::salt_expires('abc&'));
+    $this->assertSame(0, OpenPortePlugin::salt_expires(null));
+  }
+}
