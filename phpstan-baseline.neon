@@ -7,12 +7,6 @@ parameters:
 			path: admin/options.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_attr expects string, int given\.$#'
-			identifier: argument.type
-			count: 2
-			path: admin/options.php
-
-		-
 			message: '#^Parameter \#2 \$src of function wp_register_script expects non\-empty\-string\|false, '''' given\.$#'
 			identifier: argument.type
 			count: 1

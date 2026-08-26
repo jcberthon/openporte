@@ -482,41 +482,109 @@ function openporte_settings_select_callback(array $args)
 }
 
 /**
- * Renderer for the Expiration setting: a preset <select> plus a "Custom"
- * choice revealing a number input (0–14400 seconds). The number input's name,
- * openporte_expires_custom, is a plain form field, NOT a registered option:
- * openporte_sanitize_expires() reads it when the select submits 'custom'.
- * public/admin.js toggles the input's visibility with the select.
- * 
- * @since 1.28.0
+ * Renderer for a preset <select> plus a "Custom" choice revealing a companion
+ * number input — the shape shared by Expiration and Replay limit.
+ *
+ * The companion input is a plain form field, NOT a registered option: the
+ * setting's sanitize callback reads it when the select submits the literal
+ * string 'custom'. public/admin.js toggles its visibility with the select.
+ * A stored value outside the presets therefore renders as "Custom" with the
+ * number pre-filled, so a value set over WP-CLI displays honestly and no
+ * migration is ever needed.
+ *
+ * @since 1.29.0
+ *
+ * @param array $args {
+ *     @type string $name          Option name. Required.
+ *     @type array  $presets       value => label pairs. Required.
+ *     @type string $custom_name   Companion number input's form field. Required.
+ *     @type int    $min           Minimum accepted by the number input. Required.
+ *     @type int    $max           Maximum accepted by the number input. Required.
+ *     @type string $hint          Explanatory text rendered below. Optional.
+ *     @type bool   $disabled      Render both controls disabled. Optional.
+ *     @type string $disabled_note Line explaining why, shown while disabled.
+ *                                 Optional; also toggled by public/admin.js.
+ *     @type bool   $selfhosted_only Mark the controls as inert in Custom API
+ *                                 mode, so admin.js can disable them live.
+ *   }
  */
-function openporte_settings_expires_callback(array $args)
+function openporte_render_preset_select(array $args)
 {
   $name = $args['name'];
+  $presets = $args['presets'];
+  $custom_name = $args['custom_name'];
   $hint = isset($args['hint']) ? $args['hint'] : null;
+  $disabled = isset($args['disabled']) ? $args['disabled'] : false;
+  $disabled_note = isset($args['disabled_note']) ? $args['disabled_note'] : null;
+  $selfhosted_only = isset($args['selfhosted_only']) ? $args['selfhosted_only'] : false;
   $value = absint(get_option($name));
-  $presets = array(
-    300 => __('5 minutes', 'openporte'),
-    1800 => __('30 minutes', 'openporte'),
-    3600 => __('1 hour', 'openporte'),
-  );
-  // Any stored value outside the presets (e.g. a pre-1.28 '14400' or '0')
-  // renders as "Custom" with the number input pre-filled — no migration needed.
   $is_custom = !isset($presets[$value]);
+  // Inverse of the data-custom-api attribute used by the Challenge URL field:
+  // these controls are the ones Custom mode takes away, not the ones it needs.
+  $mode_attr = $selfhosted_only ? ' data-selfhosted-api' : '';
 ?>
-  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>">
+  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>"<?php echo $mode_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded literal attribute name, no dynamic content. ?><?php echo $disabled === true ? ' disabled' : ''; ?>>
   <?php
-    foreach ( $presets as $preset_seconds => $preset_label ) {
-      echo '<option value="' . esc_attr( $preset_seconds ) . '" '
-        . selected($value, $preset_seconds, false )
+    foreach ( $presets as $preset_value => $preset_label ) {
+      echo '<option value="' . esc_attr( $preset_value ) . '" '
+        . selected($value, $preset_value, false )
         . '>' . esc_html($preset_label) . '</option>';
     }
   ?>
     <option value="custom" <?php selected($is_custom); ?>><?php echo esc_html__('Custom', 'openporte'); ?></option>
   </select>
-  <input type="number" name="openporte_expires_custom" id="openporte_expires_custom" min="0" max="14400" step="1" value="<?php echo esc_attr($value); ?>"<?php echo $is_custom ? '' : ' style="display:none"'; ?>>
+  <input type="number" name="<?php echo esc_attr($custom_name); ?>" id="<?php echo esc_attr($custom_name); ?>" min="<?php echo esc_attr($args['min']); ?>" max="<?php echo esc_attr($args['max']); ?>" step="1" value="<?php echo esc_attr((string) $value); ?>"<?php echo $mode_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded literal attribute name, no dynamic content. ?><?php echo $is_custom ? '' : ' style="display:none"'; ?><?php echo $disabled === true ? ' disabled' : ''; ?>>
+  <?php if ($disabled_note) { ?>
+    <div class="openporte-hint" data-selfhosted-note<?php echo $disabled === true ? '' : ' style="display:none"'; ?>>
+      <em><?php echo esc_html($disabled_note); ?></em>
+    </div>
+  <?php } ?>
   <?php if ($hint) { ?>
     <div class="openporte-hint"><?php echo wp_kses($hint, OpenPortePlugin::$hint_allowed_tags); ?></div>
   <?php } ?>
 <?php
+}
+
+/**
+ * Renderer for the Expiration setting: presets plus a Custom number input
+ * accepting 0–14400 seconds, read back by openporte_sanitize_expires().
+ *
+ * @since 1.28.0
+ * @since 1.29.0 Rendered through openporte_render_preset_select(), and
+ *               disabled in Custom API mode where the backend owns the expiry.
+ */
+function openporte_settings_expires_callback(array $args)
+{
+  openporte_render_preset_select(array_merge($args, array(
+    'custom_name' => 'openporte_expires_custom',
+    'min' => 0,
+    'max' => 14400,
+    'selfhosted_only' => true,
+    'presets' => array(
+      300 => __('5 minutes', 'openporte'),
+      1800 => __('30 minutes', 'openporte'),
+      3600 => __('1 hour', 'openporte'),
+    ),
+  )));
+}
+
+/**
+ * Renderer for the Replay limit setting: presets plus a Custom number input
+ * accepting 0–100 uses, read back by openporte_sanitize_replaylimit().
+ *
+ * @since 1.29.0
+ */
+function openporte_settings_replaylimit_callback(array $args)
+{
+  openporte_render_preset_select(array_merge($args, array(
+    'custom_name' => 'openporte_replaylimit_custom',
+    'min' => 0,
+    'max' => 100,
+    'presets' => array(
+      0 => __('Unlimited (pre-1.29 behaviour)', 'openporte'),
+      1 => __('Single use (strict)', 'openporte'),
+      5 => __('5 uses (recommended)', 'openporte'),
+      10 => __('10 uses', 'openporte'),
+    ),
+  )));
 }

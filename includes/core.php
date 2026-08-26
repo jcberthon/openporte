@@ -20,6 +20,8 @@ class OpenPortePlugin
   public static $option_secret = "openporte_secret";
   public static $option_complexity = "openporte_complexity";
   public static $option_expires = "openporte_expires";
+  public static $option_replaylimit = "openporte_replaylimit";
+  public static $option_replay_health = "openporte_replay_health";
   public static $option_algorithm = "openporte_algorithm";
   public static $option_auto = "openporte_auto";
   public static $option_floating = "openporte_floating";
@@ -64,6 +66,85 @@ class OpenPortePlugin
    * @var int
    */
   public static $delay_ms = 500;
+
+  /**
+   * Default value of the Replay limit setting: how many times one solved token
+   * may be accepted before it is refused.
+   *
+   * 5 rather than strict single use because a legitimate visitor re-submits
+   * the same still-valid token whenever a form comes back with an unrelated
+   * error (a missing field, a mistyped password). Until the widget can re-solve
+   * on a replay rejection, a strict default would turn those into dead ends.
+   *
+   * @since 1.29.0
+   * @var int
+   */
+  public static $replaylimit_default = 5;
+
+  /**
+   * Name prefix of the reuse counter's storage.
+   *
+   * The counter lives in transient-shaped option rows
+   * ('_transient_' . $replay_key_prefix . <hash>) so WordPress's own transient
+   * garbage collection reclaims it — no schema, no cron. Pinned here as the
+   * single source of truth: uninstall.php's cleanup sweep has to match it.
+   *
+   * @since 1.29.0
+   * @var string
+   */
+  public static $replay_key_prefix = "openporte_replay_";
+
+  /**
+   * Object-cache group holding the reuse counter when a persistent object
+   * cache is available (an atomic INCR instead of the guarded option-row
+   * update used on plain database installs).
+   *
+   * @since 1.29.0
+   * @var string
+   */
+  public static $replay_cache_group = "openporte_replay";
+
+  /**
+   * Counter lifetime, in seconds, for a token that carries no expiry at all:
+   * a self-hosted "None" (0) expiry, or a custom backend that omits `expires`
+   * from the salt it serves.
+   *
+   * Such a token has no validity window to track, so the bound becomes N uses
+   * per window rather than N uses per token — a slow drip instead of today's
+   * unbounded replay. Every token that does carry an expiry is tracked for
+   * exactly its own remaining validity (see enforce_replay_limit()).
+   *
+   * @since 1.29.0
+   * @var int
+   */
+  public static $replay_ttl_fallback = 14400;
+
+  /**
+   * Per-request verification memo, keyed both on the submitted bytes and on
+   * the verified signature.
+   *
+   * One submission must cost one use of its token even when it is verified
+   * more than once in the same request: the `authenticate` hook is registered
+   * twice (see AGENTS.md), so without the memo a strict limit of 1 would
+   * reject every login.
+   *
+   * Cleared on `init` by reset_request_state(), so persistent-worker SAPIs
+   * (FrankenPHP, RoadRunner, Swoole) cannot leak it into the next request.
+   *
+   * @since 1.29.0
+   * @var array<string,bool>
+   */
+  private $verify_memo = array();
+
+  /**
+   * True only while verify() is dispatching to one of the verification
+   * primitives, so their deprecation notice fires for third-party callers and
+   * never for the internal dispatch.
+   *
+   * @since 1.29.0
+   * @var bool
+   */
+  private $in_verify = false;
 
   public static $html_espace_allowed_tags = array(
     'altcha-widget' => array(
@@ -132,6 +213,39 @@ class OpenPortePlugin
   public function get_expires()
   {
     return get_option(OpenPortePlugin::$option_expires);
+  }
+
+  /**
+   * How many times one solved token may be accepted.
+   *
+   * 0 means unlimited — the pre-1.29 stateless behaviour, kept as an escape
+   * hatch for a site that genuinely needs it.
+   *
+   * The openporte_replay_limit filter is passed the current hook name as its
+   * context, so a site can be stricter on login than on comments without
+   * touching any call site. Its return value is re-clamped: a filter returning
+   * nonsense must not be able to switch protection off by accident.
+   *
+   * @since 1.29.0
+   *
+   * @param string $context Optional hook/context name; defaults to the filter
+   *                        currently running.
+   * @return int Maximum accepted uses per token; 0 for unlimited.
+   */
+  public function get_replaylimit($context = '')
+  {
+    $stored = get_option(OpenPortePlugin::$option_replaylimit, null);
+    $limit = is_numeric($stored)
+      ? max(0, intval($stored))
+      : OpenPortePlugin::$replaylimit_default;
+    if ($context === '') {
+      $context = (string) current_filter();
+    }
+    $filtered = apply_filters('openporte_replay_limit', $limit, $context);
+    if (!is_numeric($filtered) || intval($filtered) < 0) {
+      return $limit;
+    }
+    return intval($filtered);
   }
 
   public static function get_allowed_algorithms()
@@ -433,40 +547,392 @@ class OpenPortePlugin
     return $data;
   }
 
+  /**
+   * Drop the per-request verification memo.
+   *
+   * Hooked on `init`, which always runs before any verification does. Ordinary
+   * PHP-FPM requests get a fresh instance anyway; persistent-worker SAPIs
+   * (FrankenPHP, RoadRunner, Swoole) keep the singleton alive between requests,
+   * where a leaked memo would let one visitor's accepted token short-circuit
+   * the next visitor's submission.
+   *
+   * @since 1.29.0
+   */
+  public function reset_request_state()
+  {
+    $this->verify_memo = array();
+    $this->in_verify = false;
+  }
+
+  /**
+   * Fire the verification-result hooks exactly once per verify() call and hand
+   * the result straight back to the caller.
+   *
+   * @since 1.29.0
+   *
+   * @param bool $result Verification outcome.
+   * @return bool The same outcome, so callers can `return $this->emit_verify_result(...)`.
+   */
+  private function emit_verify_result($result)
+  {
+    do_action('openporte_verify_result', $result);
+    // Deprecated alias kept for back-compat; remove in a future release.
+    do_action_deprecated('altcha_verify_result', array($result), '1.27.0', 'openporte_verify_result');
+
+    return $result;
+  }
+
+  /**
+   * Absolute expiry timestamp carried by a token, whichever shape it has.
+   *
+   * A proof-of-work payload carries it as an `expires` parameter inside the
+   * salt; a server-signature payload as `expire` inside its verification data.
+   * One reader for both means the crypto gate and the reuse counter's lifetime
+   * are derived from the very same number, which is what guarantees the
+   * counter can never die while the token is still acceptable — including in
+   * Custom mode, where the expiry is set by the backend and OpenPorte's own
+   * Expiration setting is inert.
+   *
+   * @since 1.29.0
+   *
+   * @param object|null $data Decoded token payload.
+   * @return int Unix timestamp, or 0 when the token carries no expiry.
+   */
+  private function payload_expires($data)
+  {
+    if (!is_object($data)) {
+      return 0;
+    }
+    if (isset($data->verificationData) && is_string($data->verificationData)) {
+      $verification = array();
+      parse_str($data->verificationData, $verification);
+      if (isset($verification['expire']) && is_scalar($verification['expire'])) {
+        return max(0, intval($verification['expire'], 10));
+      }
+      return 0;
+    }
+    if (!isset($data->salt)) {
+      return 0;
+    }
+
+    return OpenPortePlugin::salt_expires($data->salt);
+  }
+
+  /**
+   * Expiry timestamp embedded in a challenge salt, if any.
+   *
+   * ALTCHA carries it as an `expires` query parameter appended to the salt
+   * (`<random>?expires=<unix>&`), which is what makes it part of the signed
+   * challenge. Self-hosted challenges get it from generate_challenge(); in
+   * Custom mode the backend sets it, and a backend that omits it issues
+   * challenges that never time out — which is why the settings-page health
+   * check reads salts through this same parser.
+   *
+   * @since 1.29.0
+   *
+   * @param mixed $salt Challenge salt as served or submitted; anything that is
+   *                     not a string counts as carrying no expiry.
+   * @return int Unix timestamp, or 0 when the salt carries no expiry.
+   */
+  public static function salt_expires($salt)
+  {
+    if (!is_string($salt) || $salt === '') {
+      return 0;
+    }
+    $salt_url = wp_parse_url($salt);
+    if (empty($salt_url['query'])) {
+      return 0;
+    }
+    parse_str($salt_url['query'], $salt_params);
+    if (empty($salt_params['expires']) || !is_scalar($salt_params['expires'])) {
+      return 0;
+    }
+    return max(0, intval($salt_params['expires'], 10));
+  }
+
+  /**
+   * Consume one use of a cryptographically valid token, or refuse it.
+   *
+   * Keyed on the token's signature: it is HMAC-verified before we get here, so
+   * it is neither forgeable nor sensitive to how the JSON envelope happens to
+   * be encoded — unlike the raw payload, which a replay can re-encode at will.
+   * The counter lives exactly as long as the token does, so an expiring token
+   * is bounded to N uses over its whole life rather than N uses per window.
+   *
+   * @since 1.29.0
+   *
+   * @param object $data Decoded token payload, already verified.
+   * @return bool True when a use was still available, or protection is off.
+   */
+  private function enforce_replay_limit($data)
+  {
+    $limit = $this->get_replaylimit();
+    if ($limit <= 0) {
+      // Unlimited (legacy): pre-1.29 behaviour, and no state is written at all.
+      return true;
+    }
+    if (!isset($data->signature) || !is_string($data->signature) || $data->signature === '') {
+      return true;
+    }
+    // 128 bits of a SHA-256 over the signature: collision-free in practice and
+    // short enough to keep the option name well inside WordPress's limit.
+    $key = OpenPortePlugin::$replay_key_prefix . substr(hash('sha256', $data->signature), 0, 32);
+    $expires = $this->payload_expires($data);
+    // The floor can only make the counter outlive a nearly-expired token,
+    // which is harmless — the crypto gate rejects such a token first. The
+    // invariant that matters runs the other way: the counter must never expire
+    // while the token it tracks is still acceptable.
+    $ttl = $expires > 0
+      ? max($expires - time(), MINUTE_IN_SECONDS)
+      : OpenPortePlugin::$replay_ttl_fallback;
+    $accepted = $this->consume_replay_slot($key, $limit, $ttl);
+    if ($accepted === null) {
+      // Fail open, but observably: a store that cannot count must degrade to
+      // pre-1.29 behaviour rather than lock legitimate visitors out.
+      $this->record_replay_failopen();
+      do_action('openporte_replay_store_unavailable', $key, $limit, $ttl);
+
+      return true;
+    }
+
+    return $accepted;
+  }
+
+  /**
+   * Atomically claim one slot of a token's reuse budget.
+   *
+   * Atomicity is the whole point. A read-then-write counter loses updates
+   * under exactly the parallel burst a replay attack produces, so the bound
+   * would break precisely when it is needed. Two backends provide it: the
+   * object cache's INCR, or a single guarded UPDATE that InnoDB row-locks.
+   *
+   * @since 1.29.0
+   *
+   * @param string $key   Counter key (unprefixed transient / cache name).
+   * @param int    $limit Maximum number of accepted uses; always >= 1 here.
+   * @param int    $ttl   Counter lifetime in seconds.
+   * @return bool|null True when a slot was claimed, false at the cap, null
+   *                   when the store is unavailable — the caller fails open.
+   */
+  private function consume_replay_slot($key, $limit, $ttl)
+  {
+    if (wp_using_ext_object_cache()) {
+      // Seed with the string '0', not the integer: some drop-ins serialize
+      // non-string values, which turns INCR into a permanent, silent failure
+      // — that is, an invisible fail-open.
+      wp_cache_add($key, '0', OpenPortePlugin::$replay_cache_group, $ttl);
+      $count = wp_cache_incr($key, 1, OpenPortePlugin::$replay_cache_group);
+      if (!is_int($count)) {
+        return null;
+      }
+
+      return $count <= $limit;
+    }
+
+    return $this->consume_replay_slot_db($key, $limit, $ttl);
+  }
+
+  /**
+   * Database backend for consume_replay_slot(): a transient-shaped pair of
+   * option rows, claimed with a guarded INSERT and spent with a guarded UPDATE.
+   *
+   * Shaping the rows as a transient means core's own garbage collection
+   * reclaims them, so the counter needs neither a table nor a cron job.
+   *
+   * @since 1.29.0
+   *
+   * @param string $key   Counter key (unprefixed transient name).
+   * @param int    $limit Maximum number of accepted uses.
+   * @param int    $ttl   Counter lifetime in seconds.
+   * @return bool|null See consume_replay_slot().
+   */
+  private function consume_replay_slot_db($key, $limit, $ttl)
+  {
+    global $wpdb;
+    if (!isset($wpdb) || !is_object($wpdb)) {
+      return null;
+    }
+    // Core's lazy expiry sweep: reading the transient drops a pair whose window
+    // has elapsed, so a token that outlives its counter starts from a fresh
+    // budget instead of inheriting a spent one. Only reachable for tokens that
+    // carry no expiry — any other token is refused by the crypto gate first.
+    get_transient($key);
+    // The expiry marker goes in first. An interrupted claim then leaves at
+    // worst an orphan timeout row, which the next use rewrites; a value row
+    // without one would never be garbage-collected, quietly turning the
+    // counter's lifetime into "forever". autoload 'no' keeps both rows out of
+    // the alloptions cache (add_option()'s fourth argument has meant "do not
+    // autoload" as both false and 'no' since WordPress 4.2).
+    add_option('_transient_timeout_' . $key, time() + $ttl, '', false);
+    $value_row = '_transient_' . $key;
+    // Deliberately not add_option(): core implements it as INSERT ... ON
+    // DUPLICATE KEY UPDATE behind a cached existence check, so two concurrent
+    // workers can both believe they created the row. A guarded INSERT leaves
+    // the uniqueness decision to the option_name index, where it really is
+    // atomic.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Deliberately atomic: core's options API cannot express a create-only insert, and caching a counter would defeat it.
+    $created = $wpdb->query($wpdb->prepare(
+      "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, '1', 'no')",
+      $value_row
+    ));
+    if ($created === false) {
+      return null;
+    }
+    if ($created > 0) {
+      return 1 <= $limit;
+    }
+    // The row already exists, so one statement decides the outcome: the row
+    // lock serialises concurrent workers, and "rows changed" is the verdict.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- As above: the guarded UPDATE is the atomic consume itself.
+    $consumed = $wpdb->query($wpdb->prepare(
+      "UPDATE {$wpdb->options} SET option_value = CAST(option_value AS UNSIGNED) + 1"
+      . " WHERE option_name = %s AND CAST(option_value AS UNSIGNED) < %d",
+      $value_row,
+      $limit
+    ));
+    if ($consumed === false) {
+      return null;
+    }
+    if ($consumed > 0) {
+      return true;
+    }
+    // Nothing was updated: either the budget is spent, or nothing was ever
+    // stored because the writes silently failed. Only the first is a rejection
+    // — the second must fail open, so check which one happened.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Only reached at the cap or on a broken store; reads the row just written.
+    $stored = $wpdb->get_var($wpdb->prepare(
+      "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+      $value_row
+    ));
+
+    return $stored === null ? null : false;
+  }
+
+  /**
+   * Record that the reuse counter had to fail open.
+   *
+   * Without this the degradation is visible only to a site that happens to
+   * listen for openporte_replay_store_unavailable; the settings page reads the
+   * record instead (see admin/healthcheck.php). The count restarts once a day
+   * has passed without an incident, so the report describes a store that is
+   * failing now rather than one that hiccuped months ago.
+   *
+   * @since 1.29.0
+   */
+  private function record_replay_failopen()
+  {
+    $health = get_option(OpenPortePlugin::$option_replay_health, array());
+    if (!is_array($health)) {
+      $health = array();
+    }
+    $now = time();
+    $last = isset($health['last']) ? intval($health['last']) : 0;
+    $count = (isset($health['count']) && $last > 0 && ($now - $last) < DAY_IN_SECONDS)
+      ? intval($health['count'])
+      : 0;
+    update_option(
+      OpenPortePlugin::$option_replay_health,
+      array('count' => $count + 1, 'last' => $now),
+      false
+    );
+  }
+
+  /**
+   * Verify a submitted token and consume one of its allowed uses.
+   *
+   * The sole supported entry point. The two verification primitives below stay
+   * pure, stateless cryptography; the policy around them lives here — a
+   * per-request memo, then the bounded-reuse counter. Enforcement deliberately
+   * sits *after* the dispatch, so it covers the self-hosted proof-of-work
+   * path, Custom mode (whose tokens OpenPorte also verifies locally) and the
+   * server-signature path alike, keyed on the verified signature all three
+   * carry.
+   *
+   * State is written only after full cryptographic success, so junk, forged
+   * and expired tokens never create any: the open REST challenge endpoint
+   * stays stateless.
+   *
+   * @since 1.16.0
+   * @since 1.29.0 Enforces the Replay limit setting and memoises the outcome
+   *               for the rest of the request.
+   *
+   * @param string      $payload  The base64-encoded token from the widget.
+   * @param string|null $hmac_key The HMAC key; falls back to the configured secret.
+   * @return bool True if the token is valid and still had a use left.
+   */
   public function verify($payload, $hmac_key = null)
   {
     if ($hmac_key === null) {
       $hmac_key = $this->get_secret();
     }
     if (empty($payload) || empty($hmac_key)) {
-      do_action('openporte_verify_result', false);
-      do_action_deprecated('altcha_verify_result', array(false), '1.27.0', 'openporte_verify_result');
-
-      return false;
+      return $this->emit_verify_result(false);
+    }
+    // Memo on the submitted bytes: the cheapest short-circuit for the common
+    // case of one request verifying the very same string twice. Keyed on the
+    // HMAC key as well, so a caller that verifies one payload against two
+    // different secrets in a request gets two real answers, not a cached one.
+    $payload_key = 'payload:' . hash('sha256', $hmac_key . "\0" . (string) $payload);
+    if (isset($this->verify_memo[$payload_key])) {
+      return $this->emit_verify_result($this->verify_memo[$payload_key]);
     }
     $data = $this->decode_payload($payload);
     if ($data === null) {
       // Malformed token: fail closed (and fire the result hooks) without
       // reaching the property reads in the verify_* methods below.
-      do_action('openporte_verify_result', false);
-      do_action_deprecated('altcha_verify_result', array(false), '1.27.0', 'openporte_verify_result');
+      $this->verify_memo[$payload_key] = false;
 
-      return false;
+      return $this->emit_verify_result(false);
     }
+    $this->in_verify = true;
     if (isset($data->verificationData)) {
       $result = $this->verify_server_signature($payload, $hmac_key);
     } else {
       $result = $this->verify_solution($payload, $hmac_key);
     }
+    $this->in_verify = false;
 
-    do_action('openporte_verify_result', $result);
-    do_action_deprecated('altcha_verify_result', array($result), '1.27.0', 'openporte_verify_result');
+    // Memo on the verified signature as well: re-encoding the JSON envelope of
+    // one solved challenge yields different bytes but the same signature, and
+    // that has to keep counting as a single use.
+    $signature_key = null;
+    if ($result === true && isset($data->signature) && is_string($data->signature)) {
+      $signature_key = 'signature:' . hash('sha256', $data->signature);
+      $result = isset($this->verify_memo[$signature_key])
+        ? $this->verify_memo[$signature_key]
+        : $this->enforce_replay_limit($data);
+    }
+    $this->verify_memo[$payload_key] = $result;
+    if ($signature_key !== null) {
+      $this->verify_memo[$signature_key] = $result;
+    }
 
-    return $result;
+    return $this->emit_verify_result($result);
   }
 
+  /**
+   * Verify a signed server (ALTCHA Sentinel) response payload.
+   *
+   * A dormant back-compat path: the bundled widget never emits
+   * `verificationData`, and the `verifyurl` attribute that would produce it is
+   * stripped from rendered widget markup, so nothing in OpenPorte reaches it.
+   *
+   * @since 1.16.0
+   * @since 1.29.0 Deprecated for direct use — call verify(), which adds the
+   *               replay protection this primitive deliberately does not have.
+   * @deprecated 1.29.0 Use verify() instead; removal is scheduled for 2.0.
+   *
+   * @param string      $payload  The base64-encoded token from the widget.
+   * @param string|null $hmac_key The HMAC key; falls back to the configured secret.
+   * @return bool True if the payload is signed, unexpired and marked verified.
+   */
   public function verify_server_signature($payload, $hmac_key = null)
   {
+    if (!$this->in_verify) {
+      // Fires for third-party callers only: a direct call skips the reuse
+      // counter verify() applies, so the token it accepts is unbounded.
+      _deprecated_function(__METHOD__, '1.29.0', 'verify()');
+    }
     if ($hmac_key === null) {
       $hmac_key = $this->get_secret();
     }
@@ -496,11 +962,11 @@ class OpenPortePlugin
     // that omits them keeps working.
     $verification = array();
     parse_str($data->verificationData, $verification);
-    if (isset($verification['expire'])) {
-      $expire = intval($verification['expire'], 10);
-      if ($expire > 0 && $expire < time()) {
-        return false;
-      }
+    // Read through payload_expires() so the crypto gate and the reuse
+    // counter's lifetime come from the very same number.
+    $expire = $this->payload_expires($data);
+    if ($expire > 0 && $expire < time()) {
+      return false;
     }
     if (isset($verification['verified'])) {
       $verified_flag = strtolower((string) $verification['verified']);
@@ -519,9 +985,17 @@ class OpenPortePlugin
    * @param string|null $hmac_key The HMAC key; falls back to the configured secret.
    * @return bool True if the token is valid, false otherwise.
    * @since 1.16.0
+   * @since 1.29.0 Deprecated for direct use — call verify(), which adds the
+   *               replay protection this primitive deliberately does not have.
+   * @deprecated 1.29.0 Use verify() instead; removal is scheduled for 2.0.
    */
   public function verify_solution($payload, $hmac_key = null)
   {
+    if (!$this->in_verify) {
+      // Fires for third-party callers only: a direct call skips the reuse
+      // counter verify() applies, so the token it accepts is unbounded.
+      _deprecated_function(__METHOD__, '1.29.0', 'verify()');
+    }
     if ($hmac_key === null) {
       $hmac_key = $this->get_secret();
     }
@@ -530,15 +1004,11 @@ class OpenPortePlugin
       || !isset($data->algorithm, $data->salt, $data->number, $data->challenge, $data->signature)) {
       return false;
     }
-    $salt_url = wp_parse_url($data->salt);
-    if (isset($salt_url['query']) && !empty($salt_url['query'])) {
-      parse_str($salt_url['query'], $salt_params);
-      if (!empty($salt_params['expires'])) {
-        $expires = intval($salt_params['expires'], 10);
-        if ($expires > 0 && $expires < time()) {
-          return false;
-        }
-      }
+    // Read through payload_expires() so the crypto gate and the reuse
+    // counter's lifetime come from the very same number.
+    $expires = $this->payload_expires($data);
+    if ($expires > 0 && $expires < time()) {
+      return false;
     }
     // The payload must use the configured algorithm (see get_algorithm(); in
     // Custom mode this must match the backend, hence the settings hint).
@@ -573,8 +1043,15 @@ class OpenPortePlugin
         'expires' => time() + $expires
       ));
     }
-    // Avoid str_ends_with() (PHP 8.0 / WP 5.9 polyfill) to keep compatibility
-    // with the declared "Requires at least: 5.6"; a plain substr check is enough.
+    // Load-bearing, not cosmetic (CVE-2025-68113): the signature covers the
+    // challenge, the challenge covers the salt, and the salt is where `expires`
+    // lives — so the expiry is bound by the signature and cannot be edited
+    // without breaking it. The trailing '&' terminates the query string so a
+    // crafted secret number cannot splice an extra parameter onto it. Never
+    // sign anything the challenge does not cover, and never drop this
+    // delimiter. Avoid str_ends_with() (PHP 8.0 / WP 5.9 polyfill) to keep
+    // compatibility with the declared "Requires at least: 5.6"; a plain substr
+    // check is enough.
     if (substr($salt, -1) !== '&') {
       $salt .= '&';
     }
@@ -708,6 +1185,11 @@ if (!isset(OpenPortePlugin::$instance)) {
   $openporte_plugin_instance = new OpenPortePlugin();
   $openporte_plugin_instance->init();
 }
+
+// Clear the per-request verification memo at the start of every request. Every
+// verify() call site fires after `init`, and this is what keeps the memo from
+// surviving into the next request on persistent-worker SAPIs.
+add_action('init', array(OpenPortePlugin::$instance, 'reset_request_state'));
 
 require plugin_dir_path(__FILE__) . 'admin.php';
 require plugin_dir_path(__FILE__) . 'settings.php';
