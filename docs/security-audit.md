@@ -106,14 +106,30 @@ stateless primitives, which keep doing pure cryptography. It adds two layers:
 
 Three properties make the bound hold rather than merely exist:
 
-1. **Atomic.** A read-then-write counter loses updates under exactly the
-   parallel burst a replay produces, so the bound would break precisely when it
-   is needed. With a persistent object cache the counter is a `wp_cache_incr()`;
-   otherwise it is one guarded `UPDATE … WHERE CAST(option_value AS UNSIGNED) <
-   limit` that InnoDB row-locks. The first claim is a guarded `INSERT IGNORE`,
-   deliberately *not* `add_option()` — core implements that as
-   `INSERT … ON DUPLICATE KEY UPDATE` behind a cached existence check, so two
-   concurrent workers can both believe they created the row.
+1. **Atomic — by design, and as of 1.29.0 verified only by design.** A
+   read-then-write counter loses updates under exactly the parallel burst a
+   replay produces, so the bound would break precisely when it is needed. With
+   a persistent object cache the counter is a `wp_cache_incr()`; otherwise it is
+   one guarded `UPDATE … WHERE CAST(option_value AS UNSIGNED) < limit` that
+   InnoDB row-locks, so the check and the increment cannot be separated by
+   another worker. The first claim is a guarded `INSERT IGNORE` against
+   `wp_options`' `UNIQUE KEY option_name`, deliberately *not* `add_option()` —
+   core implements that as `INSERT … ON DUPLICATE KEY UPDATE` behind a cached
+   existence check, so two concurrent workers can both believe they created the
+   row.
+
+   **State of verification.** This is a reasoned argument, checked link by link
+   in the v1.29.0 acceptance record, not a measured result: neither test suite
+   can produce genuine concurrency (one is single-process against a fake
+   `$wpdb`, the other runs a single worker by design). Its one environmental
+   assumption *was* checked on the bench (WordPress 7.1, MariaDB 11.8.8):
+   `wp_options` is InnoDB and carries `UNIQUE KEY option_name`, which is what
+   makes the first-use `INSERT IGNORE` an atomic create and the guarded
+   `UPDATE` row-locked. What remains unproven is the behaviour of the whole
+   under load — a design argument catches a wrong shape; only parallel workers
+   catch a wrong assumption. The parallel-replay test that would measure it is
+   deferred to issue #102; until it lands, do not read this section as evidence
+   that atomicity has been demonstrated under concurrency.
 2. **Keyed on a verified field.** The signature is HMAC-checked before the
    counter is touched, so it is neither forgeable nor sensitive to how the JSON
    envelope happens to be encoded — unlike the raw payload, which a replay can

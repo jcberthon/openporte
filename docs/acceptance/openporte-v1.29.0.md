@@ -115,15 +115,37 @@ verify by hand. Steps 4–8 are **not** covered by any harness.
 5. [ ] Object-cache path: with a persistent object cache installed, the same replays are
        bounded and **no** `openporte_replay_*` option rows appear; the settings page
        reports the counter as backed by the object cache
-6. [ ] **Concurrency (manual — the one thing no harness can prove).** Neither the unit
-       suite (single process, fake `$wpdb`) nor Playwright (one worker, by design) can
-       demonstrate atomicity; it comes from InnoDB row locking. Set the limit to 3,
-       capture one solved token, and replay it from **at least 10 parallel**
-       requests at once — e.g. `seq 10 | xargs -P10 -I{} curl …` posting the
-       same token to the form endpoint. Exactly **3** must be accepted, no more.
-       Repeat a few times: a lost update shows up as an occasional 4th
-       acceptance, not as a consistent one.
-       (A standalone script for this is tracked in #102.)
+6. [ ] **Concurrency — verified by design for this release, not empirically.**
+       Atomicity is what makes the bound hold under a parallel replay burst, and
+       no suite here can demonstrate it: the unit suite is single-process against
+       a fake `$wpdb`, and Playwright runs one worker by design. Rather than ship
+       an untested claim, 1.29.0 rests it on an argument that can be checked by
+       reading, with the empirical test deferred to #102. Confirm each link:
+       - [x] **The unique index exists**, and the table is InnoDB. Confirmed on
+             the bench 2026-08-26 (WordPress 7.1, MariaDB 11.8.8):
+             `SHOW INDEX FROM wp_options` reports `option_name` with
+             `Non_unique = 0`, and `SHOW TABLE STATUS` reports engine InnoDB.
+             This is what makes the first-use `INSERT IGNORE` an atomic create
+             rather than a race, and the guarded `UPDATE` row-locked — the whole
+             database path rests on it. Re-check on a bench whose WordPress or
+             MariaDB major differs
+       - [ ] **The claim is one statement, not a read-then-write.**
+             `consume_replay_slot_db()` increments with a single
+             `UPDATE … SET option_value = CAST(option_value AS UNSIGNED) + 1
+             WHERE option_name = %s AND CAST(option_value AS UNSIGNED) < %d`,
+             so the check and the increment cannot be separated by another
+             worker; InnoDB row-locks it for the statement's duration
+       - [ ] **`add_option()` is not used for the claim.** Core implements it as
+             `INSERT … ON DUPLICATE KEY UPDATE` behind a cached existence check,
+             which is exactly the lost update this design must avoid
+       - [ ] **The object-cache path uses `INCR`, not get-then-set** —
+             `wp_cache_add()` to seed, `wp_cache_incr()` to claim, with the
+             result compared against the limit
+       > **What this does not establish**, and why #102 exists: that the
+       > reasoning survives contact with a real database under real
+       > concurrency. A design argument catches a wrong *shape*; only parallel
+       > workers catch a wrong *assumption*. Do not record this release as
+       > having demonstrated atomicity.
 7. [ ] Fail-open is observable: stop the object cache (or otherwise break the store),
        replay a token — the submission is **accepted** (documented degradation), the
        settings page reports the fail-open episode, and a listener on
