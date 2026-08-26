@@ -193,6 +193,7 @@ function openporte_activate()
   add_option(OpenPortePlugin::$option_api, 'selfhosted');
   add_option(OpenPortePlugin::$option_api_custom_url, '');
   add_option(OpenPortePlugin::$option_expires, '300');
+  add_option(OpenPortePlugin::$option_replaylimit, OpenPortePlugin::$replaylimit_default);
   // Only a new install gets SHA-512. Any site that arrives here with a
   // configuration is an upgrade and keeps SHA-256: every release before 1.28
   // hardcoded it, and an external ALTCHA-compatible backend still serves it, so
@@ -223,6 +224,11 @@ function openporte_upgrade()
     return;
   }
   openporte_normalize_integration_options();
+  // Replay protection (#101) is on by default from 1.29.0. Seeded here as well
+  // as at activation because a plugin update never runs the activation hook,
+  // and add_option() is a no-op once the row exists, so an admin who has
+  // chosen another value keeps it.
+  add_option(OpenPortePlugin::$option_replaylimit, OpenPortePlugin::$replaylimit_default);
   // The spam filter is gone (issue #6): drop its orphaned option. The raw key
   // is hardcoded on purpose — its static property was removed with the feature
   // (same convention as the legacy altcha_* keys in the migration map).

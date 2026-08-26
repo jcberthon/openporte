@@ -1,8 +1,20 @@
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
+    // Fields marked data-custom-api are the ones only Custom mode uses (the
+    // Challenge URL); data-selfhosted-api marks the inverse — settings the
+    // backend owns in Custom mode, so the control goes dead there (Expiration).
+    // The server renders the same states, this only keeps them right while the
+    // API Mode dropdown is being changed.
     function onApiChange(api) {
+      const custom = api === 'custom';
       [...document.querySelectorAll('[data-custom-api]')].forEach((el) => {
-        el.disabled = api !== 'custom';
+        el.disabled = !custom;
+      });
+      [...document.querySelectorAll('[data-selfhosted-api]')].forEach((el) => {
+        el.disabled = custom;
+      });
+      [...document.querySelectorAll('[data-selfhosted-note]')].forEach((el) => {
+        el.style.display = custom ? '' : 'none';
       });
     }
     const apiEl = document.querySelector('#openporte_api');
@@ -11,18 +23,22 @@
       onApiChange(apiEl.value);
     }
 
-    // Show the free-form seconds input only when Expiration is set to Custom.
-    function onExpiresChange(value) {
-      const customEl = document.querySelector('#openporte_expires_custom');
-      if (customEl) {
-        customEl.style.display = value === 'custom' ? '' : 'none';
+    // Preset dropdowns with a "Custom" choice reveal a companion number input.
+    // Shared by Expiration and Replay limit; both render the same markup.
+    function wireCustomToggle(selectId, inputId) {
+      const selectEl = document.querySelector(selectId);
+      const inputEl = document.querySelector(inputId);
+      if (!selectEl || !inputEl) {
+        return;
       }
+      const sync = (value) => {
+        inputEl.style.display = value === 'custom' ? '' : 'none';
+      };
+      selectEl.addEventListener('change', (ev) => sync(ev.target.value));
+      sync(selectEl.value);
     }
-    const expiresEl = document.querySelector('#openporte_expires');
-    if (expiresEl) {
-      expiresEl.addEventListener('change', (ev) => onExpiresChange(ev.target.value));
-      onExpiresChange(expiresEl.value);
-    }
+    wireCustomToggle('#openporte_expires', '#openporte_expires_custom');
+    wireCustomToggle('#openporte_replaylimit', '#openporte_replaylimit_custom');
 
     // Show/Hide toggle for password-type settings fields. The labels come
     // from data attributes rendered server-side, so they stay translated.

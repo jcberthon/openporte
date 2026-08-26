@@ -34,12 +34,83 @@ function openporte_sanitize_challenge_url( $value ) {
  * "Custom" is selected the <select> submits the literal string 'custom' and
  * the real value comes from the number input. Allowed range: 0–14400 seconds,
  * where 0 means no expiry (None) and 14400 (4 hours) is the historical maximum.
+ *
+ * The range is unchanged in 1.29.0: out-of-range values are flagged, never
+ * rejected or migrated. Hard bounds are a later, breaking-config release.
+ *
+ * @since 1.29.0 Preserves the stored value when the field is absent (it is
+ *               disabled in Custom mode, and a disabled field submits null),
+ *               and warns about the 0 / below-60 values under review.
  */
 function openporte_sanitize_expires( $value ) {
+  if ( null === $value ) {
+    // The field is disabled in Custom mode, where the backend owns the expiry,
+    // so the browser does not submit it. Without this guard absint( null ) = 0
+    // would silently rewrite every Custom-mode save to "never expires" — the
+    // worst possible replay configuration. Same pattern as
+    // openporte_sanitize_challenge_url().
+    return get_option( OpenPortePlugin::$option_expires, '300' );
+  }
   if ( 'custom' === $value && isset( $_POST['openporte_expires_custom'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- wp-admin/options.php verifies the settings nonce before sanitize callbacks run; absint() below is the sanitizer.
     $value = wp_unslash( $_POST['openporte_expires_custom'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
   }
-  return min( absint( $value ), 14400 );
+  $expires = min( absint( $value ), 14400 );
+  openporte_warn_expires( $expires );
+  return $expires;
+}
+
+/**
+ * Advisory for Expiration values under review, for developers and WP-CLI.
+ *
+ * Site owners see the matching admin notices on the settings screen (see
+ * admin/healthcheck.php); this is the same information where a script or a
+ * debug log will pick it up. Nothing is rejected: the reuse counter bounds
+ * replay independently of the expiry, which is what makes it safe to warn
+ * first and enforce in a later release.
+ *
+ * @since 1.29.0
+ *
+ * @param int $expires Sanitized expiry in seconds.
+ */
+function openporte_warn_expires( $expires ) {
+  if ( 0 === $expires ) {
+    _doing_it_wrong(
+      'openporte_expires',
+      esc_html__( 'An Expiration of 0 ("None") means a solved challenge never expires. This value is being evaluated for deprecation; the recommended range is 60-14400 seconds.', 'openporte' ),
+      '1.29.0'
+    );
+  } elseif ( $expires < 60 ) {
+    _doing_it_wrong(
+      'openporte_expires',
+      sprintf(
+        /* translators: %d is the saved Expiration value, in seconds */
+        esc_html__( 'An Expiration of %d seconds can elapse before a slow device finishes solving the challenge. Values below 60 seconds are being evaluated for deprecation; the recommended range is 60-14400 seconds.', 'openporte' ),
+        absint( $expires )
+      ),
+      '1.29.0'
+    );
+  }
+}
+
+/**
+ * Sanitize the Replay limit setting: how many times one solved challenge may
+ * be accepted before it is refused.
+ *
+ * Same preset-plus-Custom shape as Expiration, with openporte_replaylimit_custom
+ * as the companion number input. Allowed range: 0-100, where 0 disables the
+ * protection. intval() rather than absint() on purpose — a mistyped "-5" must
+ * become 0 (which the admin can see is wrong), never 5.
+ *
+ * @since 1.29.0
+ */
+function openporte_sanitize_replaylimit( $value ) {
+  if ( null === $value ) {
+    return (int) get_option( OpenPortePlugin::$option_replaylimit, OpenPortePlugin::$replaylimit_default );
+  }
+  if ( 'custom' === $value && isset( $_POST['openporte_replaylimit_custom'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- wp-admin/options.php verifies the settings nonce before sanitize callbacks run; intval() below is the sanitizer.
+    $value = wp_unslash( $_POST['openporte_replaylimit_custom'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+  }
+  return min( max( 0, intval( $value ) ), 100 );
 }
 
 /**
@@ -83,6 +154,16 @@ if (is_admin()) {
       'openporte_options',
       OpenPortePlugin::$option_expires,
       array( 'sanitize_callback' => 'openporte_sanitize_expires' )
+    );
+
+    register_setting(
+      'openporte_options',
+      OpenPortePlugin::$option_replaylimit,
+      array(
+        'type' => 'integer',
+        'sanitize_callback' => 'openporte_sanitize_replaylimit',
+        'default' => OpenPortePlugin::$replaylimit_default,
+      )
     );
 
     register_setting(
@@ -237,7 +318,31 @@ if (is_admin()) {
       'openporte_general_settings_section',
       array(
         "name" => OpenPortePlugin::$option_expires,
-        "hint" => __('Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no expiry (None) and 14400 is 4 hours.', 'openporte'),
+        // The setting is inert in Custom mode: the backend embeds the expiry in
+        // the salt of every challenge it serves, and that is the value
+        // OpenPorte enforces. Showing an editable control there would promise
+        // something the plugin cannot deliver.
+        'disabled' => $custom_api_mode_active,
+        'disabled_note' => __('Disabled in Custom mode: the backend sets the challenge expiry.', 'openporte'),
+        // Two concatenated strings so the long-standing first sentence keeps
+        // its existing translations; only the guidance is new.
+        "hint" => __('Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no expiry (None) and 14400 is 4 hours.', 'openporte')
+          . '<br/>'
+          . __('Above 300 seconds the window in which a solved challenge can be replayed grows, though Replay limit still bounds how often one is accepted. Below 60 seconds a challenge can expire before a slow device finishes solving it, and 0 (None) means it never expires at all — both are discouraged and are being evaluated for deprecation.', 'openporte'),
+      )
+    );
+
+    add_settings_field(
+      'openporte_settings_replaylimit_field',
+      '<label for="' . OpenPortePlugin::$option_replaylimit . '">' . __('Replay limit', 'openporte') . '</label>',
+      'openporte_settings_replaylimit_callback',
+      'openporte_admin',
+      'openporte_general_settings_section',
+      array(
+        "name" => OpenPortePlugin::$option_replaylimit,
+        "hint" => __('How many times one solved challenge may be accepted. This applies in both API Modes.', 'openporte')
+          . '<br/>'
+          . __('A visitor whose form comes back with an unrelated error (a missing field, a mistyped password) resubmits the same challenge, so a small allowance keeps those submissions working; every extra use is also one more replay available to a bot. Custom accepts 0 to 100, where 0 accepts a solved challenge for as long as it is valid — the behaviour of releases before 1.29.0, and not recommended.', 'openporte'),
       )
     );
 

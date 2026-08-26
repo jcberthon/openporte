@@ -3,8 +3,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Custom-mode endpoint health check.
+ * Settings-screen health checks.
  *
+ * Three checks run while the OpenPorte settings page loads, each reporting as
+ * an admin notice: the custom-endpoint probe, an advisory on the Expiration
+ * values under review, and the state of replay protection.
+ *
+ * Custom-mode endpoint health check
+ * --------------------------------
  * When API mode is "Custom", fetch one challenge from the configured
  * Challenge URL while the OpenPorte settings page loads, and surface the
  * result as an admin notice: unreachable endpoint, non-ALTCHA response,
@@ -25,11 +31,49 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 
 add_action('current_screen', 'openporte_maybe_check_custom_endpoint');
+add_action('current_screen', 'openporte_maybe_check_replay_protection');
+
+/**
+ * Whether the current admin screen is OpenPorte's own settings page
+ * (Settings > OpenPorte Anti-spam), the only place these notices belong.
+ *
+ * @since 1.29.0
+ *
+ * @param WP_Screen|null $screen Screen passed to the current_screen action.
+ * @return bool
+ */
+function openporte_is_settings_screen($screen)
+{
+  return isset($screen->id) && $screen->id === 'settings_page_openporte_admin';
+}
+
+/**
+ * Queue one health-check result as an admin notice.
+ *
+ * @since 1.29.0
+ *
+ * @param string $label  Short prefix naming the check, already translated.
+ * @param array  $result {
+ *     @type string $level   One of error|warning|success|info.
+ *     @type string $message Plain-text notice body.
+ *   }
+ */
+function openporte_queue_admin_notice($label, $result)
+{
+  add_action('admin_notices', function () use ($label, $result) {
+    printf(
+      '<div class="notice notice-%1$s is-dismissible"><p><strong>%2$s</strong> %3$s</p></div>',
+      esc_attr($result['level']),
+      esc_html($label),
+      esc_html($result['message'])
+    );
+  });
+}
 
 function openporte_maybe_check_custom_endpoint($screen)
 {
   // Only on OpenPorte's own settings screen (Settings > OpenPorte Anti-spam).
-  if (!isset($screen->id) || $screen->id !== 'settings_page_openporte_admin') {
+  if (!openporte_is_settings_screen($screen)) {
     return;
   }
   $plugin = OpenPortePlugin::$instance;
@@ -41,14 +85,134 @@ function openporte_maybe_check_custom_endpoint($screen)
     $plugin->get_secret(),
     $plugin->get_algorithm()
   );
-  add_action('admin_notices', function () use ($result) {
-    printf(
-      '<div class="notice notice-%1$s is-dismissible"><p><strong>%2$s</strong> %3$s</p></div>',
-      esc_attr($result['level']),
-      esc_html__('OpenPorte endpoint check:', 'openporte'),
-      esc_html($result['message'])
+  openporte_queue_admin_notice(__('OpenPorte endpoint check:', 'openporte'), $result);
+}
+
+/**
+ * Report the state of replay protection, and of the Expiration value feeding
+ * it, on the settings screen.
+ *
+ * Both are surfaced here rather than as inline field validation because
+ * neither rejects a save: 1.29.0 warns about the Expiration values under
+ * review and leaves them working, and the reuse counter is meant to be visible
+ * even when nothing is wrong — otherwise a site only discovers that it has
+ * degraded to fail-open by listening for an action hook.
+ *
+ * @since 1.29.0
+ *
+ * @param WP_Screen|null $screen Screen passed to the current_screen action.
+ */
+function openporte_maybe_check_replay_protection($screen)
+{
+  if (!openporte_is_settings_screen($screen)) {
+    return;
+  }
+  $plugin = OpenPortePlugin::$instance;
+  // Expiration is inert in Custom mode — the field is disabled there and the
+  // backend's own expiry is reported by the endpoint check instead.
+  if ($plugin->get_api() !== 'custom') {
+    $expires = openporte_evaluate_expires_setting(intval($plugin->get_expires(), 10));
+    if ($expires !== null) {
+      openporte_queue_admin_notice(__('OpenPorte Expiration:', 'openporte'), $expires);
+    }
+  }
+  openporte_queue_admin_notice(
+    __('OpenPorte replay protection:', 'openporte'),
+    openporte_evaluate_replay_protection()
+  );
+}
+
+/**
+ * Evaluate a self-hosted Expiration value. Split from the notice so it stays
+ * testable.
+ *
+ * Advisory only in 1.29.0: neither value is rejected or migrated, because the
+ * reuse counter now bounds replay independently of the expiry. Hard bounds are
+ * a later, breaking-config release, at which point these two notices become
+ * moot and go away.
+ *
+ * @since 1.29.0
+ *
+ * @param int $expires Configured expiry in seconds.
+ * @return array{level:string,message:string}|null Null when nothing to report.
+ */
+function openporte_evaluate_expires_setting($expires)
+{
+  if ($expires === 0) {
+    return array(
+      'level' => 'error',
+      'message' => __('Expiration is set to 0 ("None"), so a solved challenge never expires and only Replay limit bounds how often it can be resubmitted. This is strongly discouraged and is being evaluated for deprecation — set an expiry of 60 seconds or more.', 'openporte'),
     );
-  });
+  }
+  if ($expires < 60) {
+    return array(
+      'level' => 'warning',
+      'message' => sprintf(
+        /* translators: %d is the configured Expiration value, in seconds */
+        __('Expiration is set to %d seconds, which can elapse before a slow device finishes solving the challenge and turn legitimate submissions into failures. Values below 60 seconds are being evaluated for deprecation.', 'openporte'),
+        $expires
+      ),
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Evaluate the state of the reuse counter. Split from the notice so it stays
+ * testable.
+ *
+ * @since 1.29.0
+ *
+ * @return array{level:string,message:string}
+ */
+function openporte_evaluate_replay_protection()
+{
+  $health = get_option(OpenPortePlugin::$option_replay_health, array());
+  $count = (is_array($health) && isset($health['count'])) ? intval($health['count']) : 0;
+  $last = (is_array($health) && isset($health['last'])) ? intval($health['last']) : 0;
+  // Only report a store that is failing now: the counter restarts by itself
+  // once a day has passed without an incident.
+  if ($count > 0 && $last > 0 && (time() - $last) < DAY_IN_SECONDS) {
+    return array(
+      'level' => 'warning',
+      'message' => sprintf(
+        /* translators: %1$d is a number of form submissions, %2$s a duration such as "5 mins" */
+        _n(
+          '%1$d submission in the last %2$s was accepted without being counted, because the reuse counter could not be stored. Protection degrades to accepting valid challenges unconditionally while that lasts — check the persistent object cache or the database.',
+          '%1$d submissions in the last %2$s were accepted without being counted, because the reuse counter could not be stored. Protection degrades to accepting valid challenges unconditionally while that lasts — check the persistent object cache or the database.',
+          $count,
+          'openporte'
+        ),
+        $count,
+        human_time_diff($last)
+      ),
+    );
+  }
+  $limit = OpenPortePlugin::$instance->get_replaylimit();
+  if ($limit <= 0) {
+    return array(
+      'level' => 'warning',
+      'message' => __('Replay limit is 0, so replay protection is off: a solved challenge is accepted for as long as it stays valid, however many times it is submitted. This is the behaviour of releases before 1.29.0.', 'openporte'),
+    );
+  }
+
+  return array(
+    'level' => 'success',
+    'message' => sprintf(
+      /* translators: %1$d is the configured Replay limit, %2$s names where the counter is stored */
+      _n(
+        'Each solved challenge is accepted %1$d time, counted in %2$s.',
+        'Each solved challenge is accepted up to %1$d times, counted in %2$s.',
+        $limit,
+        'openporte'
+      ),
+      $limit,
+      wp_using_ext_object_cache()
+        ? __('the persistent object cache', 'openporte')
+        : __('the database', 'openporte')
+    ),
+  );
 }
 
 /**
@@ -160,12 +324,31 @@ function openporte_evaluate_challenge_response($response, $secret, $configured_a
       ),
     );
   }
-  return array(
-    'level' => 'success',
-    'message' => sprintf(
-      /* translators: %s is the algorithm confirmed with the backend */
-      __('The Challenge URL responds with a valid %s challenge and the shared secret matches.', 'openporte'),
-      $served_algorithm
-    ),
+  // In Custom mode the backend owns the expiry: it embeds it in the salt, and
+  // that is the value OpenPorte enforces. A backend that omits it issues
+  // challenges that never time out, which is the one thing this check can see
+  // before any visitor is affected — the same situation as a self-hosted
+  // Expiration of 0, and reported in the same spirit.
+  $expires = OpenPortePlugin::salt_expires((string) $challenge['salt']);
+  if ($expires <= time()) {
+    return array(
+      'level' => 'warning',
+      'message' => __('The backend issues challenges with no expiry (no future "expires" parameter in the salt), so a solved challenge never expires on its own and only Replay limit bounds how often it is accepted. Enable challenge expiry on the backend.', 'openporte'),
+    );
+  }
+  $message = sprintf(
+    /* translators: %s is the algorithm confirmed with the backend */
+    __('The Challenge URL responds with a valid %s challenge and the shared secret matches.', 'openporte'),
+    $served_algorithm
   );
+  $message .= ' ' . sprintf(
+    /* translators: %s is a duration such as "20 mins" */
+    __('The backend expires its challenges after about %s.', 'openporte'),
+    human_time_diff(time(), $expires)
+  );
+  if ($expires - time() < MINUTE_IN_SECONDS) {
+    return array('level' => 'warning', 'message' => $message . ' ' . __('That is short enough to expire before a slow device finishes solving, which turns legitimate submissions into failures.', 'openporte'));
+  }
+
+  return array('level' => 'success', 'message' => $message);
 }
