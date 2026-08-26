@@ -43,10 +43,12 @@ GPL project has been removed from GitHub by its original author — there is no 
 upstream to reference or merge from. **We are the canonical source.** Style and
 structure decisions are ours alone. License: GPLv2 or later.
 
-Pure PHP WordPress plugin at runtime — no build step is required to run it, and there's
-no automated test suite. Composer (dev-only: `phpcs`/`phpmd`) and npm (`bin/release/*.sh`
-release-prep scripts, see `docs/release-preparation.md`) are dev tooling, not shipped —
-both are excluded via `.distignore`.
+Pure PHP WordPress plugin at runtime — no build step is required to run it. There is no
+CI, but there are two automated suites you can run yourself: a PHPUnit unit suite
+(`tests/phpunit/`, `npm run test:unit`) and a Playwright browser suite (`tests/e2e/`,
+against the wp-env bench). Composer (dev-only: `phpcs`/`phpmd`/`phpstan`/`phpunit`) and
+npm (`bin/release/*.sh` release-prep scripts, see `docs/release-preparation.md`) are dev
+tooling, not shipped — both are excluded via `.distignore`.
 
 Compat floor: PHP/WP minimums in `readme.txt`. Don't use syntax/APIs newer than the floor.
 
@@ -78,10 +80,22 @@ memory or docs — audit the source. Two ways:
 
 ## Verification protocol
 
-There is no CI test suite. A manually-run browser E2E matrix (integrations ×
-auto-mode × Floating UI) lives in `tests/e2e/` (Playwright against the wp-env
-bench — see `tests/e2e/README.md`); run it when touching widget rendering,
-verification, or integration code. Beyond that, before and after changes:
+There is no CI. Two suites are run by hand, cheapest first:
+
+- **PHPUnit** (`tests/phpunit/`, `npm run test:unit`) — seconds, no WordPress and
+no Docker: it runs against a small WordPress stand-in (`tests/phpunit/wp-shim.php`).
+Run it on any change to verification, the replay counter, a sanitizer or a
+health-check evaluator. **Extend it when you change logic-heavy code** and a test
+would genuinely pin the behaviour — coverage where it helps, not as a metric.
+Its limit is exactly its speed: a fake `$wpdb` proves nothing about MySQL, so
+anything depending on real database semantics (the replay counter's atomicity
+under concurrency above all) belongs on the bench instead.
+- **Playwright** (`tests/e2e/`, against the wp-env bench — see
+`tests/e2e/README.md`) — a browser E2E matrix (integrations × auto-mode ×
+Floating UI) plus a replay-limit suite. Run it when touching widget rendering,
+verification, or integration code.
+
+Beyond that, before and after changes:
 
 1. Use [`wp-env`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
 (requires Docker — OrbStack or Docker Desktop on macOS) to spin up a local WordPress

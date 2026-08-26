@@ -26,6 +26,13 @@ Current version tracked by `OPENPORTE_WIDGET_VERSION` in `openporte.php`.
    (`grep -o '\["SHA-256[^]]*\]' public/altcha.min.js` — currently
    `["SHA-256","SHA-384","SHA-512"]`, behind a minifier-renamed identifier)
    and sync `OpenPortePlugin::get_allowed_algorithms()` if it ever changes.
+   Add one case since 1.29.0: **a replayed valid token is rejected at limit+1**
+   (`tests/e2e/replay-limit.spec.js`, or by hand with `openporte_replaylimit=1`).
+   The replay counter keys on the payload's `signature` and reads `expires` from
+   the salt — both protocol fields, so the design is format-agnostic, but the
+   upgrade must confirm the new widget still *emits* them. If a future widget
+   changes the challenge format, the counter still works (the new format has a
+   signature too) — what would break first is `verify_solution()` itself.
 7. **Record provenance** — capture the SHA-256 of the re-vendored
    `public/altcha.min.js` plus the upstream source ref (tag/commit) in
    `docs/agents/altcha-upstream.md`, so the shipped build is independently verifiable

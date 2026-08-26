@@ -2,9 +2,10 @@
 
 Manual, browser-driven test environment for the plugin. This harness
 provisions a reproducible WordPress instance with fixtures so changes can be
-exercised by hand. For the automated settings-matrix suite (integrations ×
-auto-mode × Floating UI, run manually against this bench), see
-[`e2e/README.md`](e2e/README.md).
+exercised by hand. For the browser suites that run against this bench — the
+settings matrix (integrations × auto-mode × Floating UI) and the replay-limit
+suite — see [`e2e/README.md`](e2e/README.md). For the unit suite, which needs
+no bench at all, see [`phpunit/`](phpunit/) and `npm run test:unit`.
 
 ## What it sets up
 

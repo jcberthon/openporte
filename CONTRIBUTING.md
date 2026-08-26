@@ -186,9 +186,11 @@ period. Reference issues in the body footer — `Fixes #123` to auto-close on me
 `Refs #123` for context.
 
 Before opening a PR, run the checks above and the verification protocol in
-[`AGENTS.md`](AGENTS.md): there is **no automated test suite**, so changes are
-validated by hand on the `wp-env` bench (`php -l` on changed PHP, a clean
-`wp-env logs`, and the relevant acceptance steps under
+[`AGENTS.md`](AGENTS.md). There is no CI test suite, but two suites are run by
+hand: `npm run test:unit` (PHPUnit, seconds, no WordPress or Docker needed) and
+the browser E2E suite in [`tests/e2e/`](tests/e2e/) against the `wp-env` bench.
+Neither replaces the bench — changes are still validated there (`php -l` on
+changed PHP, a clean `wp-env logs`, and the relevant acceptance steps under
 [`docs/acceptance/`](docs/acceptance/)).
 
 The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) asks for two things every

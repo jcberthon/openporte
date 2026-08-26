@@ -71,6 +71,12 @@ what they map to.
 
 == Upgrade Notice ==
 
+= 1.29.0 =
+Solved challenges can no longer be replayed without limit. The new "Replay
+limit" setting (default 5) bounds how often one is accepted; no action needed,
+and resubmitting after a form error still works. Developers: call verify(), not
+verify_solution() or verify_server_signature().
+
 = 1.28.1 =
 This update is only about the new GitHub location and descriptions. Please
 view the preceding 1.28.0 upgrade notice if you upgraded from an earlier
@@ -211,6 +217,16 @@ All source code for the plugin, and the ALTCHA widget is available on GitHub. In
 
 = 1.29.0 (unreleased) =
 
+* Security: a solved challenge can no longer be replayed without limit. Until now a valid token was accepted on every submission until it expired — and with Expiration set to "None", forever — so a bot could solve one proof-of-work and reuse it indefinitely. Each solved challenge is now accepted a bounded number of times, counted server-side.
+* New "Replay limit" setting (General), default 5. Presets: Unlimited (pre-1.29 behaviour), Single use (strict), 5 uses (recommended), 10 uses, or a custom value from 0 to 100. It applies in both API Modes.
+* Why 5 and not 1: when a form comes back with an unrelated error — a missing field, a mistyped password — the visitor resubmits the same challenge, and a strict limit would reject them. A small allowance keeps those submissions working. **Known trade-off at Single use (1):** such a resubmission *is* rejected, because only submissions within one request are exempt. Choose it only if your forms rarely bounce back; a future release will let the widget re-solve automatically after a rejection, at which point strict becomes comfortable.
+* Custom API Mode is now covered too. OpenPorte verifies custom-backend challenges locally, so a backend's own replay protection never applied to your forms; the new counter closes that gap without any change to your backend.
+* Replay protection never locks visitors out: if the counter cannot be stored, submissions are accepted as before and the settings page tells you so.
+* The settings page now reports replay protection's status — the limit in force, whether the counter uses your object cache or the database, and any recent failure — alongside the existing endpoint check.
+* Expiration guidance, advisory only in this release. "None" (0) now raises a red notice and values under 60 seconds a warning, but nothing is rejected or changed: the replay counter bounds reuse regardless of expiry, so there is no need to force a migration. **This means issue #99's original ask — making 0 and very short expiries unselectable — is only partly met in 1.29.0**; the hard limits, and the removal of "None", land in a later release that can change stored configuration.
+* In Custom API Mode the Expiration field is now greyed out, because your backend sets the challenge expiry, not OpenPorte. The endpoint health check reports what the backend uses, and warns when it sets no expiry at all.
+* For developers: `verify()` is now the only supported entry point. `verify_solution()` and `verify_server_signature()` still work but are deprecated for direct calls (they skip replay protection) and will be removed in the next major release. New `openporte_replay_limit` filter (receives the current hook as context) and `openporte_replay_store_unavailable` action.
+* Uninstalling now also removes OpenPorte's transients, which the previous cleanup left behind.
 * Behaviour change: Contact Form 7 forms that contain a manually placed widget (the `[openporte]`/`[altcha]` shortcode, or a hand-written `<altcha-widget>` tag) are now verified server-side even when the Contact Form 7 integration toggle is off, matching the long-standing HTML Forms behaviour. Sites that displayed a decorative widget this way will start rejecting submissions that do not solve it — remove the widget from the form if that is not what you want.
 
 = 1.28.1 =
