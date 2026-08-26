@@ -13,7 +13,8 @@
 > audited line by line.
 >
 > Audited version: 1.27.1, with Appendix D (external advisory cross-check) and
-> the Appendix B SSRF row re-checked against 1.28.0.
+> the Appendix B SSRF row re-checked against 1.28.0. Finding #1 was re-worked
+> for 1.29.0, the release that fixes it.
 > A prior review of the pre-fork v1.26.3 lives in
 > `local/Security_Analysis.md`; several of its findings are now obsolete
 > (`get_ip_address()` and the paid-SaaS challenge URL it flagged were removed in
@@ -53,7 +54,7 @@ logic**; the rest are low-severity hardening items.
 
 | # | Title | Type | Location | Risk | Status |
 | - | ----- | ---- | -------- | ---- | ------ |
-| 1 | Solved tokens are not single-use (replay) | Replay | `verify()` / `verify_solution()` | Medium | Accepted (documented) |
+| 1 | Solved tokens are not single-use (replay) | Replay | `verify()` / `verify_solution()` | Medium | **Mitigated (1.29.0)** — bounded reuse, residuals documented |
 | 2 | Server-signature path skips `expire` / `verified` | Replay / weak verification | `verify_server_signature()` | Medium | **Fixed** |
 | 3 | Decoded payload not validated before use | Input validation / robustness | `verify()` + sub-methods | Low | **Fixed** |
 | 4 | Broken `autocomplete` attribute on settings inputs | Info exposure / best practice | `admin/options.php` | Low | **Fixed** |
@@ -74,39 +75,128 @@ logic**; the rest are low-severity hardening items.
 
 ## Findings
 
-### 1. Solved tokens are not single-use (replay) — Medium — Accepted
+### 1. Solved tokens are not single-use (replay) — Medium — Mitigated (1.29.0)
 
 **Type:** Replay attack / anti-automation bypass.
 **Location:** `includes/core.php`, `verify()` → `verify_solution()` (and the
 `verify_server_signature()` path).
 
-`verify_solution()` validates the algorithm, the challenge hash, the HMAC
-signature, and — when the salt carries an `?expires=` parameter — the expiry. It
-keeps **no record of which solutions have already been accepted**. The same
-base64 `altcha` payload therefore verifies successfully on every submission
-until it expires. With the default expiry of 1 hour (and "None" = never), a bot
-can solve one proof-of-work and then replay that single token across unlimited
-submissions, defeating the anti-spam purpose.
+**The weakness (through 1.28.1).** `verify_solution()` validates the algorithm,
+the challenge hash, the HMAC signature, and — when the salt carries an
+`?expires=` parameter — the expiry. It kept **no record of which solutions had
+already been accepted**. The same base64 `altcha` payload therefore verified
+successfully on every submission until it expired. With the default expiry of
+5 minutes (300 s since 1.28.0; 1 hour before that) — and "None" (`0`) meaning
+never — a bot could solve one proof-of-work and then replay that single token
+across unlimited submissions, defeating the anti-spam purpose.
 
 > Note: the 1.26.3 changelog entry "Fixed possible replay attacks via salt
 > splicing" refers to a narrower salt-parsing bug, not to one-time-use.
 
-**Reference fix (not applied):** store a hash of the accepted payload's
-`signature` in a transient keyed to the remaining validity window, and reject a
-payload whose signature is already present — with per-request memoisation so a
-token legitimately verified twice within one request (e.g. the dual
-`authenticate` registration in `wordpress.php` / `woocommerce.php`) still
-passes.
+**The fix (1.29.0).** `verify()` became a stateful policy wrapper around the two
+stateless primitives, which keep doing pure cryptography. It adds two layers:
 
-**Decision — Accepted, not fixed.** A stateful one-time-use store has a
-real false-rejection risk: when a submission fails for an unrelated reason (e.g.
-"username already taken") and the visitor resubmits, the still-valid token would
-be rejected as a replay unless the widget re-solves on re-render (it usually
-does, but not in every configuration). The maintainer chose to accept this as a
-known limitation of stateless proof-of-work rather than risk breaking legitimate
-resubmissions. Mitigating factors: the default 1-hour expiry bounds the replay
-window, and proof-of-work raises the per-token cost. Operators wanting stricter
-behaviour should keep the expiry short (avoid "None").
+- a **per-request memo**, keyed both on the submitted bytes and on the verified
+  signature, so one submission costs one use even when it is verified twice in
+  the same request (the dual `authenticate` registration in `wordpress.php` /
+  `woocommerce.php`) and even when the JSON envelope is re-encoded in between;
+- an **atomic reuse counter**, keyed on the token's HMAC-verified `signature`
+  and bounded by the new **Replay limit** setting (`openporte_replaylimit`,
+  default **5**, `0` = unlimited).
+
+Three properties make the bound hold rather than merely exist:
+
+1. **Atomic.** A read-then-write counter loses updates under exactly the
+   parallel burst a replay produces, so the bound would break precisely when it
+   is needed. With a persistent object cache the counter is a `wp_cache_incr()`;
+   otherwise it is one guarded `UPDATE … WHERE CAST(option_value AS UNSIGNED) <
+   limit` that InnoDB row-locks. The first claim is a guarded `INSERT IGNORE`,
+   deliberately *not* `add_option()` — core implements that as
+   `INSERT … ON DUPLICATE KEY UPDATE` behind a cached existence check, so two
+   concurrent workers can both believe they created the row.
+2. **Keyed on a verified field.** The signature is HMAC-checked before the
+   counter is touched, so it is neither forgeable nor sensitive to how the JSON
+   envelope happens to be encoded — unlike the raw payload, which a replay can
+   re-encode at will.
+3. **Lifetime = the token's own remaining validity** (60 s floor, no ceiling),
+   read through the shared `payload_expires()` helper that also feeds the crypto
+   gate. Because the counter dies with the token and never before it, an
+   expiring token is bounded to N uses over its *whole life*, not N uses per
+   rolling window.
+
+The counter lives in transient-shaped `wp_options` rows, so WordPress's own
+garbage collection reclaims it — no schema, no cron. It is written **only after
+full cryptographic success**, so junk, forged and expired tokens never create
+state and the open REST challenge endpoint stays stateless (finding #5 is
+unaffected).
+
+**Custom-backend ("GateCHA") mode is covered by the same mechanism.** This also
+closes a gap that was never recorded here: OpenPorte verifies custom-backend
+tokens **locally**, with `verify_solution()` and the shared secret — it makes no
+server-to-server verify call — so a custom backend's own replay protection, if
+it has any, never applied to OpenPorte's form endpoints. Enforcement sits
+*after* the dispatch in `verify()`, keyed on the `signature` both payload shapes
+carry, so self-hosted, custom and server-signature tokens are all bounded by
+OpenPorte-owned state, with no dependency on the backend being stateful and no
+protocol change. A custom backend **should** still set `expires` in the salt it
+serves, so that the crypto gate and the counter's lifetime both bound the token;
+the settings-page health check now warns when it does not.
+
+**Why bounded reuse and not strict single-use.** Strict single-use carries a
+real false-rejection risk: when a submission fails for an unrelated reason
+("username already taken", a missing field) and the visitor resubmits, the
+still-valid token would be rejected as a replay unless the widget re-solves on
+re-render — which it usually does, but not in every configuration. A default of
+5 keeps those resubmissions working while cutting amplification from unbounded
+to five. This is a **deliberate deviation from upstream ALTCHA**, whose v2
+"Next" plugin keeps a strict used-challenge registry. The trade-off is revisited
+once the widget can re-solve after a replay rejection (visitor-recovery UX,
+issue #103) — that is the prerequisite for lowering the default toward strict.
+
+**Residual risk — the arithmetic.** The bound is real, not absolute:
+
+- **Amplification equals the configured limit** (default 5). One solved
+  proof-of-work buys five submissions, not one.
+- **Fail-open on a broken store.** If the counter cannot be written the
+  submission is accepted, degrading to pre-1.29 behaviour. Deliberate — a store
+  outage must not lock visitors out — and observable: the plugin fires
+  `openporte_replay_store_unavailable` and reports recent episodes on the
+  settings page.
+- **Per-node / per-site caches don't share counters.** APCu, or a node-local
+  Redis, gives each node its own budget, multiplying the effective limit by the
+  node count. A shared object cache, or the database path, does not.
+- **Direct calls to the primitives bypass it.** `verify_solution()` and
+  `verify_server_signature()` remain public and stateless; both are now
+  deprecated for direct use (`_deprecated_function`, removal scheduled for 2.0),
+  and `verify()` is the sole supported entry point.
+- **Tokens with no expiry get a window, not a lifetime.** A self-hosted expiry
+  of `0` ("None"), or a custom backend that omits `expires` from the salt,
+  leaves nothing to track, so the counter falls back to a 4-hour window that
+  resets: N uses per 4 h — a slow drip rather than the previous unbounded burst.
+  The `0` case closes for good when "None" is removed (issue #103); the
+  custom-backend case is detected at the endpoint health check and escalates to
+  an operator-chosen policy in the same release.
+- **`replaylimit = 0` switches the counter off.** It is the documented escape
+  hatch for a site that genuinely needs the old stateless behaviour, and the
+  settings page warns for as long as it is set.
+
+**Invariant to preserve (CVE-2025-68113).** The counter's lifetime is derived
+from `expires`, so `expires` must stay bound by the signature: the signature
+covers the challenge, the challenge covers the salt, and `expires` lives in the
+salt — editing it breaks the challenge hash. The trailing `&` that
+`generate_challenge()` appends terminates the query string, so a crafted secret
+number cannot splice an extra parameter onto it. Never sign anything the
+challenge does not cover, and never drop that delimiter. Both are pinned by
+regression tests in `tests/phpunit/VerifyPrimitivesTest.php`.
+
+**Not a mitigation: Verification Delay.** The `openporte_delay` setting is
+emitted only as a client-side widget attribute; the widget applies it as a
+browser `setTimeout` *before* it fetches and solves the challenge, and **no PHP
+path sleeps** (there is no `sleep`/`usleep` anywhere in the plugin, and
+`verify()` never reads the setting). A replayed token is a bare HTTP POST — the
+widget JS never runs, so there is nothing to skip — and a bot that solves the
+proof-of-work itself bypasses it just as completely. It is a perception knob,
+not defence in depth: **never count it toward this finding.**
 
 ---
 
@@ -484,7 +574,7 @@ OWASP Top 10 (2021):
 | A01 Broken Access Control | Pass | Admin gated by `manage_options`; the only public surface (challenge REST) is intentional and exposes no secret |
 | A02 Cryptographic Failures | Pass (note) | `random_bytes`/`random_int` CSPRNG, HMAC-SHA256, constant-time `hash_equals`; key length is finding #9 |
 | A03 Injection | Pass | SQL prepared; no command/code injection sinks; output escaped; autoloader note in finding #10 |
-| A04 Insecure Design | Pass (note) | Stateless-PoW replay accepted (finding #1); dead code in finding #11 |
+| A04 Insecure Design | Pass (note) | Stateless-PoW replay is **bounded since 1.29.0** (finding #1) — an atomic reuse counter in `verify()`, with the residuals recorded there; dead code in finding #11 |
 | A05 Security Misconfiguration | Pass (note) | Secure defaults; no debug output; PoW complexity has no seeded default → falls to the 100–10000 range (consider defaulting to medium/high) |
 | A06 Vulnerable & Outdated Components | Monitor | Vendored `public/altcha.min.js` (widget 2.3.0) — track upstream advisories on re-vendor |
 | A07 Identification & Auth Failures | Pass | Delegates to WP/WooCommerce auth; adds an anti-automation layer, does not weaken auth |
@@ -549,6 +639,20 @@ alone:
   verification bypass: there is no rate limit for a parallel request to defeat,
   and issuing extra challenges grants nothing — each still has to be solved and
   its HMAC verified. Per-IP throttling remains rejected on privacy grounds.
+  **Its *lesson* did transfer, though:** a non-atomic transient counter is
+  exactly what v1.29.0's replay counter must not be, and is why that counter is
+  a cache `INCR` or a single row-locked `UPDATE` rather than a
+  read-check-write (finding #1).
+
+**CVE-2025-68113 (ALTCHA salt splicing) — cross-check.**
+
+| Advisory | OpenPorte | Evidence |
+| -------- | --------- | -------- |
+| CVE-2025-68113 — a solved token's `expires` could be edited because the salt's query string was not terminated, letting a crafted secret number splice a later expiry onto it | **Not affected** — and now pinned | `generate_challenge()` appends a trailing `&` to the salt, terminating the query string, and `expires` lives inside the salt that the challenge hashes and the signature covers: editing it breaks the challenge digest. The invariant is documented at the code and pinned by `tests/phpunit/VerifyPrimitivesTest.php` (`test_editing_the_salt_expiry_breaks_the_challenge`, `test_appending_a_parameter_to_the_salt_breaks_the_challenge`) so a future refactor cannot quietly undo it |
+
+This matters more since 1.29.0 than it did before: the replay counter's lifetime
+is derived from `expires`, so a token whose expiry could be forged forward would
+also carry its reuse budget forward.
 
 **Residual on finding 6.** The 256-bit key seeds *new* installs only:
 `add_option()` is a no-op once the row exists, so a site upgraded from ALTCHA
@@ -563,8 +667,27 @@ brute-forceable, so this is hardening rather than exposure.
 
 ## Maintainer decisions on record
 
-- **Finding 1 (replay / one-time-use):** documented as an accepted limitation;
-  no behavioural change, to avoid the resubmission false-rejection risk.
+- **Finding 1 (replay / one-time-use) — reversed in v1.29.0.** Through 1.28.1
+  this was an accepted limitation: no behavioural change, to avoid the
+  resubmission false-rejection risk. v1.29.0 fixes it with *bounded* reuse
+  rather than strict single-use, which is what resolves that objection — a
+  default of 5 leaves room for a visitor to resubmit after an unrelated form
+  error while cutting amplification from unbounded to five. Three further calls
+  on record:
+  - **Atomic from the first release.** An earlier draft shipped a non-atomic
+    transient counter in 1.29.0 and made it atomic in 1.29.1. Rejected: the
+    lost-update window is precisely the parallel burst a replay attack
+    produces, so a non-atomic counter would fail exactly when it mattered.
+  - **Expiry stays advisory in 1.29.0.** `0` ("None") and values under 60 s are
+    warned about, not rejected or migrated. Safe to do because the counter now
+    bounds replay independently of the expiry; hard bounds are a breaking-config
+    change and belong to [#103](https://github.com/jcberthon/openporte/issues/103).
+  - **Local, never delegated.** Replay protection is OpenPorte-local even in
+    custom-backend mode. Delegating it would mean calling the backend's verify
+    API at submit time — something the plugin does not do today — and is a
+    separate release ([#104](https://github.com/jcberthon/openporte/issues/104)).
+    A bare "Off" is deliberately not offered: an operator who disabled local
+    protection believing the backend covered it would have none at all.
 - **Finding 5 (REST rate limiting):** documented as accepted risk; per-IP
   throttling rejected because it conflicts with the no-visitor-IP privacy
   promise. Handle upstream if needed.

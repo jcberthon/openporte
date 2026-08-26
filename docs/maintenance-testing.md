@@ -52,6 +52,43 @@ section in sync with it.
 
 ## Testing
 
+Three layers, in increasing cost and decreasing coverage-per-second. Run the
+cheapest one that can answer the question.
+
+| Layer | Where | Needs | Run it when |
+| ----- | ----- | ----- | ----------- |
+| **Unit** (PHPUnit) | `tests/phpunit/` | PHP + `composer install` — no WordPress, no Docker | Any change to verification, the replay counter, a sanitizer, or a health-check evaluator. Seconds. |
+| **Browser E2E** (Playwright) | `tests/e2e/` | A running wp-env bench | Widget rendering, verification end-to-end, integration code, replay behaviour across real requests. Minutes. |
+| **Manual bench** | wp-env | A running bench | Settings UI, upgrade paths, uninstall, and the checks no harness covers (see the per-release acceptance record in `docs/acceptance/`). |
+
+### Unit tests (PHPUnit)
+
+```bash
+composer install
+npm run test:unit      # or: vendor/bin/phpunit
+```
+
+The suite runs against a small WordPress stand-in (`tests/phpunit/wp-shim.php`)
+rather than a real WordPress install: an in-memory options table, transients,
+object cache, hooks, and a fake `$wpdb` covering the statements the replay
+counter issues. That is what makes it fast and dependency-free — and it is also
+its limit. **A fake that agrees with itself proves nothing about MySQL.**
+Anything that depends on real database or real WordPress semantics — the
+counter's atomicity under concurrent workers above all — belongs on the bench,
+not here.
+
+Standing rule when changing logic-heavy code: extend the suite where a test
+genuinely pins behaviour. Coverage where it helps, not as a metric.
+
+> **Transient garbage collection.** The replay counter's rows are shaped as
+> WordPress transients precisely so core's own GC reclaims them. On a site
+> running `DISABLE_WP_CRON` with no system cron, `delete_expired_transients`
+> never runs and expired counter rows accumulate in `wp_options`. They are
+> harmless (each is tiny, `autoload='no'`, and an expired row is reclaimed
+> lazily on the next read of the same key) but they do not self-clean. Such
+> sites should run a persistent object cache — which sidesteps the option rows
+> entirely — or a real system cron.
+
 ### Verify OpenPorte
 
 The OpenPorte plugin can be tested remotely using the `wp-env.sh` helper script. See [Testing tools](#testing-tools) below for technical details about the script.

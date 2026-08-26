@@ -155,10 +155,21 @@ Per `AGENTS.md` → `docs/agents/static-analysis.md`:
 
 Run all of the above with `npm run release:check`.
 
+- **Also blocking: the unit suite.** `npm run test:unit` (PHPUnit, needs
+  `composer install`; no WordPress or Docker required) must be green with no
+  skipped or risky tests. It is not part of `release:check` because
+  `release:check` is deliberately dependency-light, but a red unit suite stops
+  the release.
+
 ## Phase 5 — Validation (manual acceptance)
 
-There is no automated test suite — validate by hand on the `wp-env` bench (see
-`docs/maintenance-testing.md`).
+Two automated suites carry part of this, and neither is a substitute for the
+bench: the unit suite from Phase 4, and the browser E2E suite
+(`cd tests/e2e && npm test` against a running bench — see
+`tests/e2e/README.md`). Everything they do not cover — settings UI, upgrade
+paths, uninstall, counter concurrency, PHP/WP version combos — is validated by
+hand on the `wp-env` bench (see `docs/maintenance-testing.md`), against the
+release's acceptance record in `docs/acceptance/`.
 
 1. **Regression suite.** Run acceptance tests **(a)**, **(b)** and **(c)** from
    `docs/acceptance/` (self-hosted submit-and-verify; custom-mode Challenge URL
@@ -169,14 +180,19 @@ There is no automated test suite — validate by hand on the `wp-env` bench (see
 3. **Compatibility matrix (e).** Spot-check the supported PHP/WordPress floor and
    ceiling (currently **PHP 8.0 / WP 5.6** up to **PHP 8.5 / WP 7.0** — see
    `docs/maintenance-testing.md`).
-4. **WordPress Plugin Check.** Run the
+4. **Per-release feature checks.** The remaining lettered sections of the
+   acceptance record cover what this release added, plus the previous release's
+   checks kept as regressions. Anything marked "manual — no harness covers this"
+   there is exactly the part neither suite can prove; do not tick it from a
+   green test run.
+5. **WordPress Plugin Check.** Run the
    [Plugin Check](https://wordpress.org/plugins/plugin-check/) plugin against the
    build on a **WordPress 6.3+** bench and resolve or justify (with a documented
    `phpcs:ignore`) every flagged item. Two `readme.txt`-only findings are known
    and covered by Phase 1/Phase 3 above rather than a `phpcs:ignore`: a
    patch-level `Tested up to` value (`invalid_tested_upto_minor`) and an
    `== Upgrade Notice ==` entry over 300 characters (`upgrade_notice_limit`).
-5. **Widget integration.** If `public/altcha.min.js` was re-vendored this
+6. **Widget integration.** If `public/altcha.min.js` was re-vendored this
    release, run the widget integration checks in `docs/maintenance-testing.md`
    → "The `altcha.min.js` widget dependency".
 

@@ -24,14 +24,51 @@ service dependency. A third mode — a paid SaaS classifier hosted on
   WordPress REST endpoint at `wp-json/openporte/v1/challenge`. No API key, no
   external service, no account.
 - **`custom`**: the challenge URL points to a backend the site operator runs
-  themselves. Responses are verified by server signature using the site's own
-  HMAC secret. This is the legitimate self-hostable backend path — it is *not*
-  a paid or remote service.
+  themselves. This is the legitimate self-hostable backend path — it is *not* a
+  paid or remote service.
 
 The mode is selected via the `altcha_api` option. In `get_challengeurl()`,
 `custom` returns the operator-supplied URL stored in `altcha_api_custom_url`;
 any other value — including legacy `"eu"` / `"us"` values left in the database
 by old installs — falls back to the local REST endpoint.
+
+### What Custom mode actually does — and what it does not
+
+Easy to get wrong, so stated plainly (confirmed against source while designing
+the 1.29.0 replay work):
+
+- **Custom mode is verified locally.** The widget fetches a *standard
+  proof-of-work challenge* from the operator's backend and solves it in the
+  browser; OpenPorte then verifies that solution **itself**, with
+  `verify_solution()` and the shared secret. There is **no server-to-server call
+  at verify time** — the plugin makes exactly one outbound request anywhere, the
+  settings-page health check (see `grep wp_remote_*`). A backend's own
+  verify-and-consume endpoint (e.g. GateCHA's `/api/v1/verify`) is never called,
+  so whatever state that backend keeps is irrelevant to what OpenPorte accepts.
+  This is why replay protection has to be OpenPorte-local; see
+  [`docs/security-audit.md`](security-audit.md), finding #1.
+- **The backend owns the expiry in Custom mode.** It embeds `expires` in the
+  salt of each challenge it serves, and that is the value `verify_solution()`
+  enforces. OpenPorte's own **Expiration setting is inert** there — since 1.29.0
+  the field is rendered disabled, and the health check reports the backend's
+  expiry (and warns when the backend sets none) instead.
+- **`verify_server_signature()` is dormant.** It handles the ALTCHA Sentinel
+  `verificationData` payload, which arrives only via a `verifyurl` widget
+  attribute that OpenPorte never renders (`wp_kses` strips it) and the vendored
+  widget never emits. It remains a functional back-compat path, but nothing in
+  OpenPorte's own surfaces reaches it.
+
+**Which settings are active in which mode:**
+
+| Setting | `selfhosted` | `custom` |
+| ------- | ------------ | -------- |
+| Challenge URL | — (built from the REST route) | **active** |
+| Shared secret | active (signs and verifies) | active (must match the backend's) |
+| Algorithm | active (generation + verification) | active — must match what the backend serves |
+| Complexity | active | — (the backend sets the difficulty) |
+| Expiration | active | **inert** — the backend embeds it in the salt |
+| Replay limit | active | **active** — enforcement is local in both modes |
+| Widget settings (auto, floating, delay, logo/footer) | active | active |
 
 ### Challenge tuning (1.28.0)
 
@@ -49,11 +86,38 @@ the option directly:
   `hash_ident()` maps the label to the PHP `hash()` identifier.
 - **Expiration** — `get_expires()`. Presets plus a custom value, clamped to
   0–14400 seconds, where `0` means no expiry and 14400 (4 hours) is the
-  historical maximum.
+  historical maximum. `get_expires()` returns the stored value **unmodified**,
+  including `0`: substituting a finite value at generation time would make a
+  saved `0` cosmetic — the settings page would read "never expires" while the
+  plugin quietly minted expiring challenges. Since 1.29.0, `0` and values under
+  60 s raise an advisory instead (a `_doing_it_wrong` at sanitize time and an
+  admin notice on the settings page); neither is rejected or migrated, which the
+  reuse counter makes safe. Hard bounds are a later, breaking-config release.
 - **Complexity** — `get_complexity()` selects a low/medium/high band from
   `get_complexity_matrix()`, which is filterable via
   **`openporte_complexity_matrix`** so a site can retune the ranges. A `low`
   entry must always exist.
+
+### Replay limit (1.29.0)
+
+A fourth knob, and the one that made the expiry advisory-only rather than
+enforced: **`get_replaylimit()`** reads `openporte_replaylimit` (default **5**,
+range 0–100, `0` = unlimited) and bounds how many times one solved challenge is
+accepted. It is filterable via **`openporte_replay_limit`**, which receives the
+current hook name as context so a site can be stricter on login than on comments
+without touching any call site; the return value is re-clamped, so a filter that
+returns nonsense cannot silently switch protection off. Enforcement lives in
+`verify()` — see "Stateless primitives, stateful wrapper" below.
+
+**Verification Delay is not part of this, and is not a security control.** The
+`openporte_delay` setting is emitted only as a client-side widget attribute; the
+widget applies it as a browser `setTimeout` *before* it fetches and solves the
+challenge, and no PHP path sleeps (`verify()` never reads the setting; there is
+no `sleep`/`usleep` in the plugin). A replayed token is a bare HTTP POST, so
+there is nothing to skip, and a bot solving the proof-of-work itself bypasses it
+just as completely. It is a perception knob — a visible pause reads as work
+being done — and must never be counted as defence in depth. Complexity is the
+setting that actually raises the cost for bots.
 
 When API mode is `custom`, `admin/healthcheck.php` fetches one challenge from
 the configured Challenge URL as the settings page loads and reports the outcome
@@ -64,6 +128,26 @@ challenge declares its own algorithm and `hmac(algorithm, challenge, secret)`
 must equal the served signature. The result is cached in a short transient keyed
 on (url, secret, algorithm), so the check re-runs right after a save but does
 not hammer the backend on every page load.
+
+Since 1.29.0 the same file carries two more settings-page checks, and the
+endpoint probe reads one more thing:
+
+- The endpoint probe also parses the served **salt for a future `expires`** and
+  warns when there is none (challenges that never time out) or when it is under
+  a minute (likely to expire before a slow device finishes solving). This is the
+  only place OpenPorte can see a misconfigured backend *before* visitors are
+  affected.
+- In self-hosted mode, the **Expiration value** raises a red error-style notice
+  at `0` and a warning below 60 s. Advisory only — the save still goes through.
+- **Replay protection status**: the configured limit, whether the counter is
+  backed by the persistent object cache or the database, and any fail-open
+  episode in the last day. Without it, a site whose counter store has broken
+  would discover the degradation only by listening for
+  `openporte_replay_store_unavailable`.
+
+Each check is split into a pure `openporte_evaluate_*()` function returning
+`{level, message}`, with the notice rendering kept separate, so the logic is
+unit-testable without an admin screen.
 
 ## Code map
 
@@ -89,8 +173,10 @@ includes/
   index.php                Silence-is-golden guard.
 admin/
   options.php              Settings-page HTML + the field/select render callbacks.
-  healthcheck.php          Custom-mode Challenge URL probe surfaced as an admin
-                           notice (transient-cached). See "Challenge tuning".
+  healthcheck.php          Settings-screen checks surfaced as admin notices:
+                           the Custom-mode Challenge URL probe (transient-cached),
+                           the Expiration advisory, and replay-protection status.
+                           See "Challenge tuning".
   index.php                Silence-is-golden guard.
 integrations/              15 integration files (each self-registers its hooks):
   wordpress.php            WP login / register / comments / reset-password.
@@ -171,8 +257,61 @@ checks pass.
 The site secret is generated once at activation by `random_secret()` as a
 256-bit key (`bin2hex(random_bytes(32))`), stored in `openporte_secret`, and
 never regenerated for an existing install (so previously issued challenges keep
-verifying). The full security review of this path — including the accepted
-stateless-replay limitation — is in [`docs/security-audit.md`](security-audit.md).
+verifying). The full security review of this path is in
+[`docs/security-audit.md`](security-audit.md).
+
+### Stateless primitives, stateful wrapper (1.29.0)
+
+Since 1.29.0 the split above is load-bearing rather than incidental. The two
+primitives are **pure cryptography and hold no state**; all policy lives in
+`verify()`, which is the **sole supported entry point**. Both primitives are
+deprecated for direct external calls (`_deprecated_function`, removal scheduled
+for 2.0) — a direct call skips the policy and accepts an unbounded token. The
+notice is guarded by a private `$in_verify` flag, so it fires for third-party
+callers and never for the internal dispatch.
+
+`verify()` runs, in order:
+
+1. **Payload memo** — a per-request cache keyed on the submitted bytes and the
+   HMAC key.
+2. **Decode and dispatch** to one primitive.
+3. **Signature memo** — a second per-request cache keyed on the *verified*
+   signature, so the same solved challenge re-encoded into different JSON bytes
+   still counts once.
+4. **`enforce_replay_limit()`** — only on full cryptographic success.
+5. **One `openporte_verify_result` action** per `verify()` call.
+
+The memo exists because one submission must cost one use even when it is
+verified twice in a request: `wordpress.php` and `woocommerce.php` both register
+an `authenticate` callback at priority 20 (see AGENTS.md), so without it a
+Replay limit of 1 would reject every login. It is cleared on `init` by
+`reset_request_state()`, so persistent-worker SAPIs (FrankenPHP, RoadRunner,
+Swoole) cannot leak one visitor's accepted token into the next visitor's
+request.
+
+The reuse counter is keyed on the token's HMAC-verified `signature` (hashed),
+never on the raw payload, which a replay can re-encode at will. Its lifetime is
+the token's own remaining validity — read through the shared `payload_expires()`
+helper that also feeds the crypto gate, so the counter can never expire while
+the token it tracks is still acceptable — with a 60-second floor, no ceiling,
+and a 4-hour fallback for a token carrying no expiry at all. Storage is an
+atomic consume on existing infrastructure: `wp_cache_incr()` where a persistent
+object cache is present, otherwise a transient-shaped `wp_options` row pair
+claimed with a guarded `INSERT IGNORE` and spent with a guarded `UPDATE` that
+InnoDB row-locks. No schema, no cron — WordPress's own transient garbage
+collection reclaims the rows. State is written **only after** cryptographic
+success, so junk and forged tokens never create any and the open REST challenge
+endpoint stays stateless. A store that cannot count **fails open** (the
+submission is accepted) but fires `openporte_replay_store_unavailable` and is
+reported on the settings page.
+
+**Invariant — CVE-2025-68113.** The counter's lifetime derives from `expires`,
+so `expires` must remain bound by the signature. It is: the signature covers the
+challenge, the challenge covers the salt, and `expires` lives in the salt, so
+editing it breaks the challenge digest. The trailing `&` that
+`generate_challenge()` appends terminates the query string so a crafted secret
+number cannot splice an extra parameter onto it. Never sign anything the
+challenge does not cover, and never drop that delimiter.
 
 ## What was removed, and why
 
@@ -240,6 +379,16 @@ own attribution — ignoring `hidefooter` / `hidelogo` — only when it detects
 `apiKey=ckey_`. Because this plugin never produces such a URL, `hidefooter` and
 `hidelogo` always take effect in this plugin's context.
 
+**Durability across a widget upgrade.** The replay design keys on *protocol*
+fields — the verified `signature`, and `expires` inside the salt — not on any
+widget behaviour, so it does not add a new coupling to the bundled version:
+"survives the upgrade" reduces to "`verify()` survives the upgrade". Whether the
+**v3 widget** still solves the classic challenge format OpenPorte generates is a
+separate, open question (v3.0.0 is a rewrite around a new proof-of-work
+mechanism, and `altcha-lib` v2 introduces a new challenge format); it is tracked
+with the widget upgrade itself, not here. Either way the counter still has a
+valid key, because both formats produce a challenge and an HMAC signature.
+
 ## Invariants for future maintainers (and AI agents)
 
 These guard against mistakes that have actually been made while working on this
@@ -251,6 +400,26 @@ code:
 - **The verification dispatch keys on payload shape, not on the API mode.** Any
   change to mode handling must not alter how a valid or invalid challenge is
   verified — breaking this breaks every protected form.
+- **`verify()` is the only place policy lives.** The two primitives must stay
+  stateless and pure; the memo and the reuse counter belong in `verify()`. Move
+  enforcement into a primitive and the other path silently loses it.
+- **The reuse counter must stay atomic.** A read-check-write counter loses
+  updates under exactly the parallel burst a replay produces. Use the cache
+  `INCR` or the single row-locked `UPDATE`; in particular `add_option()` is
+  **not** a create-only mutex (core implements it as
+  `INSERT … ON DUPLICATE KEY UPDATE` behind a cached existence check).
+- **State is written only after cryptographic success.** Counting before
+  verification would let unauthenticated junk create rows, turning the open
+  challenge endpoint into a write amplifier.
+- **The counter must never outlive-by-less than its token** — i.e. its TTL is
+  the token's own remaining validity, read from the same `payload_expires()` the
+  crypto gate uses. If the marker dies first, the budget silently resets.
+- **`expires` must stay covered by the signature** (CVE-2025-68113): keep the
+  trailing `&` in `generate_challenge()`, and never sign anything the challenge
+  does not hash.
+- **The counter fails open, deliberately.** A broken store must degrade to
+  pre-1.29 behaviour, not lock visitors out — but it must stay observable
+  (`openporte_replay_store_unavailable` plus the settings-page report).
 - **Do not reintroduce any external-service dependency** (API keys, regional
   endpoints) **or visitor-IP collection.** "No external service" is a core
   promise of the fork.
