@@ -75,7 +75,9 @@ counter issues. That is what makes it fast and dependency-free — and it is als
 its limit. **A fake that agrees with itself proves nothing about MySQL.**
 Anything that depends on real database or real WordPress semantics — the
 counter's atomicity under concurrent workers above all — belongs on the bench,
-not here.
+not here. As of 1.29.0 that atomicity is verified by *design* rather than by
+experiment (see the acceptance record); the parallel-replay test that would
+measure it is tracked in #102.
 
 Standing rule when changing logic-heavy code: extend the suite where a test
 genuinely pins behaviour. Coverage where it helps, not as a metric.

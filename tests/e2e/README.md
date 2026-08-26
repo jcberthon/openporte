@@ -73,12 +73,13 @@ covered far more cheaply by the PHPUnit unit suite (`tests/phpunit`, run with
 `npm run test:unit` from the repo root). What only a browser can prove, and
 what this file is for, is that one visitor's click costs exactly one use.
 
-> **Not covered here: concurrency.** The counter is atomic because InnoDB
-> row-locks the guarded UPDATE. Proving that needs parallel workers against a
-> real database, which neither this suite (one worker, by design) nor the unit
-> suite (single process, fake `$wpdb`) can do. It is a documented manual step in
-> the v1.29.0 acceptance record, and a standalone stress script is tracked in
-> #102.
+> **Not covered here: concurrency.** The counter is meant to be atomic because
+> InnoDB row-locks the guarded UPDATE. Demonstrating that needs parallel workers
+> against a real database, which neither this suite (one worker, by design) nor
+> the unit suite (single process, fake `$wpdb`) can do. For v1.29.0 the property
+> is **verified by design** — the acceptance record walks the argument link by
+> link — and the empirical test is deferred to #102. Until that lands, treat
+> atomicity as reasoned, not measured.
 
 ## Prerequisites
 

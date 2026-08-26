@@ -51,6 +51,45 @@ To target other versions: `./wp-env.sh -p 8.0 -w 6.5 start`.
 > `afterStart` hook. See [Older WordPress versions](../docs/maintenance-testing.md#older-wordpress-versions)
 > in the maintenance & testing guide before running a minimum-version bench.
 
+### Command reference
+
+`wp-env.sh` is a thin wrapper: `-p`/`-w`/`-v` are its own flags (see the
+script's header comment), everything else is forwarded verbatim to the
+native `wp-env` CLI running on the remote host — so `wp-env <cmd> --help`
+(over SSH, from `REMOTE_PATH`, after `source ./.wpenvrc`) is always the
+ground truth for what a subcommand accepts. **Sync (`rsync --delete` of the
+working tree to the remote) only happens on `start` and `plugin-check`** —
+every other subcommand (`logs`, `stop`, `run`, `status`, …) skips it, so
+`run cli -- wp ...` never races an in-progress edit.
+
+| Goal | Command |
+|---|---|
+| Clean baseline / switching between floor and ceiling versions | `./wp-env.sh cleanup` |
+| Deploy or update the environment to specific versions | `./wp-env.sh -p "8.5" -w "7.1" -v start --update` |
+| Check the plugin against Plugin Check | `./wp-env.sh plugin-check openporte` |
+| Tail logs, filtered to the interesting ones | `./wp-env.sh logs --watch false \| egrep -iwv "200\|302\|304\|403"` |
+| One-shot environment/version snapshot | `./wp-env.sh status && ./wp-env.sh run cli wp --info && ./wp-env.sh run cli wp core version` |
+| One wp-cli command | `./wp-env.sh run cli -- wp <command>` (`--` only needed when the wrapped command has flags that could be mistaken for wp-env's own — plain `wp <subcommand> args...` usually doesn't need it, matching wp-env's own `wp-env run cli wp user list` example) |
+| Bench URL from a remote Docker host | `ssh -f -N -L 8888:localhost:8888 ${REMOTE_USER}@${REMOTE_HOST}` (per `.wp-env.conf`), then `http://localhost:8888/` |
+
+**`cleanup` + `start --update`, not just `start`:** `cleanup` removes
+containers, volumes, networks, and local files but **keeps Docker images**,
+so the following `start` still comes up quickly. `--update` on `start` means
+"download source updates and apply WordPress configuration" per `wp-env
+start --help` — the flag that makes a version change actually take, rather
+than trusting a bare `start` to notice `-p`/`-w` differ from what is already
+running. `cleanup` then `-p ... -w ... start --update` is the combination
+that reliably lands on the versions asked for.
+
+**Gotchas worth remembering:**
+- `wp-env cleanup` prompts for confirmation unless you pass `--force` —
+  needed for any non-interactive invocation.
+- `wp-env logs`'s flag is `--watch` (boolean, default `true`); `--watch false`
+  and `--no-watch` both turn it off.
+- An SSH agent holding the keys named in `.wp-env.conf`
+  (`REMOTE_RPC_KEY`/`REMOTE_RSYNC_KEY`) must be reachable via `SSH_AUTH_SOCK`
+  for every `wp-env.sh` call — there is no interactive fallback.
+
 ## The ALTCHA → OpenPorte migration test
 
 > **Activate ALTCHA (v1, v2, or v3) and OpenPorte one at a time, never together** — both
