@@ -1,10 +1,15 @@
-# OpenPorte settings-matrix E2E suite
+# OpenPorte E2E suite
 
-Browser-driven tests that loop **integrations × auto-verification mode ×
-Floating UI** against a running wp-env bench, so combinations that are too
-numerous to click through by hand get exercised automatically. Born from the
-wpDiscuz `auto="onsubmit"` race (submission AJAX winning against the
-proof-of-work solve).
+Browser-driven tests against a running wp-env bench. Two spec files, two axes:
+
+- **`settings-matrix.spec.js`** — **integrations × auto-verification mode ×
+  Floating UI**, so combinations too numerous to click through by hand get
+  exercised automatically. Born from the wpDiscuz `auto="onsubmit"` race
+  (submission AJAX winning against the proof-of-work solve).
+- **`replay-limit.spec.js`** — what happens when the *same* solved token is
+  submitted again (issue #101).
+
+## The settings matrix (`settings-matrix.spec.js`)
 
 Per integration driver it runs:
 
@@ -35,6 +40,46 @@ Real browser, real PoW solving (no mocks): the widget genuinely computes the
 challenge, so this also catches timing regressions like the complexity-range
 change that exposed the wpDiscuz race.
 
+## The replay-limit suite (`replay-limit.spec.js`)
+
+A second spec file, on its own axis: not "does one solved token work" but
+"what happens when the *same* token comes back" (issue #101). Five tests, each
+restoring `openporte_replaylimit` afterwards:
+
+- **spends the whole budget, then refuses the next replay** — limit 3 on core
+  comments: the solved token is accepted three times across three separate
+  requests, and refused on the fourth.
+- **refuses the first replay when the limit is strict** — limit 1.
+- **accepts unlimited replays when the limit is 0** — the documented escape
+  hatch (pre-1.29 behaviour). Guards against the counter becoming
+  unconditional.
+- **accepts an AJAX resubmission of the same token** — Contact Form 7, limit 5.
+  The page never navigates, so this is the real shape of a visitor correcting a
+  field and resubmitting: same token, three times, all accepted.
+- **still logs a user in when the limit is strict** — the highest-harm
+  regression this feature could cause. WordPress and WooCommerce both register
+  an `authenticate` callback at priority 20, kept mutually exclusive only by a
+  WooCommerce nonce check (see AGENTS.md); if that guard slipped, or anything
+  else verified twice in one request, a limit of 1 would lock every user out.
+  WooCommerce is activated deliberately so both callbacks are registered, the
+  login must succeed, and the token it consumed must then fail to replay.
+
+Replays are posted the way a bot would: fresh page, widget detached, the
+captured token re-injected as a bare hidden field (`captureWidgetToken()` /
+`injectToken()` in `helpers.js`).
+
+The **arithmetic** of the counter — limits, TTLs, memoisation, fail-open — is
+covered far more cheaply by the PHPUnit unit suite (`tests/phpunit`, run with
+`npm run test:unit` from the repo root). What only a browser can prove, and
+what this file is for, is that one visitor's click costs exactly one use.
+
+> **Not covered here: concurrency.** The counter is atomic because InnoDB
+> row-locks the guarded UPDATE. Proving that needs parallel workers against a
+> real database, which neither this suite (one worker, by design) nor the unit
+> suite (single process, fake `$wpdb`) can do. It is a documented manual step in
+> the v1.29.0 acceptance record, and a standalone stress script is tracked in
+> #102.
+
 ## Prerequisites
 
 1. A running bench: `./wp-env.sh start` (from the repo root; provisions
@@ -48,10 +93,14 @@ change that exposed the wpDiscuz race.
    (default `http://localhost:8888`). For the remote Docker host, either use
    `WP_BASE_URL=http://<remote-host>:8888` or an SSH tunnel
    (`ssh -f -N -L 8888:localhost:8888 user@remote`).
-3. wp-cli bridge: settings are flipped between tests via
+3. Fixtures from `tests/bin/wp-init.sh` — the core-comments post and Contact
+   Form 7's "Contact Us" page. The replay-limit suite uses both, and creates
+   its own `e2e-replay-user` (an editor, so a successful login lands somewhere
+   assertable).
+4. wp-cli bridge: settings are flipped between tests via
    `./wp-env.sh run cli -- wp option …` (default). Override with
    `WP_CLI_CMD="wp-env run cli -- wp"` for a local wp-env.
-4. Node ≥ 18. Then:
+5. Node ≥ 18. Then:
 
 ```sh
 cd tests/e2e
@@ -63,11 +112,12 @@ npx playwright install chromium
 
 ```sh
 cd tests/e2e
-npm test                                   # full matrix, all drivers
-MATRIX_DRIVERS=wpdiscuz npm test           # one integration
-npx playwright test --grep "onsubmit"      # one mode across drivers
-npm run test:headed                        # watch it
-npm run report                             # open the HTML report
+npm test                                       # everything, all drivers
+MATRIX_DRIVERS=wpdiscuz npm test               # one integration
+npx playwright test --grep "onsubmit"          # one mode across drivers
+npx playwright test replay-limit.spec.js       # just the replay-limit suite
+npm run test:headed                            # watch it
+npm run report                                 # open the HTML report
 ```
 
 Tests run **serially with one worker** — the settings under test are global

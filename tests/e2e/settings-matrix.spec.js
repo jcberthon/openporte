@@ -8,6 +8,8 @@ const {
   clickWidgetCheckbox,
   tamperWidgetToken,
   removeWidgets,
+  captureWidgetToken,
+  injectToken,
 } = require('./helpers');
 
 // '' = the "Disabled" auto-verification mode (user ticks the checkbox).
@@ -116,23 +118,11 @@ for (const driver of drivers) {
           // auto-refetches expired challenges (refetchonexpire defaults on)
           // and would swap in a fresh token before we submit. Detaching turns
           // this into the real attack shape — replaying a stale token.
-          const stale = await page.evaluate(() => {
-            const input = [...document.querySelectorAll('altcha-widget input[type="hidden"]')]
-              .find((el) => el.value);
-            input.form.dataset.openporteE2e = 'stale';
-            return { name: input.name, value: input.value };
-          });
+          const stale = await captureWidgetToken(page);
           await removeWidgets(page);
           // Outlive the 2 s validity window, then replay the stale token.
           await page.waitForTimeout(4000);
-          await page.evaluate(({ name, value }) => {
-            const form = document.querySelector('form[data-openporte-e2e="stale"]');
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            input.value = value;
-            form.appendChild(input);
-          }, stale);
+          await injectToken(page, stale);
           await driver.submit(page, ctx);
           await driver.expectRejected(page, ctx);
         } finally {

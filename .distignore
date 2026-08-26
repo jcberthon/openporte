@@ -32,6 +32,7 @@ phpcs.xml.dist
 phpmd.xml.dist
 phpstan-baseline.neon
 phpstan.neon.dist
+phpunit.xml.dist
 public/altcha.min.js.sha256
 README.md
 SECURITY.md
