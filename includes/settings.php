@@ -121,6 +121,24 @@ function openporte_sanitize_algorithm( $value ) {
   return in_array( $value, OpenPortePlugin::get_allowed_algorithms(), true ) ? $value : 'SHA-256';
 }
 
+/**
+ * Sanitize the Complexity setting.
+ *
+ * The field is disabled in Custom API mode (the backend owns the complexity),
+ * so a Custom-mode save submits null. Without a guard, sanitize_text_field(
+ * null ) returns '' and would silently wipe the stored complexity, which then
+ * falls back to 'low' on the next Self-hosted save. Same null-safe pattern as
+ * openporte_sanitize_challenge_url().
+ *
+ * @since 1.29.0
+ */
+function openporte_sanitize_complexity( $value ) {
+  if ( null === $value ) {
+    return (string) get_option( OpenPortePlugin::$option_complexity, '' );
+  }
+  return sanitize_text_field( (string) $value );
+}
+
 if (is_admin()) {
   add_action('admin_init', 'openporte_settings_init');
 
@@ -147,7 +165,7 @@ if (is_admin()) {
     register_setting(
       'openporte_options',
       OpenPortePlugin::$option_complexity,
-      array( 'sanitize_callback' => 'sanitize_text_field' )
+      array( 'sanitize_callback' => 'openporte_sanitize_complexity' )
     );
 
     register_setting(
