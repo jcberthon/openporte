@@ -130,13 +130,18 @@ function openporte_sanitize_algorithm( $value ) {
  * falls back to 'low' on the next Self-hosted save. Same null-safe pattern as
  * openporte_sanitize_challenge_url().
  *
+ * Only the levels in get_complexity_matrix() are accepted, mirroring
+ * openporte_sanitize_algorithm(); anything else falls back to 'low', matching
+ * OpenPortePlugin::generate()'s own fallback for an unknown stored value.
+ *
  * @since 1.29.0
  */
 function openporte_sanitize_complexity( $value ) {
   if ( null === $value ) {
     return (string) get_option( OpenPortePlugin::$option_complexity, '' );
   }
-  return sanitize_text_field( (string) $value );
+  $value = sanitize_text_field( (string) $value );
+  return array_key_exists( $value, OpenPortePlugin::get_complexity_matrix() ) ? $value : 'low';
 }
 
 if (is_admin()) {
