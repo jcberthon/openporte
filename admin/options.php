@@ -449,12 +449,21 @@ function openporte_settings_field_callback(array $args)
  * Renderer for select dropdown settings fields. Takes an `options` arg
  * (key => label pairs) and renders a <select> with those options. Displays
  * an optional description label and hint below the field.
+ *
+ * Supports the `disabled_note` arg: a line explaining why the control is
+ * disabled, printed with a `data-selfhosted-note` attribute so public/admin.js
+ * can show/hide it live when the API Mode changes. Same markup as
+ * openporte_render_preset_select().
+ *
+ * @since 1.27.0
+ * @since 1.29.0 Added the `disabled_note` arg.
  */
 function openporte_settings_select_callback(array $args)
 {
   $name = $args['name'];
   $hint = isset($args['hint']) ? $args['hint'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
+  $disabled_note = isset($args['disabled_note']) ? $args['disabled_note'] : null;
   $description = isset($args['description']) ? $args['description'] : null;
   $tooltip = isset($args['tooltip']) ? $args['tooltip'] : '';
   $options = isset($args['options']) ? $args['options'] : array();
@@ -470,6 +479,11 @@ function openporte_settings_select_callback(array $args)
       }
     ?>
   </select>
+  <?php if ($disabled_note) { ?>
+    <div class="openporte-hint" data-selfhosted-note<?php echo $disabled === true ? '' : ' style="display:none"'; ?>>
+      <em><?php echo esc_html($disabled_note); ?></em>
+    </div>
+  <?php } ?>
   <?php if ($description) { ?>
     <label class="description" for="<?php echo esc_attr($name); ?>">
       <?php echo esc_html($description); ?>

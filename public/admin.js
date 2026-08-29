@@ -19,6 +19,12 @@
     }
     const apiEl = document.querySelector('#openporte_api');
     if (apiEl) {
+      // Add data-selfhosted-api to the Complexity select so it gets toggled
+      // alongside Expiration when the API mode changes.
+      const complexityEl = document.querySelector('#openporte_complexity');
+      if (complexityEl) {
+        complexityEl.setAttribute('data-selfhosted-api', '');
+      }
       apiEl.addEventListener('change', (ev) => onApiChange(ev.target.value));
       onApiChange(apiEl.value);
     }
