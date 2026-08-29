@@ -89,4 +89,35 @@ class SettingsSanitizerTest extends OpenPorteTestCase
 
     $this->assertSame(3, openporte_sanitize_replaylimit('custom'));
   }
+
+  public function test_a_null_complexity_preserves_the_stored_value()
+  {
+    // G1 regression guard: in Custom API mode the Complexity field is disabled
+    // and submits null; without the guard sanitize_text_field(null) would wipe
+    // it to '', silently downgrading the stored level to 'low' on the next
+    // Self-hosted save. null must keep the stored value.
+    OpenPorte_Test_Env::$options['openporte_complexity'] = 'high';
+
+    $this->assertSame('high', openporte_sanitize_complexity(null));
+  }
+
+  public function test_a_complexity_value_is_trimmed()
+  {
+    $this->assertSame('high', openporte_sanitize_complexity('  high  '));
+  }
+
+  public function test_an_unknown_complexity_falls_back_to_low()
+  {
+    $this->assertSame('low', openporte_sanitize_complexity('extreme'));
+  }
+
+  public function test_a_complexity_level_added_via_the_matrix_filter_is_accepted()
+  {
+    OpenPorte_Test_Env::$filters['openporte_complexity_matrix'] = function ($matrix) {
+      $matrix['extreme'] = array('min' => 1, 'max' => 2);
+      return $matrix;
+    };
+
+    $this->assertSame('extreme', openporte_sanitize_complexity('extreme'));
+  }
 }
