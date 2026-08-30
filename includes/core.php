@@ -226,6 +226,10 @@ class OpenPortePlugin
    * touching any call site. Its return value is re-clamped: a filter returning
    * nonsense must not be able to switch protection off by accident.
    *
+   * Called outside any hook — from the settings screen, say — current_filter()
+   * returns false and the context is the empty string. Filters should read that
+   * as "no hook context", never as a hook name.
+   *
    * @since 1.29.0
    *
    * @param string $context Optional hook/context name; defaults to the filter
@@ -556,6 +560,11 @@ class OpenPortePlugin
    * where a leaked memo would let one visitor's accepted token short-circuit
    * the next visitor's submission.
    *
+   * That makes calling verify() before `init` unsupported under those SAPIs:
+   * the memo would still hold the previous request's entries. Every shipped
+   * integration verifies well after `init` (login, comments, AJAX and REST all
+   * do), and under PHP-FPM the fresh process makes it moot either way.
+   *
    * @since 1.29.0
    */
   public function reset_request_state()
@@ -757,12 +766,16 @@ class OpenPortePlugin
     // budget instead of inheriting a spent one. Only reachable for tokens that
     // carry no expiry — any other token is refused by the crypto gate first.
     get_transient($key);
-    // The expiry marker goes in first. An interrupted claim then leaves at
-    // worst an orphan timeout row, which the next use rewrites; a value row
-    // without one would never be garbage-collected, quietly turning the
-    // counter's lifetime into "forever". autoload 'no' keeps both rows out of
-    // the alloptions cache (add_option()'s fourth argument has meant "do not
-    // autoload" as both false and 'no' since WordPress 4.2).
+    // The expiry marker goes in first, because a value row without one would
+    // never be garbage-collected, quietly turning the counter's lifetime into
+    // "forever". The inverse — an interrupted claim leaving a timeout row with
+    // no value row — is harmless but not self-healing: add_option() is a no-op
+    // once the row exists, so the next use of the same token adopts the orphan
+    // (keeping the interrupted attempt's expiry) and completes the pair, while
+    // an orphan nothing reads again is missed by core's daily sweep, which
+    // joins the two rows, and lingers as ~100 bytes. autoload 'no' keeps both
+    // rows out of the alloptions cache (add_option()'s fourth argument has
+    // meant "do not autoload" as both false and 'no' since WordPress 4.2).
     add_option('_transient_timeout_' . $key, time() + $ttl, '', false);
     $value_row = '_transient_' . $key;
     // Deliberately not add_option(): core implements it as INSERT ... ON
