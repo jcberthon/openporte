@@ -143,13 +143,17 @@ function openporte_maybe_check_replay_protection($screen)
  */
 function openporte_evaluate_expires_setting($expires)
 {
-  if ($expires === 0) {
+  // Thresholds come from openporte_expires_advisory_level() (includes/settings.php)
+  // so this notice and the save-time _doing_it_wrong() advisory cannot drift
+  // apart; only the wording is this surface's own.
+  $level = openporte_expires_advisory_level($expires);
+  if ($level === 'error') {
     return array(
       'level' => 'error',
       'message' => __('Expiration is set to 0 ("None"), so a solved challenge never expires and only Replay limit bounds how often it can be resubmitted. This is strongly discouraged and is being evaluated for deprecation — set an expiry of 60 seconds or more.', 'openporte'),
     );
   }
-  if ($expires < 60) {
+  if ($level === 'warning') {
     return array(
       'level' => 'warning',
       'message' => sprintf(

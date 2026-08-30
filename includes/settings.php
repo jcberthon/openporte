@@ -49,7 +49,7 @@ function openporte_sanitize_expires( $value ) {
     // would silently rewrite every Custom-mode save to "never expires" — the
     // worst possible replay configuration. Same pattern as
     // openporte_sanitize_challenge_url().
-    return get_option( OpenPortePlugin::$option_expires, '300' );
+    return (int) get_option( OpenPortePlugin::$option_expires, '300' );
   }
   if ( 'custom' === $value && isset( $_POST['openporte_expires_custom'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- wp-admin/options.php verifies the settings nonce before sanitize callbacks run; absint() below is the sanitizer.
     $value = wp_unslash( $_POST['openporte_expires_custom'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -57,6 +57,32 @@ function openporte_sanitize_expires( $value ) {
   $expires = min( absint( $value ), 14400 );
   openporte_warn_expires( $expires );
   return $expires;
+}
+
+/**
+ * Classify an Expiration value against the advisory thresholds.
+ *
+ * The thresholds live here alone. Two surfaces report them: the
+ * _doing_it_wrong() advisory at save time (openporte_warn_expires(), for
+ * developers and WP-CLI) and the settings-screen notice
+ * (openporte_evaluate_expires_setting(), admin/healthcheck.php). They word it
+ * differently because their audiences differ, but they must agree on which
+ * values are bad — and #103 turns these advisories into enforcement, at which
+ * point this is the one place that changes.
+ *
+ * @since 1.29.0
+ *
+ * @param int $expires Expiry in seconds.
+ * @return string 'error' for 0 (a challenge that never expires), 'warning'
+ *                below 60 seconds, '' for a value in the recommended range.
+ */
+function openporte_expires_advisory_level( $expires ) {
+  $expires = intval( $expires );
+  if ( 0 === $expires ) {
+    return 'error';
+  }
+
+  return $expires < 60 ? 'warning' : '';
 }
 
 /**
@@ -73,13 +99,14 @@ function openporte_sanitize_expires( $value ) {
  * @param int $expires Sanitized expiry in seconds.
  */
 function openporte_warn_expires( $expires ) {
-  if ( 0 === $expires ) {
+  $level = openporte_expires_advisory_level( $expires );
+  if ( 'error' === $level ) {
     _doing_it_wrong(
       'openporte_expires',
       esc_html__( 'An Expiration of 0 ("None") means a solved challenge never expires. This value is being evaluated for deprecation; the recommended range is 60-14400 seconds.', 'openporte' ),
       '1.29.0'
     );
-  } elseif ( $expires < 60 ) {
+  } elseif ( 'warning' === $level ) {
     _doing_it_wrong(
       'openporte_expires',
       sprintf(

@@ -17,6 +17,26 @@ class SettingsSanitizerTest extends OpenPorteTestCase
     $this->assertSame(1800, openporte_sanitize_expires(null));
   }
 
+  public function test_a_null_expires_returns_an_int_like_every_other_path()
+  {
+    // The option is stored as a string by WordPress; every other path through
+    // the sanitizer returns int, and this one used to hand back the raw value.
+    OpenPorte_Test_Env::$options['openporte_expires'] = '1800';
+
+    $this->assertSame(1800, openporte_sanitize_expires(null));
+  }
+
+  public function test_the_expires_advisory_thresholds_are_classified_once()
+  {
+    // One classifier feeds both surfaces — the save-time _doing_it_wrong()
+    // advisory and the settings-screen notice — so the thresholds cannot drift
+    // apart, and #103 changes them in one place.
+    $this->assertSame('error', openporte_expires_advisory_level(0));
+    $this->assertSame('warning', openporte_expires_advisory_level(30));
+    $this->assertSame('', openporte_expires_advisory_level(60));
+    $this->assertSame('', openporte_expires_advisory_level(300));
+  }
+
   public function test_a_null_expires_does_not_warn()
   {
     OpenPorte_Test_Env::$options['openporte_expires'] = 1800;
