@@ -167,13 +167,17 @@ verify by hand. Steps 4–8 are **not** covered by any harness.
 3. [ ] Expiration advisories (Self-hosted): `0` shows a red error-style notice and
        **still saves**; a value under 60 s shows a warning and still saves; a normal
        value shows neither
-4. [ ] Custom mode: the Expiration control is greyed out with the explanatory line, and
-       — the important part — **saving in Custom mode does not change
-       `openporte_expires`** (`wp option get openporte_expires` before and after). A
-       disabled field submits nothing; without the null guard this would silently store
-       `0`, the worst possible replay configuration
-5. [ ] Switching API Mode back and forth enables/disables Expiration and Challenge URL
-       live, without a reload (JS toggle)
+4. [ ] Custom mode: the Expiration **and Complexity** controls are greyed out, each
+       with its explanatory line, and — the important part — **saving in Custom mode
+       changes neither `openporte_expires` nor `openporte_complexity`** (`wp option
+       get` both before and after). A disabled field submits nothing; without the
+       null guards this would silently store `0` (the worst possible replay
+       configuration) and wipe the stored complexity
+5. [ ] Switching API Mode back and forth enables/disables Expiration, Complexity and
+       Challenge URL live, without a reload (JS toggle). With JavaScript disabled, the
+       served markup already carries the right state: view source in Custom mode and
+       confirm `data-selfhosted-api` **and** `disabled` on both `#openporte_expires` and
+       `#openporte_complexity`
 6. [ ] Custom-mode health check: a backend whose challenges carry no `expires` in the
        salt yields a warning naming that; one that sets a sane expiry yields a success
        notice mentioning it
