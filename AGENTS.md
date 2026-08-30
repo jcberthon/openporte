@@ -50,7 +50,9 @@ against the wp-env bench). Composer (dev-only: `phpcs`/`phpmd`/`phpstan`/`phpuni
 npm (`bin/release/*.sh` release-prep scripts, see `docs/release-preparation.md`) are dev
 tooling, not shipped — both are excluded via `.distignore`.
 
-Compat floor: PHP/WP minimums in `readme.txt`. Don't use syntax/APIs newer than the floor.
+Compat floor: PHP/WP minimums in `readme.txt` (see field `Requires at least` for the
+minimum WordPress version; and field `Requires PHP` for the minimum PHP version). Don't
+use syntax/APIs newer than the floor unless justified and acknowledged by the maintainer.
 
 ## Auditing upstream ALTCHA v1 (plugin history)
 
