@@ -331,6 +331,7 @@ if (is_admin()) {
         // The setting is inert in Custom mode: the backend enforces the complexity.
         // Showing an editable control there would promise something the plugin cannot deliver.
         'disabled' => $custom_api_mode_active,
+        'selfhosted_only' => true,
         'disabled_note' => __('Disabled in Custom mode: the backend sets the challenge complexity.', 'openporte'),
         "hint" => __('Select the PoW complexity for the widget: the higher the complexity, the longer visitors (and bots) work to solve the challenge.<br/>Even High is usually solved in under a second on a recent computer; on older phones it can take a few seconds. High is roughly 2–3× the work of Low.', 'openporte'),
         "options" => $openporte_complexity_options,

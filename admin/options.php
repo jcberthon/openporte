@@ -455,8 +455,14 @@ function openporte_settings_field_callback(array $args)
  * can show/hide it live when the API Mode changes. Same markup as
  * openporte_render_preset_select().
  *
+ * The `selfhosted_only` arg means exactly what it means there: the control is
+ * inert in Custom API mode, so it is marked `data-selfhosted-api` and
+ * public/admin.js disables it live when the mode changes. Emitting it here
+ * rather than patching the attribute on in JS keeps the no-JS fallback resting
+ * on the served markup alone.
+ *
  * @since 1.27.0
- * @since 1.29.0 Added the `disabled_note` arg.
+ * @since 1.29.0 Added the `disabled_note` and `selfhosted_only` args.
  */
 function openporte_settings_select_callback(array $args)
 {
@@ -464,13 +470,17 @@ function openporte_settings_select_callback(array $args)
   $hint = isset($args['hint']) ? $args['hint'] : null;
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $disabled_note = isset($args['disabled_note']) ? $args['disabled_note'] : null;
+  $selfhosted_only = isset($args['selfhosted_only']) ? $args['selfhosted_only'] : false;
   $description = isset($args['description']) ? $args['description'] : null;
   $tooltip = isset($args['tooltip']) ? $args['tooltip'] : '';
   $options = isset($args['options']) ? $args['options'] : array();
   $setting = get_option($name);
   $value = isset($setting) ? esc_attr($setting) : '';
+  // Inverse of the data-custom-api attribute used by the Challenge URL field:
+  // this control is one Custom mode takes away, not one it needs.
+  $mode_attr = $selfhosted_only ? ' data-selfhosted-api' : '';
 ?>
-  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" <?php echo $disabled === true ? ' disabled' : ''; ?> title="<?php echo esc_attr($tooltip); ?>">
+  <select name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>"<?php echo $mode_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded literal attribute name, no dynamic content. ?> <?php echo $disabled === true ? ' disabled' : ''; ?> title="<?php echo esc_attr($tooltip); ?>">
     <?php
       foreach ( $options as $opt_key => $opt_value ) {
         echo '<option value="' . esc_attr( $opt_key ) . '" '
@@ -498,6 +508,14 @@ function openporte_settings_select_callback(array $args)
 /**
  * Renderer for a preset <select> plus a "Custom" choice revealing a companion
  * number input — the shape shared by Expiration and Replay limit.
+ *
+ * Generic on purpose: it renders whatever presets it is handed, so another
+ * setting of the same shape needs a three-line callback and no new markup (see
+ * openporte_settings_expires_callback() and
+ * openporte_settings_replaylimit_callback()). This is settings-page markup, not
+ * a public API; the sibling renderer for plain dropdowns is
+ * openporte_settings_select_callback(), and `disabled`, `disabled_note` and
+ * `selfhosted_only` mean the same thing in both.
  *
  * The companion input is a plain form field, NOT a registered option: the
  * setting's sanitize callback reads it when the select submits the literal
