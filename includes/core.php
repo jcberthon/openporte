@@ -892,9 +892,31 @@ class OpenPortePlugin
     }
     $this->in_verify = false;
 
-    // Memo on the verified signature as well: re-encoding the JSON envelope of
-    // one solved challenge yields different bytes but the same signature, and
-    // that has to keep counting as a single use.
+    return $this->emit_verify_result(
+      $this->settle_verify_result($data, $payload_key, $result)
+    );
+  }
+
+  /**
+   * Settle a dispatched result against the per-request memo and the reuse
+   * counter, and record it for the rest of the request.
+   *
+   * The order is the contract. The payload memo (already consulted by verify())
+   * short-circuits identical bytes. The signature memo catches the same solved
+   * challenge re-encoded into another JSON envelope: different bytes, same
+   * verified signature, and that has to keep counting as a single use.
+   * Enforcement runs last, and is the only step here that writes shared state.
+   *
+   * @since 1.29.0
+   *
+   * @param object $data        Decoded token payload; verify() has already
+   *                            bailed out on a malformed one, so never null.
+   * @param string $payload_key Memo key for the submitted bytes.
+   * @param bool   $result      Outcome of the cryptographic dispatch.
+   * @return bool The final outcome, memoised under both keys.
+   */
+  private function settle_verify_result($data, $payload_key, $result)
+  {
     $signature_key = null;
     if ($result === true && isset($data->signature) && is_string($data->signature)) {
       $signature_key = 'signature:' . hash('sha256', $data->signature);
@@ -907,7 +929,7 @@ class OpenPortePlugin
       $this->verify_memo[$signature_key] = $result;
     }
 
-    return $this->emit_verify_result($result);
+    return $result;
   }
 
   /**
