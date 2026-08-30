@@ -2,9 +2,10 @@
   document.addEventListener('DOMContentLoaded', () => {
     // Fields marked data-custom-api are the ones only Custom mode uses (the
     // Challenge URL); data-selfhosted-api marks the inverse — settings the
-    // backend owns in Custom mode, so the control goes dead there (Expiration).
-    // The server renders the same states, this only keeps them right while the
-    // API Mode dropdown is being changed.
+    // backend owns in Custom mode, so the control goes dead there (Complexity,
+    // Expiration). Both attributes are rendered server-side, so the state is
+    // already right on load; this only keeps it right while the API Mode
+    // dropdown is being changed.
     function onApiChange(api) {
       const custom = api === 'custom';
       [...document.querySelectorAll('[data-custom-api]')].forEach((el) => {
@@ -19,12 +20,6 @@
     }
     const apiEl = document.querySelector('#openporte_api');
     if (apiEl) {
-      // Add data-selfhosted-api to the Complexity select so it gets toggled
-      // alongside Expiration when the API mode changes.
-      const complexityEl = document.querySelector('#openporte_complexity');
-      if (complexityEl) {
-        complexityEl.setAttribute('data-selfhosted-api', '');
-      }
       apiEl.addEventListener('change', (ev) => onApiChange(ev.target.value));
       onApiChange(apiEl.value);
     }
