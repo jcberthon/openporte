@@ -817,6 +817,15 @@ class OpenPortePlugin
    * has passed without an incident, so the report describes a store that is
    * failing now rather than one that hiccuped months ago.
    *
+   * Deliberately approximate, in two ways. At most one incident is recorded per
+   * minute: while the store is broken every accepted submission would otherwise
+   * cost an option write, at a rate the submitter controls, and one sample a
+   * minute says "the store is failing now" just as well. And the update is a
+   * read-modify-write, so two concurrent fail-opens can lose an increment. The
+   * record therefore means "the counter could not be stored, most recently at
+   * `last`", not "exactly `count` submissions went uncounted" — health data,
+   * not an audit trail. The settings-page notice is worded to match.
+   *
    * @since 1.29.0
    */
   private function record_replay_failopen()
@@ -827,6 +836,11 @@ class OpenPortePlugin
     }
     $now = time();
     $last = isset($health['last']) ? intval($health['last']) : 0;
+    if ($last > 0 && ($now - $last) < MINUTE_IN_SECONDS) {
+      // Already recorded within the last minute. A second write adds nothing
+      // the report would show, and this is the path a submitter can drive.
+      return;
+    }
     $count = (isset($health['count']) && $last > 0 && ($now - $last) < DAY_IN_SECONDS)
       ? intval($health['count'])
       : 0;

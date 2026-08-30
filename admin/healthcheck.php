@@ -60,10 +60,15 @@ function openporte_is_settings_screen($screen)
  */
 function openporte_queue_admin_notice($label, $result)
 {
-  add_action('admin_notices', function () use ($label, $result) {
+  // The level is an internal enum, never user input — whitelisting it says so,
+  // and keeps a typo from rendering a div with no notice class at all.
+  $level = in_array($result['level'], array('error', 'warning', 'success', 'info'), true)
+    ? $result['level']
+    : 'info';
+  add_action('admin_notices', function () use ($label, $level, $result) {
     printf(
       '<div class="notice notice-%1$s is-dismissible"><p><strong>%2$s</strong> %3$s</p></div>',
-      esc_attr($result['level']),
+      esc_attr($level),
       esc_html($label),
       esc_html($result['message'])
     );
@@ -174,17 +179,15 @@ function openporte_evaluate_replay_protection()
   // Only report a store that is failing now: the counter restarts by itself
   // once a day has passed without an incident.
   if ($count > 0 && $last > 0 && (time() - $last) < DAY_IN_SECONDS) {
+    // No submission count in the message: the record is sampled (at most one
+    // incident a minute) and its increment is not atomic, so what it honestly
+    // supports is that this happened and when it last did. See
+    // OpenPortePlugin::record_replay_failopen().
     return array(
       'level' => 'warning',
       'message' => sprintf(
-        /* translators: %1$d is a number of form submissions, %2$s a duration such as "5 mins" */
-        _n(
-          '%1$d submission in the last %2$s was accepted without being counted, because the reuse counter could not be stored. Protection degrades to accepting valid challenges unconditionally while that lasts — check the persistent object cache or the database.',
-          '%1$d submissions in the last %2$s were accepted without being counted, because the reuse counter could not be stored. Protection degrades to accepting valid challenges unconditionally while that lasts — check the persistent object cache or the database.',
-          $count,
-          'openporte'
-        ),
-        $count,
+        /* translators: %s is a duration such as "5 mins" */
+        __('Submissions were accepted without being counted in the last %s, because the reuse counter could not be stored. Protection degrades to accepting valid challenges unconditionally while that lasts — check the persistent object cache or the database.', 'openporte'),
         human_time_diff($last)
       ),
     );
