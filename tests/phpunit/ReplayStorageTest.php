@@ -150,9 +150,30 @@ class ReplayStorageTest extends OpenPorteTestCase
     }
 
     $health = get_option('openporte_replay_health');
-    $this->assertSame(3, $health['count']);
+    // One record a minute, not one per submission: the settings page needs to
+    // know the store is failing now, and an uncounted submission must not cost
+    // an option write at a rate the submitter controls.
+    $this->assertSame(1, $health['count']);
     $this->assertLessThanOrEqual(time() + 2, $health['last']);
     $this->assertGreaterThanOrEqual(time() - 2, $health['last']);
+  }
+
+  public function test_a_fail_open_outside_the_sample_window_is_recorded()
+  {
+    // The throttle must not swallow a store that keeps failing: an incident
+    // more than a minute after the last recorded one still counts.
+    OpenPorte_Test_Env::$external_object_cache = true;
+    OpenPorte_Test_Env::$broken_cache_incr = true;
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 1;
+    OpenPorte_Test_Env::$options['openporte_replay_health'] = array(
+      'count' => 4,
+      'last' => time() - 120,
+    );
+
+    $this->verify_in_new_request($this->token(time() + 600));
+
+    $health = get_option('openporte_replay_health');
+    $this->assertSame(5, $health['count']);
   }
 
   public function test_a_broken_database_fails_open()
