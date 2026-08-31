@@ -7,6 +7,7 @@
 # DESCRIPTION:
 #   Synchronizes the local repository to a remote host and runs wp-env commands
 #   there. Useful for testing the plugin with different PHP and WordPress versions.
+#   Read how to use it in tests/README.md.
 #
 # OPTIONS:
 #   --php-version, -p  Override PHP version on the remote (via WP_ENV_PHP_VERSION)

@@ -83,6 +83,9 @@ what this file is for, is that one visitor's click costs exactly one use.
 
 ## Prerequisites
 
+Read also tests/README.md to understand how to use the bench and
+docs/maintenance-testing.md to have an overview of the testing approach.
+
 1. A running bench: `./wp-env.sh start` (from the repo root; provisions
    fixtures via `tests/bin/wp-init.sh` — the CF7 driver relies on its
    "Contact Us" page, the WPForms driver on its "WPForms Test" page).
