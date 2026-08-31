@@ -5,8 +5,8 @@
 ### Server Requirements
 
 The supported floor is **PHP 8.0 / WordPress 5.6**, matching `Requires PHP` and
-`Requires at least` in `readme.txt`. This is the authoritative source — keep this
-section in sync with it.
+`Requires at least` in `readme.txt` (authoritative). This is the authoritative
+source — keep this section in sync with it.
 
 #### Support Status
 
@@ -59,7 +59,7 @@ cheapest one that can answer the question.
 | ----- | ----- | ----- | ----------- |
 | **Unit** (PHPUnit) | `tests/phpunit/` | PHP + `composer install` — no WordPress, no Docker | Any change to verification, the replay counter, a sanitizer, or a health-check evaluator. Seconds. |
 | **Browser E2E** (Playwright) | `tests/e2e/` | A running wp-env bench | Widget rendering, verification end-to-end, integration code, replay behaviour across real requests. Minutes. |
-| **Manual bench** | wp-env | A running bench | Settings UI, upgrade paths, uninstall, and the checks no harness covers (see the per-release acceptance record in `docs/acceptance/`). |
+| **Manual bench** | wp-env.sh | A running bench | Settings UI, upgrade paths, uninstall, and the checks no harness covers (see the per-release acceptance record in `docs/acceptance/`). |
 
 ### Unit tests (PHPUnit)
 
@@ -93,13 +93,18 @@ genuinely pins behaviour. Coverage where it helps, not as a metric.
 
 ### Verify OpenPorte
 
-The OpenPorte plugin can be tested remotely using the `wp-env.sh` helper script. See [Testing tools](#testing-tools) below for technical details about the script.
+The OpenPorte plugin can be tested remotely using the `wp-env.sh` helper script. See
+[Testing tools](#testing-tools) below for technical details about the script.
 
-**Note**: The script no longer requires OpenSSH >= 7.8. The previous implementation used `ssh -o SetEnv` which required specific sshd configuration on the remote host. The current implementation exports variables inline in the remote shell command, which works on any SSH version.
+**Note**: The script no longer requires OpenSSH >= 7.8. The previous implementation
+used `ssh -o SetEnv` which required specific sshd configuration on the remote host.
+The current implementation exports variables inline in the remote shell command,
+which works on any SSH version.
 
 #### CLI Reference
 
-The `wp-env.sh` script accepts the following options:
+The `wp-env.sh` script accepts at least the following options (more
+information can be found in `tests/README.md`):
 
 | Option | Short | Description | Environment Variable |
 |--------|-------|-------------|---------------------|
@@ -116,13 +121,13 @@ The `wp-env.sh` script accepts the following options:
 
 **WordPress Core Version**:
 
-- Simple version: `6.5`, `7.0` (auto-expanded to `WordPress/WordPress#6.5`)
+- Simple version: `6.5` (auto-expanded to `WordPress/WordPress#6.5`), `7.0`, `7.1`
 - Branch reference: `WordPress/WordPress#7.0`
 - Tag reference: `WordPress/WordPress#6.5.3`
 - Latest trunk: `WordPress/WordPress#trunk`
 - Any value accepted by wp-env's `core` config
 
-##### Usage Examples
+##### Usage Examples (see also `tests/README.md`)
 
 ```bash
 # Start environment with default versions
@@ -197,9 +202,14 @@ This file is **sourced** by the script, so it must contain valid shell syntax.
 - **rsync**: For code synchronization
 - **Git**: For repository validation
 
+You will need access to an SSH Agent or the right keys to use the tool.
+
 #### Accessing the Remote Web Server
 
-By default, wp-env on the remote host binds to `localhost:8888`. If you cannot access the remote web server directly at `http://REMOTE_HOST:8888/` due to network restrictions, firewalls, or security requirements (e.g., HTTPS-only contexts), you can create an SSH tunnel to forward the port locally.
+By default, wp-env on the remote host binds to `localhost:8888`. If you cannot
+access the remote web server directly at `http://REMOTE_HOST:8888/` due to
+network restrictions, firewalls, or security requirements (e.g., HTTPS-only contexts),
+you can create an SSH tunnel to forward the port locally.
 
 ##### SSH Tunnel Command
 
@@ -216,13 +226,18 @@ ssh -f -N -L 8888:localhost:8888 ${REMOTE_USER}@${REMOTE_HOST}
 ##### Use Cases
 
 **1. Network Firewall Blocks Port 8888**
-If the remote host's firewall or network configuration blocks external access to port 8888, the SSH tunnel creates a secure connection that bypasses these restrictions.
+If the remote host's firewall or network configuration blocks external access
+to port 8888, the SSH tunnel creates a secure connection that bypasses these
+restrictions.
 
 **2. HTTP Blocked as Untrusted**
-If your local browser or security policy blocks HTTP connections to the remote host, the tunnel makes the remote server appear as if it's running locally.
+If your local browser or security policy blocks HTTP connections to the remote
+host, the tunnel makes the remote server appear as if it's running locally.
 
 **3. Secure Context Required**
-Some browser APIs (Service Workers, geolocation, etc.) require a secure context (HTTPS). While the tunnel itself doesn't provide HTTPS, you can combine it with a local HTTPS proxy if needed.
+Some browser APIs (Service Workers, geolocation, etc.) require a secure context
+(HTTPS). While the tunnel itself doesn't provide HTTPS, you can combine it with
+a local HTTPS proxy if needed.
 
 **4. Multiple Remote Environments**
 You can run multiple tunnels on different local ports to access multiple remote environments simultaneously:
@@ -268,10 +283,10 @@ Example test commands:
 
 ```bash
 # Test the supported floor: PHP 8.0 with WP 5.6
-./wp-env.sh -p 8.0 -w WordPress/WordPress#5.6 start
+./wp-env.sh -p 8.0 -w 5.6 start
 
 # Test the ceiling: PHP 8.5 with WP 7.0
-./wp-env.sh -p 8.5 -w WordPress/WordPress#7.0 start
+./wp-env.sh -p 8.5 -w 7.0 start
 
 # Test against bleeding-edge WordPress
 ./wp-env.sh -p 8.4 -w WordPress/WordPress#trunk start
@@ -331,9 +346,11 @@ them. Read notices from `wp-content/debug.log` (or `./wp-env.sh logs`) instead.
 
 **Check**:
 
-1. Verify the remote command includes the export statements by adding `-v` to SSH: `ssh -v ${REMOTE_USER}@${REMOTE_HOST} "export WP_ENV_PHP_VERSION=7.3 && echo test"`
+1. Verify the remote command includes the export statements by adding `-v` to SSH:
+  `ssh -v ${REMOTE_USER}@${REMOTE_HOST} "export WP_ENV_PHP_VERSION=7.3 && echo test"`
 2. Ensure wp-env respects `WP_ENV_PHP_VERSION` and `WP_ENV_CORE` environment variables
-3. Test directly on the remote: `ssh ${REMOTE_USER}@${REMOTE_HOST} "export WP_ENV_PHP_VERSION=7.3 && echo \$WP_ENV_PHP_VERSION"`
+3. Test directly on the remote:
+  `ssh ${REMOTE_USER}@${REMOTE_HOST} "export WP_ENV_PHP_VERSION=7.3 && echo \$WP_ENV_PHP_VERSION"`
 
 **"Permission denied"**
 
@@ -488,8 +505,8 @@ the embedded string — details in
 - **Run `wp-env cleanup` between WP-version switches** — the database volume
   persists, and a newer install's active theme (e.g. `twentytwentyfive`)
   renders blank pages on an older core. The `cleanup`/`destroy` confirmation
-  prompt needs a real TTY (`ssh -t …`); it cannot be answered through
-  `wp-env.sh`.
+  prompt needs a real TTY (`ssh -t …`) or use `--force`; it cannot be answered
+  through `wp-env.sh`.
 - For expiry testing, `wp option update openporte_expires 60` makes both the
   widget's `refetchonexpire` and the server-side expired-token rejection
   observable within a minute.
@@ -500,7 +517,10 @@ the embedded string — details in
 
 #### wp-env.sh
 
-The `wp-env.sh` script is a wrapper around [`@wordpress/env`](https://github.com/WordPress/wordpress-develop/tree/trunk/tools/wp-env) (wp-env) that facilitates remote testing of the OpenPorte plugin across different PHP and WordPress versions.
+The `wp-env.sh` script is a wrapper around [`@wordpress/env`]
+(https://github.com/WordPress/wordpress-develop/tree/trunk/tools/wp-env)
+(wp-env) that facilitates remote testing of the OpenPorte plugin across
+different PHP and WordPress versions.
 
 ##### Why This Exists
 
@@ -511,7 +531,9 @@ The official wp-env tool runs Docker containers locally. However, for this proje
 3. Want to test against different WordPress Core versions
 4. Need to synchronize the local plugin code to the remote test environment
 
-This script automates the rsync-and-ssh workflow while providing a clean CLI interface for version overrides.
+This script wp-env.sh automates the rsync-and-ssh workflow while providing a clean
+CLI interface for version overrides. This is used by the maintainer because the
+Docker host is on a remote test machine and not local.
 
 ##### Architecture
 
@@ -539,7 +561,11 @@ Local Machine                Remote Host
 
 ##### Environment Variable Injection
 
-The script exports environment variables inline in the remote shell command using the `${var:+value}` bash parameter expansion pattern. This approach was chosen because the previous `ssh -o SetEnv` method required specific `AcceptEnv` configuration in the remote sshd server, which cannot be assumed across different hosting environments.
+The script exports environment variables inline in the remote shell command
+using the `${var:+value}` bash parameter expansion pattern. This approach was
+chosen because the previous `ssh -o SetEnv` method required specific `AcceptEnv`
+configuration in the remote sshd server, which cannot be assumed across different
+hosting environments.
 
 **Example**: If `--php-version 7.3` is specified, the remote command becomes:
 
@@ -603,7 +629,9 @@ set -- "${REMAINING_ARGS[@]}"
 
 **Remote Command Construction**
 
-The environment variables are set inline in the remote shell command using the `${var:+value}` bash parameter expansion pattern, which expands to `value` only if `var` is non-empty:
+The environment variables are set inline in the remote shell command using the
+`${var:+value}` bash parameter expansion pattern, which expands to `value` only
+if `var` is non-empty:
 
 ```bash
 cd ~/${REMOTE_PATH} && \
@@ -640,7 +668,8 @@ The inline export variables take precedence over variables defined in `~/.wpenvr
 
 ##### Configuration (Remote Host)
 
-The remote host must have `~/.wpenvrc` which is automatically sourced before running wp-env. It can contain default environment variables:
+The remote host must have `~/.wpenvrc` which is automatically sourced before running
+wp-env. It can contain default environment variables:
 
 ```bash
 # Example ~/.wpenvrc on remote
@@ -660,14 +689,16 @@ Additionally, the remote host requires:
 
 ##### Implementation Notes
 
-The current implementation using inline `export` with `${var:+value}` parameter expansion was chosen because it:
+The current implementation using inline `export` with `${var:+value}` parameter
+expansion was chosen because it:
 
 - Works on any SSH version (no OpenSSH ≥ 7.8 requirement)
 - Does not require any special sshd configuration on the remote host
 - Is simpler and more direct than the previous `ssh -o SetEnv` approach
 - Automatically handles the case where no overrides are specified
 
-The `${var:+value}` syntax expands to `value` only if `var` is non-empty, allowing conditional inclusion of export statements without complex control flow.
+The `${var:+value}` syntax expands to `value` only if `var` is non-empty, allowing
+conditional inclusion of export statements without complex control flow.
 
 If you need to support older OpenSSH versions, this can be added as a fallback.
 
