@@ -169,6 +169,7 @@ call (replay tracking, verification statistics) are not used.
 | Algorithm | generates and verifies challenges | must **match the backend's algorithm**; used at verification only |
 | Complexity | sets the PoW difficulty | ignored — the backend decides |
 | Expiration | sets the challenge life-span | ignored — the backend's expiry (embedded in the salt) is enforced instead |
+| Replay limit | enforced locally | enforced locally — the backend's replay tracking is not used |
 | Widget customization (auto-verify, floating, delay, logo/footer) | applies | applies |
 | Integrations | apply | apply |
 

@@ -4,9 +4,9 @@
 
 ### Server Requirements
 
-The supported floor is **PHP 8.0 / WordPress 5.6**, matching `Requires PHP` and
-`Requires at least` in `readme.txt` (authoritative). This is the authoritative
-source — keep this section in sync with it.
+The supported floor is **PHP 8.0 / WordPress 5.6**, matching the authoritative
+`Requires PHP` and `Requires at least` fields in `readme.txt`; keep this section
+in sync with them.
 
 #### Support Status
 
@@ -90,6 +90,13 @@ genuinely pins behaviour. Coverage where it helps, not as a metric.
 > lazily on the next read of the same key) but they do not self-clean. Such
 > sites should run a persistent object cache — which sidesteps the option rows
 > entirely — or a real system cron.
+
+> **Successful proofs create state before later form checks.** `verify()`
+> consumes a replay slot immediately after cryptographic success, before a form
+> plugin can reject the submission for flood control, duplication, or another
+> validation rule. An attacker willing to pay the proof-of-work can therefore
+> create one row pair per solved token. The work requirement bounds this write
+> surface; the rows are small, `autoload='no'`, and expire as described above.
 
 ### Verify OpenPorte
 
@@ -517,8 +524,8 @@ the embedded string — details in
 
 #### wp-env.sh
 
-The `wp-env.sh` script is a wrapper around [`@wordpress/env`]
-(https://github.com/WordPress/wordpress-develop/tree/trunk/tools/wp-env)
+The `wp-env.sh` script is a wrapper around
+[`@wordpress/env`](https://github.com/WordPress/wordpress-develop/tree/trunk/tools/wp-env)
 (wp-env) that facilitates remote testing of the OpenPorte plugin across
 different PHP and WordPress versions.
 

@@ -6,10 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Null-safe sanitizer for the custom Challenge URL option.
  *
  * When API Mode is "Self-hosted" the Challenge URL input is disabled client-side
- * (see public/admin.js), so the browser does not submit it. WordPress then passes
- * null to the sanitize callback. Calling esc_url_raw(null) would hand null to
- * ltrim() and raise a PHP 8.1+ "Passing null to parameter #1" deprecation, whose
- * output breaks the post-save redirect ("headers already sent" / blank page).
+ * (see public/admin.js), so the browser does not submit it. wp-admin/options.php
+ * still calls update_option() for every registered setting, and the resulting
+ * sanitize_option() call passes null to this callback. Calling esc_url_raw(null)
+ * would hand null to ltrim() and raise a PHP 8.1+ "Passing null to parameter #1"
+ * deprecation, whose output breaks the post-save redirect ("headers already
+ * sent" / blank page).
  *
  * For a missing field (null) we keep the previously stored URL, so it survives a
  * save made while in Self-hosted mode and is still there when the user switches
@@ -39,15 +41,17 @@ function openporte_sanitize_challenge_url( $value ) {
  * rejected or migrated. Hard bounds are a later, breaking-config release.
  *
  * @since 1.29.0 Preserves the stored value when the field is absent (it is
- *               disabled in Custom mode, and a disabled field submits null),
- *               and warns about the 0 / below-60 values under review.
+ *               disabled and therefore omitted in Custom mode, after which
+ *               WordPress passes null to the sanitizer), and warns about the
+ *               0 / below-60 values under review.
  */
 function openporte_sanitize_expires( $value ) {
   if ( null === $value ) {
-    // The field is disabled in Custom mode, where the backend owns the expiry,
-    // so the browser does not submit it. Without this guard absint( null ) = 0
-    // would silently rewrite every Custom-mode save to "never expires" — the
-    // worst possible replay configuration. Same pattern as
+    // The browser omits this disabled Custom-mode field, but wp-admin/options.php
+    // still calls update_option() for every registered setting. That null value
+    // reaches this callback through sanitize_option(); without the guard,
+    // absint( null ) = 0 would silently rewrite every Custom-mode save to
+    // "never expires" — the worst possible replay configuration. Same pattern as
     // openporte_sanitize_challenge_url().
     return (int) get_option( OpenPortePlugin::$option_expires, '300' );
   }
@@ -152,14 +156,16 @@ function openporte_sanitize_algorithm( $value ) {
  * Sanitize the Complexity setting.
  *
  * The field is disabled in Custom API mode (the backend owns the complexity),
- * so a Custom-mode save submits null. Without a guard, sanitize_text_field(
- * null ) returns '' and would silently wipe the stored complexity, which then
- * falls back to 'low' on the next Self-hosted save. Same null-safe pattern as
- * openporte_sanitize_challenge_url().
+ * so the browser omits it. wp-admin/options.php still updates every registered
+ * setting, causing null to reach this callback through sanitize_option().
+ * Without a guard, sanitize_text_field( null ) returns '' and would silently
+ * wipe the stored complexity, which then falls back to 'low' on the next
+ * Self-hosted save. Same null-safe pattern as openporte_sanitize_challenge_url().
  *
  * Only the levels in get_complexity_matrix() are accepted, mirroring
  * openporte_sanitize_algorithm(); anything else falls back to 'low', matching
- * OpenPortePlugin::generate()'s own fallback for an unknown stored value.
+ * OpenPortePlugin::generate_challenge()'s own fallback for an unknown stored
+ * value.
  *
  * @since 1.29.0
  */

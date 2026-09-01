@@ -9,9 +9,10 @@ class VerifyMemoTest extends OpenPorteTestCase
 {
   public function test_two_verifications_in_one_request_count_as_one_use()
   {
-    // No next_request() between the two calls: this is the dual
-    // `authenticate` hook case (WordPress + WooCommerce fire in the same
-    // request), where the token must be counted once, not twice.
+    // No next_request() between the calls: simulate a third-party caller or a
+    // future integration verifying the same submission twice. Shipped
+    // WordPress and WooCommerce authentication callbacks are mutually
+    // exclusive, but request-local idempotence must not depend on that detail.
     OpenPorte_Test_Env::$options['openporte_replaylimit'] = 1;
     $token = $this->token(time() + 600);
 

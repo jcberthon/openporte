@@ -137,7 +137,7 @@ the stubs at `^6.6.2` while this project tracks `^7.0`, so Composer cannot
 resolve the two together. Worth revisiting when it tags a stubs-7 release.
 
 PHPStan runs at level 5 and **gates the PR**, which works because
-[`phpstan-baseline.neon`](phpstan-baseline.neon) absorbs the four findings that
+[`phpstan-baseline.neon`](phpstan-baseline.neon) absorbs the two findings that
 predate its introduction (deferred to the `future` milestone, tracked in
 [#77](https://github.com/openporte/openporte/issues/77)). Only a *new* finding
 turns the check red. Unlike the PHPMD backlog below, the list is short enough to
