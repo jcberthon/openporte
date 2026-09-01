@@ -9,9 +9,10 @@ class SettingsSanitizerTest extends OpenPorteTestCase
 {
   public function test_a_null_expires_preserves_the_stored_value()
   {
-    // G1 regression guard: in Custom mode the Expiration field is disabled,
-    // a disabled field submits null, and absint(null) would be 0 — the worst
-    // possible replay configuration. null must keep the stored value.
+    // G1 regression guard: the browser omits the disabled Expiration field in
+    // Custom mode, then wp-admin/options.php updates the registered setting
+    // with null. absint(null) would be 0 — the worst possible replay
+    // configuration — so null must keep the stored value.
     OpenPorte_Test_Env::$options['openporte_expires'] = 1800;
 
     $this->assertSame(1800, openporte_sanitize_expires(null));
@@ -112,9 +113,10 @@ class SettingsSanitizerTest extends OpenPorteTestCase
 
   public function test_a_null_complexity_preserves_the_stored_value()
   {
-    // G1 regression guard: in Custom API mode the Complexity field is disabled
-    // and submits null; without the guard sanitize_text_field(null) would wipe
-    // it to '', silently downgrading the stored level to 'low' on the next
+    // G1 regression guard: the browser omits the disabled Complexity field in
+    // Custom mode, then wp-admin/options.php updates the registered setting
+    // with null. Without the guard sanitize_text_field(null) would wipe it to
+    // '', silently downgrading the stored level to 'low' on the next
     // Self-hosted save. null must keep the stored value.
     OpenPorte_Test_Env::$options['openporte_complexity'] = 'high';
 

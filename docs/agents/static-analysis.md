@@ -35,7 +35,7 @@ Agent-specific additions to that:
   without it PHPStan dies with a misleading "Child process error (exit code
   255)" instead of a report. See [`bin/lint/phpstan.sh`](../../bin/lint/phpstan.sh).
 - PHPStan runs at **level 5** and **gates the PR** — it is the one analyser here
-  that should report zero findings. `phpstan-baseline.neon` absorbs the four that
+  that should report zero findings. `phpstan-baseline.neon` absorbs the two that
   predate its introduction (issue #77), so anything PHPStan reports is a finding
   *your change* introduced. Fix it.
 - **Never regenerate the baseline** (`--generate-baseline`) and never add a

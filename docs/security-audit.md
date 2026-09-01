@@ -97,9 +97,10 @@ across unlimited submissions, defeating the anti-spam purpose.
 stateless primitives, which keep doing pure cryptography. It adds two layers:
 
 - a **per-request memo**, keyed both on the submitted bytes and on the verified
-  signature, so one submission costs one use even when it is verified twice in
-  the same request (the dual `authenticate` registration in `wordpress.php` /
-  `woocommerce.php`) and even when the JSON envelope is re-encoded in between;
+  signature, so repeated third-party or future integration calls cost one use
+  even when the JSON envelope is re-encoded in between. No shipped integration
+  currently verifies twice in one request; the WordPress and WooCommerce
+  authentication callbacks are mutually exclusive through their nonce guards;
 - an **atomic reuse counter**, keyed on the token's HMAC-verified `signature`
   and bounded by the new **Replay limit** setting (`openporte_replaylimit`,
   default **5**, `0` = unlimited).
@@ -198,6 +199,11 @@ issue #103) — that is the prerequisite for lowering the default toward strict.
 - **`replaylimit = 0` switches the counter off.** It is the documented escape
   hatch for a site that genuinely needs the old stateless behaviour, and the
   settings page warns for as long as it is set.
+- **A solved token creates state before downstream form checks.** An attacker
+  willing to pay the proof-of-work can create one row pair per solved token even
+  when a later comment, duplicate, or form-validation check rejects the
+  submission. The cost is bounded by the proof-of-work; each row is small,
+  non-autoloaded and reclaimed with the counter's expiry.
 
 **Invariant to preserve (CVE-2025-68113).** The counter's lifetime is derived
 from `expires`, so `expires` must stay bound by the signature: the signature
@@ -607,7 +613,7 @@ OWASP PHP cheat-sheet spot checks:
   challenge) and `hash_equals` (signatures); the `verified` check uses
   `in_array( …, true )`. No loose `==` in a security decision. The challenge
   digest moves to `hash_equals` in v1.29.0 for uniformity — see Appendix D and
-  [#84](https://github.com/jcberthon/openporte/issues/84).
+  [#84](https://github.com/openporte/openporte/issues/84).
 - **Error handling / info leak:** finding #3 removes the PHP warnings that junk
   tokens used to emit, reducing noise/leak in logs.
 - **File uploads / sessions:** none — the plugin handles no uploads and sets no
@@ -651,7 +657,7 @@ alone:
   their own token — so nothing leaks through the comparison's timing. The
   digest comparison is nonetheless moving to `hash_equals` for uniformity in
   v1.29.0, tracked in
-  [#84](https://github.com/jcberthon/openporte/issues/84); the algorithm label
+  [#84](https://github.com/openporte/openporte/issues/84); the algorithm label
   stays `===`, being a public identifier rather than a digest.
 - **Finding 8's impact does not transfer.** OpenPorte's unauthenticated
   challenge endpoint is a DoS/abuse surface (finding #5, accepted), not a
@@ -678,7 +684,7 @@ also carry its reuse budget forward.
 1.x or early OpenPorte still holds its original 96-bit secret. That is
 deliberate — silently rotating would fail every challenge issued in the
 preceding expiry window. The remedy is a manual one, tracked in
-[#70](https://github.com/jcberthon/openporte/issues/70) (Copy/Regenerate actions
+[#70](https://github.com/openporte/openporte/issues/70) (Copy/Regenerate actions
 on the Shared Secret field, v1.29.0). 96 bits is not practically
 brute-forceable, so this is hardening rather than exposure.
 
@@ -700,11 +706,11 @@ brute-forceable, so this is hardening rather than exposure.
   - **Expiry stays advisory in 1.29.0.** `0` ("None") and values under 60 s are
     warned about, not rejected or migrated. Safe to do because the counter now
     bounds replay independently of the expiry; hard bounds are a breaking-config
-    change and belong to [#103](https://github.com/jcberthon/openporte/issues/103).
+    change and belong to [#103](https://github.com/openporte/openporte/issues/103).
   - **Local, never delegated.** Replay protection is OpenPorte-local even in
     custom-backend mode. Delegating it would mean calling the backend's verify
     API at submit time — something the plugin does not do today — and is a
-    separate release ([#104](https://github.com/jcberthon/openporte/issues/104)).
+    separate release ([#104](https://github.com/openporte/openporte/issues/104)).
     A bare "Off" is deliberately not offered: an operator who disabled local
     protection believing the backend covered it would have none at all.
 - **Finding 5 (REST rate limiting):** documented as accepted risk; per-IP
@@ -714,7 +720,7 @@ brute-forceable, so this is hardening rather than exposure.
   Appendix D. No plugin code change required — the two applicable findings were
   already fixed, the other seven target v2-only code. The legacy 96-bit secret
   on upgraded installs is not auto-rotated; admins get a manual Regenerate
-  action instead ([#70](https://github.com/jcberthon/openporte/issues/70)). The
+  action instead ([#70](https://github.com/openporte/openporte/issues/70)). The
   non-secret challenge `===` is tracked separately as uniformity work
-  ([#84](https://github.com/jcberthon/openporte/issues/84)), not as a security
+  ([#84](https://github.com/openporte/openporte/issues/84)), not as a security
   fix.

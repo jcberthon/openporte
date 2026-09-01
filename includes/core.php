@@ -123,10 +123,11 @@ class OpenPortePlugin
    * Per-request verification memo, keyed both on the submitted bytes and on
    * the verified signature.
    *
-   * One submission must cost one use of its token even when it is verified
-   * more than once in the same request: the `authenticate` hook is registered
-   * twice (see AGENTS.md), so without the memo a strict limit of 1 would
-   * reject every login.
+   * One submission must cost one use of its token even when a third-party
+   * caller or future integration verifies it more than once in the same
+   * request, including through a re-encoded JSON envelope. No shipped
+   * integration currently does so: the WordPress and WooCommerce authentication
+   * callbacks are mutually exclusive through their nonce guards.
    *
    * Cleared on `init` by reset_request_state(), so persistent-worker SAPIs
    * (FrankenPHP, RoadRunner, Swoole) cannot leak it into the next request.

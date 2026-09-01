@@ -281,10 +281,11 @@ callers and never for the internal dispatch.
 4. **`enforce_replay_limit()`** — only on full cryptographic success.
 5. **One `openporte_verify_result` action** per `verify()` call.
 
-The memo exists because one submission must cost one use even when it is
-verified twice in a request: `wordpress.php` and `woocommerce.php` both register
-an `authenticate` callback at priority 20 (see AGENTS.md), so without it a
-Replay limit of 1 would reject every login. It is cleared on `init` by
+The memo makes verification idempotent within one request: repeated third-party
+calls, future integration paths, and re-encoded JSON envelopes still cost one
+use. No shipped integration currently verifies twice in one request; the
+WordPress and WooCommerce `authenticate` callbacks are mutually exclusive
+through their nonce guards. The memo is cleared on `init` by
 `reset_request_state()`, so persistent-worker SAPIs (FrankenPHP, RoadRunner,
 Swoole) cannot leak one visitor's accepted token into the next visitor's
 request.
