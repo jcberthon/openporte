@@ -332,15 +332,20 @@ function openporte_evaluate_challenge_response($response, $secret, $configured_a
     );
   }
   // In Custom mode the backend owns the expiry: it embeds it in the salt, and
-  // that is the value OpenPorte enforces. A backend that omits it issues
-  // challenges that never time out, which is the one thing this check can see
-  // before any visitor is affected — the same situation as a self-hosted
-  // Expiration of 0, and reported in the same spirit.
+  // that is the value OpenPorte enforces. Distinguish an omitted expiry from
+  // one already in the past: the latter points to clock skew or stale caching,
+  // not a backend policy that deliberately issues non-expiring challenges.
   $expires = OpenPortePlugin::salt_expires((string) $challenge['salt']);
-  if ($expires <= time()) {
+  if (0 === $expires) {
     return array(
       'level' => 'warning',
       'message' => __('The backend issues challenges with no expiry (no future "expires" parameter in the salt), so a solved challenge never expires on its own and only Replay limit bounds how often it is accepted. Enable challenge expiry on the backend.', 'openporte'),
+    );
+  }
+  if ($expires <= time()) {
+    return array(
+      'level' => 'warning',
+      'message' => __('The backend returned a challenge whose expiry is already in the past. Its clock may be wrong or it may be serving a cached challenge; correct that before using Custom mode.', 'openporte'),
     );
   }
   $message = sprintf(

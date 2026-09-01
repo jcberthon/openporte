@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-30T15:24:03+00:00\n"
+"POT-Creation-Date: 2026-09-01T18:21:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: openporte\n"
@@ -35,50 +35,112 @@ msgstr ""
 msgid "https://github.com/openporte/openporte/graphs/contributors"
 msgstr ""
 
-#: admin/healthcheck.php:48
+#: admin/healthcheck.php:93
 msgid "OpenPorte endpoint check:"
 msgstr ""
 
-#: admin/healthcheck.php:67
+#: admin/healthcheck.php:121
+msgid "OpenPorte Expiration:"
+msgstr ""
+
+#: admin/healthcheck.php:125
+msgid "OpenPorte replay protection:"
+msgstr ""
+
+#: admin/healthcheck.php:153
+msgid "Expiration is set to 0 (\"None\"), so a solved challenge never expires and only Replay limit bounds how often it can be resubmitted. This is strongly discouraged and is being evaluated for deprecation — set an expiry of 60 seconds or more."
+msgstr ""
+
+#. translators: %d is the configured Expiration value, in seconds
+#: admin/healthcheck.php:161
+#, php-format
+msgid "Expiration is set to %d seconds, which can elapse before a slow device finishes solving the challenge and turn legitimate submissions into failures. Values below 60 seconds are being evaluated for deprecation."
+msgstr ""
+
+#. translators: %s is a duration such as "5 mins"
+#: admin/healthcheck.php:194
+#, php-format
+msgid "Submissions were accepted without being counted in the last %s, because the reuse counter could not be stored. Protection degrades to accepting valid challenges unconditionally while that lasts — check the persistent object cache or the database."
+msgstr ""
+
+#: admin/healthcheck.php:203
+msgid "Replay limit is 0, so replay protection is off: a solved challenge is accepted for as long as it stays valid, however many times it is submitted. This is the behaviour of releases before 1.29.0."
+msgstr ""
+
+#. translators: %1$d is the configured Replay limit, %2$s names where the counter is stored
+#: admin/healthcheck.php:211
+#, php-format
+msgid "Each solved challenge is accepted %1$d time, counted in %2$s."
+msgid_plural "Each solved challenge is accepted up to %1$d times, counted in %2$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/healthcheck.php:219
+msgid "the persistent object cache"
+msgstr ""
+
+#: admin/healthcheck.php:220
+msgid "the database"
+msgstr ""
+
+#: admin/healthcheck.php:238
 msgid "API mode is Custom but no Challenge URL is configured."
 msgstr ""
 
 #. translators: %s is the connection error message
-#: admin/healthcheck.php:103
+#: admin/healthcheck.php:274
 #, php-format
 msgid "The Challenge URL is unreachable: %s"
 msgstr ""
 
 #. translators: %d is the HTTP status code returned by the backend
-#: admin/healthcheck.php:114
+#: admin/healthcheck.php:285
 #, php-format
 msgid "The Challenge URL responded with HTTP %d instead of a challenge. Check the URL (including any apiKey parameter) and the backend's domain/origin restrictions."
 msgstr ""
 
-#: admin/healthcheck.php:124
+#: admin/healthcheck.php:295
 msgid "The Challenge URL did not return an ALTCHA challenge (JSON with algorithm, challenge, salt and signature fields expected)."
 msgstr ""
 
 #. translators: %s is the algorithm name reported by the backend
-#: admin/healthcheck.php:133
+#: admin/healthcheck.php:304
 #, php-format
 msgid "The backend issues challenges with the unsupported algorithm \"%s\"."
 msgstr ""
 
-#: admin/healthcheck.php:149
+#: admin/healthcheck.php:320
 msgid "The shared secret does not match the backend's HMAC secret — every form submission would fail verification. Copy the backend's HMAC secret into the Signing secret field."
 msgstr ""
 
 #. translators: %1$s is the algorithm used by the backend, %2$s the algorithm configured in OpenPorte
-#: admin/healthcheck.php:157
+#: admin/healthcheck.php:328
 #, php-format
 msgid "The backend issues %1$s challenges but the Algorithm setting is %2$s — form submissions would fail verification. Set Algorithm to %1$s."
 msgstr ""
 
+#: admin/healthcheck.php:342
+msgid "The backend issues challenges with no expiry (no future \"expires\" parameter in the salt), so a solved challenge never expires on its own and only Replay limit bounds how often it is accepted. Enable challenge expiry on the backend."
+msgstr ""
+
+#: admin/healthcheck.php:348
+msgid "The backend returned a challenge whose expiry is already in the past. Its clock may be wrong or it may be serving a cached challenge; correct that before using Custom mode."
+msgstr ""
+
 #. translators: %s is the algorithm confirmed with the backend
-#: admin/healthcheck.php:167
+#: admin/healthcheck.php:353
 #, php-format
 msgid "The Challenge URL responds with a valid %s challenge and the shared secret matches."
+msgstr ""
+
+#. translators: %s is a duration such as "20 mins"
+#: admin/healthcheck.php:358
+#, php-format
+msgid "The backend expires its challenges after about %s."
+msgstr ""
+
+#: admin/healthcheck.php:362
+msgid "That is short enough to expire before a slow device finishes solving, which turns legitimate submissions into failures."
 msgstr ""
 
 #: admin/options.php:35
@@ -163,33 +225,66 @@ msgstr ""
 msgid "Use %s shortcode anywhere in your integrated plugins content."
 msgstr ""
 
-#: admin/options.php:260
-#: admin/options.php:262
-#: admin/options.php:413
-#: admin/options.php:415
+#: admin/options.php:267
+#: admin/options.php:269
+#: admin/options.php:435
+#: admin/options.php:437
 msgid "Show"
 msgstr ""
 
-#: admin/options.php:261
-#: admin/options.php:414
+#: admin/options.php:268
+#: admin/options.php:436
 msgid "Hide"
 msgstr ""
 
-#: admin/options.php:477
+#: admin/options.php:275
+#: admin/options.php:278
+msgid "Copy"
+msgstr ""
+
+#: admin/options.php:276
+msgid "Copied!"
+msgstr ""
+
+#: admin/options.php:277
+msgid "Copy failed"
+msgstr ""
+
+#: admin/options.php:284
+msgid "Regenerate"
+msgstr ""
+
+#: admin/options.php:566
+#: includes/settings.php:276
+msgid "Custom"
+msgstr ""
+
+#: admin/options.php:596
 msgid "5 minutes"
 msgstr ""
 
-#: admin/options.php:478
+#: admin/options.php:597
 msgid "30 minutes"
 msgstr ""
 
-#: admin/options.php:479
+#: admin/options.php:598
 msgid "1 hour"
 msgstr ""
 
-#: admin/options.php:493
-#: includes/settings.php:145
-msgid "Custom"
+#: admin/options.php:616
+msgid "Unlimited (pre-1.29 behaviour)"
+msgstr ""
+
+#: admin/options.php:617
+msgid "Single use (strict)"
+msgstr ""
+
+#: admin/options.php:618
+msgid "5 uses (recommended)"
+msgstr ""
+
+#: admin/options.php:619
+msgid "10 uses"
 msgstr ""
 
 #: includes/admin.php:17
@@ -200,356 +295,394 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/core.php:323
+#: includes/core.php:443
 #: integrations/enfold-theme.php:58
 msgid "Verification failed. Try again later."
 msgstr ""
 
 #. translators: %1$s and %2$s are the opening and closing tags for a link (<a> tag)
-#: includes/core.php:326
+#: includes/core.php:446
 #, php-format
 msgid "Protected by %1$sALTCHA%2$s"
 msgstr ""
 
-#: includes/core.php:330
+#: includes/core.php:450
 msgid "I'm not a robot"
 msgstr ""
 
-#: includes/core.php:331
+#: includes/core.php:451
 msgid "Verified"
 msgstr ""
 
-#: includes/core.php:332
+#: includes/core.php:452
 msgid "Verifying..."
 msgstr ""
 
-#: includes/core.php:333
+#: includes/core.php:453
 msgid "Verifying... please wait."
 msgstr ""
 
 #. translators: Displayed inside a <noscript> block when the visitor's browser has JavaScript disabled; the ALTCHA widget cannot function without it.
-#: includes/core.php:680
+#: includes/core.php:1238
 msgid "This form requires JavaScript!"
 msgstr ""
 
-#: includes/settings.php:129
-msgid "General"
+#: includes/settings.php:106
+msgid "An Expiration of 0 (\"None\") means a solved challenge never expires. This value is being evaluated for deprecation; the recommended range is 60-14400 seconds."
 msgstr ""
 
-#: includes/settings.php:136
-msgid "API Mode"
-msgstr ""
-
-#: includes/settings.php:142
-msgid "Select the API Mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend."
-msgstr ""
-
-#: includes/settings.php:144
-msgid "Self-hosted"
-msgstr ""
-
-#: includes/settings.php:154
-msgid "Challenge URL"
-msgstr ""
-
-#: includes/settings.php:162
-msgid "Only available when API Mode is set to Custom.<br/>The URL is made up of the domain and path to your <strong>custom ALTCHA-compatible backend</strong>, and optionally an API key (it starts with <code>gk_</code>)."
-msgstr ""
-
-#: includes/settings.php:171
-msgid "Shared secret"
-msgstr ""
-
-#: includes/settings.php:177
-msgid "A secret key used to sign and verify challenges."
-msgstr ""
-
-#: includes/settings.php:178
-msgid "OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API Mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend."
-msgstr ""
-
-#: includes/settings.php:186
-#: includes/settings.php:192
-msgid "Hash algorithm for the challenges."
-msgstr ""
-
-#: includes/settings.php:186
-msgid "Algorithm"
-msgstr ""
-
-#: includes/settings.php:193
-msgid "In Self-hosted API Mode this is the algorithm used to generate and verify the proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256."
-msgstr ""
-
-#: includes/settings.php:203
-msgid "Low"
-msgstr ""
-
-#: includes/settings.php:204
-msgid "Medium"
-msgstr ""
-
-#: includes/settings.php:205
-msgid "High"
-msgstr ""
-
-#: includes/settings.php:215
-msgid "Complexity"
-msgstr ""
-
-#: includes/settings.php:221
-msgid "Select the PoW complexity for the widget: the higher the complexity, the longer visitors (and bots) work to solve the challenge.<br/>Even High is usually solved in under a second on a recent computer; on older phones it can take a few seconds. High is roughly 2–3× the work of Low."
-msgstr ""
-
-#: includes/settings.php:228
-msgid "Expiration"
-msgstr ""
-
-#: includes/settings.php:234
-msgid "Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no expiry (None) and 14400 is 4 hours."
-msgstr ""
-
-#: includes/settings.php:243
-msgid "Widget Customisation"
-msgstr ""
-
-#: includes/settings.php:250
-msgid "Auto verification"
-msgstr ""
-
-#: includes/settings.php:256
-msgid "Select auto-verification behaviour."
-msgstr ""
-
-#: includes/settings.php:258
-msgid "Disabled"
-msgstr ""
-
-#: includes/settings.php:259
-msgid "On page load"
+#. translators: %d is the saved Expiration value, in seconds
+#: includes/settings.php:114
+#, php-format
+msgid "An Expiration of %d seconds can elapse before a slow device finishes solving the challenge. Values below 60 seconds are being evaluated for deprecation; the recommended range is 60-14400 seconds."
 msgstr ""
 
 #: includes/settings.php:260
-msgid "On form focus"
+msgid "General"
 msgstr ""
 
-#: includes/settings.php:261
-msgid "On form submit"
+#: includes/settings.php:267
+msgid "API Mode"
 msgstr ""
 
-#: includes/settings.php:268
-msgid "Display Mode"
+#: includes/settings.php:273
+msgid "Select the API Mode. Use Self-hosted for the built-in WordPress REST API, or Custom to point to your own ALTCHA-compatible backend."
 msgstr ""
 
-#: includes/settings.php:274
-msgid "Choose whether the widget sits inline in the page or floats near the submit button."
+#: includes/settings.php:275
+msgid "Self-hosted"
 msgstr ""
 
-#: includes/settings.php:276
-msgid "Inline"
-msgstr ""
-
-#: includes/settings.php:277
-msgid "Floating"
-msgstr ""
-
-#: includes/settings.php:284
-msgid "Verification Delay"
+#: includes/settings.php:285
+msgid "Challenge URL"
 msgstr ""
 
 #: includes/settings.php:293
+msgid "Only available when API Mode is set to Custom.<br/>The URL is made up of the domain and path to your <strong>custom ALTCHA-compatible backend</strong>, and optionally an API key (it starts with <code>gk_</code>)."
+msgstr ""
+
+#: includes/settings.php:302
+msgid "Shared secret"
+msgstr ""
+
+#: includes/settings.php:308
+msgid "A secret key used to sign and verify challenges."
+msgstr ""
+
+#: includes/settings.php:311
+msgid "OpenPorte generates a random secret automatically. Change it only if another application needs to use the same secret.<br/>In Custom API Mode, this value <strong>must exactly match</strong> the shared secret (sometimes called the HMAC secret) configured in your backend."
+msgstr ""
+
+#: includes/settings.php:313
+msgid "Copy places the current secret on the clipboard. Regenerate fills in a fresh random secret; it only takes effect when you save changes, and challenges already issued with the old secret then stop verifying. In Custom API Mode, saving a new secret also breaks verification of new submissions until you update the secret on your backend to match."
+msgstr ""
+
+#: includes/settings.php:323
+#: includes/settings.php:329
+msgid "Hash algorithm for the challenges."
+msgstr ""
+
+#: includes/settings.php:323
+msgid "Algorithm"
+msgstr ""
+
+#: includes/settings.php:330
+msgid "In Self-hosted API Mode this is the algorithm used to generate and verify the proof-of-work challenges.<br/>In Custom API Mode it must match the algorithm your backend uses — most ALTCHA-compatible backends default to SHA-256."
+msgstr ""
+
+#: includes/settings.php:340
+msgid "Low"
+msgstr ""
+
+#: includes/settings.php:341
+msgid "Medium"
+msgstr ""
+
+#: includes/settings.php:342
+msgid "High"
+msgstr ""
+
+#: includes/settings.php:352
+msgid "Complexity"
+msgstr ""
+
+#: includes/settings.php:362
+msgid "Disabled in Custom mode: the backend sets the challenge complexity."
+msgstr ""
+
+#: includes/settings.php:363
+msgid "Select the PoW complexity for the widget: the higher the complexity, the longer visitors (and bots) work to solve the challenge.<br/>Even High is usually solved in under a second on a recent computer; on older phones it can take a few seconds. High is roughly 2–3× the work of Low."
+msgstr ""
+
+#: includes/settings.php:370
+msgid "Expiration"
+msgstr ""
+
+#: includes/settings.php:381
+msgid "Disabled in Custom mode: the backend sets the challenge expiry."
+msgstr ""
+
+#: includes/settings.php:384
+msgid "Life-span of a challenge. Custom accepts 0 to 14400 seconds, where 0 means no expiry (None) and 14400 is 4 hours."
+msgstr ""
+
+#: includes/settings.php:386
+msgid "Above 300 seconds the window in which a solved challenge can be replayed grows, though Replay limit still bounds how often one is accepted. Below 60 seconds a challenge can expire before a slow device finishes solving it, and 0 (None) means it never expires at all — both are discouraged and are being evaluated for deprecation."
+msgstr ""
+
+#: includes/settings.php:392
+msgid "Replay limit"
+msgstr ""
+
+#: includes/settings.php:398
+msgid "How many times one solved challenge may be accepted. This applies in both API Modes."
+msgstr ""
+
+#: includes/settings.php:400
+msgid "A visitor whose form comes back with an unrelated error (a missing field, a mistyped password) resubmits the same challenge, so a small allowance keeps those submissions working; every extra use is also one more replay available to a bot. Custom accepts 0 to 100, where 0 accepts a solved challenge for as long as it is valid — the behaviour of releases before 1.29.0, and not recommended."
+msgstr ""
+
+#: includes/settings.php:409
+msgid "Widget Customisation"
+msgstr ""
+
+#: includes/settings.php:416
+msgid "Auto verification"
+msgstr ""
+
+#: includes/settings.php:422
+msgid "Select auto-verification behaviour."
+msgstr ""
+
+#: includes/settings.php:424
+msgid "Disabled"
+msgstr ""
+
+#: includes/settings.php:425
+msgid "On page load"
+msgstr ""
+
+#: includes/settings.php:426
+msgid "On form focus"
+msgstr ""
+
+#: includes/settings.php:427
+msgid "On form submit"
+msgstr ""
+
+#: includes/settings.php:434
+msgid "Display Mode"
+msgstr ""
+
+#: includes/settings.php:440
+msgid "Choose whether the widget sits inline in the page or floats near the submit button."
+msgstr ""
+
+#: includes/settings.php:442
+msgid "Inline"
+msgstr ""
+
+#: includes/settings.php:443
+msgid "Floating"
+msgstr ""
+
+#: includes/settings.php:450
+msgid "Verification Delay"
+msgstr ""
+
+#: includes/settings.php:459
 msgid "Some visitors perceive a slower check as more trustworthy, and that is this pause's only effect. It does not make spam-blocking any stronger; to raise the bar for bots, increase Complexity instead."
 msgstr ""
 
 #. translators: %s is the added delay in seconds, e.g. "0.5"
-#: includes/settings.php:296
+#: includes/settings.php:462
 #, php-format
 msgid "Add %s second delay"
 msgstr ""
 
-#: includes/settings.php:304
+#: includes/settings.php:470
 msgid "Acknowledgement"
 msgstr ""
 
-#: includes/settings.php:310
+#: includes/settings.php:476
 msgid "This applies to the small ALTCHA logo shown inside the widget. ALTCHA is free, open-source software — we would appreciate you keeping it visible, but the choice is yours."
 msgstr ""
 
-#: includes/settings.php:311
+#: includes/settings.php:477
 msgid "Hide the ALTCHA logo"
 msgstr ""
 
-#: includes/settings.php:326
+#: includes/settings.php:492
 msgid "This applies to the text shown inside the widget. Same as the logo: keeping it visible helps credit the project this plugin is built on, but it has no effect on how OpenPorte works."
 msgstr ""
 
-#: includes/settings.php:327
+#: includes/settings.php:493
 msgid "Hide the \"Protected by ALTCHA\" footer"
 msgstr ""
 
-#: includes/settings.php:336
+#: includes/settings.php:502
 msgid "WordPress"
 msgstr ""
 
-#: includes/settings.php:345
+#: includes/settings.php:511
 msgid "Register page"
 msgstr ""
 
-#: includes/settings.php:346
+#: includes/settings.php:512
 msgid "Protect WordPress registration page."
 msgstr ""
 
-#: includes/settings.php:349
+#: includes/settings.php:515
 msgid "Reset password page"
 msgstr ""
 
-#: includes/settings.php:350
+#: includes/settings.php:516
 msgid "Protect WordPress password reset page."
 msgstr ""
 
-#: includes/settings.php:353
+#: includes/settings.php:519
 msgid "Login page"
 msgstr ""
 
-#: includes/settings.php:354
+#: includes/settings.php:520
 msgid "Protect WordPress login page."
 msgstr ""
 
-#: includes/settings.php:357
+#: includes/settings.php:523
 msgid "Comments"
 msgstr ""
 
-#: includes/settings.php:358
+#: includes/settings.php:524
 msgid "Protect WordPress comments section."
 msgstr ""
 
-#: includes/settings.php:385
+#: includes/settings.php:551
 msgid "Integrations"
 msgstr ""
 
-#: includes/settings.php:401
+#: includes/settings.php:567
 msgid "CoBlocks"
 msgstr ""
 
-#: includes/settings.php:402
+#: includes/settings.php:568
 msgid "Protect CoBlocks forms."
 msgstr ""
 
-#: includes/settings.php:406
+#: includes/settings.php:572
 msgid "Contact Form 7"
 msgstr ""
 
-#: includes/settings.php:407
+#: includes/settings.php:573
 msgid "Protect Contact Form 7 forms."
 msgstr ""
 
-#: includes/settings.php:411
+#: includes/settings.php:577
 msgid "Elementor Pro Forms"
 msgstr ""
 
-#: includes/settings.php:412
+#: includes/settings.php:578
 msgid "Protect Elementor Pro forms."
 msgstr ""
 
-#: includes/settings.php:416
+#: includes/settings.php:582
 msgid "Enfold Theme"
 msgstr ""
 
-#: includes/settings.php:417
+#: includes/settings.php:583
 msgid "Protect Enfold theme forms."
 msgstr ""
 
-#: includes/settings.php:419
+#: includes/settings.php:585
 msgid "Theme not active."
 msgstr ""
 
-#: includes/settings.php:422
+#: includes/settings.php:588
 msgid "Formidable Forms"
 msgstr ""
 
-#: includes/settings.php:423
+#: includes/settings.php:589
 msgid "Protect Formidable Forms submissions."
 msgstr ""
 
-#: includes/settings.php:427
+#: includes/settings.php:593
 msgid "Forminator"
 msgstr ""
 
-#: includes/settings.php:428
+#: includes/settings.php:594
 msgid "Protect Forminator forms."
 msgstr ""
 
-#: includes/settings.php:432
+#: includes/settings.php:598
 msgid "Gravity Forms"
 msgstr ""
 
-#: includes/settings.php:433
+#: includes/settings.php:599
 msgid "Protect Gravity Forms submissions."
 msgstr ""
 
-#: includes/settings.php:437
+#: includes/settings.php:603
 msgid "HTML Forms"
 msgstr ""
 
-#: includes/settings.php:438
+#: includes/settings.php:604
 msgid "Protect HTML Forms submissions."
 msgstr ""
 
-#: includes/settings.php:442
+#: includes/settings.php:608
 msgid "wpDiscuz"
 msgstr ""
 
-#: includes/settings.php:443
+#: includes/settings.php:609
 msgid "Protect wpDiscuz comments section."
 msgstr ""
 
-#: includes/settings.php:447
+#: includes/settings.php:613
 msgid "WPForms"
 msgstr ""
 
-#: includes/settings.php:448
+#: includes/settings.php:614
 msgid "Protect WPForms submissions."
 msgstr ""
 
-#: includes/settings.php:452
+#: includes/settings.php:618
 msgid "WooCommerce register page"
 msgstr ""
 
-#: includes/settings.php:453
+#: includes/settings.php:619
 msgid "Protect the WooCommerce register page."
 msgstr ""
 
-#: includes/settings.php:457
+#: includes/settings.php:623
 msgid "WooCommerce reset password page"
 msgstr ""
 
-#: includes/settings.php:458
+#: includes/settings.php:624
 msgid "Protect the WooCommerce reset password page."
 msgstr ""
 
-#: includes/settings.php:462
+#: includes/settings.php:628
 msgid "WooCommerce login page"
 msgstr ""
 
-#: includes/settings.php:463
+#: includes/settings.php:629
 msgid "Protect the WooCommerce login page."
 msgstr ""
 
-#: includes/settings.php:470
+#: includes/settings.php:636
 msgid "Custom HTML"
 msgstr ""
 
-#: includes/settings.php:471
+#: includes/settings.php:637
 msgid "Configure hand-written widget tags."
 msgstr ""
 
 #. translators: %1$s and %2$s are opening and closing bold tags, %3$s will be replaced with the shortcode
-#: includes/settings.php:475
+#: includes/settings.php:641
 #, php-format
 msgid "%1$sDeprecated%2$s, and scheduled for removal in the next major release — place the %3$s shortcode in your content instead."
 msgstr ""
 
-#: includes/settings.php:496
+#: includes/settings.php:662
 msgid "Plugin not active."
 msgstr ""
 

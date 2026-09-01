@@ -93,6 +93,17 @@ class HealthcheckTest extends OpenPorteTestCase
     $this->assertStringContainsString('no expiry', $result['message']);
   }
 
+  public function test_the_endpoint_check_distinguishes_an_expired_challenge()
+  {
+    $response = $this->endpoint_response('abcd?expires=' . (time() - 60) . '&', self::SECRET);
+
+    $result = openporte_evaluate_challenge_response($response, self::SECRET, 'SHA-256');
+
+    $this->assertSame('warning', $result['level']);
+    $this->assertStringContainsString('already in the past', $result['message']);
+    $this->assertStringNotContainsString('no expiry', $result['message']);
+  }
+
   public function test_the_endpoint_check_warns_on_a_very_short_backend_expiry()
   {
     $response = $this->endpoint_response('abcd?expires=' . (time() + 20) . '&', self::SECRET);
