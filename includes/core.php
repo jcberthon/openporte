@@ -236,18 +236,21 @@ class OpenPortePlugin
    *                        currently running.
    * @return int Maximum accepted uses per token; 0 for unlimited.
    */
-  public function get_replaylimit($context = '') {
+  public function get_replaylimit($context = '')
+  {
     $stored       = get_option(OpenPortePlugin::$option_replaylimit, null);
     $stored_limit = filter_var($stored, FILTER_VALIDATE_INT);
     $limit        = false !== $stored_limit && $stored_limit >= 0
       ? min(100, $stored_limit)
       : OpenPortePlugin::$replaylimit_default;
-    if ('' === $context) {
+    if ('' === $context)
+    {
       $context = (string) current_filter();
     }
     $filtered       = apply_filters('openporte_replay_limit', $limit, $context);
     $filtered_limit = filter_var($filtered, FILTER_VALIDATE_INT);
-    if (false === $filtered_limit || $filtered_limit < 0) {
+    if (false === $filtered_limit || $filtered_limit < 0)
+    {
       return $limit;
     }
 
@@ -727,13 +730,24 @@ class OpenPortePlugin
    */
   private function consume_replay_slot($key, $limit, $ttl)
   {
-    if (wp_using_ext_object_cache()) {
+    if (wp_using_ext_object_cache())
+    {
       // Seed with the string '0', not the integer: some drop-ins serialize
       // non-string values, which turns INCR into a permanent, silent failure
       // — that is, an invisible fail-open.
-      wp_cache_add($key, '0', OpenPortePlugin::$replay_cache_group, $ttl);
+      // Memcached interprets TTLs above 30 days as absolute Unix timestamps.
+      // Cap every persistent-cache window at that portable maximum rather
+      // than let a long-lived token's counter expire immediately.
+      $cache_ttl = min($ttl, 30 * DAY_IN_SECONDS);
+      wp_cache_add($key, '0', OpenPortePlugin::$replay_cache_group, $cache_ttl);
       $count = wp_cache_incr($key, 1, OpenPortePlugin::$replay_cache_group);
-      if (!is_int($count)) {
+      if (! is_numeric($count))
+      {
+        return null;
+      }
+      $count = intval($count);
+      if ($count < 1)
+      {
         return null;
       }
 
@@ -760,7 +774,8 @@ class OpenPortePlugin
   private function consume_replay_slot_db($key, $limit, $ttl)
   {
     global $wpdb;
-    if (!isset($wpdb) || !is_object($wpdb)) {
+    if (! isset($wpdb) || ! is_object($wpdb))
+    {
       return null;
     }
     // Core's lazy expiry sweep: reading the transient drops a pair whose window
@@ -778,7 +793,14 @@ class OpenPortePlugin
     // joins the two rows, and lingers as ~100 bytes. autoload 'no' keeps both
     // rows out of the alloptions cache (add_option()'s fourth argument has
     // meant "do not autoload" as both false and 'no' since WordPress 4.2).
-    add_option('_transient_timeout_' . $key, time() + $ttl, '', false);
+    $timeout_row     = '_transient_timeout_' . $key;
+    $timeout_created = add_option($timeout_row, time() + $ttl, '', false);
+    if (! $timeout_created && false === get_option($timeout_row, false))
+    {
+      // false also means the row already existed. Only fail open when the
+      // follow-up read proves that the expiry marker is genuinely absent.
+      return null;
+    }
     $value_row = '_transient_' . $key;
     // Deliberately not add_option(): core implements it as INSERT ... ON
     // DUPLICATE KEY UPDATE behind a cached existence check, so two concurrent
@@ -786,41 +808,51 @@ class OpenPortePlugin
     // the uniqueness decision to the option_name index, where it really is
     // atomic.
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Deliberately atomic: core's options API cannot express a create-only insert, and caching a counter would defeat it.
-    $created = $wpdb->query($wpdb->prepare(
-      "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, '1', 'no')",
-      $value_row
-    ));
-    if ($created === false) {
+    $created = $wpdb->query(
+      $wpdb->prepare(
+        "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, '1', 'no')",
+        $value_row
+      )
+    );
+    if (false === $created)
+    {
       return null;
     }
-    if ($created > 0) {
+    if ($created > 0)
+      {
       return 1 <= $limit;
     }
     // The row already exists, so one statement decides the outcome: the row
     // lock serialises concurrent workers, and "rows changed" is the verdict.
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- As above: the guarded UPDATE is the atomic consume itself.
-    $consumed = $wpdb->query($wpdb->prepare(
-      "UPDATE {$wpdb->options} SET option_value = CAST(option_value AS UNSIGNED) + 1"
-      . " WHERE option_name = %s AND CAST(option_value AS UNSIGNED) < %d",
-      $value_row,
-      $limit
-    ));
-    if ($consumed === false) {
+    $consumed = $wpdb->query(
+      $wpdb->prepare(
+        "UPDATE {$wpdb->options} SET option_value = CAST(option_value AS UNSIGNED) + 1"
+        . " WHERE option_name = %s AND CAST(option_value AS UNSIGNED) < %d",
+        $value_row,
+        $limit
+      )
+    );
+    if (false === $consumed)
+      {
       return null;
     }
-    if ($consumed > 0) {
+    if ($consumed > 0)
+      {
       return true;
     }
     // Nothing was updated: either the budget is spent, or nothing was ever
     // stored because the writes silently failed. Only the first is a rejection
     // — the second must fail open, so check which one happened.
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Only reached at the cap or on a broken store; reads the row just written.
-    $stored = $wpdb->get_var($wpdb->prepare(
-      "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
-      $value_row
-    ));
+    $stored = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+        $value_row
+      )
+    );
 
-    return $stored === null ? null : false;
+    return null === $stored ? null : false;
   }
 
   /**

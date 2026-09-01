@@ -112,6 +112,28 @@ class ReplayStorageTest extends OpenPorteTestCase
     $this->assertLessThanOrEqual(602, OpenPorte_Test_Env::$cache_adds[0][3]);
   }
 
+  public function test_a_long_object_cache_ttl_is_capped_at_thirty_days()
+  {
+    OpenPorte_Test_Env::$external_object_cache = true;
+    $token = $this->token(time() + (40 * DAY_IN_SECONDS));
+
+    $this->assertTrue($this->verify_in_new_request($token));
+
+    $this->assertCount(1, OpenPorte_Test_Env::$cache_adds);
+    $this->assertSame(30 * DAY_IN_SECONDS, OpenPorte_Test_Env::$cache_adds[0][3]);
+  }
+
+  public function test_a_numeric_string_from_cache_incr_enforces_the_limit()
+  {
+    OpenPorte_Test_Env::$external_object_cache = true;
+    OpenPorte_Test_Env::$string_cache_incr = true;
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 1;
+    $token = $this->token(time() + 600);
+
+    $this->assertTrue($this->verify_in_new_request($token));
+    $this->assertFalse($this->verify_in_new_request($token));
+  }
+
   public function test_a_broken_object_cache_fails_open()
   {
     OpenPorte_Test_Env::$external_object_cache = true;
@@ -186,5 +208,28 @@ class ReplayStorageTest extends OpenPorteTestCase
     $this->assertTrue($this->verify_in_new_request($token));
 
     $this->assertCount(2, OpenPorte_Test_Env::actions('openporte_replay_store_unavailable'));
+  }
+
+  public function test_a_missing_timeout_row_fails_open_without_creating_a_value_row()
+  {
+    OpenPorte_Test_Env::$broken_timeout_add = true;
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 1;
+    $token = $this->token(time() + 600);
+
+    $this->assertTrue($this->verify_in_new_request($token));
+
+    $this->assertNull($this->counter_timeout($token));
+    $this->assertNull($this->counter_value($token));
+    $this->assertCount(1, OpenPorte_Test_Env::actions('openporte_replay_store_unavailable'));
+  }
+
+  public function test_an_existing_timeout_row_allows_the_value_row_to_be_created()
+  {
+    $token = $this->token(time() + 600);
+    OpenPorte_Test_Env::$options['_transient_timeout_' . $this->counter_key($token)] = time() + 600;
+
+    $this->assertTrue($this->verify_in_new_request($token));
+
+    $this->assertSame('1', $this->counter_value($token));
   }
 }
