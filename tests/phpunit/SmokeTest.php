@@ -31,4 +31,21 @@ class SmokeTest extends OpenPorteTestCase
       $this->counter_key($this->token(time() + 600))
     );
   }
+
+  public function test_init_hook_registers_the_request_state_reset()
+  {
+    $registrations = array_values(array_filter(
+      OpenPorte_Test_Env::$registered_actions,
+      function ($registration) {
+        return 'init' === $registration[0]
+          && is_array($registration[1])
+          && 'reset_request_state' === $registration[1][1];
+      }
+    ));
+
+    $this->assertCount(1, $registrations);
+    $this->assertInstanceOf('OpenPortePlugin', $registrations[0][1][0]);
+    $this->assertSame(10, $registrations[0][2]);
+    $this->assertSame(1, $registrations[0][3]);
+  }
 }

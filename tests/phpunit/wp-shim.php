@@ -34,6 +34,9 @@ class OpenPorte_Test_Env
   /** @var array<int,array> Every do_action() call, as [$tag, ...$args]. */
   public static $actions = array();
 
+  /** @var array<int,array> Every add_action() call made while loading the plugin. */
+  public static $registered_actions = array();
+
   /** @var array<int,string> Every _deprecated_function()/_doing_it_wrong() subject. */
   public static $deprecations = array();
 
@@ -202,7 +205,12 @@ function wp_cache_incr($key, $offset = 1, $group = '')
 
 /* ---------------------------------------------------------- hooks & filters */
 
-function add_action($tag, $callback, $priority = 10, $args = 1) { return true; }
+/** Record action registration so the suite can assert load-time wiring. */
+function add_action($tag, $callback, $priority = 10, $args = 1)
+{
+  OpenPorte_Test_Env::$registered_actions[] = array($tag, $callback, $priority, $args);
+  return true;
+}
 function add_filter($tag, $callback, $priority = 10, $args = 1) { return true; }
 function remove_action($tag, $callback, $priority = 10) { return true; }
 
