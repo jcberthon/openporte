@@ -105,6 +105,17 @@ class VerifyPrimitivesTest extends OpenPorteTestCase
     $this->assertTrue($this->plugin->verify($this->server_token(null)));
   }
 
+  public function test_the_server_signature_path_refuses_object_verification_data()
+  {
+    $token = $this->encode(array(
+      'algorithm' => 'SHA-256',
+      'verificationData' => array('verified' => true),
+      'signature' => str_repeat('0', 64),
+    ));
+
+    $this->assertFalse($this->plugin->verify($token));
+  }
+
   public function test_salt_expires_reads_the_embedded_expiry()
   {
     $this->assertSame(1234567890, OpenPortePlugin::salt_expires('abc?expires=1234567890&'));
