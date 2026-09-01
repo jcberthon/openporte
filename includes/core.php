@@ -1021,7 +1021,9 @@ class OpenPortePlugin
     }
     $data = $this->decode_payload($payload);
     if ($data === null
-      || !isset($data->algorithm, $data->verificationData, $data->signature)) {
+      || ! isset($data->algorithm, $data->verificationData, $data->signature)
+      || ! is_string($data->verificationData))
+    {
       return false;
     }
     // Same configured algorithm as verify_solution(). Preserve the true (raw
