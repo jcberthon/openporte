@@ -62,10 +62,36 @@ class VerifyPrimitivesTest extends OpenPorteTestCase
     $this->assertFalse($this->plugin->verify($forged));
   }
 
+  public function test_generated_challenge_salt_ends_with_a_delimiter()
+  {
+    $challenge = $this->plugin->generate_challenge(self::SECRET, 'low', 300);
+
+    $this->assertSame('&', substr($challenge['salt'], -1));
+  }
+
+  public function test_the_delimiter_blocks_expiry_splicing()
+  {
+    // Without a delimiter, moving the leading digit from the secret number to
+    // the expiry preserves the exact bytes covered by the challenge digest.
+    $vulnerable_salt = 'S?expires=1700000000';
+    $forged_salt = 'S?expires=17000000004';
+    $this->assertSame(
+      hash('sha256', $vulnerable_salt . 42),
+      hash('sha256', $forged_salt . 2)
+    );
+
+    // The generated trailing ampersand makes that rearrangement change the
+    // digest, so the existing signature can no longer validate the forgery.
+    $this->assertNotSame(
+      hash('sha256', $vulnerable_salt . '&' . 42),
+      hash('sha256', $forged_salt . 2)
+    );
+  }
+
   public function test_appending_a_parameter_to_the_salt_breaks_the_challenge()
   {
-    // Pins the trailing '&' delimiter: without it a crafted number could
-    // splice an extra parameter (like a new `expires`) onto the salt.
+    // Once a token is signed, extending its salt with another parameter must
+    // change its challenge digest and invalidate it.
     $token = $this->token(time() + 600);
     $payload = $this->decode($token);
     $payload['salt'] .= 'expires=' . (time() + 9999);

@@ -113,7 +113,7 @@ abstract class OpenPorteTestCase extends TestCase
   protected function counter_key($token)
   {
     $payload = $this->decode($token);
-    return 'openporte_replay_' . substr(hash('sha256', $payload['signature']), 0, 32);
+    return OpenPortePlugin::$replay_key_prefix . substr(hash('sha256', $payload['signature']), 0, 32);
   }
 
   /** Current value of a token's counter row, or null when there is none. */
