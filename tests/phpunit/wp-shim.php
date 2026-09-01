@@ -259,7 +259,15 @@ function wp_kses_post($string) { return $string; }
 function wp_unslash($value) { return $value; }
 function absint($value) { return abs(intval($value)); }
 function wp_json_encode($value) { return json_encode($value); }
-function selected($a, $b = true, $echo = true) { return ''; }
+function selected($a, $b = true, $echo = true)
+{
+  $result = (string) $a === (string) $b ? " selected='selected'" : '';
+  if ($echo)
+  {
+    echo $result; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Fixed test-shim markup.
+  }
+  return $result;
+}
 function checked($a, $b = true, $echo = true) { return ''; }
 function number_format_i18n($n, $decimals = 0) { return number_format($n, $decimals); }
 
