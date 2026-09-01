@@ -66,11 +66,32 @@ class ReplayLimitTest extends OpenPorteTestCase
     $this->assertSame(5, $this->plugin->get_replaylimit());
   }
 
-  public function test_a_negative_stored_value_means_unlimited()
+  public function test_a_negative_stored_value_uses_the_default()
   {
     OpenPorte_Test_Env::$options['openporte_replaylimit'] = -5;
 
-    $this->assertSame(0, $this->plugin->get_replaylimit());
+    $this->assertSame(5, $this->plugin->get_replaylimit());
+  }
+
+  public function test_a_fractional_stored_value_uses_the_default()
+  {
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 0.5;
+
+    $this->assertSame(5, $this->plugin->get_replaylimit());
+  }
+
+  public function test_a_scientific_notation_stored_value_uses_the_default()
+  {
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = '1e6';
+
+    $this->assertSame(5, $this->plugin->get_replaylimit());
+  }
+
+  public function test_an_oversized_stored_value_is_clamped_to_one_hundred()
+  {
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 250;
+
+    $this->assertSame(100, $this->plugin->get_replaylimit());
   }
 
   public function test_a_filter_can_lower_the_limit()
@@ -117,6 +138,35 @@ class ReplayLimitTest extends OpenPorteTestCase
     };
 
     $this->assertSame(7, $this->plugin->get_replaylimit());
+  }
+
+  public function test_a_filter_returning_a_fraction_falls_back_to_the_stored_limit()
+  {
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 7;
+    OpenPorte_Test_Env::$filters['openporte_replay_limit'] = function ($limit) {
+      return 0.5;
+    };
+
+    $this->assertSame(7, $this->plugin->get_replaylimit());
+  }
+
+  public function test_a_filter_returning_scientific_notation_falls_back_to_the_stored_limit()
+  {
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 7;
+    OpenPorte_Test_Env::$filters['openporte_replay_limit'] = function ($limit) {
+      return '1e6';
+    };
+
+    $this->assertSame(7, $this->plugin->get_replaylimit());
+  }
+
+  public function test_an_oversized_filter_result_is_clamped_to_one_hundred()
+  {
+    OpenPorte_Test_Env::$filters['openporte_replay_limit'] = function ($limit) {
+      return 250;
+    };
+
+    $this->assertSame(100, $this->plugin->get_replaylimit());
   }
 
   public function test_a_refused_replay_still_fires_the_result_hook_with_false()

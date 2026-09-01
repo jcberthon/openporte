@@ -226,9 +226,9 @@ class OpenPortePlugin
    * touching any call site. Its return value is re-clamped: a filter returning
    * nonsense must not be able to switch protection off by accident.
    *
-   * Called outside any hook — from the settings screen, say — current_filter()
-   * returns false and the context is the empty string. Filters should read that
-   * as "no hook context", never as a hook name.
+   * Called outside any hook, current_filter() returns false and the context is
+   * the empty string. Filters should read that as "no hook context", never as a
+   * hook name.
    *
    * @since 1.29.0
    *
@@ -236,20 +236,22 @@ class OpenPortePlugin
    *                        currently running.
    * @return int Maximum accepted uses per token; 0 for unlimited.
    */
-  public function get_replaylimit($context = '')
-  {
-    $stored = get_option(OpenPortePlugin::$option_replaylimit, null);
-    $limit = is_numeric($stored)
-      ? max(0, intval($stored))
+  public function get_replaylimit($context = '') {
+    $stored       = get_option(OpenPortePlugin::$option_replaylimit, null);
+    $stored_limit = filter_var($stored, FILTER_VALIDATE_INT);
+    $limit        = false !== $stored_limit && $stored_limit >= 0
+      ? min(100, $stored_limit)
       : OpenPortePlugin::$replaylimit_default;
-    if ($context === '') {
+    if ('' === $context) {
       $context = (string) current_filter();
     }
-    $filtered = apply_filters('openporte_replay_limit', $limit, $context);
-    if (!is_numeric($filtered) || intval($filtered) < 0) {
+    $filtered       = apply_filters('openporte_replay_limit', $limit, $context);
+    $filtered_limit = filter_var($filtered, FILTER_VALIDATE_INT);
+    if (false === $filtered_limit || $filtered_limit < 0) {
       return $limit;
     }
-    return intval($filtered);
+
+    return min(100, $filtered_limit);
   }
 
   public static function get_allowed_algorithms()
