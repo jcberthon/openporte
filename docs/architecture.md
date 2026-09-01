@@ -292,18 +292,20 @@ request.
 The reuse counter is keyed on the token's HMAC-verified `signature` (hashed),
 never on the raw payload, which a replay can re-encode at will. Its lifetime is
 the token's own remaining validity — read through the shared `payload_expires()`
-helper that also feeds the crypto gate, so the counter can never expire while
-the token it tracks is still acceptable — with a 60-second floor, no ceiling,
-and a 4-hour fallback for a token carrying no expiry at all. Storage is an
-atomic consume on existing infrastructure: `wp_cache_incr()` where a persistent
-object cache is present, otherwise a transient-shaped `wp_options` row pair
-claimed with a guarded `INSERT IGNORE` and spent with a guarded `UPDATE` that
-InnoDB row-locks. No schema, no cron — WordPress's own transient garbage
-collection reclaims the rows. State is written **only after** cryptographic
-success, so junk and forged tokens never create any and the open REST challenge
-endpoint stays stateless. A store that cannot count **fails open** (the
-submission is accepted) but fires `openporte_replay_store_unavailable` and is
-reported on the settings page.
+helper that also feeds the crypto gate — with a 60-second floor and a 4-hour
+fallback for a token carrying no expiry at all. The database backend has no
+ceiling. Persistent object-cache TTLs are capped at 30 days because Memcached
+treats a higher value as an absolute Unix timestamp; a longer-lived token is
+therefore bounded per 30-day window instead of becoming silently unlimited.
+Storage is an atomic consume on existing infrastructure: `wp_cache_incr()`
+where a persistent object cache is present, otherwise a transient-shaped
+`wp_options` row pair claimed with a guarded `INSERT IGNORE` and spent with a
+guarded `UPDATE` that InnoDB row-locks. No schema, no cron — WordPress's own
+transient garbage collection reclaims the rows. State is written **only after**
+cryptographic success, so junk and forged tokens never create any and the open
+REST challenge endpoint stays stateless. A store that cannot count **fails
+open** (the submission is accepted) but fires
+`openporte_replay_store_unavailable` and is reported on the settings page.
 
 **Invariant — CVE-2025-68113.** The counter's lifetime derives from `expires`,
 so `expires` must remain bound by the signature. It is: the signature covers the
@@ -411,9 +413,10 @@ code:
 - **State is written only after cryptographic success.** Counting before
   verification would let unauthenticated junk create rows, turning the open
   challenge endpoint into a write amplifier.
-- **The counter must never outlive-by-less than its token** — i.e. its TTL is
-  the token's own remaining validity, read from the same `payload_expires()` the
-  crypto gate uses. If the marker dies first, the budget silently resets.
+- **The counter should cover the token's remaining lifetime** — its TTL comes
+  from the same `payload_expires()` the crypto gate uses. The only ceiling is
+  the persistent-cache backend's portable 30-day maximum; without it Memcached
+  expires longer TTLs immediately, silently resetting the budget on every use.
 - **`expires` must stay covered by the signature** (CVE-2025-68113): keep the
   trailing `&` in `generate_challenge()`, and never sign anything the challenge
   does not hash.

@@ -134,11 +134,14 @@ Three properties make the bound hold rather than merely exist:
    counter is touched, so it is neither forgeable nor sensitive to how the JSON
    envelope happens to be encoded — unlike the raw payload, which a replay can
    re-encode at will.
-3. **Lifetime = the token's own remaining validity** (60 s floor, no ceiling),
-   read through the shared `payload_expires()` helper that also feeds the crypto
-   gate. Because the counter dies with the token and never before it, an
-   expiring token is bounded to N uses over its *whole life*, not N uses per
-   rolling window.
+3. **Lifetime = the token's own remaining validity** (60 s floor), read through
+   the shared `payload_expires()` helper that also feeds the crypto gate. The
+   database backend has no ceiling, so an expiring token is bounded to N uses
+   over its *whole life*. Persistent object-cache TTLs are capped at 30 days:
+   Memcached treats anything higher as an absolute Unix timestamp and would
+   otherwise expire the counter immediately. A longer-lived token is therefore
+   bounded to N uses per 30-day window on that backend rather than silently
+   becoming unlimited.
 
 The counter lives in transient-shaped `wp_options` rows, so WordPress's own
 garbage collection reclaims it — no schema, no cron. It is written **only after

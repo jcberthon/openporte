@@ -49,6 +49,12 @@ class OpenPorte_Test_Env
   /** @var bool When true, wp_cache_incr() always fails — a broken drop-in. */
   public static $broken_cache_incr = false;
 
+  /** @var bool When true, wp_cache_incr() returns a numeric string. */
+  public static $string_cache_incr = false;
+
+  /** @var bool When true, replay-counter timeout rows cannot be created. */
+  public static $broken_timeout_add = false;
+
   /** @var bool When true, every $wpdb write reports failure — a broken database. */
   public static $broken_database = false;
 
@@ -71,6 +77,8 @@ class OpenPorte_Test_Env
     self::$current_filter = '';
     self::$external_object_cache = false;
     self::$broken_cache_incr = false;
+    self::$string_cache_incr = false;
+    self::$broken_timeout_add = false;
     self::$broken_database = false;
     self::$http_response = array();
   }
@@ -121,6 +129,10 @@ function update_option($name, $value, $autoload = null)
 
 function add_option($name, $value = '', $deprecated = '', $autoload = null)
 {
+  if (OpenPorte_Test_Env::$broken_timeout_add
+    && 0 === strpos($name, '_transient_timeout_openporte_replay_')) {
+    return false;
+  }
   if (array_key_exists($name, OpenPorte_Test_Env::$options)) {
     return false;
   }
@@ -183,7 +195,9 @@ function wp_cache_incr($key, $offset = 1, $group = '')
     return false;
   }
   OpenPorte_Test_Env::$cache[$group][$key] = intval(OpenPorte_Test_Env::$cache[$group][$key]) + $offset;
-  return OpenPorte_Test_Env::$cache[$group][$key];
+  return OpenPorte_Test_Env::$string_cache_incr
+    ? (string) OpenPorte_Test_Env::$cache[$group][$key]
+    : OpenPorte_Test_Env::$cache[$group][$key];
 }
 
 /* ---------------------------------------------------------- hooks & filters */
