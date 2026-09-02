@@ -127,4 +127,50 @@ class SettingsRendererTest extends OpenPorteTestCase
     $this->assertStringContainsString('min="0" max="100" step="1"', $html);
     $this->assertStringNotContainsString('data-selfhosted-api', $html);
   }
+
+  public function test_the_replay_limit_field_shows_the_limit_that_is_enforced()
+  {
+    // A stored value that is not integer-like can only have arrived out of
+    // band (WP-CLI, another plugin, a hand-edited row). get_replaylimit()
+    // refuses it and falls back to the default, so the field must show the
+    // default too: rendering the raw option would select "Unlimited" while
+    // verify() went on enforcing 5, and saving that form would make the lie
+    // true.
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = '0.5';
+
+    $html = $this->render(function () {
+      openporte_settings_replaylimit_callback(array('name' => 'openporte_replaylimit'));
+    });
+
+    $this->assertSame(5, $this->plugin->get_replaylimit());
+    $this->assertStringContainsString("<option value=\"5\"  selected='selected'", $html);
+    $this->assertStringNotContainsString("<option value=\"0\"  selected='selected'", $html);
+  }
+
+  public function test_the_replay_limit_field_clamps_an_oversized_stored_value()
+  {
+    OpenPorte_Test_Env::$options['openporte_replaylimit'] = 250;
+
+    $html = $this->render(function () {
+      openporte_settings_replaylimit_callback(array('name' => 'openporte_replaylimit'));
+    });
+
+    $this->assertSame(100, $this->plugin->get_replaylimit());
+    $this->assertStringContainsString('value="100"', $html);
+    $this->assertStringNotContainsString('value="250"', $html);
+  }
+
+  public function test_the_preset_renderer_floors_a_negative_option_instead_of_flipping_it()
+  {
+    // absint() would render a stored -5 as 5. For Expiration that reads as
+    // "5 seconds" when generate_challenge() actually treats it as no expiry.
+    OpenPorte_Test_Env::$options['openporte_expires'] = -5;
+
+    $html = $this->render(function () {
+      openporte_settings_expires_callback(array('name' => 'openporte_expires'));
+    });
+
+    $this->assertStringContainsString('value="0"', $html);
+    $this->assertStringNotContainsString('value="5"', $html);
+  }
 }
