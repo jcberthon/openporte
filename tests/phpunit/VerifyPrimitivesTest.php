@@ -142,6 +142,52 @@ class VerifyPrimitivesTest extends OpenPorteTestCase
     $this->assertFalse($this->plugin->verify($token));
   }
 
+  /**
+   * Every payload field the primitives feed to hash(), parse_str() or
+   * hash_equals() must be refused when it is not a string.
+   *
+   * JSON lets a submitter send any of them as an array, and hash_equals()
+   * raises a TypeError on one — a fatal error on an unauthenticated form POST,
+   * which is exactly what security-audit.md finding #3 exists to prevent.
+   * decode_payload() only guarantees an object, so the guard has to be here.
+   *
+   * @dataProvider non_string_payload_fields
+   *
+   * @param array $payload Token payload with one field of the wrong type.
+   */
+  public function test_a_non_string_payload_field_is_refused_not_fatal(array $payload)
+  {
+    $this->assertFalse($this->plugin->verify($this->encode($payload)));
+  }
+
+  /** @return array<string,array<int,array>> */
+  public function non_string_payload_fields()
+  {
+    $pow = array(
+      'algorithm' => 'SHA-256',
+      'challenge' => str_repeat('0', 64),
+      'number' => 1,
+      'salt' => 'abc&',
+      'signature' => str_repeat('0', 64),
+    );
+    $server = array(
+      'algorithm' => 'SHA-256',
+      'verificationData' => 'verified=true',
+      'signature' => str_repeat('0', 64),
+    );
+
+    return array(
+      'proof-of-work: algorithm' => array(array('algorithm' => array('SHA-256')) + $pow),
+      'proof-of-work: challenge' => array(array('challenge' => array('x')) + $pow),
+      'proof-of-work: salt' => array(array('salt' => array('abc&')) + $pow),
+      'proof-of-work: number' => array(array('number' => array(1)) + $pow),
+      'proof-of-work: signature' => array(array('signature' => array('x')) + $pow),
+      'server signature: algorithm' => array(array('algorithm' => array('SHA-256')) + $server),
+      'server signature: verificationData' => array(array('verificationData' => array('v' => 1)) + $server),
+      'server signature: signature' => array(array('signature' => array('x')) + $server),
+    );
+  }
+
   public function test_salt_expires_reads_the_embedded_expiry()
   {
     $this->assertSame(1234567890, OpenPortePlugin::salt_expires('abc?expires=1234567890&'));

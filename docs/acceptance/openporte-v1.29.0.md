@@ -178,9 +178,11 @@ verify by hand. Steps 4–8 are **not** covered by any harness.
        served markup already carries the right state: view source in Custom mode and
        confirm `data-selfhosted-api` **and** `disabled` on both `#openporte_expires` and
        `#openporte_complexity`
-6. [ ] Custom-mode health check: a backend whose challenges carry no `expires` in the
-       salt yields a warning naming that; one that sets a sane expiry yields a success
-       notice mentioning it
+6. [ ] Custom-mode health check, three outcomes and they must not be confused:
+       a backend whose challenges carry no `expires` in the salt yields a warning
+       naming that; one whose `expires` is already in the past yields a *different*
+       warning naming clock skew or a stale cached challenge; one that sets a sane
+       expiry yields a success notice mentioning it
 7. [ ] Replay-protection status notice appears on the settings screen and matches
        reality (limit in force, object cache vs database)
 

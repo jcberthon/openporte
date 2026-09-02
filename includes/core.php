@@ -239,23 +239,50 @@ class OpenPortePlugin
    */
   public function get_replaylimit($context = '')
   {
-    $stored       = get_option(OpenPortePlugin::$option_replaylimit, null);
-    $stored_limit = filter_var($stored, FILTER_VALIDATE_INT);
-    $limit        = false !== $stored_limit && $stored_limit >= 0
-      ? min(100, $stored_limit)
-      : OpenPortePlugin::$replaylimit_default;
-    if ('' === $context)
-    {
+    $stored = OpenPortePlugin::clamp_replaylimit(get_option(OpenPortePlugin::$option_replaylimit, null));
+    $limit = $stored === null ? OpenPortePlugin::$replaylimit_default : $stored;
+    if ($context === '') {
       $context = (string) current_filter();
     }
-    $filtered       = apply_filters('openporte_replay_limit', $limit, $context);
-    $filtered_limit = filter_var($filtered, FILTER_VALIDATE_INT);
-    if (false === $filtered_limit || $filtered_limit < 0)
-    {
-      return $limit;
+    $filtered = OpenPortePlugin::clamp_replaylimit(
+      apply_filters('openporte_replay_limit', $limit, $context)
+    );
+
+    return $filtered === null ? $limit : $filtered;
+  }
+
+  /**
+   * Read a Replay limit out of any source, or refuse it.
+   *
+   * The single definition of the setting's range, shared by get_replaylimit()
+   * above and by the settings-screen renderer (admin/options.php), so the
+   * value the admin is shown is always the value verify() enforces.
+   *
+   * Only integer-like input is accepted. intval() would turn a mistyped 0.5
+   * into 0 — silently switching protection off — and '1e6' into a million,
+   * neither of which anyone chose; those are refused so the caller can fall
+   * back to the default. An out-of-range integer is clamped instead, because
+   * 250 is a legible intent.
+   *
+   * Deliberately *not* shared with openporte_sanitize_replaylimit(): the
+   * sanitizer coerces what an administrator typed into a value the settings
+   * page then shows them (-5 becomes 0, visibly wrong), while this refuses
+   * values that can only have arrived out of band. Keep the two apart.
+   *
+   * @since 1.29.0
+   *
+   * @param mixed $value Candidate value from any source.
+   * @return int|null Limit clamped to 0-100, or null when $value is not an
+   *                  integer-like, non-negative number.
+   */
+  public static function clamp_replaylimit($value)
+  {
+    $limit = filter_var($value, FILTER_VALIDATE_INT);
+    if ($limit === false || $limit < 0) {
+      return null;
     }
 
-    return min(100, $filtered_limit);
+    return min(100, $limit);
   }
 
   public static function get_allowed_algorithms()
@@ -558,6 +585,42 @@ class OpenPortePlugin
   }
 
   /**
+   * Whether a decoded payload carries every named field, at a usable type.
+   *
+   * decode_payload() only guarantees an object: JSON lets a submitter send any
+   * field as an array or a nested object, and hash(), parse_str() and
+   * hash_equals() all raise a TypeError on one — a fatal error on an
+   * unauthenticated form POST, which is what security-audit.md finding #3
+   * exists to prevent. Both verification primitives type-check through here
+   * before they touch a field, so a malformed token is refused rather than
+   * fatal.
+   *
+   * @since 1.29.0
+   *
+   * @param object            $data    Decoded token payload.
+   * @param array<int,string> $strings Field names that must be strings.
+   * @param array<int,string> $scalars Field names that need only be scalar
+   *                                   (the salted `number`, which is
+   *                                   concatenated rather than compared).
+   * @return bool True when every named field is present and usable.
+   */
+  private static function has_payload_fields($data, array $strings, array $scalars = array())
+  {
+    foreach ($strings as $field) {
+      if (!isset($data->$field) || !is_string($data->$field)) {
+        return false;
+      }
+    }
+    foreach ($scalars as $field) {
+      if (!isset($data->$field) || !is_scalar($data->$field)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Drop the per-request verification memo.
    *
    * Hooked on `init`, which always runs before any verification does. Ordinary
@@ -742,13 +805,11 @@ class OpenPortePlugin
       $cache_ttl = min($ttl, 30 * DAY_IN_SECONDS);
       wp_cache_add($key, '0', OpenPortePlugin::$replay_cache_group, $cache_ttl);
       $count = wp_cache_incr($key, 1, OpenPortePlugin::$replay_cache_group);
-      if (! is_numeric($count))
-      {
+      if (!is_numeric($count)) {
         return null;
       }
       $count = intval($count);
-      if ($count < 1)
-      {
+      if ($count < 1) {
         return null;
       }
 
@@ -775,8 +836,7 @@ class OpenPortePlugin
   private function consume_replay_slot_db($key, $limit, $ttl)
   {
     global $wpdb;
-    if (! isset($wpdb) || ! is_object($wpdb))
-    {
+    if (!isset($wpdb) || !is_object($wpdb)) {
       return null;
     }
     // Core's lazy expiry sweep: reading the transient drops a pair whose window
@@ -794,10 +854,9 @@ class OpenPortePlugin
     // joins the two rows, and lingers as ~100 bytes. autoload 'no' keeps both
     // rows out of the alloptions cache (add_option()'s fourth argument has
     // meant "do not autoload" as both false and 'no' since WordPress 4.2).
-    $timeout_row     = '_transient_timeout_' . $key;
+    $timeout_row = '_transient_timeout_' . $key;
     $timeout_created = add_option($timeout_row, time() + $ttl, '', false);
-    if (! $timeout_created && false === get_option($timeout_row, false))
-    {
+    if (!$timeout_created && get_option($timeout_row, false) === false) {
       // false also means the row already existed. Only fail open when the
       // follow-up read proves that the expiry marker is genuinely absent.
       return null;
@@ -815,12 +874,10 @@ class OpenPortePlugin
         $value_row
       )
     );
-    if (false === $created)
-    {
+    if ($created === false) {
       return null;
     }
-    if ($created > 0)
-      {
+    if ($created > 0) {
       return 1 <= $limit;
     }
     // The row already exists, so one statement decides the outcome: the row
@@ -834,12 +891,10 @@ class OpenPortePlugin
         $limit
       )
     );
-    if (false === $consumed)
-      {
+    if ($consumed === false) {
       return null;
     }
-    if ($consumed > 0)
-      {
+    if ($consumed > 0) {
       return true;
     }
     // Nothing was updated: either the budget is spent, or nothing was ever
@@ -853,7 +908,7 @@ class OpenPortePlugin
       )
     );
 
-    return null === $stored ? null : false;
+    return $stored === null ? null : false;
   }
 
   /**
@@ -1022,9 +1077,7 @@ class OpenPortePlugin
     }
     $data = $this->decode_payload($payload);
     if ($data === null
-      || ! isset($data->algorithm, $data->verificationData, $data->signature)
-      || ! is_string($data->verificationData))
-    {
+      || !OpenPortePlugin::has_payload_fields($data, array('algorithm', 'verificationData', 'signature'))) {
       return false;
     }
     // Same configured algorithm as verify_solution(). Preserve the true (raw
@@ -1087,7 +1140,11 @@ class OpenPortePlugin
     }
     $data = $this->decode_payload($payload);
     if ($data === null
-      || !isset($data->algorithm, $data->salt, $data->number, $data->challenge, $data->signature)) {
+      || !OpenPortePlugin::has_payload_fields(
+        $data,
+        array('algorithm', 'salt', 'challenge', 'signature'),
+        array('number')
+      )) {
       return false;
     }
     // Read through payload_expires() so the crypto gate and the reuse

@@ -525,6 +525,8 @@ function openporte_settings_select_callback(array $args)
  * migration is ever needed.
  *
  * @since 1.29.0
+ * @since 1.29.0 Added the `value` arg, for a setting whose reader validates
+ *               the stored option before enforcing it.
  *
  * @param array $args {
  *     @type string $name          Option name. Required.
@@ -538,6 +540,10 @@ function openporte_settings_select_callback(array $args)
  *                                 Optional; also toggled by public/admin.js.
  *     @type bool   $selfhosted_only Mark the controls as inert in Custom API
  *                                 mode, so admin.js can disable them live.
+ *     @type int    $value         Value to display, when the setting's own
+ *                                 reader validates the stored option rather
+ *                                 than using it verbatim. Optional; defaults
+ *                                 to the stored option floored at 0.
  *   }
  */
 function openporte_render_preset_select(array $args)
@@ -549,7 +555,12 @@ function openporte_render_preset_select(array $args)
   $disabled = isset($args['disabled']) ? $args['disabled'] : false;
   $disabled_note = isset($args['disabled_note']) ? $args['disabled_note'] : null;
   $selfhosted_only = isset($args['selfhosted_only']) ? $args['selfhosted_only'] : false;
-  $value = absint(get_option($name));
+  // max(0, intval()) rather than absint(): a stored -5 is a broken value, and
+  // showing it as 5 would tell the admin the opposite of what takes effect.
+  // A setting whose reader validates the option further passes `value`.
+  $value = isset($args['value'])
+    ? intval($args['value'])
+    : max(0, intval(get_option($name)));
   $is_custom = !isset($presets[$value]);
   // Inverse of the data-custom-api attribute used by the Challenge URL field:
   // these controls are the ones Custom mode takes away, not the ones it needs.
@@ -608,7 +619,18 @@ function openporte_settings_expires_callback(array $args)
  */
 function openporte_settings_replaylimit_callback(array $args)
 {
+  // Show the limit that will actually be enforced. get_replaylimit() refuses a
+  // stored value that is not integer-like and falls back to the default, so
+  // reading the raw option here would render "Unlimited" for a stored 0.5
+  // while verify() went on enforcing 5. The filter is deliberately not applied:
+  // this field edits the stored setting, not the runtime override.
+  $openporte_stored_limit = OpenPortePlugin::clamp_replaylimit(
+    get_option(OpenPortePlugin::$option_replaylimit, null)
+  );
   openporte_render_preset_select(array_merge($args, array(
+    'value' => $openporte_stored_limit === null
+      ? OpenPortePlugin::$replaylimit_default
+      : $openporte_stored_limit,
     'custom_name' => 'openporte_replaylimit_custom',
     'min' => 0,
     'max' => 100,
