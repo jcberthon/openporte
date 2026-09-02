@@ -1,8 +1,2 @@
 MD033: false
-MD013:
-  # Number of characters
-  line_length: 88
-  # Include code blocks
-  code_blocks: false
-  # Include tables
-  tables: false
+MD013: false
