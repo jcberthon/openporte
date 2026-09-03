@@ -7,11 +7,21 @@
  * real capture-phase ordering — for the one behaviour the matrix structurally
  * cannot see: a widget inserted into a form *after* page load.
  *
- * The matrix misses it because every click path it drives goes through the
- * capture-phase click guard, which queries widgets at click time and so works
- * whether or not the per-widget submit listener was ever bound. An unbound
- * widget fails silently — nothing throws, the visitor just has to press Submit
- * twice — which is exactly how the gap survived until the Ninja Forms driver.
+ * The matrix misses it because every submission path it drives goes through
+ * the capture-phase click guard, which queries widgets at click time and so
+ * works whether or not the per-widget submit listener was ever bound. Enter is
+ * one of those paths, not an exception to them: the browser's implicit
+ * submission dispatches a click on the form's default button, which is what
+ * the guard is watching for.
+ *
+ * On Ninja Forms the binding is not merely untested but unobservable, which is
+ * what makes this spec the only guard for it rather than the cheap one. Ninja
+ * Forms submits from a delegated click handler and preventDefaults the click,
+ * so no native submit event is ever dispatched on its forms — measured on the
+ * bench with the click guard disabled and the widget checkbox not required
+ * (auto="onsubmit"), the two conditions that would let one through. With
+ * nothing there to fire it, the per-widget listener cannot distinguish a bound
+ * widget from an unbound one.
  *
  * The stub models only what docs/agents/altcha-upstream.md already names as
  * the contract to re-check on each widget update: a `.altcha` element carrying

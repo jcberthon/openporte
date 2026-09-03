@@ -140,11 +140,16 @@ npx playwright test widget-binding.spec.js   # runs anywhere, ~2s, no bench
 
 It covers the one thing the matrix structurally cannot see: a widget inserted
 into a form *after* page load, as Ninja Forms does when it renders its fields
-from Backbone templates. Every click path the matrix drives goes through the
-capture-phase click guard, which queries widgets at click time and therefore
-works whether or not the per-widget submit listener was ever bound — so an
-unbound widget passes the whole matrix and fails only for the visitor, who has
-to press Submit twice.
+from Backbone templates. Every submission path the matrix drives goes through
+the capture-phase click guard, which queries widgets at click time and
+therefore works whether or not the per-widget submit listener was ever bound.
+Enter is one of those paths rather than an exception to them — the browser's
+implicit submission dispatches a click on the form's default button.
+
+On Ninja Forms the binding is unobservable, not just untested: Ninja Forms
+submits from a delegated click handler and preventDefaults the click, so no
+native submit event is ever dispatched on its forms and nothing there can tell
+a bound widget from an unbound one. This spec is the only thing that can.
 
 The stub models only the two things `docs/agents/altcha-upstream.md` already
 names as the contract to re-check on each widget update — a `.altcha` element
