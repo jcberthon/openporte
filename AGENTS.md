@@ -114,7 +114,7 @@ exercise the affected form.
 1. `includes/helpers.php`
 2. `includes/core.php` — instantiates `OpenPortePlugin` singleton immediately on load
 3. `public/widget.php`
-4. All 13 files under `integrations/` — each self-registers its hooks at `require` time
+4. All files under `integrations/` — each self-registers its hooks at `require` time (a new integration must be added to the `require` list in `openporte.php`)
 
 Each integration file registers hooks unconditionally at load; the callbacks themselves
 check `OpenPortePlugin::$instance->get_integration_*()` to decide whether to act.
@@ -152,11 +152,14 @@ only**: never a drive-by mass reformat of code a task doesn't otherwise
 require touching. When you do touch a function/method/class/hook to
 implement a change or fix, bring that unit into line with WPCS as part of the
 change (behavior-preserving; indentation stays 2-space, matching this repo's
-existing convention). New symbols always get a docblock; symbols you modify
-get one added or updated; symbols you don't touch get left alone. New
-symbols are tagged `@since <in-progress version>`; existing undocumented
-symbols you touch get `@since` backfilled from git history, no further back
-than 1.26.3. Full rules and rationale: @docs/agents/coding-style.md.
+existing convention). **The unit is the whole function including its header
+comment, not just the lines your diff lands on** — a modified function should
+read as conformant end to end, docblock and inline comments included. New
+symbols always get a docblock; symbols you modify get one added or updated;
+symbols you don't touch get left alone. New symbols are tagged `@since
+<in-progress version>`; existing undocumented symbols you touch get `@since`
+backfilled from git history, no further back than 1.26.3. Full rules and
+rationale: @docs/agents/coding-style.md.
 
 ### Comment what you touch
 

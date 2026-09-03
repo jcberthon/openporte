@@ -127,6 +127,36 @@ npm run report                                 # open the HTML report
 Tests run **serially with one worker** — the settings under test are global
 WordPress options.
 
+## `widget-binding.spec.js` — no bench required
+
+One spec in this directory does *not* talk to wp-env. `widget-binding.spec.js`
+serves its own fixture page through a route interceptor, loads the real
+`public/script.js`, and stands a minimal stub in for the ALTCHA widget:
+
+```sh
+cd tests/e2e
+npx playwright test widget-binding.spec.js   # runs anywhere, ~2s, no bench
+```
+
+It covers the one thing the matrix structurally cannot see: a widget inserted
+into a form *after* page load, as Ninja Forms does when it renders its fields
+from Backbone templates. Every submission path the matrix drives goes through
+the capture-phase click guard, which queries widgets at click time and
+therefore works whether or not the per-widget submit listener was ever bound.
+Enter is one of those paths rather than an exception to them — the browser's
+implicit submission dispatches a click on the form's default button.
+
+On Ninja Forms the binding is unobservable, not just untested: Ninja Forms
+submits from a delegated click handler and preventDefaults the click, so no
+native submit event is ever dispatched on its forms and nothing there can tell
+a bound widget from an unbound one. This spec is the only thing that can.
+
+The stub models only the two things `docs/agents/altcha-upstream.md` already
+names as the contract to re-check on each widget update — a `.altcha` element
+carrying `data-state`, and an `input[type=checkbox]`. Keep it that thin: a
+richer stub drifts from the real widget and starts testing itself. The real
+widget's behaviour stays the matrix's job.
+
 ## Adding an integration
 
 Create `drivers/<name>.js` exporting

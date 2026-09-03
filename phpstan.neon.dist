@@ -97,3 +97,9 @@ parameters:
 		-
 			message: '#(unknown class|Class) WPCF7_Submission#'
 			path: integrations/contact-form-7.php
+		# Ninja Forms is likewise optional; the integration file is gated on
+		# openporte_plugin_active('ninja-forms') so Ninja_Forms() only runs
+		# when the plugin is loaded.
+		-
+			message: '#^Function Ninja_Forms not found\.$#'
+			path: integrations/ninja-forms.php

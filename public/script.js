@@ -1,3 +1,32 @@
+/**
+ * Front-end glue between the ALTCHA widget and the forms around it.
+ *
+ * The widget is a self-contained web component: it renders a checkbox, solves
+ * a proof-of-work challenge, and writes the solved payload into a hidden
+ * "altcha" input. What it cannot know is how the surrounding page submits the
+ * form it sits in — and every submission path this plugin supports gets that
+ * wrong in its own way. This file reconciles the two:
+ *
+ * - the widget's checkbox is given an explicit (empty) name attribute, which
+ *   sidesteps an input-validation exception;
+ * - a submit that lands while a solve is in flight is held and replayed once
+ *   the solve finishes, instead of being silently dropped;
+ * - a submit *click* is held the same way, in capture phase, for the paths
+ *   where no submit event is ever fired (the browser rejecting the form over
+ *   the not-yet-checked checkbox, wpDiscuz's delegated jQuery handler) or
+ *   where the widget's own replay would lose the button's name and value
+ *   (fatal for WooCommerce login and register);
+ * - widgets that appear after page load — Elementor popups, wpDiscuz, Ninja
+ *   Forms' Backbone-rendered fields — are de-duplicated and picked up by the
+ *   same handling as the rest.
+ *
+ * None of this is enforcement. Verification happens server-side, and a visitor
+ * who defeats every guard here still has the submission rejected. This is what
+ * stands between a plugin that works and one that makes people press Submit
+ * twice.
+ *
+ * @since 1.26.3
+ */
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => {
@@ -6,60 +35,85 @@
       // submission themselves once solved, so we must not queue a second one.
       const widgetManagedSolve = new WeakSet();
       const pendingResubmit = new WeakSet();
-      [...document.querySelectorAll('altcha-widget')].forEach((el) => {
+      // Widgets that already carry the submit guard below. Forms built in
+      // JavaScript after this first pass — Ninja Forms renders its fields from
+      // Backbone templates — insert their widget later, so the MutationObserver
+      // further down re-runs this for them. A widget is only recorded once it
+      // actually got a listener, which leaves one that is still rendering its
+      // own internals (no checkbox yet) to be picked up by a later mutation.
+      const boundWidgets = new WeakSet();
+      const bindWidget = (el) => {
+        if (boundWidgets.has(el)) {
+          return;
+        }
         // add the name attr to fix input validation exception
         const altcha = el.querySelector('.altcha')
         const checkbox = el.querySelector('input[type="checkbox"]')
         checkbox?.setAttribute('name', '');
         const form = el.closest('form');
-        if (form && checkbox && altcha?.getAttribute('data-state') !== 'code') {
-          form.addEventListener('submit', (ev) => {
-            const state = altcha?.getAttribute('data-state');
-            if (state === 'code') {
-              return;
-            }
-            if (state === 'unverified' || state === 'error') {
-              // In onsubmit/floating modes the widget intercepts this submit,
-              // solves, and replays it itself when done — remember that so the
-              // 'verifying' branch below doesn't queue a duplicate replay.
-              widgetManagedSolve.add(el);
-              return;
-            }
-            if (state === 'verifying') {
-              // A submit landing while a solve is already in flight (started
-              // by auto="onload"/"onfocus") is dropped: the widget's floating/
-              // onsubmit interception preventDefaults it but never replays it,
-              // and in the other modes the unchecked-checkbox guard below
-              // would block it. Queue exactly one replay for when the solve
-              // finishes — unless the widget started this solve from a submit
-              // and will replay on its own.
-              ev.preventDefault();
-              ev.stopPropagation();
-              if (!widgetManagedSolve.has(el) && !pendingResubmit.has(el)) {
-                pendingResubmit.add(el);
-                el.addEventListener('verified', () => {
-                  pendingResubmit.delete(el);
-                  form.requestSubmit ? form.requestSubmit() : form.submit();
-                }, { once: true });
-              }
-              return;
-            }
-            widgetManagedSolve.delete(el);
-            if (!checkbox.reportValidity()) {
-              ev.preventDefault();
-              ev.stopPropagation();
-            }
-          }, true);
+        if (!form || !checkbox || altcha?.getAttribute('data-state') === 'code') {
+          return;
         }
-      });
+        boundWidgets.add(el);
+        form.addEventListener('submit', (ev) => {
+          // Re-queried on every submit, not closed over: a widget can
+          // re-render its internals after this listener was bound (the
+          // de-dup above replaces .altcha wholesale on Elementor popups and
+          // wpDiscuz), which would otherwise leave this handler reading a
+          // detached node forever -- reportValidity() on a detached required
+          // checkbox returns false and blocks every future submit.
+          const altcha = el.querySelector('.altcha');
+          const checkbox = el.querySelector('input[type="checkbox"]');
+          checkbox?.setAttribute('name', '');
+          const state = altcha?.getAttribute('data-state');
+          if (!checkbox || state === 'code') {
+            return;
+          }
+          if (state === 'unverified' || state === 'error') {
+            // In onsubmit/floating modes the widget intercepts this submit,
+            // solves, and replays it itself when done — remember that so the
+            // 'verifying' branch below doesn't queue a duplicate replay.
+            widgetManagedSolve.add(el);
+            return;
+          }
+          if (state === 'verifying') {
+            // A submit landing while a solve is already in flight (started
+            // by auto="onload"/"onfocus") is dropped: the widget's floating/
+            // onsubmit interception preventDefaults it but never replays it,
+            // and in the other modes the unchecked-checkbox guard below
+            // would block it. Queue exactly one replay for when the solve
+            // finishes — unless the widget started this solve from a submit
+            // and will replay on its own.
+            ev.preventDefault();
+            ev.stopPropagation();
+            if (!widgetManagedSolve.has(el) && !pendingResubmit.has(el)) {
+              pendingResubmit.add(el);
+              el.addEventListener('verified', () => {
+                pendingResubmit.delete(el);
+                form.requestSubmit ? form.requestSubmit() : form.submit();
+              }, { once: true });
+            }
+            return;
+          }
+          widgetManagedSolve.delete(el);
+          if (!checkbox.reportValidity()) {
+            ev.preventDefault();
+            ev.stopPropagation();
+          }
+        }, true);
+      };
+      [...document.querySelectorAll('altcha-widget')].forEach(bindWidget);
 
-      // Removes duplicate widgets when manipulated with JS such as elementor popups and wpdiscuz
+      // Removes duplicate widgets when manipulated with JS such as elementor
+      // popups and wpdiscuz, and binds the submit guard on widgets that only
+      // appear once their form has been rendered in JavaScript.
       const observer = new MutationObserver((mutations) => {
         [...document.querySelectorAll('altcha-widget')].forEach((el) => {
           const altchas = [...el.querySelectorAll('.altcha')];
           if (altchas.length > 1) {
             altchas.slice(0, -1).forEach((altcha) => altcha.remove());
           }
+          bindWidget(el);
         })
       });
       observer.observe(document.body, {
