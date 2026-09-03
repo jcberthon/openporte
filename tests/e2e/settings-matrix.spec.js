@@ -1,4 +1,4 @@
-const { test } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const drivers = require('./drivers');
 const {
   wpSetOption,
@@ -158,6 +158,100 @@ for (const driver of drivers) {
 
         await clickWidgetCheckbox(page);
         await waitForVerified(page);
+        await driver.submit(page, ctx);
+        await driver.expectAccepted(page, ctx, marker);
+      });
+
+      test('recovers when the rejection lands after the widget verified', async ({ page }) => {
+        // The sibling above covers the ordering the recovery was first written
+        // for: the rejection round-trips, THEN the visitor solves, and the
+        // widget's 'verified' clears the error. This covers the inverted
+        // ordering — the visitor solves while the rejection is still in flight,
+        // so 'verified' fires before public/ninja-forms.js has a rejected
+        // field id to clear. Nothing fires afterwards, so unless the
+        // response handler itself clears an already-verified form, the error
+        // sits there and Ninja Forms wedges every later submission for the
+        // life of the page load.
+        //
+        // A fast bench never produces this ordering on its own — the rejection
+        // beats the solve every time — so the response is held until the solve
+        // has verified, making the ordering deterministic instead of a race
+        // the test would usually lose. Holding until 'verified' (not a fixed
+        // delay) keeps it robust to solve speed.
+        //
+        // Generalising this response-timing coverage to the other AJAX
+        // integrations, behind a reusable helper, is issue #114.
+        applyCombo({ auto: '', floating: 0 });
+        driver.reset?.(ctx);
+        const marker = `e2e ${driver.key} late-reject #${++counter} ${Date.now()}`;
+
+        let releaseResponse;
+        const held = new Promise((resolve) => {
+          releaseResponse = resolve;
+        });
+        let alreadyHeld = false;
+        // What the server actually replied to the unsolved submission. Checked
+        // below: without it this test would pass just as happily if
+        // verification stopped rejecting anything at all, since a submission
+        // that is never rejected also never wedges the form.
+        let heldBody = null;
+        let rejectionDelivered = Promise.resolve(null);
+        await page.route('**/admin-ajax.php', async (route) => {
+          const body = route.request().postData() || '';
+          // Hold only the first Ninja Forms submission — the rejected one.
+          if (alreadyHeld || !body.includes('nf_ajax_submit')) {
+            return route.continue();
+          }
+          alreadyHeld = true;
+          const response = await route.fetch();
+          heldBody = await response.text();
+          await held;
+          await route.fulfill({ response });
+        });
+
+        try {
+          await driver.open(page, ctx);
+          await driver.fill(page, ctx, marker);
+
+          // Armed before the submission: the fulfilment happens the moment we
+          // release below, so waiting for it afterwards could miss it and hang.
+          // The catch keeps a failure here from surfacing as an unhandled
+          // rejection when an assertion below fails first.
+          rejectionDelivered = page
+            .waitForResponse(
+              (res) =>
+                res.url().includes('admin-ajax.php') &&
+                (res.request().postData() || '').includes('nf_ajax_submit')
+            )
+            .catch(() => null);
+
+          // Submit unsolved: the server rejects, but the response is held.
+          await driver.submit(page, ctx);
+          // Solve while it is still in flight — 'verified' fires now, before
+          // the rejection has been delivered.
+          await clickWidgetCheckbox(page);
+          await waitForVerified(page);
+        } finally {
+          // Always release, even if the solve above threw: a route handler
+          // left parked on `held` hangs the request and turns a clear failure
+          // into a suite-level timeout.
+          releaseResponse();
+        }
+
+        // The submission we held must really have been rejected, and by us.
+        expect(heldBody).toContain('openporte_invalid');
+
+        // Wait for the rejection to be delivered rather than sleeping for it.
+        await rejectionDelivered;
+        // Ninja Forms applies the error while handling that response and the
+        // fix clears it a tick later, so poll for the end state. Non-vacuous
+        // only because the assertion above proved a rejection came back:
+        // without it, "no error present" would also be true before one was
+        // ever applied.
+        await expect(page.locator('.nf-form-cont .nf-error-openporte_invalid')).toHaveCount(0);
+
+        // If the form is wedged, this second submit never reaches the server
+        // and expectAccepted times out — the failure this test exists for.
         await driver.submit(page, ctx);
         await driver.expectAccepted(page, ctx, marker);
       });
