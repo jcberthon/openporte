@@ -56,8 +56,17 @@
         }
         boundWidgets.add(el);
         form.addEventListener('submit', (ev) => {
+          // Re-queried on every submit, not closed over: a widget can
+          // re-render its internals after this listener was bound (the
+          // de-dup above replaces .altcha wholesale on Elementor popups and
+          // wpDiscuz), which would otherwise leave this handler reading a
+          // detached node forever -- reportValidity() on a detached required
+          // checkbox returns false and blocks every future submit.
+          const altcha = el.querySelector('.altcha');
+          const checkbox = el.querySelector('input[type="checkbox"]');
+          checkbox?.setAttribute('name', '');
           const state = altcha?.getAttribute('data-state');
-          if (state === 'code') {
+          if (!checkbox || state === 'code') {
             return;
           }
           if (state === 'unverified' || state === 'error') {
