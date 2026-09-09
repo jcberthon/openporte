@@ -178,7 +178,7 @@ release's acceptance record in `docs/acceptance/`.
 2. **Upgrade scenario (d).** Exercise the ALTCHA → OpenPorte migration and the
    legacy-value graceful degradation (see `tests/README.md`).
 3. **Compatibility matrix (e).** Spot-check the supported PHP/WordPress floor and
-   ceiling (currently **PHP 8.0 / WP 5.6** up to **PHP 8.5 / WP 7.0** — see
+   ceiling (currently **PHP 8.0 / WP 5.6** up to **PHP 8.5 / WP 7.1** — see
    `docs/maintenance-testing.md`).
 4. **Per-release feature checks.** The remaining lettered sections of the
    acceptance record cover what this release added, plus the previous release's
